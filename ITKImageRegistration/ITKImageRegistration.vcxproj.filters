@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\main.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\CommandIterationUpdate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\Registration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\IntensityRegistration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\PointRegistration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\DataTransform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\AffineStd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\CenterRigidMM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\CenterRigidStd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\CenterRigidPt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\SimilarityMM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\SimilarityStd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\SimilarityPt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\TranslationMM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\TranslationStd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\TranslationPt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\AffineMM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\AffinePt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\RegistrationParameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\CommandIterationUpdate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\Registration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\IntensityRegistration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\PointRegistration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\DataTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\AffineStd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\CenterRigidMM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\CenterRigidStd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\CenterRigidPt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\SimilarityMM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\SimilarityStd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\SimilarityPt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\TranslationMM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\TranslationStd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\TranslationPt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\AffineMM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\AffinePt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7F26B613-F19B-4AE2-BFBF-93AB9B4AC82A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{1843D8AF-268C-4DDD-B483-0BE2BD638CD2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

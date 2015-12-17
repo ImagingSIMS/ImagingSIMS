@@ -1,0 +1,556 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C8607D70-6003-4737-9BC7-CF1314073879}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ImagingSIMS.MainApplication</RootNamespace>
+    <AssemblyName>ImagingSIMS</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <PublishUrl>Q:\InventoryAuthAD\InventoryAuthAD\ImagingSIMS\pub\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>http://128.118.169.171/ImagingSIMS/pub/</InstallUrl>
+    <SupportUrl>http://128.118.169.171/ImagingSIMS/Support.aspx</SupportUrl>
+    <ProductName>ImagingSIMS Version 3.6</ProductName>
+    <PublisherName>Winograd Lab</PublisherName>
+    <MinimumRequiredVersion>3.6.1.83</MinimumRequiredVersion>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.htm</WebPage>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <ApplicationRevision>153</ApplicationRevision>
+    <ApplicationVersion>3.6.1.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;RELEASE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>F057EF87E631E510250587FB7B94FCF629EFEC8D</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>ImagingSIMS_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>PaintPalette.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FirstFloor.ModernUI">
+      <HintPath>..\..\References\FirstFloor.ModernUI.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro">
+      <HintPath>..\packages\MahApps.Metro.0.14.0.0\lib\net45\MahApps.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="PresentationFramework.Aero2" />
+    <Reference Include="SharpDX, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\SharpDX 11 NET40\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Windows.Controls.Ribbon" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.0.14.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="ExternalCode\ExternalCodeEditor.xaml.cs">
+      <DependentUpon>ExternalCodeEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IImagingSIMSWindow.cs" />
+    <Compile Include="ImagingSIMSApplication.cs" />
+    <Compile Include="Settings.cs" />
+    <Page Include="About.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ExternalCode\ExternalCodeEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ExternalCode\ExternalCodeEditorResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Helper.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="PrintPreviewWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\ControlResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\RibbonResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PrintPreviewWindow.xaml.cs">
+      <DependentUpon>PrintPreviewWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Content Include="..\ITKImageRegistration\Debug\ITKImageRegistration.exe">
+      <Link>Plugins\ITKImageRegistration.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\References\ITKCommon-4.5.dll">
+      <Link>Plugins\ITKCommon-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOBioRad-4.5.dll">
+      <Link>Plugins\ITKIOBioRad-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOBMP-4.5.dll">
+      <Link>Plugins\ITKIOBMP-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOGE-4.5.dll">
+      <Link>Plugins\ITKIOGE-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOGIPL-4.5.dll">
+      <Link>Plugins\ITKIOGIPL-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOImageBase-4.5.dll">
+      <Link>Plugins\ITKIOImageBase-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOIPL-4.5.dll">
+      <Link>Plugins\ITKIOIPL-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOMesh-4.5.dll">
+      <Link>Plugins\ITKIOMesh-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOPNG-4.5.dll">
+      <Link>Plugins\ITKIOPNG-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOSiemens-4.5.dll">
+      <Link>Plugins\ITKIOSiemens-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOStimulate-4.5.dll">
+      <Link>Plugins\ITKIOStimulate-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOVTK-4.5.dll">
+      <Link>Plugins\ITKIOVTK-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\msvcp120.dll">
+      <Link>Plugins\msvcp120.dll</Link>
+    </Content>
+    <Content Include="..\References\msvcp120d.dll">
+      <Link>Plugins\msvcp120d.dll</Link>
+    </Content>
+    <Content Include="..\References\msvcr120.dll">
+      <Link>Plugins\msvcr120.dll</Link>
+    </Content>
+    <Content Include="..\References\msvcr120d.dll">
+      <Link>Plugins\msvcr120d.dll</Link>
+    </Content>
+    <Content Include="..\References\SharpDX 11 NET40\sharpdx_direct3d11_effects_x64.dll">
+      <Link>sharpdx_direct3d11_effects_x64.dll</Link>
+    </Content>
+    <Content Include="..\References\SharpDX 11 NET40\sharpdx_direct3d11_effects_x86.dll">
+      <Link>sharpdx_direct3d11_effects_x86.dll</Link>
+    </Content>
+    <Content Include="..\References\vccorlib120.dll">
+      <Link>Plugins\vccorlib120.dll</Link>
+    </Content>
+    <Content Include="..\References\vccorlib120d.dll">
+      <Link>Plugins\vccorlib120d.dll</Link>
+    </Content>
+    <Content Include="Icons\Workspace.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Images\merge.png" />
+    <Resource Include="Images\chart.png" />
+    <Resource Include="Images\Clusters.ico" />
+    <Resource Include="Images\Transform.ico" />
+    <Resource Include="Images\SpecExport.ico" />
+    <Content Include="Plugins\ExitCodes.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Images\DepthProfile.ico" />
+    <Content Include="..\Direct3DRendering\Shaders\Release\Axes.pso">
+      <Link>Shaders\Axes.pso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Direct3DRendering\Shaders\Release\Axes.vso">
+      <Link>Shaders\Axes.vso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Direct3DRendering\Shaders\Release\BoundingBox.pso">
+      <Link>Shaders\BoundingBox.pso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Direct3DRendering\Shaders\Release\BoundingBox.vso">
+      <Link>Shaders\BoundingBox.vso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Direct3DRendering\Shaders\Release\CoordinateBox.pso">
+      <Link>Shaders\CoordinateBox.pso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Direct3DRendering\Shaders\Release\CoordinateBox.vso">
+      <Link>Shaders\CoordinateBox.vso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Direct3DRendering\Shaders\Release\HeightMap.pso">
+      <Link>Shaders\HeightMap.pso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Direct3DRendering\Shaders\Release\HeightMap.vso">
+      <Link>Shaders\HeightMap.vso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Direct3DRendering\Shaders\Release\Isosurface.pso">
+      <Link>Shaders\Isosurface.pso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Direct3DRendering\Shaders\Release\Isosurface.vso">
+      <Link>Shaders\Isosurface.vso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Direct3DRendering\Shaders\Release\Model.pso">
+      <Link>Shaders\Model.pso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Direct3DRendering\Shaders\Release\Model.vso">
+      <Link>Shaders\Model.vso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Direct3DRendering\Shaders\Release\Raycast.pso">
+      <Link>Shaders\Raycast.pso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Direct3DRendering\Shaders\Release\Raycast.vso">
+      <Link>Shaders\Raycast.vso</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="ImagingSIMS_TemporaryKey.pfx" />
+    <None Include="packages.config" />
+    <Resource Include="Images\Update.png" />
+    <Resource Include="Images\gaussian.ico" />
+    <Resource Include="Images\ImageResize.ico" />
+    <Resource Include="Images\IntelliTrace.png" />
+    <Resource Include="Images\HeightMap.ico" />
+    <Resource Include="Images\VolumeOpen.ico" />
+    <Resource Include="Images\SaveAll.ico" />
+    <Resource Include="Images\Delete.ico" />
+    <Resource Include="Images\Error.ico" />
+    <Resource Include="Images\Workspace.ico" />
+    <Resource Include="Images\Cleanup.ico" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Content Include="EULA.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\a.ico" />
+    <Resource Include="Images\b.ico" />
+    <Resource Include="Images\Book.ico" />
+    <Resource Include="Images\Brush.png" />
+    <Resource Include="Images\c.ico" />
+    <Resource Include="Images\Camera.ico" />
+    <Resource Include="Images\CD.ico" />
+    <Resource Include="Images\Close.png" />
+    <Resource Include="Images\ColorIso.ico" />
+    <Resource Include="Images\CrossSum.ico" />
+    <Resource Include="Images\cut.ico" />
+    <Resource Include="Images\d.ico" />
+    <Resource Include="Images\Document.ico" />
+    <Resource Include="Images\DocumentHS.png" />
+    <Resource Include="Images\DocumentHS1.png" />
+    <Resource Include="Images\FloppyDisk.ico" />
+    <Resource Include="Images\Folder.ico" />
+    <Resource Include="Images\FusionNew.ico" />
+    <Resource Include="Images\FusionOpenHigh.ico" />
+    <Resource Include="Images\FusionOpenLow.ico" />
+    <Resource Include="Images\Gear.ico" />
+    <Resource Include="Images\HighPass.ico" />
+    <Resource Include="Images\Image.ico" />
+    <Resource Include="Images\Info.ico" />
+    <Resource Include="Images\Iso.ico" />
+    <Resource Include="Images\LargeIcon.png" />
+    <Resource Include="Images\Last.ico" />
+    <Resource Include="Images\LowPass.ico" />
+    <Resource Include="Images\Mean.ico" />
+    <Resource Include="Images\Median.ico" />
+    <Resource Include="Images\Move.png" />
+    <Resource Include="Images\MoveArrow.png" />
+    <Resource Include="Images\MoveCenter.png" />
+    <Resource Include="Images\NewComp.ico" />
+    <Resource Include="Images\NewImage.ico" />
+    <Resource Include="Images\NewIso.ico" />
+    <Resource Include="Images\NewTable.ico" />
+    <Resource Include="Images\Next.ico" />
+    <Resource Include="Images\openHS.png" />
+    <Resource Include="Images\openHS1.png" />
+    <Resource Include="Images\OpenIso.ico" />
+    <Resource Include="Images\Original.ico" />
+    <Resource Include="Images\PaintPalette.ico" />
+    <Resource Include="Images\Print.ico" />
+    <Resource Include="Images\PrintPreview.ico" />
+    <Resource Include="Images\RecordHS.png" />
+    <Resource Include="Images\Redo16.png" />
+    <Resource Include="Images\RotateArrowDown.png" />
+    <Resource Include="Images\RotateArrowSide.png" />
+    <Resource Include="Images\RotateArrowUp.png" />
+    <Resource Include="Images\SampleNew.ico" />
+    <Resource Include="Images\SampleOpen.ico" />
+    <Resource Include="Images\SaveCaps.ico" />
+    <Resource Include="Images\saveHS.png" />
+    <Resource Include="Images\SaveIso.ico" />
+    <Resource Include="Images\SEM.ico" />
+    <Resource Include="Images\Settings.ico" />
+    <Resource Include="Images\Slice.ico" />
+    <Resource Include="Images\Slice.png" />
+    <Resource Include="Images\SmallIcon.png" />
+    <Resource Include="Images\Spec.ico" />
+    <None Include="Images\Splash.jpg" />
+    <SplashScreen Include="Images\Splash.png" />
+    <Resource Include="Images\Star.png" />
+    <Resource Include="Images\StopHS.png" />
+    <Resource Include="Images\Sum.ico" />
+    <Resource Include="Images\Table.png" />
+    <Resource Include="Images\Undo16.png" />
+    <Resource Include="Images\VideoCamera.ico" />
+    <Resource Include="Images\_ColorIso.ico" />
+    <Resource Include="Images\_NewIso.ico" />
+    <Resource Include="Images\_Spec.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{3366d52f-103d-4930-ae32-8dccc3e85a83}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Controls\Controls.csproj">
+      <Project>{fea59aa7-dcdd-41be-85da-85b091d55cf4}</Project>
+      <Name>Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Data\Data.csproj">
+      <Project>{e095ba5d-b020-4056-b4d4-bcba59208616}</Project>
+      <Name>Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Direct3DRendering\Direct3DRendering.csproj">
+      <Project>{02d83723-3d19-4c12-ba5e-80330f6248c4}</Project>
+      <Name>Direct3DRendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ImageRegistration\ImageRegistration.csproj">
+      <Project>{3aa5aa48-1c06-45ca-9590-460357dab41e}</Project>
+      <Name>ImageRegistration</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Check.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\copy.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\eraser.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\VolumeNew.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Overlay.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Favorites.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\NewVolume.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Volume.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="PaintPalette.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <FileAssociation Include=".idf">
+      <Visible>False</Visible>
+      <Description>ImagingSIMS Isosourface Data File</Description>
+      <Progid>is3x64idf.File1</Progid>
+      <DefaultIcon>Icons\Iso.ico</DefaultIcon>
+    </FileAssociation>
+    <FileAssociation Include=".isd">
+      <Visible>False</Visible>
+      <Description>ImagingSIMS Sample Data File</Description>
+      <Progid>is3x64isd.File</Progid>
+      <DefaultIcon>Icons\Gear.ico</DefaultIcon>
+    </FileAssociation>
+    <FileAssociation Include=".vol">
+      <Visible>False</Visible>
+      <Description>ImagingSIMS Volume Data File</Description>
+      <Progid>is3x64isd.File3</Progid>
+      <DefaultIcon>Icons\Volume.ico</DefaultIcon>
+    </FileAssociation>
+    <FileAssociation Include=".wks">
+      <Visible>False</Visible>
+      <Description>ImagingSIMS Workspace File</Description>
+      <Progid>is3x64wks.File2</Progid>
+      <DefaultIcon>Icons\Workspace.ico</DefaultIcon>
+    </FileAssociation>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Icons\Book.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\Gear.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\Iso.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\Volume.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Images\Crop.ico" />
+    <Resource Include="Images\ZCorrect.ico" />
+    <Resource Include="Images\Correct.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

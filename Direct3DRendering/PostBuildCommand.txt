@@ -1,0 +1,1 @@
+﻿$(SolutionDir)Direct3DEffectCompiler\bin\Debug\Direct3DEffectCompiler.exe

@@ -1,0 +1,170 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.Data2DDisplayTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="clr-namespace:ImagingSIMS.Controls"
+             xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             xmlns:data="clr-namespace:ImagingSIMS.Data.Imaging;assembly=Data"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             Name="userControl"
+             d:DesignHeight="300" d:DesignWidth="500">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\Generic.xaml"/>
+                <ResourceDictionary>
+                    <c:ColorScaleToBoolConverter x:Key="colorScaleToBoolConverter"/>
+                    <ObjectDataProvider x:Key="colorScaleFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                        <ObjectDataProvider.MethodParameters>
+                            <x:Type TypeName="data:ColorScaleTypes"/>
+                        </ObjectDataProvider.MethodParameters>
+                    </ObjectDataProvider>
+                    <c:EnumDescriptionConverter x:Key="enumDescriptionConverter"/>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Setter Property="Margin" Value="4"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="White"/>
+                    </Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Margin" Value="4"/>
+                        <Setter Property="Width" Value="75"/>
+                        <Setter Property="Height" Value="23"/>
+                    </Style>
+                    <c:FoundClustersToMaskImageConverter x:Key="foundClustersToMaskImageConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto" MinWidth="150" MaxWidth="400"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ListBox x:Name="itemsControl" Grid.Row="0" Background="Transparent" 
+                 ItemsSource="{Binding DisplayItems, ElementName=userControl}" 
+                 SelectionMode="Multiple"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Width="Auto" Height="Auto"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <!--<Grid>
+                                <CheckBox IsChecked="{Binding ListBoxItem.IsSelected}"/>
+                            </Grid>-->
+                            <c:Data2DDisplay DisplayItem="{Binding}" GeneratePixelStats="generatePixelStats_Click"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Select All" Click="cmSelectAll_Click"/>
+                        <MenuItem Header="Clear All" Click="cmClearAll_Click"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+
+            <Grid Grid.Row="1">
+                <GroupBox Header="Batch Apply" Foreground="White" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock>Color scale:</TextBlock>
+                        <ComboBox Margin="4" Width="125" Height="20" IsEditable="False"
+                              ItemsSource="{Binding Source={StaticResource colorScaleFromEnum}}"
+                              SelectedItem="{Binding BatchApply.ColorScale, ElementName=userControl}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button x:Name="buttonShowColor" Width="20" Height="20" Margin="4" 
+                        IsEnabled="{Binding BatchApply.ColorScale, Converter={StaticResource colorScaleToBoolConverter}, ElementName=userControl}"
+                        MouseEnter="buttonShowColor_MouseEnter">
+                            <Image Source="Images\PaintPalette.ico"/>
+                        </Button>
+                        <Popup x:Name="popupSolidColorScale" IsOpen="False" PlacementTarget="{Binding ElementName=buttonShowColor}" StaysOpen="False">
+                            <Grid Background="{StaticResource MenuBackground}">
+                                <cc:ColorSelector SelectedColor="{Binding BatchApply.SolidColorScale, Mode=TwoWay, ElementName=userControl}" IsAlphaEnabled="False"/>
+                            </Grid>
+                        </Popup>
+                        <Button x:Name="buttonApplyAll" Margin="4" Height="20" Width="75" Click="buttonApply_Click">Apply All</Button>
+                        <Button x:Name="buttonApplySelected" Margin="4" Height="20" Width="75" Click="buttonApply_Click">Selected</Button>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
+        </Grid>
+
+        <GridSplitter Grid.Column="1"  HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="2,4" 
+                      Width="3" Height="Auto" Background="#FF333333" 
+                      Visibility="{Binding ElementName=expanderSidePanel, Path=IsExpanded, Converter={StaticResource boolVisConverter}}"/>
+
+        <Expander Grid.Column="2" ExpandDirection="Left" IsExpanded="False" x:Name="expanderSidePanel">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <Grid Background="Transparent">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock>Mask:</TextBlock>
+                    
+                    <Image Grid.Row="1" Width="Auto" Height="Auto"
+                           MinWidth="100" MinHeight="100" 
+                           MaxWidth="200" MaxHeight="200"
+                           HorizontalAlignment="Stretch" Stretch="Uniform"
+                           Source="{Binding ElementName=userControl, Path=FoundClusters, Converter={StaticResource foundClustersToMaskImageConverter}}"/>
+                    
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <TextBlock>Filter with Mask:</TextBlock>
+                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=userControl, Path=UseMask}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal" IsEnabled="{Binding ElementName=userControl, Path=UseMask}">
+                        <TextBlock>Filter by Cluster:</TextBlock>
+                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=userControl, Path=UseMaskClusters}"/>
+                    </StackPanel>
+                </Grid>
+                
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock>Output:</TextBlock>
+
+                    <TextBox    x:Name="tbStatsText" 
+                        Width="Auto" Height="Auto" Grid.Row="1"
+                         VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                         IsReadOnly="True"
+                         HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"/>
+
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
+                        <Button Click="buttonCopyText_Click">Copy</Button>
+                        <Button Click="buttonClearText_Click">Clear</Button>
+                    </StackPanel>
+                </Grid>  
+            </Grid>
+        </Expander>
+    </Grid>    
+</UserControl>

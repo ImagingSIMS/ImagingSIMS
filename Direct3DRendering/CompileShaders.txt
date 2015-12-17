@@ -1,0 +1,3 @@
+﻿If the shaders change and need to be recompiled, include the following line as a Build Event in the project settings
+
+$(SolutionDir)Direct3DEffectCompiler\bin\Debug\Direct3DEffectCompiler.exe

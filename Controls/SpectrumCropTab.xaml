@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.SpectrumCropTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="clr-namespace:ImagingSIMS.Controls"
+             xmlns:data="clr-namespace:ImagingSIMS.Data.Imaging;assembly=Data"
+             mc:Ignorable="d" 
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DesignHeight="800" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\Generic.xaml"/>
+                <ResourceDictionary Source="Themes\ListViewResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ListView x:Name="listViewSpectra" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Spectra}" 
+                     Height="Auto" Width="Auto" VerticalAlignment="Stretch" Margin="4" Background="Transparent" BorderBrush="Transparent"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" SelectionMode="Single"
+                     SelectionChanged="listViewSpectra_SelectionChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="225"/>
+                    <GridViewColumn Header="Layers" DisplayMemberBinding="{Binding SizeZ}" Width="75"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        
+        <StackPanel Orientation="Vertical" Grid.Column="1">
+            <StackPanel Orientation="Horizontal">
+                <Label>Live Preview:</Label>
+                <CheckBox VerticalAlignment="Center" IsChecked="{Binding ShowLivePreview}"
+                          Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
+            </StackPanel>
+            <ScrollViewer x:Name="scrollViewer" Width="500" Height="500" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden"
+                          ScrollChanged="ScrollViewer_ScrollChanged"
+                          PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                          PreviewMouseLeftButtonDown="scrollViewer_MouseLeftButtonDown"
+                          PreviewMouseRightButtonDown="scrollViewer_MouseRightButtonDown"
+                          MouseLeftButtonUp="scrollViewer_MouseLeftButtonUp"
+                          MouseRightButtonUp="scrollViewer_MouseRightButtonUp"
+                          MouseMove="ScrollViewer_MouseMove">
+                <data:EditableImage x:Name="imagePreview" Width="{Binding TransformedWidth}" Height="{Binding TransformedHeight}"
+                                 SelectionColor="LimeGreen" Stretch="Fill"/>
+                <!--<c:HighlightableImage x:Name="imagePreview"/>-->
+            </ScrollViewer>
+
+            <StackPanel Orientation="Horizontal">
+                <Label Margin="4" Foreground="White">Crop all layers:</Label>
+                <CheckBox Margin="4" Width="20" Height="20" VerticalAlignment="Bottom" IsChecked="{Binding CropAllLayers}" Checked="CheckBox_Changed" Unchecked="CheckBox_Changed"/>
+                <Label Margin="4" Foreground="White">Crop layer:</Label>
+                <Slider Margin="4" Width="150" SmallChange="1" VerticalAlignment="Center"
+                        Minimum="1" Maximum="{Binding ElementName=listViewSpectra, Path=SelectedItem.SizeZ}" Value="{Binding ActiveLayer}"
+                        ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Value}" 
+                        IsEnabled="{Binding Path=CropAllLayers, Converter={StaticResource boolInvertConverter}}"
+                        ValueChanged="Slider_ValueChanged"/>
+                <Label Margin="4" Foreground="White" Content="{Binding ActiveLayer}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Margin="4" Foreground="White">Resize cropped:</Label>
+                <CheckBox Margin="4" Width="20" Height="20" VerticalAlignment="Bottom" IsChecked="{Binding ResizeCropped}"/>
+                <Label Margin="4" Foreground="White">Crop pixel buffer:</Label>
+                <TextBox Margin="4" Text="{Binding ResizeBuffer}" Width="50" Height="20"
+                         IsEnabled="{Binding Path=ResizeCropped}"/>
+                <Button Click="buttonClear_Click" Margin="4" Height="23" Width="75">Clear Points</Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Margin="4" Foreground="White">Brush size:</Label>
+                <TextBox Margin="4" Text="{Binding BrushSize}" Width="50" Height="20"/>
+                <Button x:Name="btnBrushCommit" Margin="4" Width="75" Height="23" Click="buttonCommit_Click">Commit</Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Margin="4" Foreground="White" Content="{Binding Text}"/>
+                <Label Margin="4" Foreground="White" Content="{Binding Text2}"/>
+                <Label Margin="4" Foreground="White" Content="{Binding Text3}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">                
+                <Label Margin="4" Foreground="White">Crop rectangle:</Label>
+                <TextBox Margin="4" Text="{Binding CropRectangle}" Width="100" Height="20"/>
+                <Button x:Name="btnRectCommit" Margin="4" Width="75" Height="23" Click="buttonCommit_Click">Commit</Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Margin="4" Foreground="White">(Start X,End X,StartY,End Y)</Label>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

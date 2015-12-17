@@ -1,0 +1,27 @@
+﻿<Window xmlns:controls="clr-namespace:ImagingSIMS.Common.Controls"  x:Class="ImagingSIMS.Common.Dialogs.WorkspaceDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Load" Background="#FF414141" Width="400" MaxWidth="400" 
+        SizeToContent="Height" WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Icon="Images\PaintPalette.ico">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <controls:BitmapDisplay HorizontalAlignment="Left" Margin="8,8,0,0" x:Name="displayIcon" VerticalAlignment="Top" Width="54" Height="54"
+                                     ContextMenuIsEnabled="False"/>
+        <TextBlock x:Name="msg" TextWrapping="Wrap" Foreground="#FFD8D8D8" Margin="8" Grid.Column="1">
+            The current workspace is in use. Do you wish to overwrite or merge the current data with the saved workspace?
+        </TextBlock>
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,5,0">
+            <Button x:Name="buttonOverwrite" Content="Overwrite" Width="75" IsDefault="True" Click="buttonOverwrite_Click"  Margin="0,3,3,8"/>
+            <Button x:Name="buttonMerge" Content="Merge" Width="75" IsDefault="True" Click="buttonMerge_Click"  Margin="0,3,3,8"/>
+            <Button x:Name="buttonCancel" Content="Cancel" Width="75" IsCancel="True" Click="buttonCancel_Click"  Margin="0,3,3,8"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,524 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FEA59AA7-DCDD-41BE-85DA-85B091D55CF4}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ImagingSIMS.Controls</RootNamespace>
+    <AssemblyName>Controls</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ReachFramework" />
+    <Reference Include="SharpDX, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\SharpDX 11 NET40\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Printing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ClosableTabItem.cs" />
+    <Compile Include="ClusterTab.xaml.cs">
+      <DependentUpon>ClusterTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ColorScalePreview.xaml.cs">
+      <DependentUpon>ColorScalePreview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Common.cs" />
+    <Compile Include="ComponentTab.xaml.cs">
+      <DependentUpon>ComponentTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Data2DDisplay.xaml.cs">
+      <DependentUpon>Data2DDisplay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Data2DDisplayTab.xaml.cs">
+      <DependentUpon>Data2DDisplayTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataCorrectionTab.xaml.cs">
+      <DependentUpon>DataCorrectionTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataRegistrationTab.xaml.cs">
+      <DependentUpon>DataRegistrationTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DisplayTab.xaml.cs">
+      <DependentUpon>DisplayTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileItem.xaml.cs">
+      <DependentUpon>FileItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HeightMapTab.xaml.cs">
+      <DependentUpon>HeightMapTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HighlightableImage.xaml.cs">
+      <DependentUpon>HighlightableImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="History.cs" />
+    <Compile Include="MaskedTextBox.cs" />
+    <Compile Include="PCATab.xaml.cs">
+      <DependentUpon>PCATab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PeakPreview.xaml.cs">
+      <DependentUpon>PeakPreview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PointSelectImage.xaml.cs">
+      <DependentUpon>PointSelectImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Printing.cs" />
+    <Compile Include="RegistrationInputImage.xaml.cs">
+      <DependentUpon>RegistrationInputImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RegistrationParametersControl.xaml.cs">
+      <DependentUpon>RegistrationParametersControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RenderObjectTab.xaml.cs">
+      <DependentUpon>RenderObjectTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CropPreview.xaml.cs">
+      <DependentUpon>CropPreview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CropTab.xaml.cs">
+      <DependentUpon>CropTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FusionTab.xaml.cs">
+      <DependentUpon>FusionTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ListView.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="ResizeDialogWindow.xaml.cs">
+      <DependentUpon>ResizeDialogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SEMTab.xaml.cs">
+      <DependentUpon>SEMTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsTab.xaml.cs">
+      <DependentUpon>SettingsTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SpectrumCropTab.xaml.cs">
+      <DependentUpon>SpectrumCropTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SpectrumTab.xaml.cs">
+      <DependentUpon>SpectrumTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SpectrumView\AxisX.xaml.cs">
+      <DependentUpon>AxisX.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SpectrumView\AxisY.xaml.cs">
+      <DependentUpon>AxisY.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SpectrumView\ColorGradient.xaml.cs">
+      <DependentUpon>ColorGradient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SpectrumView\ImagePreview.xaml.cs">
+      <DependentUpon>ImagePreview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SpectrumView\SelectionArrow.xaml.cs">
+      <DependentUpon>SelectionArrow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SpectrumView\SpecChart.xaml.cs">
+      <DependentUpon>SpecChart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SpectrumView\TestControl.xaml.cs">
+      <DependentUpon>TestControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StartupTab.xaml.cs">
+      <DependentUpon>StartupTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DepthProfileTab.xaml.cs">
+      <DependentUpon>DepthProfileTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TableSelector.xaml.cs">
+      <DependentUpon>TableSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TableSumTab.xaml.cs">
+      <DependentUpon>TableSumTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TestControl.xaml.cs">
+      <DependentUpon>TestControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VolumeTab.xaml.cs">
+      <DependentUpon>VolumeTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WaitingSpinner.xaml.cs">
+      <DependentUpon>WaitingSpinner.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WorkableImage.xaml.cs">
+      <DependentUpon>WorkableImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ZCorrectionTab.xaml.cs">
+      <DependentUpon>ZCorrectionTab.xaml</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\a.ico" />
+    <Resource Include="Images\b.ico" />
+    <Resource Include="Images\Book.ico" />
+    <Resource Include="Images\Brush.png" />
+    <Resource Include="Images\c.ico" />
+    <Resource Include="Images\Camera.ico" />
+    <Resource Include="Images\CD.ico" />
+    <Resource Include="Images\Close.png" />
+    <Resource Include="Images\ColorIso.ico" />
+    <Resource Include="Images\CrossSum.ico" />
+    <Resource Include="Images\cut.ico" />
+    <Resource Include="Images\d.ico" />
+    <Resource Include="Images\Document.ico" />
+    <Resource Include="Images\DocumentHS.png" />
+    <Resource Include="Images\DocumentHS1.png" />
+    <Resource Include="Images\FloppyDisk.ico" />
+    <Resource Include="Images\Folder.ico" />
+    <Resource Include="Images\FusionNew.ico" />
+    <Resource Include="Images\FusionOpenHigh.ico" />
+    <Resource Include="Images\FusionOpenLow.ico" />
+    <Resource Include="Images\Gear.ico" />
+    <Resource Include="Images\HighPass.ico" />
+    <Resource Include="Images\Image.ico" />
+    <Resource Include="Images\Info.ico" />
+    <Resource Include="Images\Iso.ico" />
+    <Resource Include="Images\LargeIcon.png" />
+    <Resource Include="Images\Last.ico" />
+    <Resource Include="Images\LowPass.ico" />
+    <Resource Include="Images\Mean.ico" />
+    <Resource Include="Images\Median.ico" />
+    <Resource Include="Images\Move.png" />
+    <Resource Include="Images\MoveArrow.png" />
+    <Resource Include="Images\MoveCenter.png" />
+    <Resource Include="Images\NewComp.ico" />
+    <Resource Include="Images\NewImage.ico" />
+    <Resource Include="Images\NewIso.ico" />
+    <Resource Include="Images\NewTable.ico" />
+    <Resource Include="Images\Next.ico" />
+    <Resource Include="Images\openHS.png" />
+    <Resource Include="Images\openHS1.png" />
+    <Resource Include="Images\OpenIso.ico" />
+    <Resource Include="Images\Original.ico" />
+    <Resource Include="Images\PaintPalette.ico" />
+    <Resource Include="Images\Print.ico" />
+    <Resource Include="Images\PrintPreview.ico" />
+    <Resource Include="Images\RecordHS.png" />
+    <Resource Include="Images\Redo16.png" />
+    <Resource Include="Images\RotateArrowDown.png" />
+    <Resource Include="Images\RotateArrowSide.png" />
+    <Resource Include="Images\RotateArrowUp.png" />
+    <Resource Include="Images\SampleNew.ico" />
+    <Resource Include="Images\SampleOpen.ico" />
+    <Resource Include="Images\SaveCaps.ico" />
+    <Resource Include="Images\saveHS.png" />
+    <Resource Include="Images\SaveIso.ico" />
+    <Resource Include="Images\SEM.ico" />
+    <Resource Include="Images\Settings.ico" />
+    <Resource Include="Images\Slice.ico" />
+    <Resource Include="Images\Slice.png" />
+    <Resource Include="Images\SmallIcon.png" />
+    <Resource Include="Images\Spec.ico" />
+    <Resource Include="Images\Splash.jpg" />
+    <Resource Include="Images\Splash.png" />
+    <Resource Include="Images\Star.png" />
+    <Resource Include="Images\StopHS.png" />
+    <Resource Include="Images\Sum.ico" />
+    <Resource Include="Images\Table.png" />
+    <Resource Include="Images\Undo16.png" />
+    <Resource Include="Images\VideoCamera.ico" />
+    <Resource Include="Images\_ColorIso.ico" />
+    <Resource Include="Images\_NewIso.ico" />
+    <Resource Include="Images\_Spec.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Data\Data.csproj">
+      <Project>{e095ba5d-b020-4056-b4d4-bcba59208616}</Project>
+      <Name>Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ImageRegistration\ImageRegistration.csproj">
+      <Project>{3aa5aa48-1c06-45ca-9590-460357dab41e}</Project>
+      <Name>ImageRegistration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{3366d52f-103d-4930-ae32-8dccc3e85a83}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="ClusterTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ColorScalePreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ComponentTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Data2DDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Data2DDisplayTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataCorrectionTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataRegistrationTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DisplayTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HeightMapTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HighlightableImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PCATab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PeakPreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PointSelectImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RegistrationInputImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RegistrationParametersControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RenderObjectTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CropPreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CropTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FusionTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResizeDialogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SEMTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpectrumCropTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpectrumTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpectrumView\AxisX.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpectrumView\AxisY.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpectrumView\ColorGradient.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpectrumView\ImagePreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpectrumView\SelectionArrow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpectrumView\SpecChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpectrumView\TestControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StartupTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DepthProfileTab.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TableSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TableSumTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TestControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\ListViewResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpectrumView\Themes\SpecChartPrinting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpectrumView\Themes\SpecChartStandard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VolumeTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WaitingSpinner.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WorkableImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ZCorrectionTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\TransparentBackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Remove24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Reverse.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\copy.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Workspace.ico" />
+    <Content Include="Images\StartupTabContent.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SpectrumView\SpectrumView.hlsl" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

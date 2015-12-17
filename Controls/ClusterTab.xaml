@@ -1,0 +1,212 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.ClusterTab"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="clr-namespace:ImagingSIMS.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\Generic.xaml"/>
+                <ResourceDictionary Source="Themes\ListViewResources.xaml"/>
+                <ResourceDictionary>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Setter Property="Margin" Value="4"/>
+                        <Setter Property="Width" Value="75"/>
+                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                        <Setter Property="Height" Value="23"/>
+                    </Style>
+                    <c:FoundClustersToMaskImageConverter x:Key="foundClustersToMaskImageConverter"/>
+                    <c:Data3DToBitmapSourceConverter x:Key="data3DToBitmapSourceConverter"/>
+                    <c:NumberClustersToEnabledConverter x:Key="numberClustersToEnabledConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Vertical" Drop="imageInput_Drop" AllowDrop="True" Background="Transparent">
+                <TextBlock>Input image:</TextBlock>
+                <Image Margin="4" Width="300" Height="300" Source="{Binding ElementName=userControl, Path=Parameters.InputImageSource}"/>
+                <Button Margin="4" Width="75" Height="23" HorizontalAlignment="Center" Click="openImage_Click">Load</Button>     
+            </StackPanel>
+        
+            <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Vertical">
+                <TextBlock>Result:</TextBlock>
+                <Image Margin="4" Width="300" Height="300" x:Name="imageOutput"
+                       Source="{Binding ElementName=userControl, Path=FoundClusters.ColorMask, Converter={StaticResource data3DToBitmapSourceConverter}}" 
+                       MouseMove="imageOutput_MouseMove" MouseDown="imageOutput_MouseDown"/>
+                <TextBlock Text="{Binding ElementName=userControl, Path=ClusterImagePixelText}"/>
+                <TextBlock Text="{Binding ElementName=userControl, Path=ClusterImageClusterText}"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Margin="4" Width="75" Height="23" 
+                            IsEnabled="{Binding ElementName=userControl, Path=FoundClusters, Converter={StaticResource numberClustersToEnabledConverter}}" 
+                            Click="saveImage_Click">Save Image</Button>
+                    <Button Margin="4" Width="75" Height="23" 
+                            IsEnabled="{Binding ElementName=userControl, Path=FoundClusters, Converter={StaticResource numberClustersToEnabledConverter}}" 
+                            Click="saveClusterArray_Click">Save Array</Button>
+                </StackPanel>
+            </StackPanel>
+        
+            <StackPanel Grid.Column="1" Orientation="Vertical">
+                <GroupBox Header="Analyze" Foreground="White">
+                    <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <TextBlock>Pixel Threshold:</TextBlock>
+                            <TextBox Text="{Binding ElementName=userControl, Path=Parameters.PixelThreshold}"/>
+                        </Grid>
+                        <Grid>
+                            <TextBlock>Intraparticle Distance:</TextBlock>
+                            <TextBox Text="{Binding ElementName=userControl, Path=Parameters.IntraparticleDistance}"/>
+                        </Grid>
+                        <Grid>
+                            <TextBlock>Minimum Pixel Area:</TextBlock>
+                            <TextBox Text="{Binding ElementName=userControl, Path=Parameters.MinPixelArea}"/>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>Invert:</TextBlock>
+                            <CheckBox Margin="4" VerticalAlignment="Center" IsChecked="{Binding ElementName=userControl, Path=Parameters.Invert}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Margin="4" Width="75" Height="23" Click="identify_Click">Identify</Button>
+                            <Button Margin="4" Width="75" Height="23" Click="cancel_Click" IsEnabled="{Binding ElementName=userControl, Path=IsIdentifying}">Cancel</Button>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Smooth" Foreground="White">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock>Window Size:</TextBlock>
+                            <TextBox Width="50" Height="23" Text="{Binding ElementName=userControl, Path=SmoothWindowSize}"/>
+                            <Button Margin="4" Width="75" Height="23" Click="smooth_Click">Smooth</Button>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Statistical Analysis" Foreground="White">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Margin="4" Width="75" Height="23" HorizontalAlignment="Left" Click="generateStats_Click">Generate</Button>
+                            <Button Margin="4" Width="75" Height="23" HorizontalAlignment="Left" Click="copyStats_Click">Copy</Button>
+                        </StackPanel>                        
+                    </StackPanel>
+                </GroupBox>
+                
+                
+
+            </StackPanel>
+            
+            <Grid Grid.Column="1" Grid.Row="1">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Merge Clusters" Click="mergeClusters_Click"/>
+                            <MenuItem Header="Remove Clusters" Click="removeCluster_Click"/>
+                        </ContextMenu>
+                    </StackPanel.ContextMenu>
+                    <TextBlock>Results:</TextBlock>
+
+                    <ListView x:Name="listViewResults" Margin="4" ItemsSource="{Binding ElementName=userControl, Path=FoundClusters.Clusters}" 
+                              HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="True">
+                                <GridViewColumn Header="#" Width="40">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=ClusterNumber}">
+                                                <TextBlock.Foreground>
+                                                    <SolidColorBrush Color="{Binding Path=Color}"/>
+                                                </TextBlock.Foreground>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Center X" Width="60">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=CenterX}">
+                                                <TextBlock.Foreground>
+                                                    <SolidColorBrush Color="{Binding Path=Color}"/>
+                                                </TextBlock.Foreground>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Center Y" Width="60">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=CenterY}">
+                                                <TextBlock.Foreground>
+                                                    <SolidColorBrush Color="{Binding Path=Color}"/>
+                                                </TextBlock.Foreground>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Number Pixels" Width="80">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=NumberPixels}">
+                                                <TextBlock.Foreground>
+                                                    <SolidColorBrush Color="{Binding Path=Color}"/>
+                                                </TextBlock.Foreground>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </Grid>
+       
+        
+            <Grid Grid.Column="2">
+                <StackPanel Grid.Column="0" Orientation="Vertical" Drop="dataInput_Drop" AllowDrop="True" Background="Transparent">
+                    <TextBlock>Data Input:</TextBlock>
+                    <Image Margin="4" Width="300" Height="300" HorizontalAlignment="Left" VerticalAlignment="Top"
+                           Source="{Binding ElementName=userControl, Path=DataInput, Converter={StaticResource data2DToBitmapSourceConverter}}"/>                    
+                </StackPanel>
+            </Grid>
+            
+            <Grid Grid.Column="2" Grid.Row="1">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy All" Click="copyStats_Click"/>
+                        </ContextMenu>
+                    </StackPanel.ContextMenu>
+                    <TextBlock>Results:</TextBlock>
+                    <ListView x:Name="listViewStats" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionMode="Single">
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="True">
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=ClusterNumber}" Header="#" Width="40"/>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=CenterX}" Header="Center X" Width="60"/>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=CenterY}" Header="Center Y" Width="60"/>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=Minimum}" Header="Min" Width="60"/>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=Maximum}" Header="Max" Width="80"/>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=Average}" Header="Average" Width="80"/>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=StdDev}" Header="Std Dev" Width="80"/>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=TotalCounts}" Header="Counts" Width="80"/>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=NumberPixels}" Header="Pixels" Width="80"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <TextBlock x:Name="textBlockWeightedStats"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

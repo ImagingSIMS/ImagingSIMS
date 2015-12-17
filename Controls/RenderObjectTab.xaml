@@ -1,0 +1,102 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.RenderObjectTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:l="clr-namespace:ImagingSIMS.Controls"
+             xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             mc:Ignorable="d" 
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DesignHeight="300" d:DesignWidth="600">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\Generic.xaml"/>
+                <ResourceDictionary Source="Themes\ListViewResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="Width" Value="40"/>
+                <Setter Property="Height" Value="20"/>
+                <Setter Property="Margin" Value="4"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Orientation="Vertical" Margin="3">
+            <ListView x:Name="listComps" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Components}" 
+                      Height="Auto" Width="Auto" VerticalAlignment="Stretch" Margin="4" Background="Transparent" BorderBrush="Transparent"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ComponentName}" Width="150"/>
+                        <GridViewColumn Header="# Tables" DisplayMemberBinding="{Binding NumberTables}" Width="60"/>
+                    </GridView>
+                </ListView.View>
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Edit" Click="CMEditComponent"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+            </ListView>
+        </StackPanel>
+        <Rectangle Height="Auto" Width="3" Grid.Column="1" Margin="4" Fill="Gray"/>
+        <Grid Grid.Column="2">
+            <StackPanel Orientation="Vertical">
+                <TabControl x:Name="tabControl" Height="Auto" Width="275" Background="Transparent" Margin="4" BorderBrush="Transparent">
+                    <TabItem x:Name="tabVolume" Header="Volume" Style="{StaticResource BlueTabItemHeader}" >
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Grid.Row="0">Pixel size:</Label>
+                            <Label Grid.Column="2" Grid.Row="0">Pixel depth:</Label>
+                            <Label Grid.Column="0" Grid.Row="1">Z-Spacing:</Label>
+                            <Label Grid.Column="2" Grid.Row="1">Threshold:</Label>
+                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding PixelSize}"/>
+                            <TextBox Grid.Column="3" Grid.Row="0" Text="{Binding PixelDepth}"/>
+                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding ZSpacing}"/>
+                            <TextBox Grid.Column="3" Grid.Row="1" Text="{Binding VolumeThreshold}"/>
+                            <cc:ColorSelector Grid.Row="2" Grid.ColumnSpan="4" x:Name="colorPickerVolume" Margin="4" Width="200" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </TabItem>
+                    <TabItem x:Name="tabIso" Header="Isosurface" Style="{StaticResource BlueTabItemHeader}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Grid.Row="0">Threshold:</Label>
+                            <Label Grid.Column="2" Grid.Row="0">Isosurface Value:</Label>
+                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding IsoThreshold}"/>
+                            <TextBox Grid.Column="3" Grid.Row="0" Text="{Binding IsoValue}"/>
+                            <cc:ColorSelector Grid.Row="1" Grid.ColumnSpan="4" x:Name="colorPickerIso" Margin="4" Width="200" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+                <Button Click="Create" Content="Create" Margin="4" HorizontalAlignment="Right" Height="20" Width="75"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

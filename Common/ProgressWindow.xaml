@@ -1,0 +1,39 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:my="clr-namespace:ImagingSIMS.Common" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
+        x:Class="ImagingSIMS.Common.Dialogs.ProgressWindow"
+        Title="DialogBox" Height="Auto" Background="#FF414141" Width="400" 
+        Icon="Images\PaintPalette.ico"
+        Closing="Window_Closing"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize" SizeToContent="Height" ShowInTaskbar="True" WindowStyle="None" Topmost="True">
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo />
+    </Window.TaskbarItemInfo>
+    <Border BorderThickness="1,1,1,0" BorderBrush="#FF00243C">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Rectangle Fill="#FF007ACC" 
+                Width="Auto" Height="20" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                MouseDown="Rectangle_MouseDown"/>
+
+            <TextBlock x:Name="msg" Grid.Row="1" TextWrapping="Wrap" Text="TextBlock" Margin="8" Foreground="#FFD8D8D8" VerticalAlignment="Top" />
+
+            <ProgressBar x:Name="progressBar" Grid.Row="2" Margin="8" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="Auto" Height="23" />
+
+            <Button x:Name="buttonOK" Content="OK" VerticalAlignment="Center" Width="75" IsDefault="True" 
+                Click="buttonOK_Click" HorizontalAlignment="Right" Grid.Row="3" Margin="8" />
+        </Grid>
+    </Border>
+</Window>

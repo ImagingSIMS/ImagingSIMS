@@ -1,0 +1,124 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:l="clr-namespace:ImagingSIMS.MainApplication"
+                    xmlns:d="clr-namespace:ImagingSIMS.Data;assembly=Data"
+                    xmlns:di="clr-namespace:ImagingSIMS.Data.Imaging;assembly=Data">
+
+
+    <ObjectDataProvider x:Key="normFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="di:NormalizationMethod"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+    
+    <l:ShortPathConverter x:Key="shortPathConverter"/>
+    <l:SpecCanNavigateConverter x:Key="specCanNavigateConverter"/>
+    <l:HasItemsToThicknessConverter x:Key="hasItemsToThicknessConverter"/>
+    <l:Data2DToBitmapSourceConverter x:Key="data2DToBitmapSourceConverter"/>
+    <l:Data2DToSizeStringConverter x:Key="data2DToSizeStringConverter"/>
+    
+    <SolidColorBrush x:Key="ThemeBlueBrush" Color="#FF007ACC"/>
+    <SolidColorBrush x:Key="ThemeBlueLightBrush" Color="#33007ACC"/>
+    <SolidColorBrush x:Key="TabPageTopColor" Color="#FFF8F8F8"/>
+
+    <Style TargetType="{x:Type RibbonGroup}">
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="HeaderTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" Foreground="Black"/>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style TargetType="{x:Type RibbonTabHeader}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RibbonTabHeader}">
+                    <Grid>
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" Width="Auto"
+                                BorderThickness="1,1,1,0" Padding="1,0,0,0" CornerRadius="1,1,0,0" MinWidth="50" Margin="0"
+                                Background="Transparent"/>
+                        <TextBlock x:Name="Tb" Text="{Binding}" Padding="12,3,12,0" Foreground="#FFB8B8B8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsRibbonTabSelected" Value="true">
+                            <Setter TargetName="Tb" Property="Foreground" Value="Black"/>
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource TabPageTopColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsRibbonTabSelected" Value="false">
+                            <Setter TargetName="Tb" Property="Foreground" Value="#FFB8B8B8"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource ThemeBlueBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="Tb" Property="Foreground" Value="#FF26262C"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="true"/>
+                                <Condition Property="IsRibbonTabSelected" Value="false"/>
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ThemeBlueLightBrush}"/>
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Background" Value="Blue"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type RibbonApplicationMenu}">
+        <Setter Property="Background" Value="{StaticResource ThemeBlueBrush}"/>
+        <Setter Property="Margin" Value="0,2,0,-1"/>
+        <Setter Property="BorderThickness" Value="1,1,1,0"/>
+        <Style.Triggers>
+            <Trigger Property="IsDropDownOpen" Value="true">
+                <Setter Property="BorderThickness" Value="1,1,1,1"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type RibbonToolTip}">
+        <Setter Property="FontFamily" Value="SegoeUI"/>
+    </Style>
+
+    <Style TargetType="{x:Type Ribbon}">
+        <Setter Property="Background" Value="#FF606060"/>
+        <Setter Property="BorderBrush" Value="#FF646464"/>
+        <Setter Property="FocusedBackground" Value="#FF79ABCD"/>
+        <Setter Property="FocusedBorderBrush" Value="{StaticResource ThemeBlueBrush}"/>
+        <Setter Property="MouseOverBackground">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,0">
+                    <GradientStop Color="#FFACB2B6" Offset="0"/>
+                    <GradientStop Color="#FF73A2C1" Offset="0.498"/>
+                    <GradientStop Color="#FF007ACC" Offset="0.762"/>
+                    <GradientStop Color="#FF6AA4CB" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="PressedBackground">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,0">
+                    <GradientStop Color="#FF3C93CD" Offset="0"/>
+                    <GradientStop Color="#FF007ACC" Offset="0.498"/>
+                    <GradientStop Color="#FF659DC3" Offset="0.762"/>
+                    <GradientStop Color="#FF91A9B9" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="MouseOverBorderBrush" Value="{StaticResource ThemeBlueBrush}"/>
+        <Setter Property="PressedBorderBrush" Value="{StaticResource ThemeBlueBrush}"/>
+    </Style>
+
+</ResourceDictionary>

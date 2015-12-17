@@ -1,0 +1,35 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:my="clr-namespace:ImagingSIMS.Common.Controls" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
+        x:Class="ImagingSIMS.Common.Dialogs.DialogBox"
+        Title="DialogBox" Background="#FF414141" Width="400" MaxWidth="400" 
+        SizeToContent="Height" WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Icon="Images\PaintPalette.ico">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <my:BitmapDisplay HorizontalAlignment="Left" Margin="8,8,0,0" x:Name="displayIcon" VerticalAlignment="Top" Width="54" Height="54" ContextMenuIsEnabled="False" />
+        <Grid Grid.Column="1" Name="msg1Dock">
+            <TextBlock x:Name="msg1" TextWrapping="Wrap" Text="TextBlock" Margin="8,8,8,8" Foreground="#FFD8D8D8" 
+                       MouseMove="msg_MouseMove"/>
+        </Grid>
+    	<Grid Grid.Column="1" Grid.Row="1" Name="msg2Dock">
+    		<TextBlock x:Name="msg2" TextWrapping="Wrap" Text="TextBlock" Foreground="#FFD8D8D8" Margin="8,3,8,3" 
+                       MouseMove="msg_MouseMove"/>
+        </Grid>
+        <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,5,0">
+    	    <Button x:Name="buttonOK" Content="OK" Width="75" IsDefault="True" Click="buttonOK_Click" Margin="0,3,3,8"/>
+    	    <Button x:Name="buttonCancel" Content="Cancel" Width="75" IsCancel="True" Click="buttonCancel_Click"  Margin="0,3,3,8"/>
+        </StackPanel>
+    </Grid>
+</Window>

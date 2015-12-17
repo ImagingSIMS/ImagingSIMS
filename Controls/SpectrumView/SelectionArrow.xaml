@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.SpectrumView.SelectionArrow"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" x:Name="gridColumn1"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        
+        <Polygon Grid.Column="0" Points="0,5 10,0 10,10" StrokeThickness="5" 
+                 VerticalAlignment="Center"
+              Stroke="{Binding ElementName=userControl, Path=ArrowColor}" 
+              Fill="{Binding ElementName=userControl, Path=ArrowColor}"/>
+        
+        <Grid Grid.Column="1">
+            <Line  Margin="0"
+                HorizontalAlignment="Stretch" StrokeThickness="5" VerticalAlignment="Center" Stretch="Fill"
+              Stroke="{Binding ElementName=userControl, Path=ArrowColor}" X1="0" X2="1" Y1="0.5" Y2="0.5"/>    
+        </Grid>
+
+        <Polygon Grid.Column="2" Points="0,0 10,5 0,10" StrokeThickness="5"
+                 VerticalAlignment="Center"
+              Stroke="{Binding ElementName=userControl, Path=ArrowColor}" 
+              Fill="{Binding ElementName=userControl, Path=ArrowColor}"/>
+    </Grid>
+</UserControl>

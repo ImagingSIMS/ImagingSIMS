@@ -1,0 +1,221 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.FusionTab"
+             Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="clr-namespace:ImagingSIMS.Controls"
+             xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             xmlns:data="clr-namespace:ImagingSIMS.Data.Fusion;assembly=Data"
+             xmlns:reg="clr-namespace:ImagingSIMS.ImageRegistration;assembly=ImageRegistration"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\Generic.xaml"/>
+                <ResourceDictionary>
+                    <c:HasImageToBoolConverter x:Key="hasImageToBoolConverter"/>
+                    <ObjectDataProvider x:Key="fusionFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                        <ObjectDataProvider.MethodParameters>
+                            <x:Type TypeName="data:FusionType"/>
+                        </ObjectDataProvider.MethodParameters>
+                    </ObjectDataProvider>
+                    <c:FusionEnumToVisibilityConverter x:Key="fusionEnumToVisibilityConverter"/>
+                    <c:BitmapSourceToDimensionsConverter x:Key="bitmapSourceToDimensionsConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!--Input Images-->
+            <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <StackPanel Orientation="Vertical" Grid.Row="0">
+                    <Grid>
+                        <TextBlock>High Res:</TextBlock>
+                        <TextBlock HorizontalAlignment="Right" Visibility="{Binding ElementName=userControl, Path=HighResImage.IsRegistered, 
+                            Converter={StaticResource boolVisConverter}}" Foreground="#FF40FF40">Registered</TextBlock>
+                    </Grid>
+                    <!--<c:PointSelectImage x:Name="highResImage" ImageHeight="250" ImageWidth="250" 
+                                        OriginalImage="{Binding ElementName=userControl, Path=HighResImage.ImageSource}"/>-->
+                    <c:RegistrationInputImage x:Name="highResImage" ImageHeight="275" ImageWidth="275" CanSelectROI="False"
+                                              OriginalImageSource="{Binding ElementName=userControl, Path=HighResImage.ImageSource}"
+                                              IsPointBased="{Binding ElementName=registrationParametersControl, Path=RegistrationParameters.PointBased}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Grid.Row="1" Margin="0,20,0,0">
+                    <Grid>
+                        <TextBlock>Low Res:</TextBlock>
+                        <TextBlock HorizontalAlignment="Right" Visibility="{Binding ElementName=userControl, Path=HighResImage.IsRegistered, 
+                            Converter={StaticResource boolVisConverter}}" Foreground="#FF40FF40">Registered</TextBlock>
+                    </Grid>
+                    <!--<c:PointSelectImage x:Name="lowResImage" ImageHeight="250" ImageWidth="250"
+                                        OriginalImage="{Binding ElementName=userControl, Path=LowResImage.ImageSource}"/>-->
+                    <c:RegistrationInputImage x:Name="lowResImage" ImageHeight="275" ImageWidth="275"
+                                              OriginalImageSource="{Binding ElementName=userControl, Path=LowResImage.ImageSource}"
+                                              IsPointBased="{Binding ElementName=registrationParametersControl, Path=RegistrationParameters.PointBased}"/>
+                </StackPanel>
+                
+            </Grid>
+            
+            <!--Parameters and Output-->
+            <Grid Grid.Column="1" Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <!--Registration-->
+                <StackPanel Orientation="Vertical" Grid.Column="0">
+                    <GroupBox Header="Image Registration" Foreground="White" Margin="4" VerticalAlignment="Top"
+                          Visibility="{Binding ElementName=userControl, Path=IsRegistrationEnabled, Converter={StaticResource boolVisConverter}}">
+                        <StackPanel Orientation="Vertical">
+                            <c:RegistrationParametersControl x:Name="registrationParametersControl" Width="275"/>
+                           
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Width="75" Height="20" Margin="4" HorizontalAlignment="Center" Grid.Column="0"
+                                    IsEnabled="{Binding ElementName=userControl, Path=IsRegistering, Converter={StaticResource boolInvertConverter}}" 
+                                    Click="registerImages_Click">Register</Button>
+
+                                <Button Width="75" Height="20" Margin="4" HorizontalAlignment="Center" Grid.Column="1"
+                                    IsEnabled="{Binding ElementName=userControl, Path=IsRegistering}" 
+                                    Click="cancelRegistration_Click">Cancel</Button>
+
+                                <Button Width="75" Height="20" Margin="4" HorizontalAlignment="Center" Grid.Column="2"
+                                    IsEnabled="{Binding ElementName=userControl, Path=CanUndoRegistration}" 
+                                    Click="undoRegistration_Click">Undo</Button>
+
+                            </Grid>                            
+
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+                
+                <!--Fusion-->
+                <StackPanel Orientation="Vertical" Grid.Column="1">
+                    <GroupBox Header="Panchromatic Conversion" Foreground="White" Grid.Row="0" Grid.Column="1" Margin="4">
+                        <StackPanel Orientation="Vertical">
+                            <RadioButton x:Name="radioThermal" Content="Thermal" Foreground="White" VerticalAlignment="Center" Margin="24,4,4,4" IsChecked="True"/>
+                            <RadioButton x:Name="radioGray" Content="Grayscale" Foreground="White" VerticalAlignment="Center" Margin="24,4,4,4"/>
+                            <RadioButton x:Name="radioColor" Foreground="White" VerticalAlignment="Center" Margin="24,4,4,4">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Margin="0">Solid</TextBlock>
+                                    <cc:ColorSelector  x:Name="colorSelector" IsEnabled="{Binding ElementName=radioColor, Path=IsChecked}" A="255" Margin="0,4,4,4"/>
+                                </StackPanel>
+                            </RadioButton>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Fusion Parameters" Foreground="White" Grid.Row="2" Margin="4">
+                        <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock>Fusion Method:</TextBlock>
+                                <ComboBox Grid.Column="1" x:Name="comboFusionMethod" Width="Auto" HorizontalAlignment="Stretch" Height="23" Margin="4" IsEditable="False" 
+                                          ItemsSource="{Binding Source={StaticResource fusionFromEnum}}"
+                                          SelectedIndex="0">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Grid>
+                            <StackPanel Orientation="Horizontal" Visibility="{Binding ElementName=comboFusionMethod, Path=SelectedValue, 
+                                            Converter={StaticResource fusionEnumToVisibilityConverter}}">
+                                <Label Margin="4">Window Size:</Label>
+                                <TextBox Margin="4" Height="23" Width="50" Text="{Binding ElementName=userControl,  Path=ShiftWindowSize}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <Button Margin="4" Grid.Row="3" HorizontalAlignment="Center" Width="75" Height="20" Click="doFusion_Click">Fuse</Button>
+                </StackPanel>
+                
+                <!--Output-->
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0">Fused:</TextBlock>
+                    <Image x:Name="imageFused" Margin="4" Grid.Row="1" 
+                           HorizontalAlignment="Stretch" Width="Auto" 
+                           VerticalAlignment="Stretch" Height="Auto"
+                           Stretch="Uniform"
+                           MouseMove="fusedImage_MouseMove"
+                            Source="{Binding ElementName=userControl, Path=FusedImage.ImageSource}"
+                            ToolTip="{Binding ElementName=userControl, Path=FusedImage, Converter={StaticResource bitmapSourceToDimensionsConverter}}" />
+                    
+                    <StackPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                        <Button x:Name="fSave" Click="saveImage_Click" Height="16" Width="16" Margin="4" ToolTip="Save Fused"
+                        IsEnabled="{Binding ElementName=userControl, Path=FusedImage.ImageSource, Converter={StaticResource hasImageToBoolConverter}}">
+                            <Image Source="Images\FloppyDisk.ico"/>
+                        </Button>
+                        <Button x:Name="fCopy" Click="copyImage_Click" Height="16" Width="16" Margin="4" ToolTip="Copy Fused"
+                        IsEnabled="{Binding ElementName=userControl, Path=FusedImage.ImageSource, Converter={StaticResource hasImageToBoolConverter}}">
+                            <Image Source="Images\copy.ico"/>
+                        </Button>
+                        <Button x:Name="fRemove" Click="removeImage_Click" Height="16" Width="16" Margin="4" ToolTip="Clear Fused"
+                        IsEnabled="{Binding ElementName=userControl, Path=FusedImage.ImageSource, Converter={StaticResource hasImageToBoolConverter}}">
+                            <Image Source="Images\Remove24.png"/>
+                        </Button>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="3" Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button x:Name="buttonQps" Width="75" Height="23" Click="buttonQps_Click" Margin="4"
+                            IsEnabled="{Binding HighResImage.ImageSource, ElementName=userControl, Converter={StaticResource hasImageToBoolConverter}}">Analyze</Button>
+                            <Button x:Name="buttonQpsCopy" Width="75" Height="23" Click="buttonQpsCopy_Click" Margin="4"
+                                IsEnabled="{Binding ElementName=textBoxCC, Path=Text, Converter={StaticResource hasTextConverter}}">Copy CC</Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <!--Text Outputs-->
+            <Grid Grid.Row="1" Grid.Column="1" Margin="4" x:Name="gridOutput">
+                <TabControl x:Name="tabControlOutputs" Background="Transparent" 
+                            HorizontalAlignment="Stretch" Width="Auto" MaxWidth="{Binding ElementName=gridOutput, Path=ActualWidth}"
+                            VerticalAlignment="Stretch" Height="Auto" MaxHeight="{Binding ElementName=gridOutput, Path=ActualHeight}"
+                                ItemContainerStyle="{StaticResource BlueTabItemHeader}" 
+                                BorderThickness="0">
+                    <TabItem Header="Registration Output">
+                        <reg:RegistrationProgressTextBox x:Name="registrationProgressTextBox"/>
+                    </TabItem>
+                    <TabItem Header="Analysis Output">
+                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="textBoxCC" VerticalScrollBarVisibility="Auto"
+                                 IsReadOnly="True" Background="Transparent" Foreground="White"/>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>

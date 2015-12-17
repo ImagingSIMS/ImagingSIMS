@@ -1,0 +1,1120 @@
+﻿<RibbonWindow x:Class="ImagingSIMS.MainApplication.MainWindow"
+              x:Name="mainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:c="clr-namespace:ImagingSIMS.Controls;assembly=Controls"
+        xmlns:data="clr-namespace:ImagingSIMS.Data;assembly=Data"
+        xmlns:ns="clr-namespace:ImagingSIMS.MainApplication"
+        xmlns:common="clr-namespace:ImagingSIMS.Common;assembly=Common"
+        xmlns:commonctrls="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+        xmlns:ec="clr-namespace:ImagingSIMS.MainApplication.ExternalCode"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Icon="Images\PaintPalette.ico" 
+        Width="1200" Height="900" WindowState="Maximized" MinWidth="600" MinHeight="480" 
+        Loaded="RibbonWindow_Loaded" Unloaded="RibbonWindow_Unloaded" Closing="RibbonWindow_Closing" Background="#FF252525" 
+        Title="{Binding Workspace.WorkspaceName, StringFormat=ImagingSIMS3 - {0}}"
+              FontFamily="SegoeUI">
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo />
+    </Window.TaskbarItemInfo>
+    <RibbonWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources\Generic.xaml"/>
+                <ResourceDictionary Source="Resources\RibbonResources.xaml"/>
+                <ResourceDictionary Source="Resources\ControlResources.xaml"/>
+                <ResourceDictionary>
+                    <ControlTemplate x:Key="RibbonCodeGroup">
+                        
+                    </ControlTemplate>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </RibbonWindow.Resources>
+    <Grid PreviewKeyDown="Grid_PreviewKeyDown">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Ribbon x:Name="Ribbon" SelectedIndex="0" FontFamily="SegoeUI" FontSize="12">
+            <Ribbon.QuickAccessToolBar>
+                <RibbonQuickAccessToolBar x:Name="quickBar" IsEnabled="True">
+                    <RibbonButton x:Name="qaNew" KeyTip="1" SmallImageSource="Images/DocumentHS1.png" 
+                                  Command="New" ToolTipTitle="New Workspace"
+                                  ToolTipDescription="Opens a new ImagingSIMS window." ToolTipImageSource="Images\Workspace.ico"/>
+                    <RibbonButton x:Name="qaOpen" KeyTip="2" SmallImageSource="Images/openHS1.png"
+                                  Command="Open" ToolTipTitle="Open Workspace"
+                                  ToolTipDescription="Replaces the current workspace with an ImagingSIMS Workspace (.wks) file."
+                                  ToolTipImageSource="Images\Workspace.ico"/>
+                    <RibbonButton x:Name="qaSave" KeyTip="3" Padding="3,0,0,0" SmallImageSource="Images/saveHS.png" 
+                                  Command="Save" ToolTipTitle="Save Workspace"
+                                  ToolTipDescription="Saves the current workspace to an ImagingSIMS Workspace (.wks) file."
+                                  ToolTipImageSource="Images\Workspace.ico"/>
+                    <RibbonButton x:Name="qaUndo" KeyTip="4" SmallImageSource="Images\Undo16.png" 
+                                  Command="Undo" ToolTip="Undo"/>
+                    <RibbonButton x:Name="qaRedo" KeyTip="5" SmallImageSource="Images\Redo16.png" 
+                                  Command="Redo" ToolTip="Redo"/>
+                </RibbonQuickAccessToolBar>
+            </Ribbon.QuickAccessToolBar>
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu SmallImageSource="Images\PaintPalette.ico" KeyTip="F">
+                    <!--<RibbonApplicationMenu.AuxiliaryPaneContent>
+                        <StackPanel>
+                            <TextBlock Text="Recent Files" FontSize="16" Margin="8,2,2,2"
+                                       VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <RibbonSeparator/>
+                            <ItemsControl ItemsSource="{Binding Workspace.Registry.RecentFiles.Files}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <RibbonApplicationMenuItem Header="{Binding Converter={StaticResource shortPathConverter}}" 
+                                                                   ToolTip="{Binding}" Click="ribbonOpenRecentFile_Click"
+                                                                   ImageSource="Images\Workspace.ico">
+                                            <RibbonApplicationMenuItem.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Remove From List" Click="ribbonRecentRemove_Click"/>
+                                                    <MenuItem Header="Open File Location" Click="ribbonRecentOpenLocation_Click"/>
+                                                </ContextMenu>
+                                            </RibbonApplicationMenuItem.ContextMenu>
+                                        </RibbonApplicationMenuItem>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </RibbonApplicationMenu.AuxiliaryPaneContent>-->
+                    <RibbonApplicationMenuItem x:Name="ribbonButtonNew" Command="New" Header="New"
+                                  ImageSource="Images\Document.ico" ToolTipTitle="New Workspace"
+                                  ToolTipDescription="Opens a new ImagingSIMS window." ToolTipImageSource="Images\Workspace.ico"/>
+                    <RibbonApplicationSplitMenuItem x:Name="ribbonButtonOpen" Command="Open" Header="Open"
+                                  ImageSource="Images\Folder.ico" ToolTipTitle="Open Workspace"
+                                  ToolTipDescription="Replaces the current workspace with an ImagingSIMS Workspace (.wks) file."
+                                  ToolTipImageSource="Images\Workspace.ico">
+                        <RibbonApplicationMenuItem Header="Workspace" x:Name="ribbonButtonOpenSubWks" Command="Open"
+                                  ImageSource="Images\Workspace.ico" ToolTipTitle="Open Workspace"
+                                  ToolTipDescription="Replaces the current workspace with an ImagingSIMS Workspace (.wks) file."
+                                  ToolTipImageSource="Images\Workspace.ico"/>
+                        <RibbonSeparator/>
+                        <RibbonApplicationMenuItem Header="SEM" x:Name="ribbonButtonOpenSubSem" Click="LoadSEM"
+                                                   ImageSource="Images\SEM.ico" ToolTipTitle="Open SEM"
+                                                   ToolTipDescription="Opens an SEM file (.xyi) or a series of SEM files."
+                                                   ToolTipImageSource="Images\SEM.ico"/>
+                        <RibbonApplicationMenuItem Header="Mass Spectrum" x:Name="ribbonButtonOpenSubSpec" Click="LoadSpec"
+                                                   ImageSource="Images\Spec.ico" ToolTipTitle="Open Spectrum"
+                                                   ToolTipDescription="Opens a retro (.xyt) or V2 (.zip, .IonoptikaIA2DspectrV2) spectrum file or a series of sepctrum files."
+                                                   ToolTipImageSource="Images\Spec.ico"/>
+                        <RibbonApplicationMenuItem Header="Image Series" x:Name="ribbonButtonOpenSubImgSer" Click="LoadImageSeries"
+                                                   ImageSource="Images\Image.ico" ToolTipTitle="Open Image Series"
+                                                   ToolTipDescription="Opens a bitmap image or a series of bitmap images."
+                                                   ToolTipImageSource="Images\Image.ico"/>
+                        <RibbonApplicationMenuItem Header="Sample Data" x:Name="ribbonButtonOpenSubSample" Click="LoadSampleData"
+                                                   ImageSource="Images\Gear.ico" ToolTipTitle="Open Sample Data"
+                                                   ToolTipDescription="Opens an ImagingSIMS sample data set."
+                                                   ToolTipImageSource="Images\Gear.ico"/>
+                    </RibbonApplicationSplitMenuItem>
+                    <RibbonApplicationSplitMenuItem Header="Save" x:Name="ribbonButtonSave" Command="Save"
+                                                        ImageSource="Images\FloppyDisk.ico" ToolTipTitle="Save Workspace"
+                                  ToolTipDescription="Saves the current workspace to an ImagingSIMS Workspace (.wks) file."
+                                  ToolTipImageSource="Images\Workspace.ico">
+                        <RibbonApplicationMenuItem Header="Workspace" x:Name="ribbonButtonSaveWorkspace" Command="Save"
+                                                   ImageSource="Images\Workspace.ico" ToolTipTitle="Save Workspace"
+                                  ToolTipDescription="Saves the current workspace to an ImagingSIMS Workspace (.wks) file."
+                                  ToolTipImageSource="Images\Workspace.ico"/>
+                        <RibbonSeparator/>
+                        <RibbonApplicationMenuItem Header="Image Series" x:Name="ribbonButtonSaveSubImgSer" Click="SaveImageSeries"
+                                                   ImageSource="Images\Image.ico" ToolTipTitle="Save Image Series"
+                                                   ToolTipDescription="Save the current image series to disk."
+                                                   ToolTipImageSource="Images\Image.ico"/>
+                        <RibbonApplicationMenuItem Header="Image Data" x:Name="ribbonButtonSaveSubImgData" Click="SaveImageData"
+                                                   ImageSource="Images\Image.ico" ToolTipTitle="Save Image Data"
+                                                   ToolTipDescription="Save the current image series data to disk as an intensity matrix."
+                                                   ToolTipImageSource="Images\Image.ico"/>
+                    </RibbonApplicationSplitMenuItem>
+                    <RibbonSeparator/>
+                    <RibbonApplicationMenuItem Header="Print Preview" x:Name="ribbonButtonPrintPreview" Command="PrintPreview"
+                                               ImageSource="Images\PrintPreview.ico" ToolTipTitle="Print Preview"
+                                               ToolTipDescription="Opens the print preview window." ToolTipImageSource="Images\PrintPreview.ico"/>
+                    <RibbonApplicationMenuItem Header="Print" x:Name="ribbonButtonPrint" Command="Print"
+                                               ImageSource="Images\Print.ico" ToolTipTitle="Print"
+                                               ToolTipDescription="Print the current document."
+                                               ToolTipImageSource="Images\Print.ico"/>
+                    <RibbonSeparator/>
+                    <RibbonApplicationMenuItem Header="Options" x:Name="ribbonButtonOptions" 
+                                                  ImageSource="Images\Settings.ico" Click="ribbonButtonOptions_Click" 
+                                                  ToolTipTitle="Options"
+                                               ToolTipDescription="Opens the options menu. Press F8 to open the options menu at anytime." ToolTipImageSource="Images\Settings.ico"/>
+                    <RibbonApplicationMenuItem Header="Check for Updates" x:Name="ribbonButtonCheckUpdates" 
+                                                  ImageSource="Images\Update.png" Click="ribbonButtonCheckUpdates_Click" 
+                                                  ToolTipTitle="Check for Updates"
+                                               ToolTipDescription="Checks the server to see if a newer version of the applicaiton is available." 
+                                               ToolTipImageSource="Images\Update.png"/>
+                    <RibbonApplicationMenuItem Header="Cleanup" x:Name="ribbonButtonCleanup"
+                                               ImageSource="Images\Cleanup.ico" Click="ribbonButtonCleanup_Click"
+                                               ToolTipTitle="Cleanup" ToolTipDescription="Induce a memory cleanup to attempt to free up memory available to the application."
+                                               ToolTipImageSource="Images\Cleanup.ico"/>
+                    <RibbonApplicationMenuItem Header="Trace" x:Name="ribbonButtonOpenTraceWindow"
+                                               ImageSource="Images\IntelliTrace.png" Click="ribbonButtonTraceWindow_Click"
+                                               ToolTipTitle="Open TraceListener Window" ToolTipDescription="Opens a TraceListener window to monitor specific events and progress of tasks."
+                                               ToolTipImageSource="Images\IntelliTrace.png"/>
+                    <RibbonSeparator/>
+                    <RibbonApplicationMenuItem Header="About" x:Name="ribbonButtonAbout"
+                                                   ImageSource="Images\Info.ico" Click="ribbonButtonAbout_Click"  ToolTipTitle="About"
+                                               ToolTipDescription="Opens the about window." ToolTipImageSource="Images\Info.ico"/>
+                    <RibbonApplicationMenuItem Header="Exit" x:Name="ribbonButtonExit" 
+                                                   ImageSource="Images\Close.png" Command="Close" ToolTipTitle="Exit"
+                                               ToolTipDescription="Closes the current window." ToolTipImageSource="Images\Close.png"/>
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+            <RibbonTab Header="Home" KeyTip="H">
+                <RibbonGroup>
+                    <RibbonButton x:Name="showStartup"
+                                         LargeImageSource="Images\Star.png"
+                                         Label="Show Startup" HorizontalAlignment="Center" Click="showStartup_Click"  ToolTipTitle="Show Startup"
+                                         ToolTipDescription="Opens a Startub tab or navigates to an open Startup tab." ToolTipImageSource="Images\Star.png"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Workspace">
+                    <RibbonButton x:Name="ribbonHomeWorkspaceSave" Command="Save"
+                                  LargeImageSource="Images\FloppyDisk.ico" Label="Save" ToolTipTitle="Save Workspace"
+                                  ToolTipDescription="Saves the current workspace to an ImagingSIMS Workspace (.wks) file."
+                                  ToolTipImageSource="Images\Workspace.ico"/>
+                    <RibbonButton x:Name="ribbonHomeWorkspaceNew" Command="New" 
+                                  SmallImageSource="Images\Document.ico" Label="New" ToolTipTitle="New Workspace"
+                                  ToolTipDescription="Opens a new ImagingSIMS window." ToolTipImageSource="Images\Workspace.ico"/>
+                    <RibbonButton x:Name="ribbonHomeWorkspaceOpen" Command="Open"
+                                  SmallImageSource="Images\Folder.ico" Label="Open" ToolTipTitle="Open Workspace"
+                                  ToolTipDescription="Replaces the current workspace with an ImagingSIMS Workspace (.wks) file."
+                                  ToolTipImageSource="Images\Workspace.ico"/>
+                    <RibbonButton x:Name="ribbonClearWorkspace" Click="ribbonClearWorkspace_Click"
+                                  LargeImageSource="Images\Delete.ico" Label="Close" ToolTipTitle="Close Workspace"
+                                  ToolTipDescription="Removes all data from the current workspace."
+                                  ToolTipImageSource="Images\Delete.ico"
+                                  IsEnabled="{Binding Workspace.HasContents}"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Recent Files">
+                    <ItemsControl ItemsSource="{Binding Workspace.Registry.RecentFiles}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" VerticalAlignment="Center"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!--<RibbonButton Label="{Binding Converter={StaticResource shortPathConverter}}" 
+                                                                   ToolTip="{Binding}" Click="ribbonOpenRecentFile_Click"
+                                                                   SmallImageSource="Images\Workspace.ico">
+                                    <RibbonButton.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Remove From List" Click="ribbonRecentRemove_Click"/>
+                                            <MenuItem Header="Open File Location" Click="ribbonRecentOpenLocation_Click"/>
+                                        </ContextMenu>
+                                    </RibbonButton.ContextMenu>
+                                </RibbonButton>-->
+                                <c:FileItem FilePath="{Binding}" FileClicked="recentItem_FileClicked" RemoveFileClicked="recentItem_RemoveFileClicked" ShowIcon="True" ShowGlyph="False"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </RibbonGroup>
+                <RibbonGroup Header="Code Editor" Visibility="{Binding IsDebug, Converter={StaticResource BoolVisConverter}}">
+                    <RibbonCheckBox Label="Show Editor" IsChecked="{Binding Path=ShowCode}"/>
+                    <RibbonButton LargeImageSource="Images\LargeIcon.png" Label="Execute"
+                                  ToolTipTitle="Execute Code" ToolTipDescription="Compiles and executes code written in the code editor. 
+                                  Code could be used to perform custom operations and transforms on data sets and images."
+                                  Click="ribbonExecuteCode_Click"/>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab x:Name="ribbonTabData" Header="Data" >
+                <RibbonGroup Header="Load">
+                    <RibbonMenuButton x:Name="ribbonButtonNewData" LargeImageSource="Images\Table.png"
+                                      Label="Data Set" ToolTipTitle="New Data Set" 
+                                      ToolTipImageSource="Images\Table.png"
+                                      ToolTipDescription="Load a data table or a series of tables from disk. Use the drop down to select the instrument source.">
+                        <RibbonSplitMenuItem x:Name="ribbonButtonDataBioToF"
+                                             Header="From Bio-ToF" Click="LoadDataTable"
+                                             ToolTipTitle="Open Bio-ToF" ToolTipDescription="Opens an ASCII Bio-ToF data table."/>
+                        <RibbonSplitMenuItem x:Name="ribbonButtonDataJ105"
+                                                    Header="From J105" Click="LoadDataTable" 
+                                             ToolTipTitle="Open J105" ToolTipDescription="Opens an ASCII 105 data table."/>
+                        <RibbonSplitMenuItem x:Name="ribbonButtonDataQStar"
+                                                    Header="From QStar" Click="LoadDataTable" 
+                                             ToolTipTitle="Open QStar" ToolTipDescription="Opens an ASCII QStar data table."
+                                             ToolTipFooterDescription="Note: QStar data is not supported at this time."/>
+                        <RibbonSplitMenuItem x:Name="ribbonButtonDataCSV"
+                                                    Header="From CSV" Click="LoadDataTable" 
+                                             ToolTipTitle="Open CSV" ToolTipDescription="Opens an ASCII comma separated values (CSV) data table."/>
+                    </RibbonMenuButton>
+                    <RibbonButton x:Name="ribbonDataNewRetro"
+                                            LargeImageSource="Images\Spec.ico"
+                                            Label="Spectrum" ToolTipTitle="Open Spectrum"
+                                            ToolTipDescription="Opens a retro (.xyt) or V2 (.zip, .IonoptikaIA2DspectrV2) spectrum file or a series of sepctrum files." 
+                                            ToolTipImageSource="Images\Spec.ico" Click="LoadSpec"/>
+                    <RibbonButton Label="SEM" Click="LoadSEM"
+                                    LargeImageSource="Images\SEM.ico" ToolTipTitle="Open SEM"
+                                    ToolTipDescription="Opens an SEM file (.xyi) or a series of SEM files."
+                                    ToolTipImageSource="Images\SEM.ico"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Tables">
+                    <RibbonButton x:Name="ribbonOpenSumTab" Label="Sum"
+                                  LargeImageSource="Images\Sum.ico" Click="ribbonOpenSumTab_Click"
+                                  ToolTipTitle="Summation"
+                                  ToolTipDescription="Opens a table selector to perform table summations."/>
+                    <RibbonButton x:Name="ribbonOpenCropTab" Label="Crop"
+                                  LargeImageSource="Images\Crop.ico" Click="ribbonOpenCropTab_Click"
+                                  ToolTipTitle="Crop"
+                                  ToolTipDescription="Opens a table selector to crop data tables."/>
+                    <RibbonButton x:Name="ribbonOpenCorrectionTab" Label="Correct"
+                                  LargeImageSource="Images\Correct.ico" Click="ribbonOpenCorrectionTab_Click"
+                                  ToolTipTitle="Correct" 
+                                  ToolTipDescription="Opens a tab to correct data imperfections due to experimental conditions."/>
+                    <RibbonButton x:Name="ribbonOpenZCorrectionTab" Label="Z-Correct"
+                                  LargeImageSource="Images\ZCorrect.ico" Click="ribbonOpenZCorrectionTab_Click"
+                                  ToolTipTitle="Correct" 
+                                  ToolTipDescription="Opens a tab to execute the z-correction function."/>
+                    <RibbonButton x:Name="ribbonOpenDepthProfileTab" Label="Depth Profile"
+                                  LargeImageSource="Images\DepthProfile.ico" Click="ribbonOpenDepthProfileTab_Click"
+                                  ToolTipTitle="Depth Profile" 
+                                  ToolTipDescription="Opens a tab to select tables to generate a depth profile."/>
+                </RibbonGroup>
+                <RibbonGroup Header="Registration">
+                    <RibbonButton x:Name="ribbonButtonOpenTransform" LargeImageSource="Images\Transform.ico" Click="ribbonOpenTransformTab_Click"
+                                  Label="Transform Data" ToolTipImageSource="Images\Transform.ico"
+                                  ToolTipTitle="Transform Data"
+                                  ToolTipDescription="Opens a tab to specify a transform to shift and scale data tables"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Expand Pixels" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                                  Converter={StaticResource TabBoolConverter}, ConverterParameter=Data2DDisplay}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="4">Window Size:</TextBlock>
+                            <TextBox Margin="4" x:Name="tbExpandPixelsWindowSize" Width="40" Height="20" Text="5" VerticalAlignment="Top"/>
+                        </StackPanel>
+                        <RibbonButton Grid.Column="1" x:Name="ribbonButtonExpandPixels" LargeImageSource="Images\Transform.ico" Click="ribbonButtonExpandPixels_Click"
+                                  Label="Expand Pixels" ToolTipImageSource="Images\Transform.ico"
+                                  ToolTipTitle="Expand Pixels"
+                                  ToolTipDescription="Expands pixels with intensity in the selected tables to the number of pixels specified by Window Size"/>
+                    </Grid>
+                </RibbonGroup>
+                <RibbonGroup Header="Sample Data">
+                    <RibbonMenuButton Label="Size" SmallImageSource="Images\Gear.ico">
+                        <RibbonGallery>
+                            <Grid>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Margin="4">X:</Label>
+                                    <TextBox Width="30" Height="20" Margin="4" Text="{Binding Workspace.SampleXDimension}" GotKeyboardFocus="OnTextBoxKeyboardFocus"/>
+                                    <Label Margin="4">Y:</Label>
+                                    <TextBox Width="30" Height="20" Margin="4" Text="{Binding Workspace.SampleYDimension}" GotKeyboardFocus="OnTextBoxKeyboardFocus"/>
+                                    <Label Margin="4">Z:</Label>
+                                    <TextBox Width="30" Height="20" Margin="4" Text="{Binding Workspace.SampleZDimension}" GotKeyboardFocus="OnTextBoxKeyboardFocus"/>
+                                </StackPanel>                            
+                            </Grid>
+                        </RibbonGallery>
+                    </RibbonMenuButton>
+                    <RibbonMenuButton Label="Center" SmallImageSource="Images\Gear.ico">
+                        <RibbonGallery>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                    <Label Margin="4">X:</Label>
+                                    <TextBox Width="30" Height="20" Margin="4" Text="{Binding Workspace.SampleCenterX1}" GotKeyboardFocus="OnTextBoxKeyboardFocus"/>
+                                    <Label Margin="4">Y:</Label>
+                                    <TextBox Width="30" Height="20" Margin="4" Text="{Binding Workspace.SampleCenterY1}" GotKeyboardFocus="OnTextBoxKeyboardFocus"/>
+                                    <Label Margin="4">Z:</Label>
+                                    <TextBox Width="30" Height="20" Margin="4" Text="{Binding Workspace.SampleCenterZ1}" GotKeyboardFocus="OnTextBoxKeyboardFocus"/>
+                                    <Label Margin="4">r:</Label>
+                                    <TextBox Width="30" Height="20" Margin="4" Text="{Binding Workspace.SampleRadius1}" GotKeyboardFocus="OnTextBoxKeyboardFocus"/>
+                                </StackPanel>
+                                <Expander Grid.Row="1" Header="Dual" IsExpanded="{Binding Workspace.SampleDoMultiple}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Margin="4">X:</Label>
+                                        <TextBox Width="30" Height="20" Margin="4" Text="{Binding Workspace.SampleCenterX2}" GotKeyboardFocus="OnTextBoxKeyboardFocus"/>
+                                        <Label Margin="4">Y:</Label>
+                                        <TextBox Width="30" Height="20" Margin="4" Text="{Binding Workspace.SampleCenterY2}" GotKeyboardFocus="OnTextBoxKeyboardFocus"/>
+                                        <Label Margin="4">Z:</Label>
+                                        <TextBox Width="30" Height="20" Margin="4" Text="{Binding Workspace.SampleCenterZ2}" GotKeyboardFocus="OnTextBoxKeyboardFocus"/>
+                                        <Label Margin="4">r:</Label>
+                                        <TextBox Width="30" Height="20" Margin="4" Text="{Binding Workspace.SampleRadius2}" GotKeyboardFocus="OnTextBoxKeyboardFocus"/>
+                                    </StackPanel>
+                                </Expander>
+                            </Grid>
+                        </RibbonGallery>
+                    </RibbonMenuButton>
+                    <RibbonButton LargeImageSource="Images\SampleNew.ico"  Click="CreateSampleData"
+                                  Label="Create" ToolTipTitle="Create Sample Data" ToolTipImageSource="Images\SampleNew.ico"
+                                  ToolTipDescription="Create a sample data set of one or more spheres with the specified parameters."/>
+                    <RibbonButton x:Name="ribbonDataSampleImport" LargeImageSource="Images\SampleOpen.ico" 
+                                  Label="Import" Click="LoadSampleData"
+                                  ToolTipTitle="Open Sample Data" ToolTipImageSource="Images\SampleOpen.ico"
+                                  ToolTipDescription="Opens a sample data set from file."/>
+                </RibbonGroup>                
+            </RibbonTab>
+            <RibbonTab x:Name="ribbonTabImaging" Header="Imaging" >
+                <RibbonGroup Header="Components">
+                    <RibbonButton x:Name="imagingNewComp" Label="New" LargeImageSource="Images\NewComp.ico" Click="NewComponent"
+                                      ToolTipTitle="New Component" ToolTipDescription="Opens a Build Component tab to create a new image component."
+                                      ToolTipImageSource="Images\NewComp.ico"/>
+                    <RibbonMenuButton x:Name="imagingCompMenu" Label="Select"  LargeImageSource="Images\Settings.ico"
+                                          ToolTipTitle="Select Components" ToolTipImageSource="Images\Settings.ico"
+                                          ToolTipDescription="Choose one or more built components to create a 2D or 3D image series."
+                                          IsEnabled="{Binding ElementName=listBoxComponents, Path=HasItems}">
+                        <RibbonGallery BorderBrush="#FF211C1C" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                            <ListBox x:Name="listBoxComponents" Width="Auto" ItemsSource="{Binding Workspace.Components}" SelectionMode="Multiple" Background="Transparent">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding Path=ComponentName}" Margin="4,0,4,0" FontSize="14">
+                                                <TextBlock.Foreground>
+                                                    <SolidColorBrush Color="{Binding Path=PixelColor}"/>
+                                                </TextBlock.Foreground>
+                                            </TextBlock>
+                                            <TextBlock Grid.Column="1" Text="{Binding Path=NumberTables}" Margin="4,0,4,0" FontSize="14"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListBoxItem}">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter Property="Background" Value="Orange"/>
+                                            </Trigger>
+                                        </Style.Triggers>    
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
+                        </RibbonGallery>
+                    </RibbonMenuButton>
+                </RibbonGroup>
+                <RibbonGroup Header="Create">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="0" Grid.Column="0">Normalization: </Label>
+                            <Label Grid.Row="1" Grid.Column="0">Include Total Ion:</Label>
+                            <Label Grid.Row="2" Grid.Column="0">Square Root Enhance:</Label>
+                            <ComboBox x:Name="comboNorm" Grid.Row="0" Grid.Column="1" IsEditable="False" 
+                                      ItemsSource="{Binding Source={StaticResource normFromEnum}}" Width="125"
+                                      SelectedIndex="0"/>
+                            <CheckBox x:Name="checkTotalIon" IsChecked="{Binding Workspace.ImagingTotalIon}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            <CheckBox x:Name="checkSqrt" IsChecked="{Binding Workspace.ImagingSqrtEnhance}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Grid>
+                        <RibbonButton x:Name="ribbonButton3DImage" Grid.Column="1" Label="Create"
+                                                 LargeImageSource="Images\NewImage.ico" Click="CreateImage"
+                                      ToolTipTitle="Create 3D Image" ToolTipImageSource="Images\NewImage.ico"
+                                      ToolTipDescription="Create a 3D image series from the selected components with the specified parameters."/>
+                    </Grid>
+                </RibbonGroup>
+                <RibbonGroup Header="Images" >
+                    <RibbonButton x:Name="ribbonImagesCopy" LargeImageSource="Images\copy.ico" Label="Copy" Click="RibbonImagesEvent"
+                                  IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                                  Converter={StaticResource TabBoolConverter}, ConverterParameter=Display|SEM|Fusion}"/>
+                    <RibbonButton x:Name="ribbonImagesRGB" LargeImageSource="Images\Gear.ico" Label="To RGB" Click="RibbonImagesEvent"
+                                  IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                                  Converter={StaticResource TabBoolConverter}, ConverterParameter=Display}"/>
+                    <RibbonMenuButton Label="Rotate" SmallImageSource="Images\RotateArrowSide.png" 
+                                      ToolTipDescription="Apply a median filter to the selected image series." ToolTipImageSource="Images\RotateArrowSide.png"
+                                      IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                                      Converter={StaticResource TabBoolConverter}, ConverterParameter=Display|SEM|Fusion}">
+                        <RibbonMenuItem x:Name="ribbonImagesRC" Header="Clockwise" Click="RibbonImagesEvent"/>
+                        <RibbonMenuItem x:Name="ribbonImagesRCC" Header="Counter Clockwise" Click="RibbonImagesEvent"/>
+                    </RibbonMenuButton>
+                    <RibbonMenuButton Label="Flip" SmallImageSource="Images\RotateArrowDown.png" 
+                                      ToolTipDescription="Apply a median filter to the selected image series." ToolTipImageSource="Images\RotateArrowDown.png"
+                                      IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                                      Converter={StaticResource TabBoolConverter}, ConverterParameter=Display|SEM|Fusion}">
+                        <RibbonMenuItem x:Name="ribbonImagesFV" Header="Vertical" Click="RibbonImagesEvent"/>
+                        <RibbonMenuItem x:Name="ribbonImagesFH" Header="Horizontal" Click="RibbonImagesEvent"/>
+                    </RibbonMenuButton>
+                    <RibbonButton Label="Reset" SmallImageSource="Images\Gear.ico"
+                                      ToolTipDescription="Reset the selected image to the original intensity scale." ToolTipImageSource="Images\Gear.ico"
+                                      ToolTipTitle="Reset Scale" Click="ResetImage"
+                                      IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, Converter={StaticResource TabBoolConverter}, ConverterParameter=SEM}"/>
+                    <RibbonButton Label="Create Image Series" LargeImageSource="Images\SaveCaps.ico"
+                                      ToolTipDescription="Create an image series object from the selected images." ToolTipImageSource="Images\SaveCaps.ico"
+                                      ToolTipTitle="Create Image Series" Click="RibbonCreateSeries"
+                                      IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, Converter={StaticResource TabBoolConverter}, ConverterParameter=Display}"/>
+                    <RibbonButton x:Name="ribbonImagesResize" Label="Resize" LargeImageSource="Images\ImageResize.ico"
+                                  ToolTipDescription="Resize the selected images to specified dimensions." ToolTipImageSource="Images\ImageResize.ico"
+                                  ToolTipTitle="Resize" Click="RibbonImagesEvent"
+                                  IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, Converter={StaticResource TabBoolConverter}, ConverterParameter=Display}"/>
+                    <!--<RibbonButton LargeImageSource="Images\LargeIcon.png" Label="Histogram Correct" Click="test1_Click"/>-->
+                </RibbonGroup>
+                <RibbonGroup Header="Overlay">
+                    <RibbonButton x:Name="ribbonOverlayNewTab" Label="New Tab"
+                                       LargeImageSource="Images\Favorites.ico" Click="NewOverlay"
+                                      ToolTipTitle="Opens new overlay tab." ToolTipImageSource="Images\Favorites.ico"
+                                      ToolTipDescription="Opens a new tab for importing Bitmap images for a custom overlay."/>
+                    <RibbonButton x:Name="ribbonOverlayAddImage" Label="Add"
+                                       LargeImageSource="Images\NewImage.ico" Click="OverlayAddImage"
+                                        ToolTipTitle="Add an image to the current overlay." ToolTipImageSource="Images\NewImage.ico"
+                                        ToolTipDescription="Add a new Bitmap to the current overlay tab."
+                                        IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Display}"/>   
+                    <RibbonButton x:Name="ribbonOverlayDoOverlay" Label="Do Overlay"
+                                  LargeImageSource="Images\Overlay.ico" Click="DoOverlay"
+                                  ToolTipTitle="Performs an image overlay." ToolTipImageSource="Images\Overlay.ico"
+                                  ToolTipDescription="Overlays a series of images in the selected tab."
+                                  IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Display|Data2DDisplay}"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Correction"
+                             IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                             Converter={StaticResource TabBoolConverter}, ConverterParameter=Display}">
+                    <RibbonMenuButton Label="Filter" LargeImageSource="Images\Median.ico" SmallImageSource="Images\Median.ico"
+                                      ToolTipDescription="Apply a median filter to the selected image series." ToolTipImageSource="Images\Median.ico">
+                        <RibbonMenuItem x:Name="ribbonButtonMedianFilter" Header="Median" 
+                                             Click="ApplyImageFilter" ToolTipTitle="Median Filter"
+                                      ToolTipDescription="Apply a median filter to the selected image series." ToolTipImageSource="Images\Median.ico"/>
+                        <RibbonMenuItem x:Name="ribbonButtonMeanFilter" Header="Mean" 
+                                             Click="ApplyImageFilter" ToolTipTitle="Mean Filter"
+                                      ToolTipDescription="Apply a mean filter to the selected image series." ToolTipImageSource="Images\Mean.ico"/>
+                        <RibbonMenuItem x:Name="ribbonButtonHighFilter" Header="High Pass" 
+                                             Click="ApplyImageFilter" ToolTipTitle="High Pass Filter"
+                                      ToolTipDescription="Apply a high pass filter to the selected image series." ToolTipImageSource="Images\HighPass.ico"/>
+                        <RibbonMenuItem x:Name="ribbonButtonLowFilter" Header="Low Pass" 
+                                             Click="ApplyImageFilter" ToolTipTitle="Low Pass Filter"
+                                      ToolTipDescription="Apply a low pass filter to the selected image series." ToolTipImageSource="Images\LowPass.ico"/>
+                        <RibbonMenuItem x:Name="ribbonButtonGaussianFilter" Header="Gaussian" 
+                                             Click="ApplyImageFilter" ToolTipTitle="Gaussian"
+                                      ToolTipDescription="Apply a Gaussian filter to the selected image series." ToolTipImageSource="Images\gaussian.ico"/>
+                    </RibbonMenuButton>
+                </RibbonGroup>
+                <RibbonGroup Header="Clusters">
+                    <RibbonButton  Label="Open Cluster Tab" LargeImageSource="Images\Clusters.ico" Click="openClusterTab_Click"
+                                        ToolTipTitle="Opens a cluster tab." ToolTipImageSource="Images\Clusters.ico"
+                                        ToolTipDescription="Opens a tab for identifying clusters in an image."/>
+                </RibbonGroup>
+                <RibbonGroup Header="Slicing" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                            Converter={StaticResource TabBoolConverter}, ConverterParameter=Display}">
+                    <StackPanel Orientation="Horizontal">
+                        <Label>Pixel: </Label>
+                        <TextBox Width="40" Text="{Binding Workspace.ImagingSlicePixel}" Margin="2"/>
+                    </StackPanel>
+                    <RibbonMenuButton x:Name="ribbonButtonSlice" Label="Slice"
+                                          SmallImageSource="Images\Slice.ico" ToolTipTitle="Sliced Image"
+                                          ToolTipDescription="Create a cross section image of the selected image series at the specified pixel location. Use the drop down to select the cross section plane."
+                                          ToolTipImageSource="Images\Slice.ico">
+                        <RibbonMenuItem x:Name="ribbonButtonXZSlice" Header="XZ Plane"
+                                                 Click="SliceImage" ToolTipTitle="XZ Plane Cross Section"/>
+                        <RibbonMenuItem x:Name="ribbonButtonYZSlice" Header="YZ Plane"
+                                                 Click="SliceImage" ToolTipTitle="YZ Plane Cross Section"/>
+                    </RibbonMenuButton>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab Header="Spectrum" Visibility="Visible">
+                <RibbonGroup Header="Data">
+                    <RibbonButton LargeImageSource="Images\Spec.ico" Label="Load" ToolTipTitle="Open Spectrum"
+                                  ToolTipDescription="Opens a retro (.xyt) or V2 (.zip, .IonoptikaIA2DspectrV2) spectrum file or a series of sepctrum files." 
+                                  ToolTipImageSource="Images\Spec.ico" Click="LoadSpec"/>
+                    <RibbonButton LargeImageSource="Images\Crop.ico" Label="Crop" ToolTipTitle="Crop Spectrum"
+                                  ToolTipDescription="Opens a correction tab to crop regions of interest (ROI) from mass spectra to remove unwanted background signal."
+                                  ToolTipImageSource="Images\Crop.ico" Click="ribbonButtonSpecCrop_Click"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Mass Range" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                                Converter={StaticResource TabBoolConverter}, ConverterParameter=Spectrum}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Vertical" Grid.Column="0" Grid.RowSpan="3">
+                            <RibbonRadioButton x:Name="radioSpecSingleRange" Margin="3" Label="Single Range" IsChecked="True"/>
+                            <RibbonRadioButton x:Name="radioSpecCustomRange" Margin="3" Label="Custom Range"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0" IsEnabled="{Binding ElementName=radioSpecSingleRange,Path=IsChecked}">
+                            <RibbonTextBox x:Name="specInitMass" Text="{Binding Workspace.SpectraMassStart, StringFormat={}0.000}" Label="Start mass:" />
+                            <RibbonTextBox x:Name="specEndMass" Text="{Binding Workspace.SpectraMassEnd, StringFormat={}0.000}" Label="End mass:" />
+                        </StackPanel>
+                        <Grid Grid.Column="1" Grid.Row="1" IsEnabled="{Binding ElementName=radioSpecCustomRange, Path=IsChecked}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label>Custom range:</Label>
+                            <TextBox x:Name="specCustomRange" Margin="2" Grid.Column="1" Text="{Binding Workspace.SpectraCustomRange, UpdateSourceTrigger=PropertyChanged}" 
+                                     Width="210" VerticalContentAlignment="Center"
+                                     ToolTip="Enter a custom mass range, with support for multiple ranges. Enter in the format start-end;start-end;start-end with no spaces."/>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="0">
+                            <RibbonTextBox x:Name="specTableName" Label="Base name: " />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1">
+                            <TextBlock Margin="4" VerticalAlignment="Center">Omit Numbering</TextBlock>
+                            <CheckBox Margin="4" VerticalAlignment="Center"
+                                      IsChecked="{Binding Workspace.OmitDataNumbering}"
+                                      ToolTip="When checked, generated data tables will not be followed with automatic numbering."/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="0" Grid.RowSpan="3">
+                            <RibbonButton x:Name="specCreateTables" LargeImageSource="Images\NewTable.ico"
+                                  Click="specCreateTables_Click" Label="Create Tables" ToolTipTitle="Create Tables From Mass Range"
+                                  ToolTipDescription="Creates a data table for each layer in a spectrum series (or one table from a single spectrum) from the selected mass range."
+                                  ToolTipImageSource="Images\NewTable.ico"/>
+                            <RibbonButton x:Name="specCreateDepthProfile" LargeImageSource="Images\DepthProfile.ico"
+                                  Click="specCreateDepthProfile_Click" Label="Create Depth Profile" ToolTipTitle="Create Depth Profile From Mass Range"
+                                  ToolTipDescription="Creates and saves a depth profile in ASCII format from the selected mass range."
+                                  ToolTipImageSource="Images\DepthProfile.ico"/>
+                        </StackPanel>
+                    </Grid>
+                                     
+                </RibbonGroup>
+                <RibbonGroup Header="View" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                                Converter={StaticResource TabBoolConverter}, ConverterParameter=Spectrum}">
+                    <RibbonButton x:Name="specViewBack" Label="Back" LargeImageSource="Images\Last.ico"
+                                  ToolTipTitle="Back"
+                                  ToolTipDescription="Return to the previous mass range view."
+                                  ToolTipImageSource="Images\Last.ico" Command="{x:Static ns:MainWindow.SpecBackCommand}"
+                                  />
+                                  <!--Click="specViewBack_Click"-->
+                                  <!--DataContext="{Binding ElementName=tabMain, Path=SelectedContent}"
+                                  IsEnabled="{Binding Path=CanHistoryBack}"-->
+                                  <!--IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem,
+                                                Converter={StaticResource specCanNavigateConverter}, ConverterParameter=Back}"/>-->
+                    <RibbonButton x:Name="specViewNext" Label="Next" LargeImageSource="Images\Next.ico"
+                                  ToolTipTitle="Forward"
+                                  ToolTipDescription="Skip to the next mass range view."
+                                  ToolTipImageSource="Images\Next.ico" Command="{x:Static ns:MainWindow.SpecForwardCommand}"
+                                  />
+                                  <!--Click="specViewNext_Click"--> 
+                                  <!--DataContext="{Binding ElementName=tabMain, Path=SelectedContent}"
+                                  IsEnabled="{Binding Path=CanHistoryForward}"-->
+                                  <!--IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem,
+                                                Converter={StaticResource specCanNavigateConverter}, ConverterParameter=Forward}"/>-->
+                    <RibbonButton x:Name="specViewFull" Label="Reset" LargeImageSource="Images\Original.ico"
+                                  ToolTipTitle="Reset"
+                                  ToolTipDescription="Return to the original mass range view."
+                                  ToolTipImageSource="Images\Original.ico" Command="{x:Static ns:MainWindow.SpecResetCommand}"
+                                  />
+                                  <!--Click="specViewFull_Click"--> 
+                                  <!--DataContext="{Binding ElementName=tabMain, Path=SelectedContent}"
+                                  IsEnabled="{Binding Path=CanReset}"-->
+                                  <!--IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem,
+                                                Converter={StaticResource specCanNavigateConverter}, ConverterParameter=Reset}"/>-->
+                </RibbonGroup>
+                <RibbonGroup Header="Preview" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                                Converter={StaticResource TabBoolConverter}, ConverterParameter=Spectrum}">
+                    <RibbonButton x:Name="specShowPreview" Label="Create Preview" Click="specShowPreview_Click"
+                                  SmallImageSource="Images\Image.ico"
+                                  ToolTipTitle="Preview"
+                                  ToolTipDescription="Display a thermal scale image of the current mass range."
+                                  ToolTipImageSource="Images\Image.ico"/>
+                    <RibbonButton x:Name="specHidePreview" Label="Hide Preview" Click="specHidePreview_Click"
+                                  SmallImageSource="Images\Close.png"
+                                  ToolTipTitle="Hide"
+                                  ToolTipDescription="Hide preview image."
+                                  ToolTipImageSource="Images\Close.png"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Export" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                                Converter={StaticResource TabBoolConverter}, ConverterParameter=Spectrum}">
+                    <RibbonTextBox x:Name="ribbonTextBoxSpecExportBinSize" Label="Bin size:"/>
+                    <RibbonButton x:Name="specExport" Label="Export" Click="specExport_Click"
+                                    LargeImageSource="Images\SpecExport.ico" ToolTipTitle="Export"
+                                  ToolTipDescription="Exports the current spectrum as a text file."
+                                  ToolTipImageSource="Images\SpecExport.ico"/>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab Header="Rendering">
+                <RibbonGroup Header="Volume Data">
+                    <RibbonButton       Label="Create"  Click="CreateVolume"
+                                        LargeImageSource="Images\NewVolume.ico" ToolTipTitle="New Volume"
+                                        ToolTipDescription="Create a new volume representation."
+                                        ToolTipImageSource="Images\NewVolume.ico"/>
+                    <RibbonButton       Label="Load" Click="LoadVolume"
+                                        LargeImageSource="Images\VolumeOpen.ico" ToolTipTitle="Load Volume"
+                                        ToolTipDescription="Opens a saved volume data (.vol) file or a series of volume data files."
+                                        ToolTipImageSource="Images\VolumeOpen.ico"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Volume Rendering">
+                <RibbonMenuButton x:Name="renderingVolumesMenu" Label="Select"  LargeImageSource="Images\Volume.png"
+                                          SmallImageSource="Images\eraser.ico"
+                                          ToolTipTitle="Select Volumes" ToolTipImageSource="Images\Volume.png"
+                                          ToolTipDescription="Choose one or more volume data sets to render."
+                                          IsEnabled="{Binding ElementName=listBoxRenderingVolumes, Path=HasItems}">
+                        <RibbonGallery BorderBrush="#FF211C1C" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                            <ListBox x:Name="listBoxRenderingVolumes" Width="Auto" ItemsSource="{Binding Workspace.Volumes}" SelectionMode="Multiple" Background="Transparent">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding Path=VolumeName}" Margin="4,0,4,0" FontSize="14">
+                                                <TextBlock.Foreground>
+                                                    <SolidColorBrush Color="{Binding Path=DataColor}"/>
+                                                </TextBlock.Foreground>
+                                            </TextBlock>
+                                            <TextBlock Grid.Column="1" Text="{Binding Path=Depth}" Margin="4,0,4,0" FontSize="14"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListBoxItem}">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter Property="Background" Value="Orange"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
+                        </RibbonGallery>
+                    </RibbonMenuButton>
+                    <!--<StackPanel Orientation="Vertical">
+                        <Label Margin="4,0,4,0">Normalization: </Label>
+                        <ComboBox Margin="4,0,4,0" x:Name="comboRenderingNorm" IsEditable="False" 
+                                  Width="125" Height="23" 
+                                  VerticalAlignment="Center"
+                                  SelectedIndex="0">
+                            <ComboBox.Items>
+                                <ComboBoxItem Content="Single"/>
+                                <ComboBoxItem Content="By Component"/>
+                            </ComboBox.Items>
+                        </ComboBox>
+                    </StackPanel>-->
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="4,0,4,0">Z-Correct:</Label>
+                            <CheckBox x:Name="checkBoxZCorrect" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="4,0,4,0">Threshold:</Label>
+                            <RibbonTextBox Width="50" VerticalAlignment="Center" Text="{Binding Workspace.ImagingZCorrectThresh, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <RibbonButton  Label="Render" LargeImageSource="Images\CD.ico"
+                                   SmallImageSource="Images\CD.ico"
+                                   Click="Render3D" ToolTipTitle="Render"
+                                   ToolTipDescription="Creates a 3D rendering of the selected image series with the specified render parameters."/>
+                </RibbonGroup>
+                <RibbonGroup Header="Depth Rendering">
+                    <RibbonButton Label="Create Depth Render" LargeImageSource="Images\HeightMap.ico"
+                                  Click="createDepthRender_Click" ToolTipTitle="Create Depth Render"
+                                  ToolTipDescription="Open a new tab to create a depth render from height and color data."
+                                  ToolTipImageSource="Images\HeightMap.ico"/>
+                    <RibbonButton  Label="Render" LargeImageSource="Images\CD.ico" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                                    Converter={StaticResource TabBoolConverter}, ConverterParameter=HeightMap}"
+                                   SmallImageSource="Images\CD.ico"
+                                   Click="RenderHeightMap" ToolTipTitle="Render"
+                                   ToolTipDescription="Creates a depth rendering of the current Height Map."/>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab Header="Fusion">
+                <RibbonGroup Header="New">
+                    <RibbonButton x:Name="fusionNew" Label="New Fusion" Click="OpenFusionTab" 
+                                  LargeImageSource="Images\FusionNew.ico" ToolTipTitle="New Image Fusion" 
+                                  ToolTipDescription="Opens a new image fusion tab." ToolTipImageSource="Images\FusionNew.ico"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Load">
+                    <RibbonButton x:Name="fusionLoadHigh" LargeImageSource="Images\FusionOpenHigh.ico"
+                                         Label="High Res" Click="LoadFusionHigh" ToolTipTitle="Load High Res"
+                                  ToolTipDescription="Load a high resolution (panchromatic) bitmap image for image fusion." 
+                                  ToolTipImageSource="Images\FusionOpenHigh.ico"/>
+                    <RibbonButton x:Name="fusionLoadLow" LargeImageSource="Images\FusionOpenLow.ico"
+                                         Label="Low Res" Click="LoadFusionLow" ToolTipTitle="Load Low Res"
+                                  ToolTipDescription="Load a low resolution (spectral) bitmap image for image fusion." 
+                                  ToolTipImageSource="Images\FusionOpenLow.ico"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Save" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Fusion}">
+                    <RibbonButton LargeImageSource="Images\SaveAll.ico" Click="ribbonFusionSaveSeries_Click"
+                                  Label="Save Series" ToolTipTitle="Save Series"
+                                  ToolTipDescription="Saves the high res, low res, and fused image series of the active fusion tab."/>
+                    <RibbonMenuButton SmallImageSource="Images\FloppyDisk.ico"
+                                  Label="Save Image" ToolTipTitle="Save Image"
+                                  ToolTipDescription="Select and save an image from the active fusion tab.">
+                        <RibbonMenuItem x:Name="ribbonFusionSaveFused" Header="Fused Image" Click="ribbonFusionSave_Click"/>
+                        <RibbonMenuItem x:Name="ribbonFusionSaveHigh" Header="High Res Image" Click="ribbonFusionSave_Click"/>
+                        <RibbonMenuItem x:Name="ribbonFusionSaveLow" Header="Low Res Image" Click="ribbonFusionSave_Click"/>
+                    </RibbonMenuButton>
+                </RibbonGroup>
+                <RibbonGroup Header="Registration" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
+                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Fusion}">
+                    <RibbonButton LargeImageSource="Images\merge.png" Label="Open Overlay Window" Click="ribbonFusionOverlay_Click"
+                                  ToolTipTitle="Open Overlay Window"
+                                  ToolTipDescription="Opens a window for manually overlaying two images for registration to generate initial guesses."/>
+                    <RibbonButton SmallImageSource="Images\chart.png" Label="View Results" Click="ribbonFusionViewResults_Click"
+                                  ToolTipTitle="View Results"
+                                  ToolTipDescription="Opens the CSV file containing the results of each iteration of the last image registration."/>
+                    <RibbonButton SmallImageSource="Images\openHS.png" Label="View Folder" Click="ribbonFusionViewFolder_Click"
+                                  ToolTipTitle="View Folder"
+                                  ToolTipDescription="Opens the folder containing input and output image files in Windows Explorer."/>
+                    <RibbonButton x:Name="ribbonbuttonOpenTransformFromFusion" Label="Transform"
+                                  LargeImageSource="Images\Transform.ico" Click="ribbonOpenTransformTab_Click"
+                                  ToolTipTitle="Transform Data"
+                                  ToolTipDescription="Opens a tab to specify a transform to shift and scale data tables"/>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab Header="Testing" Visibility="{Binding IsDebug, Converter={StaticResource BoolVisConverter}}">
+                <RibbonGroup Header="Testing Group">
+                    <RibbonButton LargeImageSource="Images\LargeIcon.png" Label="Test 1" Click="test1_Click"/>
+                    <RibbonButton LargeImageSource="Images\LargeIcon.png" Label="Test 2" Click="test2_Click"/>
+                    <RibbonButton LargeImageSource="Images\LargeIcon.png" Label="Test 3" Click="test3_Click"/>
+                    <RibbonButton LargeImageSource="Images\LargeIcon.png" Label="Test 4" Click="test4_Click"/>
+                    <RibbonButton LargeImageSource="Images\LargeIcon.png" Label="Test 5" Click="test5_Click"/>
+                </RibbonGroup>                
+            </RibbonTab>
+        </Ribbon>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MinWidth="50" MaxWidth="400"/>
+                <ColumnDefinition Width="7"/>
+                <ColumnDefinition Width="*"/>                
+            </Grid.ColumnDefinitions>
+            <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" MinHeight="75"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" MinHeight="75"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" MinHeight="75"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" MinHeight="75"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" MinHeight="75"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" MinHeight="75"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Width="Auto" Orientation="Vertical">
+                        <Label Foreground="White" FontSize="12" Margin="4">Workspace:</Label>
+                        <TextBlock Foreground="White" FontSize="12" Margin="24,4" Text="{Binding Workspace.WorkspaceName}">
+                            <TextBlock.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Rename" Click="CMWorkspaceRename_Click"/>
+                                    <MenuItem Header="Close" Click="CMWorkspaceClose_Click"/>
+                                </ContextMenu>
+                            </TextBlock.ContextMenu>
+                        </TextBlock>
+                        <Label Foreground="White" FontSize="12" Margin="4">Data:</Label>
+                        <ListView x:Name="listViewData" Width="Auto" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                  Margin="4" Background="Transparent" ItemsSource="{Binding Workspace.Data}" BorderBrush="Transparent"
+                                  Drop="listViewData_Drop" AllowDrop="True">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding DataName}" Width="225"/>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Preview (Warm)" Click="CMDataPreview"/>
+                                    <MenuItem Header="Preview (Select)">
+                                        <MenuItem.Style>
+                                            <Style TargetType="MenuItem">
+                                                <!-- MenuItems are dynamically created based on available color scales. 
+                                                ItemsSource is bound to a collection that is populated in the MainWindow constructor-->
+                                                <Setter Property="ItemsSource" Value="{Binding Path=ColorScaleMenuItems}"/>
+                                            </Style>
+                                        </MenuItem.Style>
+                                    </MenuItem>
+                                    <MenuItem Header="Delete" Click="CMDataDelete"/>
+                                    <Separator/>
+                                    <MenuItem Header="Rename" Click="CMDataRename"/>
+                                    <MenuItem Header="Properties" Click="CMDataProperties"/>
+                                    <Separator/>
+                                    <MenuItem Header="Save" Click="CMDataSave"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                                    <Setter Property="ToolTip">
+                                        <Setter.Value>
+                                            <ToolTip Background="{StaticResource MenuBackground}" BorderBrush="#FF4D5578">
+                                                <StackPanel Orientation="Vertical">
+                                                    <Image Height="150" Width="150" Source="{Binding Converter={StaticResource data2DToBitmapSourceConverter}}"/>
+                                                    <TextBlock Text="{Binding DataName}" HorizontalAlignment="Center" Foreground="White" />
+                                                    <TextBlock Text="{Binding Converter={StaticResource data2DToSizeStringConverter}}" HorizontalAlignment="Center" Foreground="White"/>
+                                                    <TextBlock Text="{Binding TotalCounts, StringFormat=Total Counts: {0}}" HorizontalAlignment="Center" Foreground="White"/>
+                                                </StackPanel>
+                                            </ToolTip>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <EventSetter Event="MouseMove" Handler="listViewItemDataMouseMove"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Width="Auto" Orientation="Vertical">
+                        <Label Foreground="White" FontSize="12" Margin="4">Spectra:</Label>
+                        <ListView x:Name="listViewSpectra" Width="Auto" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                  Margin="4" Background="Transparent" ItemsSource="{Binding Workspace.Spectra}" BorderBrush="Transparent" >
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="150"/>
+                                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding SpectrumType}" Width="75"/>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="View" Click="CMSpecView"/>
+                                    <MenuItem Header="Delete" Click="CMSpecDelete"/>
+                                    <Separator/>
+                                    <MenuItem Header="Rename" Click="CMSpecRename"/>
+                                    <Separator/>
+                                    <MenuItem Header="Open PCA" Click="CMSpecPCA"/>
+                                    <Separator/>
+                                    <MenuItem Header="Save" Click="CMSpecSave"/>
+                                    <MenuItem Header="Export" Click="CMSpecExport"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                                    <Setter Property="ToolTip">
+                                        <Setter.Value>
+                                            <ToolTip Background="{StaticResource MenuBackground}" BorderBrush="#FF4D5578">
+                                                <StackPanel Orientation="Vertical">
+                                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" Foreground="White" />
+                                                    <TextBlock Text="{Binding SpectrumType, StringFormat=Type: {0}}" HorizontalAlignment="Center" Foreground="White"/>
+                                                    <TextBlock Text="{Binding Dimensions, StringFormat=Size: {0}}" HorizontalAlignment="Center" Foreground="White"/>
+                                                </StackPanel>
+                                            </ToolTip>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </StackPanel>
+                    <StackPanel Grid.Row="4" Width="Auto" Orientation="Vertical">
+                        <Label Foreground="White" FontSize="12" Margin="4">Components:</Label>
+                        <ListView x:Name="listViewComponents" Width="Auto" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                  Margin="4" Background="Transparent" ItemsSource="{Binding Workspace.Components}" BorderBrush="Transparent" >
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ComponentName}" Width="150"/>
+                                    <GridViewColumn Header="Tables" DisplayMemberBinding="{Binding NumberTables}" Width="75"/>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="New" Click="NewComponent"/>
+                                    <MenuItem Header="Edit" Click="CMCompEdit"/>
+                                    <MenuItem Header="Delete" Click="CMCompDelete"/>
+                                    <Separator/>
+                                    <MenuItem Header="Rename" Click="CMCompRename"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                                    <Setter Property="Foreground" >
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="{Binding PixelColor}"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="ToolTip">
+                                        <Setter.Value>
+                                            <ToolTip Background="{StaticResource MenuBackground}" BorderBrush="#FF4D5578">
+                                                <StackPanel Orientation="Vertical">
+                                                    <StackPanel.Resources>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Margin" Value="2"/>
+                                                            <Setter Property="FontSize" Value="10"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </Style>
+                                                    </StackPanel.Resources>
+                                                    <TextBlock Text="{Binding ComponentName, StringFormat=Component: {0}}"/>
+                                                    <TextBlock Text="{Binding PixelColor, StringFormat=Color: {0}}"/>
+                                                    <TextBlock Text="{Binding NumberTables, StringFormat=Table count: {0}}"/>
+                                                </StackPanel>
+                                            </ToolTip>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </StackPanel>
+                    <StackPanel Grid.Row="6" Width="Auto" Orientation="Vertical">
+                        <Label Foreground="White" FontSize="12" Margin="4">Volumes:</Label>
+                        <ListView x:Name="listViewVolumes" Width="Auto" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                  Margin="4" Background="Transparent" ItemsSource="{Binding Workspace.Volumes}" BorderBrush="Transparent" >
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding VolumeName}" Width="150">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Foreground="{Binding DataColor}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Dimensions" DisplayMemberBinding="{Binding Dimensions}" Width="75"/>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Delete" Click="CMVolumeDelete"/>
+                                    <Separator/>
+                                    <MenuItem Header="Load" Click="LoadVolume"/>
+                                    <MenuItem Header="Save" Click="SaveVolume"/>
+                                    <Separator/>
+                                    <MenuItem Header="Rename" Click="CMVolumeRename"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                                    <Setter Property="Foreground" >
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="{Binding DataColor}"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="ToolTip">
+                                        <Setter.Value>
+                                            <ToolTip Background="{StaticResource MenuBackground}" BorderBrush="#FF4D5578">
+                                                <StackPanel Orientation="Vertical">
+                                                    <StackPanel.Resources>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Margin" Value="2"/>
+                                                            <Setter Property="FontSize" Value="10"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </Style>
+                                                    </StackPanel.Resources>
+                                                    <TextBlock Text="{Binding VolumeName, StringFormat=Volume: {0}}"/>
+                                                    <TextBlock Text="{Binding DataColor, StringFormat=Color: {0}}"/>
+                                                    <TextBlock Text="{Binding Dimensions, StringFormat=Size: {0}}"/>
+                                                </StackPanel>
+                                            </ToolTip>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </StackPanel>                    
+                    <StackPanel Grid.Row="8" Width="Auto" Orientation="Vertical">
+                        <Label Foreground="White" FontSize="12" Margin="4">Image Series:</Label>
+                        <ListView x:Name="listViewImageSeries" Width="Auto" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                  Margin="4" Background="Transparent" ItemsSource="{Binding Workspace.ImageSeries}" BorderBrush="Transparent" >
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding SeriesName}" Width="150"/>
+                                    <GridViewColumn Header="# Images" DisplayMemberBinding="{Binding NumberImages}" Width="75"/>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="View" Click="CMImgsView"/>
+                                    <MenuItem Header="Delete" Click="CMImgsDelete"/>
+                                    <Separator/>
+                                    <MenuItem Header="Rename" Click="CMImgsRename"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                        </ListView>
+                    </StackPanel>
+                    <StackPanel Grid.Row="10" Width="Auto" Orientation="Vertical">
+                        <Label Foreground="White" FontSize="12" Margin="4">SEM Images:</Label>
+                        <ListView x:Name="listViewSEMs" Width="Auto" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                  Margin="4" Background="Transparent" ItemsSource="{Binding Workspace.SEMs}" BorderBrush="Transparent" >
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding SEMName}" Width="225"/>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="View" Click="CMISEMView"/>
+                                    <MenuItem Header="Delete" Click="CMSEMDelete"/>
+                                    <Separator/>
+                                    <MenuItem Header="Rename" Click="CMSEMRename"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                                    <Setter Property="ToolTip">
+                                        <Setter.Value>
+                                            <ToolTip Background="{StaticResource MenuBackground}" BorderBrush="#FF4D5578">
+                                                <StackPanel Orientation="Vertical">
+                                                    <Image Height="150" Width="150" Source="{Binding Path=SEMImage.Source}"/>
+                                                    <TextBlock Text="{Binding SEMName}" HorizontalAlignment="Center" Foreground="White"/>
+                                                </StackPanel>
+                                            </ToolTip>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </StackPanel>
+                    <GridSplitter Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="3" Margin="4,2" Grid.Row="1" Background="#FF4B4B4B" />
+                    <GridSplitter Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="3" Margin="4,2" Grid.Row="3" Background="#FF4B4B4B" />
+                    <GridSplitter Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="3" Margin="4,2" Grid.Row="5" Background="#FF4B4B4B" />
+                    <GridSplitter Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="3" Margin="4,2" Grid.Row="7" Background="#FF4B4B4B" />
+                    <GridSplitter Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="3" Margin="4,2" Grid.Row="9" Background="#FF4B4B4B" />
+                </Grid>
+            </ScrollViewer>
+            <GridSplitter HorizontalAlignment="Center" Width="3" VerticalAlignment="Stretch" Height="Auto" Margin="2,4" Grid.Column="1" Background="#FF333333" />
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TabControl x:Name="tabMain" Grid.Row="0" Width="Auto" Height="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Padding="4" SelectionChanged="tabMain_SelectionChanged"
+                            BorderThickness="{Binding ElementName=tabMain, Path=HasItems, Converter={StaticResource hasItemsToThicknessConverter}}" BorderBrush="#FF007ACC" Margin="4,8,8,8" Background="Transparent">
+                    <TabControl.Resources>
+                        <Style TargetType="c:ClosableTabItem">
+                            <Setter Property="AllowDrop" Value="True"/>
+                            <EventSetter Event="MouseMove" Handler="tabItem_MouseMove"/>
+                            <EventSetter Event="Drop" Handler="tabItem_Drop"/>
+                        </Style>
+                    </TabControl.Resources>
+                </TabControl>
+                <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="5" Margin="4" 
+                              Visibility="{Binding Path=ShowCode, Converter={StaticResource BoolVisConverter}}" Background="#FF333333"/>
+                <Grid x:Name="gridCodeEditor" Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                      Visibility="{Binding Path=ShowCode, Converter={StaticResource BoolVisConverter}}">
+                    <ec:ExternalCodeEditor x:Name="externalCodeEditor" />
+                </Grid>
+            </Grid>
+        </Grid>
+        <StatusBar Height="23" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="2" Background="#FF4B4B4B">
+            <StatusBarItem>
+                <TextBlock x:Name="statusBarText" Foreground="White" Margin="8,0,0,0" VerticalAlignment="Center" Text="{Binding StatusBarText, NotifyOnTargetUpdated=True}">
+                    <TextBlock.Triggers>
+                        <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                            <BeginStoryboard>
+                                <Storyboard x:Name="storyboardStatusBarTextBlock" Completed="statusBarAnimation_Completed">
+                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                        <EasingDoubleKeyFrame KeyTime="0"           Value="0"/>
+                                        <EasingDoubleKeyFrame KeyTime="0:0:0.25"    Value="1"/>
+                                        <EasingDoubleKeyFrame KeyTime="0:0:4"       Value="1"/>
+                                        <EasingDoubleKeyFrame KeyTime="0:0:5"       Value="0"/>
+                                    </DoubleAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </TextBlock.Triggers>
+                </TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+        <Grid Grid.Row="3">
+            <commonctrls:ProgressUpdaterControl Visibility="Collapsed"/>
+        </Grid>
+    </Grid>
+</RibbonWindow>

@@ -1,0 +1,1006 @@
+﻿public class PCA
+{
+    BackgroundWorker bw;
+
+    bool isSorted;
+
+    EigenSystem eigenSystemCalc = new EigenSystem();
+
+    double[,] array;
+    double[] massValues;
+    int cols;
+    int rows;
+
+    Matrix data;
+    Matrix covariance;
+    Matrix scores;
+    Matrix loadings;
+    ComplexMatrix eigenValues;
+    ComplexMatrix eigenVectors;
+
+    double[,] sortedData;
+    double[] sortedEigenValues;
+    double[,] sortedEigenVectors;
+    double[] sortedMasses;
+
+    List<Index> indices;
+
+    public int Rows { get { return rows; } }
+    public int Columns { get { return cols; } }
+
+    public Matrix OriginalData { get { return data; } }
+
+    public ComplexMatrix EigenValues { get { return eigenValues; } }
+    public ComplexMatrix EigenVectors { get { return eigenVectors; } }
+    public bool IsSorted { get { return isSorted; } }
+
+    public double[,] SortedData { get { return sortedData; } }
+
+    public double[] UnsortedMasses { get { return massValues; } }
+    public double[] SortedEigenValues { get { return sortedEigenValues; } }
+    public double[,] SortedEigenVectors { get { return sortedEigenVectors; } }
+    public double[] SortedMasses { get { return sortedMasses; } }
+
+    public List<Index> ReorderedIndices { get { return indices; } }
+
+    public Matrix Scores { get { return scores; } }
+    public Matrix Loadings { get { return loadings; } }
+
+    public PCA()
+    {
+    }
+    public PCA(BackgroundWorker BackgroundWorker)
+    {
+        bw = BackgroundWorker;
+    }
+
+    public void SetPCAArray(double[,] PCAData, int RowCount, int ColumnCount, double[] MassValues)
+    {
+        array = PCAData;
+        rows = RowCount;
+        cols = ColumnCount;
+        massValues = MassValues;
+    }
+    public void MeanCenter(List<double> MeanValues)
+    {
+        for (int x = 0; x < cols; x++)
+        {
+            double average = MeanValues[x];
+            double[] col = new double[rows];
+            for (int y = 0; y < rows; y++)
+            {
+                array[x, y] = array[x, y] - average;
+                col[y] = array[x, y];
+            }
+            col = DataScaling.AutoscaleMeanCentered(col);
+            for (int y = 0; y < rows; y++)
+            {
+                array[x, y] = col[y];
+            }
+        }
+    }
+    public void Covariance(BackgroundWorker bw_covariance)
+    {
+        data = new Matrix(array);
+
+        double[,] tempCovariance = new double[cols, cols];
+
+        for (int x = 0; x < cols; x++)
+        {
+            for (int y = 0; y < cols; y++)
+            {
+                tempCovariance[x, y] = CalculateCovariance(data.GetRowArray(x), data.GetRowArray(y));
+                if (bw_covariance != null)
+                {
+                    bw_covariance.ReportProgress(Common.Percentage.GetPercent((x * cols) + y, cols * cols));
+                }
+            }
+        }
+
+        covariance = new Matrix(tempCovariance);
+    }
+
+    private double CalculateCovariance(double[] Set1, double[] Set2)
+    {
+        int length = Set1.Length;
+
+        double sumSet1 = 0;
+        double sumSet2 = 0;
+        for (int i = 0; i < length; i++)
+        {
+            sumSet1 += Set1[i];
+            sumSet2 += Set2[i];
+        }
+        double avgSet1 = sumSet1 / length;
+        double avgSet2 = sumSet2 / length;
+
+        double sum = 0;
+        for (int i = 0; i < length; i++)
+        {
+            sum += ((Set1[i] - avgSet1) * (Set2[i] - avgSet2));
+        }
+
+        return sum / (length - 1);
+    }
+    public void Solve()
+    {
+        eigenValues = eigenSystemCalc.GetEigenvalues(covariance, out eigenVectors);
+        //CreateDataTables(null);
+    }
+    public void CreateDataTables(BackgroundWorker bw_dataTables)
+    {
+        List<KeyValuePair<double, int>> ev = new List<KeyValuePair<double, int>>();
+        indices = new List<Index>();
+
+        //SortedList<double, int> ev = new SortedList<double, int>();
+        for (int i = 0; i < cols; i++)
+        {
+            //ev.Add(eigenValues[i, 0].Real, i);
+            ev.Add(new KeyValuePair<double, int>(eigenValues[i, 0].Real, i));
+        }
+        IEnumerable<KeyValuePair<double, int>> query = ev.OrderByDescending(q => q.Key);
+
+        sortedEigenVectors = new double[cols, cols];
+        sortedEigenValues = new double[cols];
+        sortedMasses = new double[cols];
+        sortedData = new double[cols, rows];
+
+        int j = 0;
+        foreach (KeyValuePair<double, int> kvp in query)
+        {
+            double eigenvalue = kvp.Key;
+            int index = kvp.Value;
+
+            sortedEigenValues[j] = eigenvalue;
+            sortedMasses[j] = massValues[index];
+
+            for (int k = 0; k < cols; k++)
+            {
+                sortedEigenVectors[j, k] = eigenVectors[index, k].Real;
+            }
+            for (int k = 0; k < rows; k++)
+            {
+                sortedData[j, k] = array[index, k];
+            }
+
+
+            indices.Add(new Index(kvp.Value, j));
+
+            j++;
+            bw_dataTables.ReportProgress(Common.Percentage.GetPercent(j, ev.Count));
+        }
+
+        CreateScoresMatrix(bw_dataTables);
+
+        isSorted = true;
+    }
+    public void CreateScoresMatrix(BackgroundWorker bw_dataTables)
+    {
+        //double[,] baseEvData = new double[eigenVectors.ColumnCount, eigenVectors.RowCount];
+        //for (int x = 0; x < eigenVectors.ColumnCount; x++)
+        //{
+        //    for (int y = 0; y < eigenVectors.RowCount; y++)
+        //    {
+        //        baseEvData[x, y] = eigenVectors[y, x].Real;
+        //    }
+        //}
+        //loadings = new Matrix(baseEvData);
+        bw_dataTables.ReportProgress(0);
+        loadings = new Matrix(sortedEigenVectors);
+        bw_dataTables.ReportProgress(33);
+        //data = data.Transpose();
+        Matrix SortedData = new Matrix(sortedData);
+        SortedData = SortedData.Transpose();
+        bw_dataTables.ReportProgress(66);
+        //scores = (data.Multiply(loadings)).Transpose();
+        scores = (SortedData.Multiply(loadings)).Transpose();
+        bw_dataTables.ReportProgress(99);
+    }
+}
+
+public class PCAAnalysis
+{
+    PCA _pcaData;
+
+    public PCAAnalysis(PCA Data)
+    {
+        _pcaData = Data;
+    }
+
+    public double[,] LoadingsSeries(int PCA, int PCB)
+    {
+        double[,] scoreData = new double[_pcaData.Loadings.ColumnCount, 3];
+
+        for (int i = 0; i < _pcaData.Loadings.ColumnCount; i++)
+        {
+            scoreData[i, 0] = _pcaData.Loadings[i, PCA];
+            scoreData[i, 1] = _pcaData.Loadings[i, PCB];
+            scoreData[i, 2] = _pcaData.SortedMasses[i];
+        }
+
+        return scoreData;
+    }
+    public double[,] LoadingsSeries(int PCA, int PCB, out string[] Labels)
+    {
+        double[,] scoreData = new double[_pcaData.Loadings.ColumnCount, 2];
+        string[] labels = new string[_pcaData.SortedMasses.Length];
+
+        for (int i = 0; i < _pcaData.Loadings.ColumnCount; i++)
+        {
+            scoreData[i, 0] = _pcaData.Loadings[i, PCA];
+            scoreData[i, 1] = _pcaData.Loadings[i, PCB];
+
+            labels[i] = _pcaData.SortedMasses[i].ToString("0.000");
+        }
+
+        Labels = labels;
+        return scoreData;
+    }
+    public double[,] ScoresSeries(int PCA, int PCB)
+    {
+        double[,] scoresData = new double[_pcaData.Rows, 3];
+
+        int dimensions = (int)Math.Sqrt(_pcaData.Rows);
+
+        for (int x = 0; x < dimensions; x++)
+        {
+            for (int y = 0; y < dimensions; y++)
+            {
+                int rowNumber = (x * (int)Math.Sqrt(_pcaData.Rows)) + y;
+                scoresData[rowNumber, 0] = _pcaData.Scores[rowNumber, PCA];
+                scoresData[rowNumber, 1] = _pcaData.Scores[rowNumber, PCB];
+                scoresData[rowNumber, 2] = (x * dimensions) + y;
+            }
+        }
+
+        return scoresData;
+    }
+    public double[,] ScoresSeries(int PCA, int PCB, out string[] Labels)
+    {
+        string[] labels = new string[_pcaData.SortedMasses.Length];
+        double[,] scoresData = new double[_pcaData.Rows, 2];
+
+        int dimensions = (int)Math.Sqrt(_pcaData.Rows);
+
+        for (int x = 0; x < dimensions; x++)
+        {
+            for (int y = 0; y < dimensions; y++)
+            {
+                int rowNumber = (x * (int)Math.Sqrt(_pcaData.Rows)) + y;
+                scoresData[rowNumber, 0] = _pcaData.Scores[rowNumber, PCA];
+                scoresData[rowNumber, 1] = _pcaData.Scores[rowNumber, PCB];
+                labels[rowNumber] = string.Format("(X:{0},Y:{1})", x.ToString(), y.ToString());
+            }
+        }
+
+        Labels = labels;
+
+        return scoresData;
+    }
+
+    public BitmapSource ScorePlot(int PC)
+    {
+        int dimensions = (int)Math.Sqrt(_pcaData.Rows);
+        double[,] scoreData = new double[dimensions, dimensions];
+        for (int x = 0; x < dimensions; x++)
+        {
+            for (int y = 0; y < dimensions; y++)
+            {
+                int rowNumber = (x * (int)Math.Sqrt(_pcaData.Rows)) + y;
+                scoreData[x, y] = _pcaData.Scores[PC, rowNumber];
+            }
+        }
+
+        ScorePlot sp = new ScorePlot(scoreData, dimensions, dimensions);
+        return sp.ScoreImage;
+    }
+}
+
+public static class DataScaling
+{
+    public static double[] AutoscaleMeanCentered(double[] Input)
+    {
+        double diff = 0;
+
+        for (int i = 0; i < Input.Length; i++)
+        {
+            diff += Input[i] * Input[i];
+        }
+
+        double stdDev = Math.Sqrt(diff / Input.Length);
+
+        for (int i = 0; i < Input.Length; i++)
+        {
+            Input[i] = Input[i] / stdDev;
+        }
+
+        return Input;
+    }
+    public static double[] Autoscale(double[] Input, double Mean)
+    {
+        double avg = Mean;
+        double diff = 0;
+
+        for (int i = 0; i < Input.Length; i++)
+        {
+            diff += ((avg - Input[i]) * (avg - Input[i]));
+        }
+
+        double stdDev = Math.Sqrt(diff / Input.Length);
+
+        for (int i = 0; i < Input.Length; i++)
+        {
+            Input[i] = Input[i] / stdDev;
+        }
+
+        return Input;
+    }
+    public static double[] Autoscale(double[] Input)
+    {
+        double sum = 0;
+        for (int i = 0; i < Input.Length; i++)
+        {
+            sum += Input[i];
+        }
+
+        double avg = sum / Input.Length;
+        double diff = 0;
+
+        for (int i = 0; i < Input.Length; i++)
+        {
+            diff += ((avg - Input[i]) * (avg - Input[i]));
+        }
+
+        double stdDev = Math.Sqrt(diff / Input.Length);
+
+        for (int i = 0; i < Input.Length; i++)
+        {
+            Input[i] = Input[i] / stdDev;
+        }
+
+        return Input;
+    }
+}
+
+
+class EigenValueComparer<T> : IComparer<T> where T : IComparable
+{
+    int IComparer<T>.Compare(T x, T y)
+    {
+        int comp = x.CompareTo(y);
+
+        if (comp != 0) return comp;
+        else return 1;
+    }
+}
+
+public class Index
+{
+    int _original;
+    int _final;
+
+    public int Original { get { return _original; } }
+    public int Final { get { return _final; } }
+
+    public Index(int Original, int Final)
+    {
+        _original = Original;
+        _final = Final;
+    }
+}
+public class Peak
+{
+    double _mz;
+    double _start;
+    double _end;
+    double _max;
+    double _integrated;
+    double _width;
+
+    List<double[]> points;
+
+    public double Mz { get { return _mz; } }
+    public double Start { get { return _start; } }
+    public double End { get { return _end; } }
+    public double Width { get { return _width; } }
+    public double MaxIntensity { get { return _max; } }
+    public double IntegratedIntensity { get { return _integrated; } }
+
+    public Peak()
+    {
+        points = new List<double[]>();
+    }
+
+    public void AddPoint(double Mz, double Intensity)
+    {
+        points.Add(new double[2] { Mz, Intensity });
+    }
+    public void FinalizePeak()
+    {
+        double start = 10000;
+        double end = 0;
+
+        double max = 0;
+        double maxMz = 0;
+        double integrated = 0;
+
+        for (int i = 0; i < points.Count; i++)
+        {
+            double[] point = points[i];
+            double mass = point[0];
+            double intensity = point[1];
+
+            if (mass < start) start = mass;
+            if (mass > end) end = mass;
+
+            if (intensity > max)
+            {
+                max = intensity;
+                maxMz = mass;
+            }
+
+            integrated += intensity;
+        }
+
+        _mz = maxMz;
+        _start = start;
+        _end = end;
+        _width = end - start;
+        _max = max;
+        _integrated = integrated;
+    }
+
+    public override string ToString()
+    {
+        return string.Format("m/z {0}; Max {1}", _mz.ToString("0.00"), _max.ToString("0"));
+    }
+}
+public static class PeakID
+{
+    public static List<Peak> GetPeaks(double[,] Data, double Threshold)
+    {
+        List<Peak> peaks = new List<Peak>();
+
+        //int sizeX = 2;
+        int sizeY = Data.Length / 2;
+
+        for (int x = 0; x < sizeY; x++)
+        {
+            if (Data[x, 1] < Threshold) Data[x, 1] = 0;
+        }
+
+
+
+        return peaks;
+    }
+    public static List<Peak> GetPeaks(double[,] Data, double Threshold, BackgroundWorker bw)
+    {
+        List<Peak> peaks = new List<Peak>();
+
+        return peaks;
+    }
+}
+public class PeakIdentifier
+{
+    //TODO: Add min width filter?
+
+    double[,] data;
+    int sizeY;
+    List<Peak> peaks;
+
+    BackgroundWorker bw;
+
+    public List<Peak> Peaks { get { return peaks; } }
+
+        
+    public event EventHandler AnalysisComplete;
+
+    public PeakIdentifier(double[,] Data)
+    {
+        data = Data;
+
+        if (data == null) throw new ArgumentNullException("No input data.");
+        sizeY = data.Length / 2;
+    }
+    public PeakIdentifier(double[,] Data, BackgroundWorker Worker)
+    {
+        data = Data;
+        bw = Worker;
+
+        if (data == null) throw new ArgumentNullException("No input data.");
+        sizeY = data.Length / 2;
+    }
+
+    public void Analyze(double Cutoff)
+    {
+        Threshold(Cutoff);
+        IdentifyPeaks();
+
+        if (AnalysisComplete != null)
+        {
+            AnalysisComplete(this, new EventArgs());
+        }
+    }
+
+    private void Threshold(double Cutoff)
+    {
+        for (int x = 0; x < sizeY; x++)
+        {
+            if (data[x, 1] < Cutoff) data[x, 1] = 0;
+        }
+    }
+
+    private void IdentifyPeaks()
+    {
+        peaks = new List<Peak>();
+
+        for (int position = 0; position < sizeY; position++)
+        {
+            if (position + 1 == sizeY) break;
+
+            double delta = data[position + 1, 1] - data[position, 1];
+            if (delta <= 0) continue;
+
+            int positiveCount = 0;
+            int totalCount = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                if (position + i + 1 == sizeY) break;
+                double d = data[position + i + 1, 1] - data[position + i, 1];
+                if (d > 0) positiveCount++;
+                totalCount++;
+            }
+            double percent = (double)positiveCount / (double)totalCount;
+            if (percent >= 0.5d)
+            {
+                int basePosition = 0;
+
+                bool proceed = true;
+                Peak peak = new Peak();
+                while (proceed)
+                {
+                    basePosition++;
+                    if (position + basePosition == sizeY)
+                    {
+                        proceed = false;
+                        break;
+                    }
+                    peak.AddPoint(data[position + basePosition, 0], data[position + basePosition, 1]);
+                    double intensity = data[position + basePosition, 1];
+
+                    if (intensity <= 0) proceed = false;
+                }
+                peak.FinalizePeak();
+                if (peak.Mz >= 5)
+                {
+                    peaks.Add(peak);
+                }
+                position += basePosition;
+            }
+            if (bw != null) bw.ReportProgress(ImagingSIMS.Common.Percentage.GetPercent(position, sizeY));
+        }
+    }
+}
+public class Histogram
+{
+    byte[] _data;
+    int _numDataPoints;
+    int[] _histogram;
+    int[] _cumulativeHistogram;
+
+    public int[] SimpleHistogram { get { return _histogram; } }
+    public int[] CumulativeHistogram { get { return _cumulativeHistogram; } }
+
+    public Histogram(byte[] Data)
+    {
+        _data = Data;
+        _numDataPoints = Data.Length;
+        AnalyzeData();
+    }
+    public Histogram(byte[,] Data)
+    {
+        int cols = Data.GetLength(0);
+        int rows = Data.GetLength(1);
+
+        _data = new byte[cols * rows];
+        for (int x = 0; x < cols; x++)
+        {
+            for (int y = 0; y < rows; y++)
+            {
+                int index = (x * cols) + y;
+                _data[index] = Data[x, y];
+            }
+        }
+
+        _numDataPoints = cols * rows;
+        AnalyzeData();
+    }
+    public Histogram(BitmapSource Data)
+    {
+        Data3D data = Imaging.ConvertToData3D(Data);
+
+        int cols = data.Width;
+        int rows = data.Height;
+
+        _data = new byte[cols * rows];
+        for (int x = 0; x < cols; x++)
+        {
+            for (int y = 0; y < rows; y++)
+            {
+                int index = (x * cols) + y;
+                _data[index] = (byte)((.299d * data[x, y, 0]) +
+                    (.587d * data[x, y, 1]) + (.114d * data[x, y, 2]));
+            }
+        }
+
+        _numDataPoints = cols * rows;
+        AnalyzeData();
+    }
+
+    private void AnalyzeData()
+    {
+        _histogram = GetHistogram();
+        _cumulativeHistogram = GetCumulative();
+    }
+    private int[] GetHistogram()
+    {
+        int[] histogram = new int[256];
+        for (int i = 0; i < _numDataPoints; i++)
+        {
+            int value = _data[i];
+
+            histogram[value]++;
+        }
+        return histogram;
+    }
+    private int[] GetCumulative()
+    {
+        int[] cumulative = new int[256];
+        int sum = 0;
+        for (int i = 0; i < 256; i++)
+        {
+            sum += _histogram[i];
+            cumulative[i] = sum;
+        }
+        return cumulative;
+    }
+
+    public int[] GetShiftFunction(Histogram ReferenceHistogram)
+    {
+        int[] shiftFunction = new int[256];
+
+        for (int i = 0; i < 256; i++)
+        {
+            int below = -1;
+            int above = -1;
+            int exact = -1;
+
+            for (int j = 0; j < 256; j++)
+            {
+                if (CumulativeHistogram[i] < ReferenceHistogram.CumulativeHistogram[j])
+                {
+                    below = j;
+                }
+                if (CumulativeHistogram[i] == ReferenceHistogram.CumulativeHistogram[j])
+                {
+                    exact = j;
+                }
+                if (CumulativeHistogram[i] > ReferenceHistogram.CumulativeHistogram[j])
+                {
+                    above = j;
+                }
+
+                if (below > 0 && above > 0)
+                {
+                    break;
+                }
+            }
+
+            if (below == -1 || above == -1) shiftFunction[i] = 0;
+            if (exact > 0) shiftFunction[i] = exact;
+            else shiftFunction[i] = below;
+        }
+
+        return shiftFunction;
+    }
+}
+public class Reconstruction
+{
+    PCA _pcaData;
+
+    double[,] _extractedData;
+    double[,] _extractedVectors;
+
+    Matrix _newData;
+
+    int[] _selectedIndices;
+
+    public double[] SortedEigenValues
+    {
+        get
+        {
+            if (_pcaData == null)
+            {
+                throw new ArgumentNullException("No PCA reference data specified.");
+            }
+            return _pcaData.SortedEigenValues;
+        }
+    }
+    public double[,] SortedEigenVectors
+    {
+        get
+        {
+            if (_pcaData == null)
+            {
+                throw new ArgumentNullException("No PCA reference data specified.");
+            }
+            return _pcaData.SortedEigenVectors;
+        }
+    }
+    public double[] SortedMasses
+    {
+        get
+        {
+            if (_pcaData == null)
+            {
+                throw new ArgumentNullException("No PCA reference data specified.");
+            }
+            return _pcaData.SortedMasses;
+        }
+    }
+
+    public Reconstruction(PCA PCAData)
+    {
+        _pcaData = PCAData;
+    }
+
+    public void SetFeatureSelection(int[] Indices)
+    {
+        _selectedIndices = Indices;
+    }
+    public void ExtractData(int[] Indices)
+    {
+        _selectedIndices = Indices;
+
+        _extractedData = new double[Indices.Length, _pcaData.Rows];
+        _extractedVectors = new double[Indices.Length, Indices.Length];
+
+        for (int x = 0; x < Indices.Length; x++)
+        {
+            int dataIndex = -1;
+            for (int i = 0; i < _pcaData.ReorderedIndices.Count; i++)
+            {
+                if (_pcaData.ReorderedIndices[i].Final == Indices[i])
+                {
+                    dataIndex = _pcaData.ReorderedIndices[i].Original;
+                    break;
+                }
+            }
+
+            if (dataIndex < 0) throw new KeyNotFoundException("Could not resolve the original data index.");
+            double[] temp = _pcaData.OriginalData.GetColumnArray(_pcaData.ReorderedIndices[dataIndex].Original);
+
+            for (int y = 0; y < temp.Length; y++)
+            {
+                _extractedData[x, y] = temp[y];
+            }
+        }
+
+        for (int x = 0; x < Indices.Length; x++)
+        {
+            for (int y = 0; y < Indices.Length; y++)
+            {
+                _extractedVectors[x, y] = _pcaData.SortedEigenVectors[y, Indices[x]];
+            }
+        }
+    }
+
+    public void ReplaceComponent(int Index, double[] ReplacementData)
+    {
+        for (int y = 0; y < ReplacementData.Length; y++)
+        {
+            _extractedData[Index, y] = ReplacementData[y];
+        }
+    }
+
+    public void CalculateFinalData()
+    {
+        Matrix matrixData = new Matrix(_extractedData);
+        Matrix matrixVectors = new Matrix(_extractedVectors);
+        _newData = matrixData.Multiply(matrixVectors);
+    }
+}
+public class ScorePlot
+{
+    BackgroundWorker bw;
+
+    double[,] scoreData;
+    int width;
+    int height;
+    double maxPositive;
+    double maxNegative;
+
+    BitmapSource scoreImage;
+
+    public BitmapSource ScoreImage { get { return scoreImage; } }
+
+    public ScorePlot(double[,] ScoreData, int Width, int Height)
+    {
+        scoreData = ScoreData;
+        width = Width;
+        height = Height;
+
+        GetMinMax();
+
+        CreateImage();
+    }
+    public ScorePlot(double[,] ScoreData, int Width, int Height, BackgroundWorker BackgroundWorker)
+    {
+        scoreData = ScoreData;
+        width = Width;
+        height = Height;
+
+        bw = BackgroundWorker;
+
+        GetMinMax();
+
+        CreateImage();
+    }
+
+    private void GetMinMax()
+    {
+        maxPositive = 0;
+        maxNegative = 0;
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (scoreData[x, y] > 0)
+                {
+                    if (scoreData[x, y] > maxPositive) maxPositive = scoreData[x, y];
+                }
+                else
+                {
+                    if ((-scoreData[x, y]) > maxNegative) maxNegative = -scoreData[x, y];
+                }
+            }
+        }
+    }
+
+    private void CreateImage()
+    {
+        if (bw == null) CreateImageNoBW();
+        else CreateImageBW();
+    }
+
+    private void CreateImageNoBW()
+    {
+        Data2D[] data = new Data2D[4];
+        for (int i = 0; i < 4; i++)
+        {
+            data[i] = new Data2D(width, height);
+        }
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                double value = scoreData[x, y];
+                Color c = new Color();
+                if (value >= 0)
+                {
+                    c = Scale.WarmColor(value, maxPositive);
+                }
+                else
+                {
+                    c = Scale.ColdColor(-value, maxNegative);
+                }
+                data[0][x, y] = c.R;
+                data[1][x, y] = c.G;
+                data[2][x, y] = c.B;
+                data[3][x, y] = c.A;
+            }
+        }
+        scoreImage = Imaging.CreateImage(new Data3D(data));
+    }
+    private void CreateImageBW()
+    {
+        Data2D[] data = new Data2D[4];
+        for (int i = 0; i < 4; i++)
+        {
+            data[i] = new Data2D(width, height);
+        }
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                double value = scoreData[x, y];
+                Color c = new Color();
+                if (value >= 0)
+                {
+                    c = Scale.WarmColor(value, maxPositive);
+                }
+                else
+                {
+                    c = Scale.ColdColor(-value, maxNegative);
+                }
+                data[0][x, y] = c.R;
+                data[1][x, y] = c.G;
+                data[2][x, y] = c.B;
+                data[3][x, y] = c.A;
+            }
+            bw.ReportProgress((int)(((double)x * 100d) / ((double)width)));
+        }
+        scoreImage = Imaging.CreateImage(new Data3D(data));
+    }
+
+    public void Save(string Path)
+    {
+        using (var fileStream = new FileStream(Path, FileMode.Create))
+        {
+            try
+            {
+                BitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(ScoreImage));
+                encoder.Save(fileStream);
+            }
+            catch (Exception ex)
+            {
+                ImagingSIMS.Common.DialogBox db = new Common.DialogBox("The image could not be saved.", 
+                    ex.Message, "Save", Common.DialogBoxIcon.Stop);
+                db.ShowDialog();
+                return;
+            }
+        }
+    }
+}
+
+public static class Scale
+{
+    public static Color WarmColor(double EigenValue, double Max)
+    {
+        double ratio = EigenValue / Max;
+        double diff = 0;
+
+        if (ratio <= 0.33d)
+        {
+            diff = ratio - 0;
+            return Color.FromArgb(255, (byte)(ratio * 255d), 0, 0);
+        }
+        else if (ratio > 0.33d && ratio <= 0.66d)
+        {
+            diff = ratio - 0.33d;
+            return Color.FromArgb(255, 255, (byte)(ratio * 255d), 0);
+        }
+        else if (ratio > 0.66d && ratio < 1.0d)
+        {
+            diff = ratio - 0.66d;
+            return Color.FromArgb(255, 255, 255, (byte)(ratio * 255d));
+        }
+        else return Color.FromArgb(255, 255, 255, 255);
+    }
+    public static Color ColdColor(double EigenValue, double Max)
+    {
+        double ratio = EigenValue / Max;
+        double diff = 0;
+
+        if (ratio <= 0.33d)
+        {
+            diff = ratio - 0;
+            return Color.FromArgb(255, 0, 0, (byte)(ratio * 255d));
+        }
+        else if (ratio > 0.33d && ratio <= 0.66d)
+        {
+            diff = ratio - 0.33d;
+            return Color.FromArgb(255, 0, (byte)(ratio * 255d), 255);
+        }
+        else if (ratio > 0.66d && ratio < 1.0d)
+        {
+            diff = ratio - 0.66d;
+            return Color.FromArgb(255, (byte)(ratio * 255d), 255, 255);
+        }
+        else return Color.FromArgb(255, 255, 255, 255);
+    }
+}

@@ -1,0 +1,176 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.RegistrationParametersControl"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:c="clr-namespace:ImagingSIMS.Controls"
+             xmlns:reg="clr-namespace:ImagingSIMS.ImageRegistration;assembly=ImageRegistration"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <ObjectDataProvider x:Key="regTypeFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="reg:ImageRegistrationTypes"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            <ObjectDataProvider x:Key="denoiseTypeFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="reg:DenoiseMethodTypes"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            <c:RegTypeToEnabledConverter x:Key="regTypeToEnabled"/>
+            <reg:RegistrationDescriptionConverter x:Key="regDescConverter"/>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="Width" Value="75"/>
+                <Setter Property="Height" Value="23"/>
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock>Registration Method:</TextBlock>
+                <ComboBox Margin="4" Grid.Column="1" Height="23" IsEditable="False"
+                          ItemsSource="{Binding Source={StaticResource regTypeFromEnum}}"
+                          SelectedItem="{Binding ElementName=userControl, Path=RegistrationParameters.RegType}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"
+                                       ToolTip="{Binding Converter={StaticResource regDescConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>                   
+                </ComboBox>
+            </Grid>            
+            <Grid IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.RegType, 
+                Converter={StaticResource regTypeToEnabled}, ConverterParameter=Translation|CenterRigid|CenterSimilarity|Affine}"
+                  ToolTip="Set value to 0 to specify a known transform without automatically calculating the best transform.">
+                <TextBlock>Maximum Iterations:</TextBlock>
+                <TextBox Text="{Binding ElementName=userControl, Path=RegistrationParameters.MaxIterations}"/>
+            </Grid>
+            <Grid IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.PointBased, Converter={StaticResource boolInvertConverter}}">
+                <TextBlock>Relaxation Factor:</TextBlock>
+                <TextBox Text="{Binding ElementName=userControl, Path=RegistrationParameters.RelaxationFactor}"/>
+            </Grid>
+            <Grid IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.PointBased, Converter={StaticResource boolInvertConverter}}">
+                <TextBlock>Max Step Length:</TextBlock>
+                <TextBox Text="{Binding ElementName=userControl, Path=RegistrationParameters.MaxStepLength}"/>
+            </Grid>
+            <Grid IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.PointBased, Converter={StaticResource boolInvertConverter}}">
+                <TextBlock>Minimum Step Length:</TextBlock>
+                <TextBox Text="{Binding ElementName=userControl, Path=RegistrationParameters.MinStepLength}"/>
+            </Grid>
+            <Grid>
+                <TextBlock>Initial Translation X:</TextBlock>
+                <TextBox Text="{Binding ElementName=userControl, Path=RegistrationParameters.TranslationX}"/>
+            </Grid>
+            <Grid>
+                <TextBlock>Initial Translation Y:</TextBlock>
+                <TextBox Text="{Binding ElementName=userControl, Path=RegistrationParameters.TranslationY}"/>
+            </Grid>
+            <Grid IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.RegType, Converter={StaticResource regTypeToEnabled}, ConverterParameter=CenterRigid|CenterSimilarity|Affine}">
+                <TextBlock>Initial Angle (degrees):</TextBlock>
+                <TextBox Text="{Binding ElementName=userControl, Path=RegistrationParameters.Angle}"/>
+            </Grid>
+            <Grid IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.RegType, Converter={StaticResource regTypeToEnabled}, ConverterParameter=CenterSimilarity|Affine}">
+                <TextBlock>Initial Scale:</TextBlock>
+                <TextBox Text="{Binding ElementName=userControl, Path=RegistrationParameters.Scale}"/>
+            </Grid>
+            <Grid>
+                <StackPanel Orientation="Horizontal" IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.RegType, 
+                        Converter={StaticResource regTypeToEnabled}, ConverterParameter=CenterRigid|CenterSimilarity|Affine}">
+                    <CheckBox VerticalAlignment="Center" HorizontalAlignment="Center"
+                              IsChecked="{Binding ElementName=userControl, Path=RegistrationParameters.UseCenterForRotation}"/>
+                    <TextBlock>Use Image Center For Rotation</TextBlock>
+                </StackPanel>
+            </Grid>
+            <!--Denoise-->
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox VerticalAlignment="Center" HorizontalAlignment="Center"
+                              IsChecked="{Binding ElementName=userControl, Path=RegistrationParameters.DenoiseImages}"/>
+                    <TextBlock>Denoise Images</TextBlock>
+                </StackPanel>
+            </Grid>
+            <Grid IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.DenoiseImages}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock>Denoise Method:</TextBlock>
+                <ComboBox Margin="4" Grid.Column="1" Height="23" IsEditable="False"
+                          ItemsSource="{Binding Source={StaticResource denoiseTypeFromEnum}}"
+                          SelectedItem="{Binding ElementName=userControl, Path=RegistrationParameters.DenoiseMethod}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
+            <!--MultModal-->
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox VerticalAlignment="Center" HorizontalAlignment="Center" 
+                              IsChecked="{Binding ElementName=userControl, Path=RegistrationParameters.MultiModal}"/>
+                    <TextBlock>Multi Modal</TextBlock>
+                </StackPanel>
+            </Grid>
+            <Grid Margin="24,0,0,0">
+                <StackPanel Orientation="Vertical">
+                <Grid IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.MultiModal}">
+                    <TextBlock>Number Bins:</TextBlock>
+                    <TextBox Text="{Binding ElementName=userControl, Path=RegistrationParameters.NumberBins}"/>
+                </Grid>
+                <Grid IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.MultiModal}">
+                    <TextBlock>Number Samples:</TextBlock>
+                    <TextBox Text="{Binding ElementName=userControl, Path=RegistrationParameters.NumberSamples}"/>
+                </Grid>
+                <Grid IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.MultiModal}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock>Use All Pixels</TextBlock>
+                        <CheckBox VerticalAlignment="Center" HorizontalAlignment="Center"
+                              IsChecked="{Binding ElementName=userControl, Path=RegistrationParameters.UseAllPixels}"/>
+                    </StackPanel>
+                </Grid>
+                </StackPanel>
+            </Grid>
+            
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox VerticalAlignment="Center" HorizontalAlignment="Center" 
+                              IsChecked="{Binding ElementName=userControl, Path=RegistrationParameters.PointBased}"/>
+                    <TextBlock>Point Based</TextBlock>
+                </StackPanel>
+            </Grid>
+            <Grid Margin="24,0,0,0">
+                <StackPanel Orientation="Vertical">
+                    <Grid IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.PointBased}">
+                        <TextBlock>Gradient Tolerance:</TextBlock>
+                        <TextBox Text="{Binding ElementName=userControl, Path=RegistrationParameters.GradientTolerance}"/>
+                    </Grid>
+                    <Grid IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.PointBased}">
+                        <TextBlock>Value Tolerance:</TextBlock>
+                        <TextBox Text="{Binding ElementName=userControl, Path=RegistrationParameters.ValueTolerance}"/>
+                    </Grid>
+                    <Grid IsEnabled="{Binding ElementName=userControl, Path=RegistrationParameters.PointBased}">
+                        <TextBlock>Epsilon Function:</TextBlock>
+                        <TextBox Text="{Binding ElementName=userControl, Path=RegistrationParameters.EpsilonFunction}"/>
+                    </Grid>
+                </StackPanel>
+            </Grid>            
+        </StackPanel>
+    </Grid>
+</UserControl>

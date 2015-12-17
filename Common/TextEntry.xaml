@@ -1,0 +1,22 @@
+﻿<Window x:Class="ImagingSIMS.Common.Dialogs.TextEntryDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="" Width="350" MaxWidth="350"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        SizeToContent="Height" WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        WindowStyle="None"
+        Background="#FF414141">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Margin="8,4" Grid.Row="0" HorizontalAlignment="Left" Text="{Binding Message}" Foreground="White"/>
+        <TextBox   x:Name="textBoxEntry" Margin="16,4" Grid.Row="1" HorizontalAlignment="Stretch" Text="{Binding EnteredText}"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,8,0">
+            <Button Margin="4" Width="75" Height="23" Click="buttonOk_Click" IsDefault="True">OK</Button>
+            <Button Margin="4" Width="75" Height="23" Click="buttonCancel_Click" IsCancel="True">Cancel</Button>
+        </StackPanel>
+    </Grid>
+</Window>

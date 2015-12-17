@@ -1,0 +1,121 @@
+.h
+#pragma once
+#include <fstream>
+#include "itkCommand.h"
+#include "itkRegularStepGradientDescentOptimizer.h"
+#include "itkLevenbergMarquardtOptimizer.h"
+
+class CommandIterationUpdate :	public itk::Command
+{
+public:
+	typedef CommandIterationUpdate			Self;
+	typedef itk::Command					Superclass;
+	typedef itk::SmartPointer<Self>			Pointer;
+	typedef itk::Optimizer::ParametersType	ParametersType;
+	itkNewMacro(Self);
+
+protected:
+	CommandIterationUpdate();
+
+	bool failedOpenWriter = false;
+	std::ofstream writer;
+
+public:
+
+	typedef itk::RegularStepGradientDescentOptimizer OptimizerType;
+	typedef const OptimizerType*                     OptimizerPointer;
+
+	~CommandIterationUpdate();
+
+	void Execute(itk::Object *caller, const itk::EventObject & event);
+	void Execute(const itk::Object * object, const itk::EventObject & event);
+};
+
+
+
+.cpp
+#include "CommandIterationUpdate.h"
+
+
+CommandIterationUpdate::CommandIterationUpdate()
+{
+}
+
+
+CommandIterationUpdate::~CommandIterationUpdate()
+{
+	if (writer.is_open())
+	{
+		writer.close();
+		std::cout << "RegistrationOutput.csv closed." << std::endl;
+	}
+}
+
+void CommandIterationUpdate::Execute(itk::Object *caller, const itk::EventObject & event)
+{
+	Execute((const itk::Object *)caller, event);
+}
+
+void CommandIterationUpdate::Execute(const itk::Object * object, const itk::EventObject & event)
+{
+	OptimizerPointer optimizer =
+		dynamic_cast< OptimizerPointer >(object);
+
+	if (typeid(object) == typeid(itk::RegularStepGradientDescentOptimizer))
+	{
+
+	}
+	else if (typeid(object) == typeid(itk::LevenbergMarquardtOptimizer))
+	{
+
+	}
+
+	if (!optimizer)
+	{
+		std::cout << "Optimizer null" << std::endl;
+		return;
+	}
+
+	if (!itk::IterationEvent().CheckEvent(&event))
+	{
+		return;
+	}
+
+	if (!writer.is_open() && !failedOpenWriter)
+	{
+		writer.open("Plugins/RegistrationOutput.csv", std::ios::out);
+		if (writer.is_open())
+		{
+			std::cout << "Output file opened: Plugins\\RegistrationOutput.csv" << std::endl;
+		}
+		else
+		{
+			writer.open("RegistrationOutput.csv");
+
+			if (writer.is_open())
+			{
+				std::cout << "Output file opened: RegistrationOutput.csv" << std::endl;
+			}
+			else
+			{
+				std::cout << "Output file failed to open." << std::endl;
+				failedOpenWriter = true;
+			}
+		}
+	}
+
+	std::cout << optimizer->GetCurrentIteration() << " = ";
+	std::cout << optimizer->GetValue() << " : ";
+	std::cout << optimizer->GetCurrentPosition() << std::endl;
+
+	ParametersType currentPosition = optimizer->GetCurrentPosition();
+	int length = currentPosition.GetSize();
+
+	int iteration = optimizer->GetCurrentIteration() + 1;
+	writer << iteration << ',' << optimizer->GetValue() << ',';
+	for (int i = 0; i < length; i++)
+	{
+		writer << currentPosition.GetElement(i) << ',';
+	}
+	writer << std::endl;
+}

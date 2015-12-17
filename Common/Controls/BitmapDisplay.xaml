@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="ImagingSIMS.Common.Controls.BitmapDisplay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" Width="Auto" Height="Auto">
+    <UserControl.Resources>
+        <ResourceDictionary Source="../Themes/Generic.xaml"/>
+    </UserControl.Resources>
+    <Grid>
+        <Border BorderThickness="1,1,0,0" Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="border1" 
+                VerticalAlignment="Stretch" Width="Auto" BorderBrush="#FF4D4D4D"/>
+        <Border BorderThickness="0,0,1,1" Height="Auto" HorizontalAlignment="Stretch" Margin="0" Name="border2" 
+                VerticalAlignment="Stretch" Width="Auto" BorderBrush="#FF878787"/>
+        <DockPanel Height="Auto" x:Name="imagePanel" Width="Auto" Margin="3" ScrollViewer.VerticalScrollBarVisibility="Disabled" MouseDown="imagePanel_MouseDown"
+                   MouseMove="imagePanel_MouseMove" MouseWheel="imagePanel_MouseWheel">
+            <Image Height="Auto" x:Name="display" Stretch="Fill" Width="Auto"/>
+        </DockPanel>
+    </Grid>
+    <UserControl.ContextMenu>
+        <ContextMenu x:Name="cMenu" IsEnabled="True" Style="{StaticResource ISMenuStyle}">
+            <MenuItem x:Name="cmSave" Header="Save" Click="cmSave_Click"/>
+            <MenuItem x:Name="cmCopy" Header="Copy" Click="cmCopy_Click"/>
+            <Separator/>
+            <MenuItem x:Name="cmEnableScroll" Click="cmEnableScroll_Click" 
+                      Header="{Binding Path=EnableAdjustment, Converter={StaticResource boolToScrollConverter}}"
+                      IsEnabled="{Binding Path=CanEnableAdjustment}"/>
+            <MenuItem x:Name="cmConvertRGB" Header="Convert To RGB" Click="cmConvertRGB_Click" IsEnabled="{Binding Path=CanConvertRGB}"/>
+            <Separator/>
+            <MenuItem x:Name="cmRotate" Header="Rotate" IsEnabled="{Binding Path=CanRotateFlip}">
+                <MenuItem x:Name="cmRotateClock" Header="Rotate Clockwise" Click="cmRotateClock_Click"/>
+                <MenuItem x:Name="cmRotateCounter" Header="Rotate Counterclockwise" Click="cmRotateCounter_Click"/>
+            </MenuItem>
+            <MenuItem x:Name="cmFlip" Header="Filp" IsEnabled="{Binding Path=CanRotateFlip}">
+                <MenuItem x:Name="cmFlipHoriz" Header="Flip Horizontally" Click="cmFlipHoriz_Click"/>
+                <MenuItem x:Name="cmFlipVert" Header="Flip Vertically" Click="cmFlipVert_Click"/>
+            </MenuItem>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+</UserControl>

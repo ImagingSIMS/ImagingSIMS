@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.ComponentTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="clr-namespace:ImagingSIMS.Controls"
+             xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             mc:Ignorable="d" 
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DesignHeight="480" d:DesignWidth="600" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\Generic.xaml"/>
+                <ResourceDictionary Source="Themes\ListViewResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <ListView x:Name="listTables" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Data}" 
+                    Height="Auto" Width="Auto" VerticalAlignment="Stretch" Margin="8" Background="Transparent" BorderBrush="Transparent"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding DataName}" Width="250"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <StackPanel Grid.Column="1" VerticalAlignment="Top" Orientation="Vertical">
+            <Label>Component Name: </Label>
+            <TextBox Text="{Binding ComponentName}" Margin="8,4,8,4" Background="Transparent" Foreground="White"/>
+            <StackPanel Orientation="Vertical">
+                <RadioButton x:Name="radioThermal" Content="Thermal" Foreground="White" VerticalAlignment="Center" Margin="4" IsEnabled="True"/>
+                <RadioButton x:Name="radioCold" Content="Cold" Foreground="White" VerticalAlignment="Center" Margin="4" IsEnabled="True"/>
+                <RadioButton x:Name="radioGray" Content="Grayscale" Foreground="White" VerticalAlignment="Center" Margin="4" IsEnabled="True"/>
+                <RadioButton x:Name="radioColor"  Foreground="White" VerticalAlignment="Center" Margin="4" IsChecked="True">
+                    <Grid>
+                        <cc:ColorSelector x:Name="colorPicker" Margin="8,4,8,4" Width="200"/>
+                    </Grid>
+                </RadioButton>
+            </StackPanel>
+            
+            <Button x:Name="buttonAccept" Margin="8,4,8,4" HorizontalAlignment="Right" Width="75" Height="25" Content="Accept"
+                    Click="buttonAccept_Click"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
