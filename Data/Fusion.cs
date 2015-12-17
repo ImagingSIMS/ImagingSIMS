@@ -1,26 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
-using ImagingSIMS.Common;
 using ImagingSIMS.Common.Math;
 using ImagingSIMS.Data.Converters;
 using ImagingSIMS.Data.Imaging;
 
-using DotNumerics.LinearAlgebra;
-
-using Accord.Math;
-using Accord.Statistics;
-using Accord.Statistics.Analysis;
-
 using Matrix = DotNumerics.LinearAlgebra.Matrix;
-using Vector = DotNumerics.LinearAlgebra.Vector;
 
 namespace ImagingSIMS.Data.Fusion
 {
@@ -166,127 +155,6 @@ namespace ImagingSIMS.Data.Fusion
             SetMeans();
 
             SetSizes();
-        }
-    }
-
-    public class PCAFusion : Pansharpening
-    {
-
-        public PCAFusion(BitmapSource HighRes, BitmapSource LowRes)
-            : base(HighRes, LowRes)
-        {
-       
-        }
-        public PCAFusion(Data2D HighRes, Data3D LowRes)
-            : base(HighRes, LowRes)
-        {
-
-        }
-
-        public override Data3D DoFusion()
-        {
-            int width = _color.Width;
-            int height = _color.Height;
-
-            double[] pan = new double[width * height];
-            double[,] ms = new double[width * height, 3];
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    int index = x * height + y;
-
-                    ms[index, 0] = _color[x, y, 0];
-                    ms[index, 1] = _color[x, y, 1];
-                    ms[index, 2] = _color[x, y, 2];
-
-                    pan[index] = _gray[x, y];
-                }
-            }
-
-            PrincipalComponentAnalysis pca = new PrincipalComponentAnalysis(ms, AnalysisMethod.Center);
-            pca.Compute();
-
-            double[,] pcs = pca.Result;
-
-            int length = width * height;
-
-            //Mean center pan band
-            double sum = 0;
-            for (int i = 0; i < length; i++)
-            {
-                sum += pan[i];
-            }
-            double avg = sum / (float)length;
-            for (int i = 0; i < length; i++)
-            {
-                pan[i] -= avg;
-            }
-
-            float[] panF = new float[length];
-            float[] pc1F = new float[length];
-
-            for (int i = 0; i < length; i++)
-            {
-                panF[i] = (float)pan[i];
-                pc1F[i] = (float)pcs[i, 0];
-            }
-
-            HistogramMatching hist = new HistogramMatching(panF, pc1F);
-            //HistogramMatching hist = new HistogramMatching(pc1F, panF);
-            float[] matched = hist.Match1D();
-
-            for (int i = 0; i < length; i++)
-            {
-                pcs[i, 0] = matched[i];
-                //pcs[i, 0] = panF[i];
-            }
-
-            double[,] reverted = pca.Revert(pcs);
-
-            Data3D fused = new Data3D(width, height, 4);
-
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    int index = x * height + y;
-
-                    fused[x, y, 0] = (float)reverted[index, 0];
-                    fused[x, y, 1] = (float)reverted[index, 1];
-                    fused[x, y, 2] = (float)reverted[index, 2];
-                }
-            }
-
-            // Rescale
-            //float[] maximums = new float[3]
-            //{
-            //    fused.Layers[0].Maximum,
-            //    fused.Layers[1].Maximum,
-            //    fused.Layers[2].Maximum
-            //};
-            //float[] minimums = new float[3]
-            //{
-            //    fused.Layers[0].Minimum,
-            //    fused.Layers[1].Minimum,
-            //    fused.Layers[2].Minimum
-            //};
-            //for (int x = 0; x < width; x++)
-            //{
-            //    for (int y = 0; y < height; y++)
-            //    {
-            //        for (int i = 0; i < 3; i++)
-            //        {
-            //            fused[x, y, i] = (fused[x, y, i] - minimums[i]) * 255f / (maximums[i] - minimums[i]);
-            //        }
-            //    }
-            //}
-            return fused;
-
-        }
-        public override async Task<Data3D> DoFusionAsync()
-        {
-            return await Task<Data3D>.Run(() => DoFusion());
         }
     }
 

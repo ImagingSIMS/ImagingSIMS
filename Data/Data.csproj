@@ -43,27 +43,6 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Accord">
-      <HintPath>..\ImagingSIMS3\packages\Accord.2.15.0\lib\net45\Accord.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Controls">
-      <HintPath>..\ImagingSIMS3\packages\Accord.Controls.2.15.0\lib\net45\Accord.Controls.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.MachineLearning">
-      <HintPath>..\ImagingSIMS3\packages\Accord.MachineLearning.2.15.0\lib\net45\Accord.MachineLearning.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Math">
-      <HintPath>..\ImagingSIMS3\packages\Accord.Math.2.15.0\lib\net45\Accord.Math.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Statistics">
-      <HintPath>..\ImagingSIMS3\packages\Accord.Statistics.2.15.0\lib\net45\Accord.Statistics.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge">
-      <HintPath>..\ImagingSIMS3\packages\AForge.2.2.5\lib\AForge.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Math">
-      <HintPath>..\ImagingSIMS3\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
-    </Reference>
     <Reference Include="DotNumerics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\DotNumerics.dll</HintPath>
@@ -91,9 +70,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
-    <Reference Include="ZedGraph">
-      <HintPath>..\ImagingSIMS3\packages\ZedGraph.5.1.6\lib\net35-Client\ZedGraph.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base.cs" />
