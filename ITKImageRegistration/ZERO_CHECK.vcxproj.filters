@@ -7,7 +7,7 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CMake Rules">
-      <UniqueIdentifier>{E91BDF7D-54E4-4B6F-B04D-063E6F928ACC}</UniqueIdentifier>
+      <UniqueIdentifier>{47B8DD8B-57B5-4BBD-BB3D-7D4113EE7232}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

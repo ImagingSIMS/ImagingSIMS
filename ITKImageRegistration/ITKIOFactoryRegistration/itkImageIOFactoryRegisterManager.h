@@ -16,8 +16,8 @@
  *
  *=========================================================================*/
 
-#ifndef __itkImageIOFactoryRegisterManager_h
-#define __itkImageIOFactoryRegisterManager_h
+#ifndef itkImageIOFactoryRegisterManager_h
+#define itkImageIOFactoryRegisterManager_h
 
 namespace itk {
 
@@ -38,7 +38,7 @@ class ImageIOFactoryRegisterManager
 //  The following code is intended to be expanded at the end of the
 //  itkImageFileReader.h and itkImageFileWriter.h files.
 //
-void  NiftiImageIOFactoryRegister__Private(void);void  NrrdImageIOFactoryRegister__Private(void);void  GiplImageIOFactoryRegister__Private(void);void  HDF5ImageIOFactoryRegister__Private(void);void  JPEGImageIOFactoryRegister__Private(void);void  GDCMImageIOFactoryRegister__Private(void);void  BMPImageIOFactoryRegister__Private(void);void  LSMImageIOFactoryRegister__Private(void);void  PNGImageIOFactoryRegister__Private(void);void  TIFFImageIOFactoryRegister__Private(void);void  VTKImageIOFactoryRegister__Private(void);void  StimulateImageIOFactoryRegister__Private(void);void  BioRadImageIOFactoryRegister__Private(void);void  MetaImageIOFactoryRegister__Private(void);void  MRCImageIOFactoryRegister__Private(void);
+void  NiftiImageIOFactoryRegister__Private();void  NrrdImageIOFactoryRegister__Private();void  GiplImageIOFactoryRegister__Private();void  HDF5ImageIOFactoryRegister__Private();void  JPEGImageIOFactoryRegister__Private();void  GDCMImageIOFactoryRegister__Private();void  BMPImageIOFactoryRegister__Private();void  LSMImageIOFactoryRegister__Private();void  PNGImageIOFactoryRegister__Private();void  TIFFImageIOFactoryRegister__Private();void  VTKImageIOFactoryRegister__Private();void  StimulateImageIOFactoryRegister__Private();void  BioRadImageIOFactoryRegister__Private();void  MetaImageIOFactoryRegister__Private();void  MRCImageIOFactoryRegister__Private();void  GE4ImageIOFactoryRegister__Private();void  GE5ImageIOFactoryRegister__Private();
 
 //
 // The code below registers available IO helpers using static initialization in
@@ -48,7 +48,7 @@ void  NiftiImageIOFactoryRegister__Private(void);void  NrrdImageIOFactoryRegiste
 namespace {
 
   void (*ImageIOFactoryRegisterRegisterList[])(void) = {
-    NiftiImageIOFactoryRegister__Private,NrrdImageIOFactoryRegister__Private,GiplImageIOFactoryRegister__Private,HDF5ImageIOFactoryRegister__Private,JPEGImageIOFactoryRegister__Private,GDCMImageIOFactoryRegister__Private,BMPImageIOFactoryRegister__Private,LSMImageIOFactoryRegister__Private,PNGImageIOFactoryRegister__Private,TIFFImageIOFactoryRegister__Private,VTKImageIOFactoryRegister__Private,StimulateImageIOFactoryRegister__Private,BioRadImageIOFactoryRegister__Private,MetaImageIOFactoryRegister__Private,MRCImageIOFactoryRegister__Private,
+    NiftiImageIOFactoryRegister__Private,NrrdImageIOFactoryRegister__Private,GiplImageIOFactoryRegister__Private,HDF5ImageIOFactoryRegister__Private,JPEGImageIOFactoryRegister__Private,GDCMImageIOFactoryRegister__Private,BMPImageIOFactoryRegister__Private,LSMImageIOFactoryRegister__Private,PNGImageIOFactoryRegister__Private,TIFFImageIOFactoryRegister__Private,VTKImageIOFactoryRegister__Private,StimulateImageIOFactoryRegister__Private,BioRadImageIOFactoryRegister__Private,MetaImageIOFactoryRegister__Private,MRCImageIOFactoryRegister__Private,GE4ImageIOFactoryRegister__Private,GE5ImageIOFactoryRegister__Private,
     0};
   ImageIOFactoryRegisterManager ImageIOFactoryRegisterManagerInstance(ImageIOFactoryRegisterRegisterList);
 
