@@ -1,2 +1,5 @@
 # ImagingSIMS
 ImagingSIMS is an open-source project for loading, analyzing, and visualizing secondary ion mass spectrometry (SIMS) data.
+
+# Build Information
+<b>ITK</b> Three projects are included which utilize the Insight Registration and Segmentation Tooklkit. In order to compile those projects, you will need to download and build the ITK library yourself on your machine. ITK version 4.9 is being used for this project so that the projects can be compiled using Visual Studio 2015. The library can be pulled from GitHub (https://github.com/InsightSoftwareConsortium/ITK) with instructions to compile and build the library found at http://www.itk.org/Wiki/ITK/Getting_Started. If you do not intend to modify the source code of the ITKImageRegistration project, then you do not need to install and compile the ITK libraries, as long as the executable ITKImageRegistration.exe is part of the ImagingSIMS pull. After you've compiled the ITK libraries according to the instructions, you may need to rerun cmake on the CMakeLists.txt file in the ITKImageRegistration folder to recreate the project files to match the location of the ITK library files on your machine.
