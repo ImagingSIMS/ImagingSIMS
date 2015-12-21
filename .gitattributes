@@ -61,3 +61,8 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+#Include ClickOnce publishing files
+*.manifest binary
+*.application binary
+*.deploy binary

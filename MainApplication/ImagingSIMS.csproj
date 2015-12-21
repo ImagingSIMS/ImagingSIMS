@@ -18,7 +18,9 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <PublishUrl>Q:\InventoryAuthAD\InventoryAuthAD\ImagingSIMS\pub\</PublishUrl>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <PublishUrl>E:\Users\jayt\Source\Repos\ImagingSIMS3\deploy\pub\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -28,7 +30,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://128.118.169.171/ImagingSIMS/pub/</InstallUrl>
+    <InstallUrl>https://raw.githubusercontent.com/jay5026/ImagingSIMS/master/deploy/pub/</InstallUrl>
+    <UpdateUrl>https://raw.githubusercontent.com/jay5026/ImagingSIMS/master/deploy/pub/</UpdateUrl>
     <SupportUrl>http://128.118.169.171/ImagingSIMS/Support.aspx</SupportUrl>
     <ProductName>ImagingSIMS Version 3.6</ProductName>
     <PublisherName>Winograd Lab</PublisherName>
@@ -36,14 +39,12 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>153</ApplicationRevision>
+    <ApplicationRevision>154</ApplicationRevision>
     <ApplicationVersion>3.6.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>

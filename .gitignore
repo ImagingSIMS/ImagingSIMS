@@ -21,6 +21,7 @@ build/
 bld/
 [Bb]in/
 [Oo]bj/
+!ITKImageRegistration.exe
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -122,8 +123,8 @@ DocProject/buildhelp/
 DocProject/Help/*.HxT
 DocProject/Help/*.HxC
 DocProject/Help/*.hhc
-DocProject/Help/*.hhk
-DocProject/Help/*.hhp
+#DocProject/Help/*.hhk
+#DocProject/Help/*.hhp
 DocProject/Help/Html2
 DocProject/Help/html
 
