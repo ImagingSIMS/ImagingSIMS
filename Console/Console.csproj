@@ -41,21 +41,21 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="SharpDX, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\References\SharpDX 11 NET40\SharpDX.dll</HintPath>
+    <Reference Include="SharpDX, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.3.0.0\lib\net45\SharpDX.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SharpDX.D3DCompiler, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\References\SharpDX 11 NET40\SharpDX.D3DCompiler.dll</HintPath>
+    <Reference Include="SharpDX.D3DCompiler, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.D3DCompiler.3.0.0\lib\net45\SharpDX.D3DCompiler.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SharpDX.Direct3D11, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\References\SharpDX 11 NET40\SharpDX.Direct3D11.dll</HintPath>
+    <Reference Include="SharpDX.Direct3D11, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D11.3.0.0\lib\net45\SharpDX.Direct3D11.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SharpDX.DXGI, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\References\SharpDX 11 NET40\SharpDX.DXGI.dll</HintPath>
+    <Reference Include="SharpDX.DXGI, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DXGI.3.0.0\lib\net45\SharpDX.DXGI.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj">
