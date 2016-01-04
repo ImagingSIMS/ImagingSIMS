@@ -202,7 +202,9 @@ namespace ImagingSIMS.Controls
 
             Clipboard.SetImage(source);
 
-            ClosableTabItem.SendStatusUpdate(this, "Color scale copied to clipboard.");
+            // ContextMenu doesn't have logical ClosableTabItem parent so this won't send the status message
+            // and result in an exception
+            //ClosableTabItem.SendStatusUpdate(this, "Color scale copied to clipboard.");
         }
         private void cmCopyImage_Click(object sender, RoutedEventArgs e)
         {
@@ -211,7 +213,9 @@ namespace ImagingSIMS.Controls
 
             Clipboard.SetImage(source);
 
-            ClosableTabItem.SendStatusUpdate(this, "Image copied to clipboard.");
+            // ContextMenu doesn't have logical ClosableTabItem parent so this won't send the status message
+            // and result in an exception
+            //ClosableTabItem.SendStatusUpdate(this, "Image copied to clipboard.");
         }
     }
 
