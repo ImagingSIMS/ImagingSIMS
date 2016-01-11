@@ -329,8 +329,8 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy /y $(SolutionDir)Direct3DRendering\bin\Debug\Shaders\*.vso $(SolutionDir)MainApplication\Shaders\
+xcopy /y $(SolutionDir)Direct3DRendering\bin\Debug\Shaders\*.pso $(SolutionDir)MainApplication\Shaders\</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
