@@ -4041,8 +4041,8 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test4_Click(object sender, RoutedEventArgs e)
         {
-            bool result = ImagingSIMS.Data.PCA.PCA.VerifyPython();
-            DialogBox.Show("Result: " + result.ToString(), "", "Python", result ? DialogBoxIcon.GreenCheck : DialogBoxIcon.Stop);
+            //bool result = ImagingSIMS.Data.PCA.PCA.VerifyPython();
+            //DialogBox.Show("Result: " + result.ToString(), "", "Python", result ? DialogBoxIcon.GreenCheck : DialogBoxIcon.Stop);
             
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
