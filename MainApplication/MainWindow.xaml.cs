@@ -4047,10 +4047,10 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            OxySpectrumTab ost = new OxySpectrumTab();
-            ClosableTabItem cti = ClosableTabItem.Create(ost, TabType.Spectrum);
-            tabMain.Items.Add(cti);
-            tabMain.SelectedItem = cti;
+            //OxySpectrumTab ost = new OxySpectrumTab();
+            //ClosableTabItem cti = ClosableTabItem.Create(ost, TabType.Spectrum);
+            //tabMain.Items.Add(cti);
+            //tabMain.SelectedItem = cti;
         }
 #pragma warning restore 1998
 
