@@ -268,48 +268,20 @@
     <Content Include="Plugins\ITKImageRegistration.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Shaders\Axes.pso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\Axes.vso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\BoundingBox.pso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\BoundingBox.vso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\CoordinateBox.pso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\CoordinateBox.vso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\HeightMap.pso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\HeightMap.vso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\Isosurface.pso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\Isosurface.vso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\Model.pso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\Model.vso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\Raycast.pso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\Raycast.vso">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Shaders\Axes.pso" />
+    <None Include="Shaders\Axes.vso" />
+    <None Include="Shaders\BoundingBox.pso" />
+    <None Include="Shaders\BoundingBox.vso" />
+    <None Include="Shaders\CoordinateBox.pso" />
+    <None Include="Shaders\CoordinateBox.vso" />
+    <None Include="Shaders\HeightMap.pso" />
+    <None Include="Shaders\HeightMap.vso" />
+    <None Include="Shaders\Isosurface.pso" />
+    <None Include="Shaders\Isosurface.vso" />
+    <None Include="Shaders\Model.pso" />
+    <None Include="Shaders\Model.vso" />
+    <None Include="Shaders\Raycast.pso" />
+    <None Include="Shaders\Raycast.vso" />
     <Resource Include="Images\merge.png" />
     <Resource Include="Images\chart.png" />
     <Resource Include="Images\Clusters.ico" />
