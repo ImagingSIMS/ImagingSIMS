@@ -11,7 +11,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Themes/Generic.xaml"/>
-                <ResourceDictionary>
+                <ResourceDictionary>                  
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -53,6 +53,12 @@
                 <StackPanel Grid.Column="1" Orientation="Vertical">
                     <StackPanel.Resources>
                         <Style TargetType="TextBlock">
+                            <Setter Property="Margin" Value="4"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontFamily" Value="Segoe"/>
+                            <Setter Property="TextWrapping" Value="Wrap"/>
+                        </Style>
+                        <Style TargetType="{x:Type local:Hyperlink}">
                             <Setter Property="Margin" Value="4"/>
                             <Setter Property="Foreground" Value="White"/>
                             <Setter Property="FontFamily" Value="Segoe"/>
@@ -109,6 +115,16 @@
                     <TextBlock Margin="12,2,0,0">
                         Click 'Show Render Controls' to access various parameters, including transparency, saturation, etc.
                     </TextBlock>
+                    <Grid Margin="24,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border BorderBrush="White" Background="Wheat" Width="8" Height="8" CornerRadius="4"/>
+                        <local:Hyperlink Grid.Column="1" LinkTarget="https://www.microsoft.com/en-us/download/details.aspx?id=8109">
+                            You must have DirectX installed in order to create the rendering. If you receive a DLL Not Found error, click here to download and install DirectX
+                        </local:Hyperlink>
+                    </Grid>
                     <TextBlock Margin="12,2,0,0">
                         Use the recording controls to generate single snapshots or a sequence of images to be used to create a movie.
                     </TextBlock>

@@ -368,8 +368,8 @@ namespace ImagingSIMS.Controls
 
             try
             {
-                int resizedWidth = (int)HighResImage.ImageSource.Width;
-                int resizedHeight = (int)HighResImage.ImageSource.Height;
+                int resizedWidth = (int)HighResImage.ImageSource.PixelWidth;
+                int resizedHeight = (int)HighResImage.ImageSource.PixelHeight;
 
                 BitmapSource resizedLowRes = ImageHelper.CreateImage(ImageHelper.Upscale(ImageHelper.ConvertToData3D(LowResImage.ImageSource),
                     resizedWidth, resizedHeight));
