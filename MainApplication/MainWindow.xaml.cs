@@ -1235,13 +1235,9 @@ namespace ImagingSIMS.MainApplication
 
             if (Workspace.Registry.ClearPluginData)
             {
-                string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"ImagingSIMS\plugins");
-
-                if (Directory.Exists(folderPath))
-                {
-                    var fileInfo = new DirectoryInfo(folderPath);
-                    fileInfo.GetFiles("*", SearchOption.AllDirectories).ToList().ForEach(file => file.Delete());
-                }                
+                var fileInfo = new DirectoryInfo(
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"ImagingSIMS\plugins"));
+                fileInfo.GetFiles("*", SearchOption.AllDirectories).ToList().ForEach(file => file.Delete());
             }
 
             //Closes the application with no further action if the application is in Debug mode
@@ -2082,20 +2078,6 @@ namespace ImagingSIMS.MainApplication
                 await window.SetDataAsync(renderVolumes);
                 window.BeginRendering();
             }
-            catch (DllNotFoundException DNFex)
-            {
-                DialogBox.Show(DNFex.Message,
-                    "Download and install the DirectX runtime package at https://www.microsoft.com/en-us/download/confirmation.aspx?id=8109 to install the necessary files.",
-                    "DLL Not Found", DialogBoxIcon.Stop);
-
-                if (window != null)
-                {
-                    window.Close();
-                    window = null;
-                }
-
-                return;
-            }
             catch (Exception ex)
             {
                 DialogBox db = new DialogBox("There was an error creating the 3D rendering.", ex.Message, "Direct3D", DialogBoxIcon.Stop);
@@ -2163,20 +2145,6 @@ namespace ImagingSIMS.MainApplication
 
                 await window.SetDataAsync(hm.CorrectedHeightData, hm.CorrectedColorData);
                 window.BeginRendering();
-            }
-            catch(DllNotFoundException DNFex)
-            {
-                DialogBox.Show(DNFex.Message, 
-                    "Download and install the DirectX runtime package at https://www.microsoft.com/en-us/download/confirmation.aspx?id=8109 to install the necessary files.", 
-                    "DLL Not Found", DialogBoxIcon.Stop);
-
-                if (window != null)
-                {
-                    window.Close();
-                    window = null;
-                }
-
-                return;
             }
             catch (Exception ex)
             {
