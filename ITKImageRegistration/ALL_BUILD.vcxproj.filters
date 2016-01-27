@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="E:\Users\jayt\Source\Repos\ImagingSIMS3\ITKImageRegistration\CMakeLists.txt" />
+    <CustomBuild Include="C:\Users\taro148\Source\Repos\ImagingSIMS\ITKImageRegistration\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

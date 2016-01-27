@@ -205,38 +205,74 @@
     <Content Include="..\References\ITKCommon-4.5.dll">
       <Link>Plugins\ITKCommon-4.5.dll</Link>
     </Content>
+    <Content Include="..\References\ITKCommon-4.8.dll">
+      <Link>Plugins\ITKCommon-4.8.dll</Link>
+    </Content>
     <Content Include="..\References\ITKIOBioRad-4.5.dll">
       <Link>Plugins\ITKIOBioRad-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOBioRad-4.8.dll">
+      <Link>Plugins\ITKIOBioRad-4.8.dll</Link>
     </Content>
     <Content Include="..\References\ITKIOBMP-4.5.dll">
       <Link>Plugins\ITKIOBMP-4.5.dll</Link>
     </Content>
+    <Content Include="..\References\ITKIOBMP-4.8.dll">
+      <Link>Plugins\ITKIOBMP-4.8.dll</Link>
+    </Content>
     <Content Include="..\References\ITKIOGE-4.5.dll">
       <Link>Plugins\ITKIOGE-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOGE-4.8.dll">
+      <Link>Plugins\ITKIOGE-4.8.dll</Link>
     </Content>
     <Content Include="..\References\ITKIOGIPL-4.5.dll">
       <Link>Plugins\ITKIOGIPL-4.5.dll</Link>
     </Content>
+    <Content Include="..\References\ITKIOGIPL-4.8.dll">
+      <Link>Plugins\ITKIOGIPL-4.8.dll</Link>
+    </Content>
     <Content Include="..\References\ITKIOImageBase-4.5.dll">
       <Link>Plugins\ITKIOImageBase-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOImageBase-4.8.dll">
+      <Link>Plugins\ITKIOImageBase-4.8.dll</Link>
     </Content>
     <Content Include="..\References\ITKIOIPL-4.5.dll">
       <Link>Plugins\ITKIOIPL-4.5.dll</Link>
     </Content>
+    <Content Include="..\References\ITKIOIPL-4.8.dll">
+      <Link>Plugins\ITKIOIPL-4.8.dll</Link>
+    </Content>
     <Content Include="..\References\ITKIOMesh-4.5.dll">
       <Link>Plugins\ITKIOMesh-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOMesh-4.8.dll">
+      <Link>Plugins\ITKIOMesh-4.8.dll</Link>
     </Content>
     <Content Include="..\References\ITKIOPNG-4.5.dll">
       <Link>Plugins\ITKIOPNG-4.5.dll</Link>
     </Content>
+    <Content Include="..\References\ITKIOPNG-4.8.dll">
+      <Link>Plugins\ITKIOPNG-4.8.dll</Link>
+    </Content>
     <Content Include="..\References\ITKIOSiemens-4.5.dll">
       <Link>Plugins\ITKIOSiemens-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOSiemens-4.8.dll">
+      <Link>Plugins\ITKIOSiemens-4.8.dll</Link>
     </Content>
     <Content Include="..\References\ITKIOStimulate-4.5.dll">
       <Link>Plugins\ITKIOStimulate-4.5.dll</Link>
     </Content>
+    <Content Include="..\References\ITKIOStimulate-4.8.dll">
+      <Link>Plugins\ITKIOStimulate-4.8.dll</Link>
+    </Content>
     <Content Include="..\References\ITKIOVTK-4.5.dll">
       <Link>Plugins\ITKIOVTK-4.5.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOVTK-4.8.dll">
+      <Link>Plugins\ITKIOVTK-4.8.dll</Link>
     </Content>
     <Content Include="..\References\msvcp120.dll">
       <Link>Plugins\msvcp120.dll</Link>

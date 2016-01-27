@@ -87,12 +87,12 @@ namespace ImagingSIMS.Data.Fusion
         }
         protected void Resize()
         {
-            if (_highResSizeX == _lowResSizeX && _highResSizeY == _lowResSizeY &&
-                _highResSizeX != 0 && _highResSizeY != 0)
-            {
-                _isResized = true;
-                return;
-            }
+            //if (_highResSizeX == _lowResSizeX && _highResSizeY == _lowResSizeY &&
+            //    _highResSizeX != 0 && _highResSizeY != 0)
+            //{
+            //    _isResized = true;
+            //    return;
+            //}
 
             _colorNotResized = _color;
             _color = ImageHelper.Upscale(_color, _highResSizeX, _highResSizeY);
