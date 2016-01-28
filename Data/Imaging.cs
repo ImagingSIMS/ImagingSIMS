@@ -216,9 +216,14 @@ namespace ImagingSIMS.Data.Imaging
                     }
                     else if (pf == PixelFormats.Bgra32)
                     {
-                        byte a = pixels[pos + 3];      //Alpha
+                        //byte a = pixels[pos + 3];      //Alpha
 
-                        array[x, y] = a;
+                        //array[x, y] = a;
+                        byte b = pixels[pos + 0];      //Blue
+                        byte g = pixels[pos + 1];      //Green
+                        byte r = pixels[pos + 2];      //Red
+
+                        array[x, y] = MathEx.Average(r, g, b);
 
                         pos += 4;
                     }

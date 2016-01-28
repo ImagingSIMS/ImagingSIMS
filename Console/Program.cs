@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 
 using Direct3DRendering;
 using ImagingSIMS.Data;
+using ImagingSIMS.Data.Converters;
 
 using SharpDX;
 using SharpDX.D3DCompiler;
@@ -29,26 +30,79 @@ namespace ConsoleApp
             Console.WriteLine("Press Enter to begin...");
             Console.ReadLine();
 
-            IntPtr windowHandle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
-            var desc = new SwapChainDescription()
+            //IntPtr windowHandle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
+            //var desc = new SwapChainDescription()
+            //{
+            //    BufferCount = 1,
+            //    ModeDescription = new ModeDescription(100, 100,
+            //        new Rational(60, 1), Format.R8G8B8A8_UNorm),
+            //    IsWindowed = true,
+            //    OutputHandle = windowHandle,
+            //    SampleDescription = new SampleDescription(1, 0),
+            //    SwapEffect = SwapEffect.Discard,
+            //    Usage = Usage.RenderTargetOutput,
+            //};
+            //Device device;
+            //SwapChain swapChain;
+
+            //Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.None, desc, out device, out swapChain);
+            //int[,] testSpec = TestSpec.Generate();
+
+            //var byteCode = ShaderBytecode.CompileFromFile("SpectrumView.hlsl", "cs_5_0", ShaderFlags.None, EffectFlags.None);
+            //ComputeShader shader = new ComputeShader(device, byteCode);
+
+            int numTested = 0;
+            int numPassed = 0;
+            int numFailed = 0;
+
+            List<double[]> failed = new List<double[]>();
+
+            for (int r = 0; r < 256; r++)
             {
-                BufferCount = 1,
-                ModeDescription = new ModeDescription(100, 100,
-                    new Rational(60, 1), Format.R8G8B8A8_UNorm),
-                IsWindowed = true,
-                OutputHandle = windowHandle,
-                SampleDescription = new SampleDescription(1, 0),
-                SwapEffect = SwapEffect.Discard,
-                Usage = Usage.RenderTargetOutput,
-            };
-            Device device;
-            SwapChain swapChain;
+                for (int g = 0; g < 256; g++)
+                {
+                    for (int b = 0; b < 256; b++)
+                    {
+                        if (r% 5 != 0 || g % 5 != 0 || b % 5 != 0)
+                        {
+                            continue;
+                        }
+                        double[] hsl = ColorConversion.RGBtoHSL(r, g, b);
 
-            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.None, desc, out device, out swapChain);
-            int[,] testSpec = TestSpec.Generate();
+                        double[] rgb = ColorConversion.HSLtoRGB(hsl[0], hsl[1], hsl[2]);
 
-            var byteCode = ShaderBytecode.CompileFromFile("SpectrumView.hlsl", "cs_5_0", ShaderFlags.None, EffectFlags.None);
-            ComputeShader shader = new ComputeShader(device, byteCode);
+                        if (Math.Abs(rgb[0] -  r) < 0.1d && Math.Abs(rgb[1] - g) < 0.1d && Math.Abs(rgb[2] - b) < 0.1d)
+                        {
+                            numPassed++;
+                        }
+                        else
+                        {
+                            numFailed++;
+                            failed.Add(new double[]
+                            {
+                                r, g, b,
+                                rgb[0], rgb[1], rgb[2],
+                                hsl[0], hsl[1], hsl[2]
+                            });
+                        }
+
+                        numTested++;
+                    }
+                }
+            }
+
+            Console.WriteLine($"Finished testing {numTested} color combinations.");
+            Console.WriteLine($"Number passed: {numPassed}; Number failed {numFailed}.");
+            Console.WriteLine("Press enter to save failing combinations.");
+            Console.ReadLine();
+
+            using (StreamWriter sw = new StreamWriter(@"D:\failingcolors.csv"))
+            {
+                foreach (double[] fail in failed)
+                {
+                    sw.WriteLine($"{fail[0]},{fail[1]},{fail[2]},{fail[3]},{fail[4]},{fail[5]},{fail[6]},{fail[7]},{fail[8]}");
+                }
+            }
 
             Console.Write("Press Enter to exit.");
             Console.ReadLine();
