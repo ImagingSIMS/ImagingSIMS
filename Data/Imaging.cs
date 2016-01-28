@@ -178,30 +178,55 @@ namespace ImagingSIMS.Data.Imaging
             {
                 for (int x = 0; x < sizeX; x++)
                 {
-                    byte b = pixels[pos + 0];      //Blue
-                    byte g = pixels[pos + 1];      //Green
-                    byte r = pixels[pos + 2];      //Red
-
-                    if (pf == PixelFormats.Bgr24)
+                    if(pf == PixelFormats.Indexed8)
                     {
+                        Color c = BitmapSource.Palette.Colors[pixels[pos]];
+
+                        array[x, y] = MathEx.Average(c.R, c.G, c.B);
+
+                        pos += 1;
+                    }
+                    else if (pf == PixelFormats.Gray8)
+                    {
+                        Color c = BitmapSource.Palette.Colors[pixels[pos]];
+
+                        array[x, y] = MathEx.Average(c.R, c.G, c.B);
+
+                        pos += 1;
+                    }
+                    else if (pf == PixelFormats.Bgr24)
+                    {
+                        byte b = pixels[pos + 0];      //Blue
+                        byte g = pixels[pos + 1];      //Green
+                        byte r = pixels[pos + 2];      //Red
+
                         array[x, y] = MathEx.Average(r, g, b);
-                        //array[x, y] = (.299f * r) + (.587f * g) + (.114f * b);
+
                         pos += 3;
                     }
                     else if (pf == PixelFormats.Bgr32)
                     {
+                        byte b = pixels[pos + 0];      //Blue
+                        byte g = pixels[pos + 1];      //Green
+                        byte r = pixels[pos + 2];      //Red
+
                         array[x, y] = MathEx.Average(r, g, b);
-                        //array[x, y] = (.299f * r) + (.587f * g) + (.114f * b);
+
                         pos += 4;
                     }
                     else if (pf == PixelFormats.Bgra32)
                     {
-                        byte a = pixels[pos + 3];  //Alpha
+                        byte a = pixels[pos + 3];      //Alpha
+
                         array[x, y] = a;
+
                         pos += 4;
                     }
+
+                    else throw new FormatException($"Invalid image format type: {pf.ToString()}.");
                 }
             }
+
             return array;
         }
         /// <summary>
@@ -225,21 +250,65 @@ namespace ImagingSIMS.Data.Imaging
 
             Data2D array = new Data2D(sizeX, sizeY);
 
-            int pos = 0;
-
             Color color = new Color();
             if (Color.HasValue)
             {
                 color = Color.Value;
             }
 
+            int pos = 0;
             for (int y = 0; y < sizeY; y++)
             {
                 for (int x = 0; x < sizeX; x++)
                 {
-                    byte b = pixels[pos + 0];      //Blue
-                    byte g = pixels[pos + 1];      //Green
-                    byte r = pixels[pos + 2];      //Red
+                    byte b = 0;
+                    byte g = 0;
+                    byte r = 0;
+
+                    if (pf == PixelFormats.Indexed8)
+                    {
+                        Color c = BitmapSource.Palette.Colors[pixels[pos]];
+                        b = c.B;
+                        g = c.G;
+                        r = c.R;
+
+                        pos += 1;
+                    }
+                    else if (pf == PixelFormats.Gray8)
+                    {
+                        Color c = BitmapSource.Palette.Colors[pixels[pos]];
+                        b = c.B;
+                        g = c.G;
+                        r = c.R;
+
+                        pos += 1;
+                    }
+                    else if (pf == PixelFormats.Bgr24)
+                    {
+                        b = pixels[pos + 0];      //Blue
+                        g = pixels[pos + 1];      //Green
+                        r = pixels[pos + 2];      //Red
+
+                        pos += 3;
+                    }
+                    else if (pf == PixelFormats.Bgr32)
+                    {
+                        b = pixels[pos + 0];      //Blue
+                        g = pixels[pos + 1];      //Green
+                        r = pixels[pos + 2];      //Red
+
+                        pos += 4;
+                    }
+                    else if (pf == PixelFormats.Bgra32)
+                    {
+                        b = pixels[pos + 0];      //Blue
+                        g = pixels[pos + 1];      //Green
+                        r = pixels[pos + 2];      //Red
+
+                        pos += 4;
+                    }
+
+                    else throw new FormatException($"Invalid image format type: {pf.ToString()}.");
 
                     switch (Conversion)
                     {
@@ -253,13 +322,9 @@ namespace ImagingSIMS.Data.Imaging
                             array[x, y] = GetFromThermal(new byte[3] { b, g, r });
                             break;
                     }
-
-                    if (pf == PixelFormats.Bgr24) pos += 3;
-                    else if (pf == PixelFormats.Bgr32) pos += 4;
-                    else if (pf == PixelFormats.Bgra32) pos += 4;
                 }
-            }            
-           
+            }
+
             return array;
         }
         /// <summary>
@@ -354,27 +419,83 @@ namespace ImagingSIMS.Data.Imaging
             {
                 for (int x = 0; x < sizeX; x++)
                 {
-                    arrays[0][x, y] = pixels[pos + 0];      //Blue
-                    arrays[1][x, y] = pixels[pos + 1];      //Green
-                    arrays[2][x, y] = pixels[pos + 2];      //Red
-
-                    if (pf == PixelFormats.Bgr24)
+                    if (pf == PixelFormats.Indexed8)
                     {
-                        arrays[3][x, y] = 255f;
+                        Color c = BitmapSource.Palette.Colors[pixels[pos]];
+
+                        arrays[0][x, y] = c.B;
+                        arrays[1][x, y] = c.G;
+                        arrays[2][x, y] = c.R;
+
+                        pos += 1;
+                    }
+                    else if (pf == PixelFormats.Gray8)
+                    {
+                        Color c = BitmapSource.Palette.Colors[pixels[pos]];
+
+                        arrays[0][x, y] = c.B;
+                        arrays[1][x, y] = c.G;
+                        arrays[2][x, y] = c.R;
+
+                        pos += 1;
+                    }
+                    else if (pf == PixelFormats.Bgr24)
+                    {
+                        arrays[0][x, y] = pixels[pos + 0];      //Blue
+                        arrays[1][x, y] = pixels[pos + 1];      //Green
+                        arrays[2][x, y] = pixels[pos + 2];      //Red
+                        arrays[3][x, y] = 255f;                 //Alpha
+
                         pos += 3;
                     }
                     else if (pf == PixelFormats.Bgr32)
                     {
-                        arrays[3][x, y] = 255f;
+                        arrays[0][x, y] = pixels[pos + 0];      //Blue
+                        arrays[1][x, y] = pixels[pos + 1];      //Green
+                        arrays[2][x, y] = pixels[pos + 2];      //Red
+                        arrays[3][x, y] = 255f;                 //Alpha
+
                         pos += 4;
                     }
                     else if (pf == PixelFormats.Bgra32)
                     {
-                        arrays[3][x, y] = pixels[pos + 3];  //Alpha
+                        arrays[0][x, y] = pixels[pos + 0];      //Blue
+                        arrays[1][x, y] = pixels[pos + 1];      //Green
+                        arrays[2][x, y] = pixels[pos + 2];      //Red
+                        arrays[3][x, y] = pixels[pos + 3];      //Alpha
+
                         pos += 4;
                     }
+
+                    else throw new FormatException($"Invalid image format type: {pf.ToString()}.");
                 }
             }
+            //int pos = 0;
+            //for (int y = 0; y < sizeY; y++)
+            //{
+            //    for (int x = 0; x < sizeX; x++)
+            //    {
+            //        arrays[0][x, y] = pixels[pos + 0];      //Blue
+            //        arrays[1][x, y] = pixels[pos + 1];      //Green
+            //        arrays[2][x, y] = pixels[pos + 2];      //Red
+
+            //        if (pf == PixelFormats.Bgr24)
+            //        {
+            //            arrays[3][x, y] = 255f;
+            //            pos += 3;
+            //        }
+            //        else if (pf == PixelFormats.Bgr32)
+            //        {
+            //            arrays[3][x, y] = 255f;
+            //            pos += 4;
+            //        }
+            //        else if (pf == PixelFormats.Bgra32)
+            //        {
+            //            arrays[3][x, y] = pixels[pos + 3];  //Alpha
+            //            pos += 4;
+            //        }
+            //    }
+            //}
 
             return new Data3D(arrays);
         }

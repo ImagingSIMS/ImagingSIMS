@@ -847,8 +847,8 @@ namespace ImagingSIMS.MainApplication
 
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Open Image Series";
-            ofd.Filter = "Image Files (.bmp, .jpg, .jpeg, .png)|*.bmp;*.jpg;*.jpeg;*.png|" +
-                            "Bitmap Images (.bmp)|*.bmp|JPEG Images (.jpg, .jpeg)|*.jpg;*.jpeg|PNG Images (.png)|*.png";
+            ofd.Filter = "Image Files (.bmp, .jpg, .jpeg, .png, .tif, .tiff)|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff|" +
+                            "Bitmap Images (.bmp)|*.bmp|JPEG Images (.jpg, .jpeg)|*.jpg;*.jpeg|PNG Images (.png)|*.png|Tiff Images (.tif, .tiff)|*.tif;*.tiff";
             ofd.Multiselect = true;
             if (ofd.ShowDialog() != true) return;
 
@@ -2816,8 +2816,8 @@ namespace ImagingSIMS.MainApplication
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Open High Res Image";
-            ofd.Filter = "Image Files (.bmp, .jpg, .jpeg, .png)|*.bmp;*.jpg;*.jpeg;*.png|" +
-                            "Bitmap Images (.bmp)|*.bmp|JPEG Images (.jpg, .jpeg)|*.jpg;*.jpeg|PNG Images (.png)|*.png";
+            ofd.Filter = "Image Files (.bmp, .jpg, .jpeg, .png)|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff|" +
+                            "Bitmap Images (.bmp)|*.bmp|JPEG Images (.jpg, .jpeg)|*.jpg;*.jpeg|PNG Images (.png)|*.png|Tiff Images (.tif, .tiff)|*.tif;*.tiff";
             ofd.Multiselect = false;
             if (ofd.ShowDialog() != true) return;
 
@@ -2862,8 +2862,8 @@ namespace ImagingSIMS.MainApplication
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Open Low Res Image";
-            ofd.Filter = "Image Files (.bmp, .jpg, .jpeg, .png)|*.bmp;*.jpg;*.jpeg;*.png|" +
-                            "Bitmap Images (.bmp)|*.bmp|JPEG Images (.jpg, .jpeg)|*.jpg;*.jpeg|PNG Images (.png)|*.png";
+            ofd.Filter = "Image Files (.bmp, .jpg, .jpeg, .png)|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff|" +
+                            "Bitmap Images (.bmp)|*.bmp|JPEG Images (.jpg, .jpeg)|*.jpg;*.jpeg|PNG Images (.png)|*.png|Tiff Images (.tif, .tiff)|*.tif;*.tiff";
             ofd.Multiselect = false;
             if (ofd.ShowDialog() != true) return;
 
