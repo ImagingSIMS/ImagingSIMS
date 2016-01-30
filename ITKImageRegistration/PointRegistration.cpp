@@ -29,6 +29,11 @@ void PointRegistration::InitializeRegistration(RegistrationParameters registrati
 	cout << "Fixed points: " << fixedPointSet->GetNumberOfPoints() <<
 		" - Moving points: " << movingPointSet->GetNumberOfPoints() << endl;
 
+	cout << "Fixed points:" << endl;
+	cout << fixedPointSet << endl;
+	cout << "Moving Points:" << endl;
+	cout << movingPointSet << endl;
+
 	metric = MetricType::New();
 
 	optimizer = OptimizerType::New();

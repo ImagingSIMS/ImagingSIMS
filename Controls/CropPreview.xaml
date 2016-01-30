@@ -48,7 +48,7 @@
         </Border.BorderBrush>
         <Canvas>
             <DockPanel MouseMove="DockPanel_MouseMove">
-                <Image x:Name="originalImage" Source="{Binding OriginalImage}" Width="450" Height="450" Stretch="Uniform"/>
+                <Image x:Name="originalImage" Source="{Binding OriginalImage}" Width="450" Height="450" Stretch="Fill"/>
             </DockPanel>            
             <ContentControl Width="225" MinWidth="10"
                         Height="225" MinHeight="10"

@@ -232,6 +232,9 @@
     <Content Include="..\References\ITKIOGIPL-4.8.dll">
       <Link>Plugins\ITKIOGIPL-4.8.dll</Link>
     </Content>
+    <Content Include="..\References\ITKIOHDF5-4.8.dll">
+      <Link>Plugins\ITKIOHDF5-4.8.dll</Link>
+    </Content>
     <Content Include="..\References\ITKIOImageBase-4.5.dll">
       <Link>Plugins\ITKIOImageBase-4.5.dll</Link>
     </Content>
@@ -244,11 +247,26 @@
     <Content Include="..\References\ITKIOIPL-4.8.dll">
       <Link>Plugins\ITKIOIPL-4.8.dll</Link>
     </Content>
+    <Content Include="..\References\ITKIOJPEG-4.8.dll">
+      <Link>Plugins\ITKIOJPEG-4.8.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOLSM-4.8.dll">
+      <Link>Plugins\ITKIOLSM-4.8.dll</Link>
+    </Content>
     <Content Include="..\References\ITKIOMesh-4.5.dll">
       <Link>Plugins\ITKIOMesh-4.5.dll</Link>
     </Content>
     <Content Include="..\References\ITKIOMesh-4.8.dll">
       <Link>Plugins\ITKIOMesh-4.8.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOMeta-4.8.dll">
+      <Link>Plugins\ITKIOMeta-4.8.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIONIFTI-4.8.dll">
+      <Link>Plugins\ITKIONIFTI-4.8.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIONRRD-4.8.dll">
+      <Link>Plugins\ITKIONRRD-4.8.dll</Link>
     </Content>
     <Content Include="..\References\ITKIOPNG-4.5.dll">
       <Link>Plugins\ITKIOPNG-4.5.dll</Link>
@@ -267,6 +285,9 @@
     </Content>
     <Content Include="..\References\ITKIOStimulate-4.8.dll">
       <Link>Plugins\ITKIOStimulate-4.8.dll</Link>
+    </Content>
+    <Content Include="..\References\ITKIOTIFF-4.8.dll">
+      <Link>Plugins\ITKIOTIFF-4.8.dll</Link>
     </Content>
     <Content Include="..\References\ITKIOVTK-4.5.dll">
       <Link>Plugins\ITKIOVTK-4.5.dll</Link>

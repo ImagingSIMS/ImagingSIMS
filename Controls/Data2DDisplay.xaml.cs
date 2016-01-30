@@ -15,8 +15,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using ImagingSIMS.Common;
 using ImagingSIMS.Data;
 using ImagingSIMS.Data.Imaging;
+
+using Microsoft.Win32;
 
 namespace ImagingSIMS.Controls
 {
@@ -34,6 +37,14 @@ namespace ImagingSIMS.Controls
             remove { RemoveHandler(GeneratePixelsStatsEvent, value); }
         }
         public static readonly RoutedEvent GeneratePixelsStatsEvent = EventManager.RegisterRoutedEvent("PixelStatsGenerated",
+            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Data2DDisplay));
+
+        public event RoutedEventHandler RemoveItemClick
+        {
+            add { AddHandler(RemoveItemClickEvent, value); }
+            remove { RemoveHandler(RemoveItemClickEvent, value); }
+        }
+        public static readonly RoutedEvent RemoveItemClickEvent = EventManager.RegisterRoutedEvent("RemoveItemClick",
             RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Data2DDisplay));
 
         public Data2DDisplayItem DisplayItem
@@ -216,6 +227,32 @@ namespace ImagingSIMS.Controls
             // ContextMenu doesn't have logical ClosableTabItem parent so this won't send the status message
             // and result in an exception
             //ClosableTabItem.SendStatusUpdate(this, "Image copied to clipboard.");
+        }
+
+        private void contentButtonRemove_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+
+            RaiseEvent(new RoutedEventArgs(RemoveItemClickEvent, this));
+        }
+        private void contentButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Bitmap Images (.bmp)|*.bmp";
+
+            if (sfd.ShowDialog() != true) return;
+
+            BitmapSource source = DisplayItem.DisplayImageSource as BitmapSource;
+            if (source == null) return;
+
+            source.Save(sfd.FileName);
+        }
+        private void contentButtonCopy_Click(object sender, RoutedEventArgs e)
+        {
+            BitmapSource bs = image.Source as BitmapSource;
+            if (bs == null) throw new ArgumentException("Invalid ImageSource");
+
+            Clipboard.SetImage(bs);
         }
     }
 

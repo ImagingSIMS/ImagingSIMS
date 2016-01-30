@@ -135,6 +135,17 @@
                     </Grid>
                 </Popup>
             </Grid>
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Width="20" Height="20" Click="contentButtonRemove_Click" Margin="4" ToolTip="Delete">
+                    <Image Source="Images\Remove24.png"/>
+                </Button>
+                <Button Width="20" Height="20" Click="contentButtonSave_Click" Margin="4" ToolTip="Save">
+                    <Image Source="Images\saveHS.png"/>
+                </Button>
+                <Button Width="20" Height="20" Click="contentButtonCopy_Click" Margin="4" ToolTip="Copy">
+                    <Image Source="Images\copy.ico"/>
+                </Button>
+            </StackPanel>
             <!-- Removed because no longer necessary. These functions are handled in the Cluster Identification tab -->
             <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Click="buttonPixelStats_Click">Pixel Stats</Button>

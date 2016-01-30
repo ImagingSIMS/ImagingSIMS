@@ -242,6 +242,21 @@ namespace ImagingSIMS.Controls
             }
         }
 
+        private void removeItem_Click(object sender, RoutedEventArgs e)
+        {
+            Data2DDisplay display = e.Source as Data2DDisplay;
+            if (display == null) return;
+
+            Data2DDisplayItem displayItem = display.DisplayItem;
+            if(displayItem!= null)
+            {
+                if (DisplayItems.Contains(displayItem))
+                {
+                    DisplayItems.Remove(displayItem);
+                }
+            }
+        }
+
         #region Clusters
         public ObservableCollection<CountedClusterStatistic> ClusterStats { get; set; }
         public static readonly DependencyProperty FoundClustersProperty = DependencyProperty.Register("FoundClusters",

@@ -31,7 +31,7 @@ namespace ImagingSIMS.Controls
         public static readonly DependencyProperty ResizedHeightProperty = DependencyProperty.Register("ResizedHeight",
             typeof(int), typeof(ResizeDialogWindow));
         public static readonly DependencyProperty ResziePreviewImageSourceProperty = DependencyProperty.Register("ResziePreviewImageSource",
-            typeof(ImageSource), typeof(ResizeDialogWindow));
+            typeof(BitmapSource), typeof(ResizeDialogWindow));
         public static readonly DependencyProperty DoCropProperty = DependencyProperty.Register("DoCrop",
             typeof(bool), typeof(ResizeDialogWindow));
         public static readonly DependencyProperty CropStartXProperty = DependencyProperty.Register("CropStartX",
@@ -59,9 +59,9 @@ namespace ImagingSIMS.Controls
             get { return (int)GetValue(ResizedHeightProperty); }
             set { SetValue(ResizedHeightProperty, value); }
         }
-        public ImageSource ResizePreviewImageSource
+        public BitmapSource ResizePreviewImageSource
         {
-            get { return (ImageSource)GetValue(ResziePreviewImageSourceProperty); }
+            get { return (BitmapSource)GetValue(ResziePreviewImageSourceProperty); }
             set { SetValue(ResziePreviewImageSourceProperty, value); }
         }
         public bool DoCrop
@@ -185,35 +185,35 @@ namespace ImagingSIMS.Controls
         public bool DoCrop;
         public int CropStartX;
         public int CropStartY;
-        public ImageSource ImageToResize;
+        public BitmapSource ImageToResize;
 
-        public ResizeDialogArgs(ImageSource ImageToResize)
+        public ResizeDialogArgs(BitmapSource ImageToResize)
         {
             this.ImageToResize = ImageToResize;
-            this.OriginalHeight = (int)ImageToResize.Height;
-            this.OriginalWidth = (int)ImageToResize.Width;
+            this.OriginalHeight = ImageToResize.PixelHeight;
+            this.OriginalWidth = ImageToResize.PixelWidth;
             this.ResizedHeight = this.OriginalHeight;
             this.ResizedWidth = this.OriginalWidth;
             this.DoCrop = false;
             this.CropStartX = 0;
             this.CropStartY = 0;
         }
-        public ResizeDialogArgs(ImageSource ImageToResize, int ResizedWidth, int ResizedHeight)
+        public ResizeDialogArgs(BitmapSource ImageToResize, int ResizedWidth, int ResizedHeight)
         {
             this.ImageToResize = ImageToResize;
-            this.OriginalHeight = (int)ImageToResize.Height;
-            this.OriginalWidth = (int)ImageToResize.Width;
+            this.OriginalHeight = ImageToResize.PixelHeight;
+            this.OriginalWidth = ImageToResize.PixelWidth;
             this.ResizedHeight = ResizedHeight;
             this.ResizedWidth = ResizedWidth;
             this.DoCrop = false;
             this.CropStartX = 0;
             this.CropStartY = 0;
         }
-        public ResizeDialogArgs(ImageSource ImageToResize, int ResizedWidth, int ResizedHeight, bool DoCrop, int CropStartX, int CropStartY)
+        public ResizeDialogArgs(BitmapSource ImageToResize, int ResizedWidth, int ResizedHeight, bool DoCrop, int CropStartX, int CropStartY)
         {
             this.ImageToResize = ImageToResize;
-            this.OriginalHeight = (int)ImageToResize.Height;
-            this.OriginalWidth = (int)ImageToResize.Width;
+            this.OriginalHeight = ImageToResize.PixelHeight;
+            this.OriginalWidth = ImageToResize.PixelWidth;
             this.ResizedHeight = ResizedHeight;
             this.ResizedWidth = ResizedWidth;
             this.DoCrop = DoCrop;

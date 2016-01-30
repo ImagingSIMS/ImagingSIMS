@@ -65,7 +65,7 @@
                             <!--<Grid>
                                 <CheckBox IsChecked="{Binding ListBoxItem.IsSelected}"/>
                             </Grid>-->
-                            <c:Data2DDisplay DisplayItem="{Binding}" GeneratePixelStats="generatePixelStats_Click"/>
+                            <c:Data2DDisplay DisplayItem="{Binding}" GeneratePixelStats="generatePixelStats_Click" RemoveItemClick="removeItem_Click"/>
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

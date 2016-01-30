@@ -541,14 +541,15 @@ namespace ImagingSIMS.Controls
 
             foreach(ClosableTabItem c in tabControl.Items)
             {
-                if(c.Content == initial)
-                {
-                    return c;
-                }
+                if (c.Content == initial) return c;
+
+                int numChildren = VisualTreeHelper.GetChildrenCount(c.Content as DependencyObject);
             }
 
             throw new ArgumentException("Could not find a ClosableTabItem in the given VisualTree");
         }
+
+
         public static bool IsClosableTabItemHosted(DependencyObject initial)
         {
             try

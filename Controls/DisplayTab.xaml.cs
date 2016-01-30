@@ -461,7 +461,9 @@ namespace ImagingSIMS.Controls
 
             foreach (DisplayImage image in itemsControl.SelectedItems)
             {
-                ImageSource src = image.Source;
+                BitmapSource src = image.Source as BitmapSource;
+                if (src == null) continue;
+
                 ResizeDialogWindow rdw = new ResizeDialogWindow(new ResizeDialogArgs(src));
                 if (rdw.ShowDialog() == true)
                 {
