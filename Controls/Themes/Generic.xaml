@@ -12,7 +12,7 @@
     <local:Data3DToSizeStringConverter x:Key="data3DToSizeStringConverter"/>
     <local:Data2DToBitmapSourceConverter x:Key="data2DToBitmapSourceConverter"/>
     <local:EnumDescriptionConverter x:Key="enumDescriptionConverter"/>
-    <local:DataMaximumToSliderIntervalConverter x:Key="dataMaximumToSliderIntervalConverter"/>
+    <local:DataMaximumToSliderRangeConverter x:Key="dataMaximumToSliderRangeConverter"/>
 
     <!-- Fill Brushes -->
 
