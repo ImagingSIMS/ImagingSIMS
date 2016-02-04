@@ -59,7 +59,7 @@
             
         </Grid>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" IsEnabled="{Binding ElementName=userControl, Path=IsPointBased}">
             <TextBlock>Point Source:</TextBlock>
             <ComboBox Width="100" Height="23" Margin="4"
                       ItemsSource="{Binding Source={StaticResource pointSourceFromEnum}}"

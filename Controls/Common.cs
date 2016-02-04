@@ -521,7 +521,7 @@ namespace ImagingSIMS.Controls
                 ColorScaleTypes colorScale = (ColorScaleTypes)values[0];
                 System.Windows.Media.Color solidColorScale = (System.Windows.Media.Color)values[1];
                 float dataMaximum = (float)values[2];
-                int saturation = (int)values[3];
+                double saturation = (double)values[3];
 
                 // Using dimensions 200 x 20 pixels to match the size of the image control
                 Data2D d = new Data2D(200, 20);
@@ -536,10 +536,10 @@ namespace ImagingSIMS.Controls
 
                 if (colorScale == ColorScaleTypes.Solid)
                 {
-                    return ImageHelper.CreateSolidColorImage(d, saturation, solidColorScale);
+                    return ImageHelper.CreateSolidColorImage(d, (float)saturation, solidColorScale);
                 }
                 else
-                    return ImageHelper.CreateColorScaleImage(d, saturation, colorScale);
+                    return ImageHelper.CreateColorScaleImage(d, (float)saturation, colorScale);
             }
             catch (Exception)
             {

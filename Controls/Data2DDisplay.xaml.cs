@@ -260,7 +260,7 @@ namespace ImagingSIMS.Controls
     {
         Data2D _dataSource;
         ImageSource _displayImageSource;
-        int _saturation;
+        double _saturation;
         ColorScaleTypes _colorScale;
         Color _solidColorScale;
         double _imageTransformedWidth;
@@ -291,7 +291,7 @@ namespace ImagingSIMS.Controls
                 }
             }
         }
-        public int Saturation
+        public double Saturation
         {
             get { return _saturation; }
             set
@@ -392,11 +392,11 @@ namespace ImagingSIMS.Controls
             if (DataSource == null) return;
             if (ColorScale == ColorScaleTypes.Solid)
             {
-                DisplayImageSource = ImageHelper.CreateSolidColorImage(DataSource, Saturation, SolidColorScale);
+                DisplayImageSource = ImageHelper.CreateSolidColorImage(DataSource, (float)Saturation, SolidColorScale);
             }
             else
             {
-                DisplayImageSource = ImageHelper.CreateColorScaleImage(DataSource, Saturation, ColorScale);
+                DisplayImageSource = ImageHelper.CreateColorScaleImage(DataSource, (float)Saturation, ColorScale);
             }
         }
     }
