@@ -51,58 +51,61 @@ namespace ConsoleApp
             //var byteCode = ShaderBytecode.CompileFromFile("SpectrumView.hlsl", "cs_5_0", ShaderFlags.None, EffectFlags.None);
             //ComputeShader shader = new ComputeShader(device, byteCode);
 
-            int numTested = 0;
-            int numPassed = 0;
-            int numFailed = 0;
+            //int numTested = 0;
+            //int numPassed = 0;
+            //int numFailed = 0;
 
-            List<double[]> failed = new List<double[]>();
+            //List<double[]> failed = new List<double[]>();
 
-            for (int r = 0; r < 256; r++)
-            {
-                for (int g = 0; g < 256; g++)
-                {
-                    for (int b = 0; b < 256; b++)
-                    {
-                        if (r% 5 != 0 || g % 5 != 0 || b % 5 != 0)
-                        {
-                            continue;
-                        }
-                        double[] hsl = ColorConversion.RGBtoHSL(r, g, b);
+            //for (int r = 0; r < 256; r++)
+            //{
+            //    for (int g = 0; g < 256; g++)
+            //    {
+            //        for (int b = 0; b < 256; b++)
+            //        {
+            //            if (r% 5 != 0 || g % 5 != 0 || b % 5 != 0)
+            //            {
+            //                continue;
+            //            }
+            //            double[] hsl = ColorConversion.RGBtoHSL(r, g, b);
 
-                        double[] rgb = ColorConversion.HSLtoRGB(hsl[0], hsl[1], hsl[2]);
+            //            double[] rgb = ColorConversion.HSLtoRGB(hsl[0], hsl[1], hsl[2]);
 
-                        if (Math.Abs(rgb[0] -  r) < 0.1d && Math.Abs(rgb[1] - g) < 0.1d && Math.Abs(rgb[2] - b) < 0.1d)
-                        {
-                            numPassed++;
-                        }
-                        else
-                        {
-                            numFailed++;
-                            failed.Add(new double[]
-                            {
-                                r, g, b,
-                                rgb[0], rgb[1], rgb[2],
-                                hsl[0], hsl[1], hsl[2]
-                            });
-                        }
+            //            if (Math.Abs(rgb[0] -  r) < 0.1d && Math.Abs(rgb[1] - g) < 0.1d && Math.Abs(rgb[2] - b) < 0.1d)
+            //            {
+            //                numPassed++;
+            //            }
+            //            else
+            //            {
+            //                numFailed++;
+            //                failed.Add(new double[]
+            //                {
+            //                    r, g, b,
+            //                    rgb[0], rgb[1], rgb[2],
+            //                    hsl[0], hsl[1], hsl[2]
+            //                });
+            //            }
 
-                        numTested++;
-                    }
-                }
-            }
+            //            numTested++;
+            //        }
+            //    }
+            //}
 
-            Console.WriteLine($"Finished testing {numTested} color combinations.");
-            Console.WriteLine($"Number passed: {numPassed}; Number failed {numFailed}.");
-            Console.WriteLine("Press enter to save failing combinations.");
-            Console.ReadLine();
+            //Console.WriteLine($"Finished testing {numTested} color combinations.");
+            //Console.WriteLine($"Number passed: {numPassed}; Number failed {numFailed}.");
+            //Console.WriteLine("Press enter to save failing combinations.");
+            //Console.ReadLine();
 
-            using (StreamWriter sw = new StreamWriter(@"D:\failingcolors.csv"))
-            {
-                foreach (double[] fail in failed)
-                {
-                    sw.WriteLine($"{fail[0]},{fail[1]},{fail[2]},{fail[3]},{fail[4]},{fail[5]},{fail[6]},{fail[7]},{fail[8]}");
-                }
-            }
+            //using (StreamWriter sw = new StreamWriter(@"D:\failingcolors.csv"))
+            //{
+            //    foreach (double[] fail in failed)
+            //    {
+            //        sw.WriteLine($"{fail[0]},{fail[1]},{fail[2]},{fail[3]},{fail[4]},{fail[5]},{fail[6]},{fail[7]},{fail[8]}");
+            //    }
+            //}
+
+            float result = 0f / 1f;
+            Console.WriteLine(result);
 
             Console.Write("Press Enter to exit.");
             Console.ReadLine();

@@ -118,6 +118,9 @@
       <DependentUpon>PointSelectImage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Printing.cs" />
+    <Compile Include="RatioTab.xaml.cs">
+      <DependentUpon>RatioTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RegistrationInputImage.xaml.cs">
       <DependentUpon>RegistrationInputImage.xaml</DependentUpon>
     </Compile>
@@ -370,6 +373,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PointSelectImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RatioTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

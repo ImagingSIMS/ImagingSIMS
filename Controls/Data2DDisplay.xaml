@@ -104,8 +104,10 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0">Saturation:</TextBlock>
                 <Slider x:Name="sliderSaturation" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch"
+                        SmallChange="{Binding ElementName=userControl, Path=DisplayItem.DataSource.Maximum, Converter={StaticResource dataMaximumToSliderIntervalConverter}, ConverterParameter=Small}"
+                        LargeChange="{Binding ElementName=userControl, Path=DisplayItem.DataSource.Maximum, Converter={StaticResource dataMaximumToSliderIntervalConverter}, ConverterParameter=Large}"
                         Minimum="1" Maximum="{Binding DisplayItem.DataSource.Maximum, ElementName=userControl}" 
-                        Value="{Binding DisplayItem.Saturation, Mode=TwoWay, ElementName=userControl}" SmallChange="1" LargeChange="100" />
+                        Value="{Binding DisplayItem.Saturation, Mode=TwoWay, ElementName=userControl}"/>
                 <TextBlock Grid.Column="2" Text="{Binding DisplayItem.Saturation, StringFormat=0, ElementName=userControl}"/>
             </Grid>
             <Grid>

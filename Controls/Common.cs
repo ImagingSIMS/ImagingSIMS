@@ -552,4 +552,48 @@ namespace ImagingSIMS.Controls
             throw new NotImplementedException();
         }
     }
+    public class DataMaximumToSliderIntervalConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                float maximum = (float)value;
+                string param = (string)parameter;
+
+                bool isMajorTickMark = string.IsNullOrEmpty(param) || param.ToLower() == "large";
+
+                // Check maximum and set interval appropriately
+                if(maximum > 100)
+                {
+                    if (isMajorTickMark) return 25;
+                    else return 1;
+                }
+                if(maximum > 10)
+                {
+                    if (isMajorTickMark) return 2;
+                    else return 0.5;
+                }
+                if(maximum > 1)
+                {
+                    if (isMajorTickMark) return 0.1f;
+                    else return 0.01;
+                }
+                else
+                {
+                    if (isMajorTickMark) return 0.01f;
+                    else return 0.001;
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return 0;
+        }
+    }
 }

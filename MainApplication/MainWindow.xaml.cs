@@ -4045,14 +4045,26 @@ namespace ImagingSIMS.MainApplication
         {
             //bool result = ImagingSIMS.Data.PCA.PCA.VerifyPython();
             //DialogBox.Show("Result: " + result.ToString(), "", "Python", result ? DialogBoxIcon.GreenCheck : DialogBoxIcon.Stop);
+            RatioTab rt = new RatioTab();
+            rt.InputData.AvailableTables = Workspace.Data;
+            ClosableTabItem cti = ClosableTabItem.Create(rt, TabType.Ratio, "Ratio", true);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
             
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            //OxySpectrumTab ost = new OxySpectrumTab();
-            //ClosableTabItem cti = ClosableTabItem.Create(ost, TabType.Spectrum);
-            //tabMain.Items.Add(cti);
-            //tabMain.SelectedItem = cti;
+            Random r = new Random();
+            Data2D d = new Data2D(256, 256);
+            for (int x = 0; x < d.Width; x++)
+            {
+                for (int y = 0; y < d.Height; y++)
+                {
+                    d[x, y] = (float)(r.Next(0, 10000) / 5000d);
+                }
+            }
+            d.DataName = "Test data";
+            Workspace.Data.Add(d);
         }
 #pragma warning restore 1998
 
