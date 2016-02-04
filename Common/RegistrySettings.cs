@@ -74,6 +74,8 @@ namespace ImagingSIMS.Common.Registry
             typeof(bool), typeof(RegSettings));
         public static readonly DependencyProperty SuppressRegistrationWarningsProperty = DependencyProperty.Register("SuppressRegistrationWarnings",
             typeof(bool), typeof(RegSettings));
+        public static readonly DependencyProperty DataDisplayWidthProperty = DependencyProperty.Register("DataDisplayWidth",
+            typeof(double), typeof(RegSettings));
 
         public FileList RecentFiles
         {
@@ -130,6 +132,11 @@ namespace ImagingSIMS.Common.Registry
             get { return (bool)GetValue(SuppressRegistrationWarningsProperty); }
             set { SetValue(SuppressRegistrationWarningsProperty, value); }
         }
+        public double DataDisplayWidth
+        {
+            get { return (double)GetValue(DataDisplayWidthProperty); }
+            set { SetValue(DataDisplayWidthProperty, value); }
+        }
 
         public RegSettings()
         {
@@ -159,6 +166,7 @@ namespace ImagingSIMS.Common.Registry
                 keyOptions.SetValue("DefaultProgram", (int)DefaultProgram);
                 keyOptions.SetValue("StartWithTrace", BoolInt.Convert(StartWithTrace));
                 keyOptions.SetValue("SuppressRegistrationWarnings", BoolInt.Convert(SuppressRegistrationWarnings));
+                keyOptions.SetValue("DataDisplayWidth", DataDisplayWidth);
             }
             catch (Exception)
             {
@@ -198,6 +206,7 @@ namespace ImagingSIMS.Common.Registry
                 DefaultProgram = (DefaultProgram)((int)keyOptions.GetValue("DefaultProgram", 1));
                 StartWithTrace = BoolInt.Convert((int)keyOptions.GetValue("StartWithTrace", 0));
                 SuppressRegistrationWarnings = BoolInt.Convert((int)keyOptions.GetValue("SuppressRegistrationWarnings", 0));
+                DataDisplayWidth = double.Parse((string)keyOptions.GetValue("DataDisplayWidth", 225d));
 
                 HasCrashed = BoolInt.Convert((int)keyCrash.GetValue("HasCrashed", 0));
                 if (HasCrashed)

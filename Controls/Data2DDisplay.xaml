@@ -53,7 +53,8 @@
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" x:Name="scrollViewer" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"
-                      Width="225" Height="225"
+                      Width="{Binding ElementName=userControl, Path=ImageWidth}" 
+                      Height="{Binding ElementName=userControl, Path=ImageHeight}"
                       ScrollChanged="ScrollViewer_ScrollChanged"
                       PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                       PreviewMouseLeftButtonDown="ScrollViewer_PreviewMouseLeftButtonDown"
@@ -147,6 +148,9 @@
                 </Button>
                 <Button Width="20" Height="20" Click="contentButtonCopy_Click" Margin="4" ToolTip="Copy">
                     <Image Source="Images\copy.ico"/>
+                </Button>
+                <Button Width="20" Height="20" Click="contentButtonStats_Click" Margin="4" ToolTip="Analyze">
+                    <Image Source="Images\ChartWizard.png"/>
                 </Button>
             </StackPanel>
             <!-- Removed because no longer necessary. These functions are handled in the Cluster Identification tab -->

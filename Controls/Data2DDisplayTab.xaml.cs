@@ -22,6 +22,7 @@ using ImagingSIMS.Common.Dialogs;
 using ImagingSIMS.Data;
 using ImagingSIMS.Data.ClusterIdentification;
 using ImagingSIMS.Data.Imaging;
+using System.IO;
 
 namespace ImagingSIMS.Controls
 {
@@ -50,8 +51,6 @@ namespace ImagingSIMS.Controls
             DisplayItems = new ObservableCollection<Data2DDisplayItem>();
             BatchApply = new BatchApplyViewModel();
 
-            ClusterStats = new ObservableCollection<CountedClusterStatistic>();
-
             InitializeComponent();
         }
         public Data2DDisplayTab(List<Data2D> DataSources)
@@ -64,8 +63,6 @@ namespace ImagingSIMS.Controls
             }
 
             BatchApply = new BatchApplyViewModel();
-
-            ClusterStats = new ObservableCollection<CountedClusterStatistic>();
 
             InitializeComponent();
         }
@@ -80,8 +77,6 @@ namespace ImagingSIMS.Controls
 
             BatchApply = new BatchApplyViewModel(ColorScale);
 
-            ClusterStats = new ObservableCollection<CountedClusterStatistic>();
-
             InitializeComponent();
         }
         public Data2DDisplayTab(List<Data2D> DataSources, Color SolidColor)
@@ -94,8 +89,6 @@ namespace ImagingSIMS.Controls
             }
 
             BatchApply = new BatchApplyViewModel(SolidColor);
-
-            ClusterStats = new ObservableCollection<CountedClusterStatistic>();
 
             InitializeComponent();
         }
@@ -257,108 +250,34 @@ namespace ImagingSIMS.Controls
             }
         }
 
-        #region Clusters
-        public ObservableCollection<CountedClusterStatistic> ClusterStats { get; set; }
-        public static readonly DependencyProperty FoundClustersProperty = DependencyProperty.Register("FoundClusters",
-            typeof(FoundClusters), typeof(Data2DDisplayTab));
-        public static readonly DependencyProperty UseMaskProperty = DependencyProperty.Register("UseMask",
-            typeof(bool), typeof(Data2DDisplayTab));
-        public static readonly DependencyProperty UseMaskClustersProperty = DependencyProperty.Register("UseMaskClusters",
-            typeof(bool), typeof(Data2DDisplayTab));
-
-        public FoundClusters FoundClusters
+        public static readonly DependencyProperty AnalysisOutputTextProperty = DependencyProperty.Register("AnalysisOutputText",
+            typeof(string), typeof(Data2DDisplayTab));
+        public string AnalysisOutputText
         {
-            get { return (FoundClusters)GetValue(FoundClustersProperty); }
-            set { SetValue(FoundClustersProperty, value); }
-        }
-        public bool UseMask
-        {
-            get { return (bool)GetValue(UseMaskProperty); }
-            set { SetValue(UseMaskProperty, value); }
-        }
-        public bool UseMaskClusters
-        {
-            get { return (bool)GetValue(UseMaskClustersProperty); }
-            set { SetValue(UseMaskClustersProperty, value); }
+            get { return (string)GetValue(AnalysisOutputTextProperty); }
+            set { SetValue(AnalysisOutputTextProperty, value); }
         }
 
-        public void DropMaskData(FoundClusters foundClusters)
-        {
-            FoundClusters = foundClusters;
-
-            UseMask = true;
-            expanderSidePanel.IsExpanded = true;
-        }
-        private async void generatePixelStats_Click(object sender, RoutedEventArgs e)
+        private void analyzePixels_Click(object sender, RoutedEventArgs e)
         {
             Data2DDisplay display = e.Source as Data2DDisplay;
             if (display == null) return;
 
-            Mouse.OverrideCursor = Cursors.Wait;
-
             Data2D d = display.DisplayItem.DataSource;
-            string results = String.Empty;
+            StringBuilder sb = new StringBuilder();
 
-            try
-            {
-                if (UseMask)
-                {
-                    if (UseMaskClusters)
-                    {
-                        results = await FoundClusters.GenerateStatisticsAsync(d);
+            sb.AppendLine($"Name: {d.DataName} (UID {d.UniqueID})");
+            sb.AppendLine($"Width: {d.Width} Height: {d.Height}");
+            sb.AppendLine($"Minimum value: {d.Minimum} Maximum value: {d.Maximum}");
+            sb.AppendLine($"Mean: {d.Mean} Standard deviation: {d.StdDev}");
+            sb.AppendLine($"Total counts: {d.TotalCounts}");
+            sb.AppendLine($"Non-zero pixels: {d.NonSparseMatrix.Count} Non-zero percentage: {(d.NonSparseMatrix.Count * 100 / (d.Width * d.Height))}%");
+            sb.AppendLine($"Non-zero mean: {d.NonSparseMean} Non-zero standard deviation: {d.NonSparseStdDev}");
 
-                        List<CountedClusterStatistic> clusterStats = FoundClusters.GenerateStats(d);
+            AnalysisOutputText = sb.ToString();
 
-                    }
-                    else
-                    {
-                        results = await d.GenerateStatisticsAsync((Data2D)FoundClusters.MaskArray);
-                    }
-
-                }
-                else
-                {
-                    results = await d.GenerateStatisticsAsync();
-                }
-
-                if (results == null)
-                {
-                    Mouse.OverrideCursor = Cursors.Arrow;
-
-                    DialogBox.Show("Could not perform the statistics operation.", 
-                        "The operation failed and didn't return a value", "Statisitcs", DialogBoxIcon.Stop);
-                    return;
-                }
-
-                tbStatsText.Text = results;
-                expanderSidePanel.IsExpanded = true;
-                Mouse.OverrideCursor = Cursors.Arrow;
-            }
-            catch (ArgumentException ARex)
-            {
-                Mouse.OverrideCursor = Cursors.Arrow;
-
-                DialogBox.Show("Could not perform the statistics operation.", ARex.Message, "Statisitcs", DialogBoxIcon.Stop);
-                return;
-            }
-            catch (Exception ex)
-            {
-                Mouse.OverrideCursor = Cursors.Arrow;
-
-                DialogBox.Show("Could not perform the statistics operation.", ex.Message, "Statisitcs", DialogBoxIcon.Stop);
-                return;
-            }
-
+            expanderStatsOutput.IsExpanded = true;
         }
-        private void buttonCopyText_Click(object sender, RoutedEventArgs e)
-        {
-            Clipboard.SetText(tbStatsText.Text);
-        }
-        private void buttonClearText_Click(object sender, RoutedEventArgs e)
-        {
-            tbStatsText.Text = string.Empty;
-        }
-        #endregion
 
         public BitmapSource GetOverlay()
         {

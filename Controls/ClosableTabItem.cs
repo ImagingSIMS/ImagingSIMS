@@ -156,16 +156,6 @@ namespace ImagingSIMS.Controls
                 Data2DDisplayTab d2dt = this.Content as Data2DDisplayTab;
                 if (d2dt == null) return;
 
-                if (e.Data.GetDataPresent("FoundClusters"))
-                {
-                    ImagingSIMS.Data.ClusterIdentification.FoundClusters foundClusters =
-                        e.Data.GetData("FoundClusters") as ImagingSIMS.Data.ClusterIdentification.FoundClusters;
-                    if (foundClusters == null) return;
-
-                    d2dt.DropMaskData(foundClusters);
-
-                    didDrop = true;
-                }
                 else if (e.Data.GetDataPresent("Data2D"))
                 {
                     ImagingSIMS.Data.Data2D d = e.Data.GetData("Data2D") as ImagingSIMS.Data.Data2D;

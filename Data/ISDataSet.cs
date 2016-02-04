@@ -180,6 +180,68 @@ namespace ImagingSIMS.Data
             }
         }
 
+        List<float[]> _nonSparseMatrix;
+        public List<float[]> NonSparseMatrix
+        {
+            get
+            {
+                if(_nonSparseMatrix == null)
+                {
+                    _nonSparseMatrix = getNonSparseMatrix();
+                }
+
+                return _nonSparseMatrix;
+            }
+
+        }
+        float _nonSparseMean = float.NaN;
+        public float NonSparseMean
+        {
+            get
+            {
+                if (float.IsNaN(_nonSparseMean))
+                {
+                    float sum = 0;
+                    foreach(float[] pixel in NonSparseMatrix)
+                    {
+                        sum += pixel[2];
+                    }
+                    _nonSparseMean = sum / NonSparseMatrix.Count;
+                }
+
+                return _nonSparseMean;
+            }
+        }
+        public float NonSparseStdDev
+        {
+            get
+            {
+                float mean = NonSparseMean;
+                float s = 0;
+
+                foreach (float[] pixel in NonSparseMatrix)
+                {
+                    s += ((pixel[2] - mean) * (pixel[2] - mean));
+                }
+
+                return (float)Math.Sqrt(s / NonSparseMatrix.Count);
+            }
+        }
+
+        private List<float[]> getNonSparseMatrix()
+        {
+            List<float[]> nonSparse = new List<float[]>();
+
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    if (this[x, y] != 0) nonSparse.Add(new float[] { x, y, this[x, y] });
+                }
+            }
+            return nonSparse;
+        }
+
         public Data2D()
         {
             _matrix = new FlatArray<float>(1, 1);
@@ -509,6 +571,15 @@ namespace ImagingSIMS.Data
             }
             _max = max;
             _mean = Mean;
+
+            _nonSparseMatrix = getNonSparseMatrix();
+
+            float sum = 0;
+            for (int i = 0; i < _nonSparseMatrix.Count; i++)
+            {
+                sum += _nonSparseMatrix[i][2];
+            }
+            _nonSparseMean = sum / _nonSparseMatrix.Count;
         }
 
         public Data2D Resize(int HighX, int HighY)

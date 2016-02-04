@@ -31,12 +31,12 @@ namespace ImagingSIMS.Controls
         public static readonly DependencyProperty DisplayItemProperty = DependencyProperty.Register("DisplayItem",
             typeof(Data2DDisplayItem), typeof(Data2DDisplay));
 
-        public event RoutedEventHandler GeneratePixelStats
+        public event RoutedEventHandler AnalyzeData
         {
-            add { AddHandler(GeneratePixelsStatsEvent, value); }
-            remove { RemoveHandler(GeneratePixelsStatsEvent, value); }
+            add { AddHandler(AnalyzeDataEvent, value); }
+            remove { RemoveHandler(AnalyzeDataEvent, value); }
         }
-        public static readonly RoutedEvent GeneratePixelsStatsEvent = EventManager.RegisterRoutedEvent("PixelStatsGenerated",
+        public static readonly RoutedEvent AnalyzeDataEvent = EventManager.RegisterRoutedEvent("AnalyzeData",
             RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Data2DDisplay));
 
         public event RoutedEventHandler RemoveItemClick
@@ -47,6 +47,22 @@ namespace ImagingSIMS.Controls
         public static readonly RoutedEvent RemoveItemClickEvent = EventManager.RegisterRoutedEvent("RemoveItemClick",
             RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Data2DDisplay));
 
+        public static readonly DependencyProperty ImageWidthProperty = DependencyProperty.Register("ImageWidth",
+            typeof(double), typeof(Data2DDisplay));
+        public static readonly DependencyProperty ImageHeightProperty = DependencyProperty.Register("ImageHeight",
+            typeof(double), typeof(Data2DDisplay));
+
+        public double ImageWidth
+        {
+            get { return (double)GetValue(ImageWidthProperty); }
+            set { SetValue(ImageWidthProperty, value); }
+        }
+        public double ImageHeight
+        {
+            get { return (double)GetValue(ImageHeightProperty); }
+            set { SetValue(ImageHeightProperty, value); }
+        }
+
         public Data2DDisplayItem DisplayItem
         {
             get { return (Data2DDisplayItem)GetValue(DisplayItemProperty); }
@@ -56,6 +72,14 @@ namespace ImagingSIMS.Controls
         public Data2DDisplay()
         {
             InitializeComponent();
+
+            this.Loaded += Data2DDisplay_Loaded;
+        }
+
+        private void Data2DDisplay_Loaded(object sender, RoutedEventArgs e)
+        {
+            DisplayItem.ImageTransformedWidth = ImageWidth;
+            DisplayItem.ImageTransformedHeight = ImageHeight;
         }
 
         private void buttonShowColor_MouseEnter(object sender, RoutedEventArgs e)
@@ -66,7 +90,7 @@ namespace ImagingSIMS.Controls
         {
             e.Handled = true;
 
-            RaiseEvent(new RoutedEventArgs(GeneratePixelsStatsEvent, this));
+            RaiseEvent(new RoutedEventArgs(AnalyzeDataEvent, this));
         }
 
         #region ScrollViewer
@@ -253,6 +277,12 @@ namespace ImagingSIMS.Controls
             if (bs == null) throw new ArgumentException("Invalid ImageSource");
 
             Clipboard.SetImage(bs);
+        }
+        private void contentButtonStats_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+
+            RaiseEvent(new RoutedEventArgs(AnalyzeDataEvent, this));
         }
     }
 
