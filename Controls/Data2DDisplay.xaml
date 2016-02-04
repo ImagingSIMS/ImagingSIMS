@@ -79,7 +79,7 @@
             </Image>
         </ScrollViewer>
         <Grid Grid.Row="2">
-            <Image x:Name="imageColorScale" Margin="4" Width="200" HorizontalAlignment="Center" Stretch="UniformToFill" Height="20">
+            <Image x:Name="imageColorScale" Margin="4" Width="{Binding ElementName=userControl, Path=ImageWidth}" HorizontalAlignment="Center" Stretch="UniformToFill" Height="20">
                 <Image.Source>
                     <MultiBinding Converter="{StaticResource colorScaleToBitmapSourceConverter}">
                         <Binding Path="DisplayItem.ColorScale" ElementName="userControl"/>
