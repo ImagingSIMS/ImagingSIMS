@@ -512,6 +512,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Workspace.ico" />
+    <Resource Include="Images\ChartWizard.png" />
     <Content Include="Images\StartupTabContent.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

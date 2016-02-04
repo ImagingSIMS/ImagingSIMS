@@ -40,13 +40,12 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto" MinWidth="150" MaxWidth="400"/>
         </Grid.ColumnDefinitions>
 
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <ListBox x:Name="itemsControl" Grid.Row="0" Background="Transparent" 
@@ -65,7 +64,9 @@
                             <!--<Grid>
                                 <CheckBox IsChecked="{Binding ListBoxItem.IsSelected}"/>
                             </Grid>-->
-                            <c:Data2DDisplay DisplayItem="{Binding}" GeneratePixelStats="generatePixelStats_Click" RemoveItemClick="removeItem_Click"/>
+                            <c:Data2DDisplay DisplayItem="{Binding}" AnalyzeData="analyzePixels_Click" RemoveItemClick="removeItem_Click"
+                                             ImageWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Registry.DataDisplayWidth}"
+                                             ImageHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Registry.DataDisplayWidth}"/>
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -77,7 +78,18 @@
                 </ListBox.ContextMenu>
             </ListBox>
 
-            <Grid Grid.Row="1">
+            <Expander x:Name="expanderStatsOutput" Grid.Row="1" IsExpanded="False" ExpandDirection="Up">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock>Output:</TextBlock>
+                    <TextBox Grid.Row="1" IsReadOnly="True" TextWrapping="Wrap" MaxHeight="250" Text="{Binding ElementName=userControl, Path=AnalysisOutputText}"/>
+                </Grid>
+            </Expander>
+
+            <Grid Grid.Row="2">
                 <GroupBox Header="Batch Apply" Foreground="White" HorizontalAlignment="Left">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock>Color scale:</TextBlock>
@@ -106,65 +118,5 @@
                 </GroupBox>
             </Grid>
         </Grid>
-
-        <GridSplitter Grid.Column="1"  HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="2,4" 
-                      Width="3" Height="Auto" Background="#FF333333" 
-                      Visibility="{Binding ElementName=expanderSidePanel, Path=IsExpanded, Converter={StaticResource boolVisConverter}}"/>
-
-        <Expander Grid.Column="2" ExpandDirection="Left" IsExpanded="False" x:Name="expanderSidePanel">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                
-                <Grid Background="Transparent">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    
-                    <TextBlock>Mask:</TextBlock>
-                    
-                    <Image Grid.Row="1" Width="Auto" Height="Auto"
-                           MinWidth="100" MinHeight="100" 
-                           MaxWidth="200" MaxHeight="200"
-                           HorizontalAlignment="Stretch" Stretch="Uniform"
-                           Source="{Binding ElementName=userControl, Path=FoundClusters, Converter={StaticResource foundClustersToMaskImageConverter}}"/>
-                    
-                    <StackPanel Grid.Row="2" Orientation="Horizontal">
-                        <TextBlock>Filter with Mask:</TextBlock>
-                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=userControl, Path=UseMask}"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="3" Orientation="Horizontal" IsEnabled="{Binding ElementName=userControl, Path=UseMask}">
-                        <TextBlock>Filter by Cluster:</TextBlock>
-                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=userControl, Path=UseMaskClusters}"/>
-                    </StackPanel>
-                </Grid>
-                
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock>Output:</TextBlock>
-
-                    <TextBox    x:Name="tbStatsText" 
-                        Width="Auto" Height="Auto" Grid.Row="1"
-                         VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                         IsReadOnly="True"
-                         HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"/>
-
-                    <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
-                        <Button Click="buttonCopyText_Click">Copy</Button>
-                        <Button Click="buttonClearText_Click">Clear</Button>
-                    </StackPanel>
-                </Grid>  
-            </Grid>
-        </Expander>
     </Grid>    
 </UserControl>
