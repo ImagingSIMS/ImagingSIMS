@@ -156,6 +156,7 @@
     <Compile Include="Controls\ProgressUpdaterControl.xaml.cs">
       <DependentUpon>ProgressUpdaterControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FileDialogs.cs" />
     <Compile Include="RegistrationDropBox.xaml.cs">
       <DependentUpon>RegistrationDropBox.xaml</DependentUpon>
     </Compile>
