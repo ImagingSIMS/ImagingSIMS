@@ -9,8 +9,8 @@ using System.Windows.Data;
 
 using ImagingSIMS.Common.Dialogs;
 using ImagingSIMS.Data;
-using ImagingSIMS.Data.ClusterIdentification;
 using ImagingSIMS.Data.Imaging;
+using ImagingSIMS.Data.ClusterIdentification;
 
 namespace ImagingSIMS.Controls
 {

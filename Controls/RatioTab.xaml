@@ -6,12 +6,13 @@
              xmlns:local="clr-namespace:ImagingSIMS.Controls"
              mc:Ignorable="d" 
              x:Name="userControl"             
-             d:DesignHeight="800" d:DesignWidth="800">
+             d:DesignHeight="800" d:DesignWidth="1000">
     <UserControl.Resources>
         <ResourceDictionary Source="Themes\Generic.xaml"/>
     </UserControl.Resources>
     <Grid DataContext="{Binding ElementName=userControl, Path=InputData}">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
@@ -35,6 +36,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
@@ -63,6 +65,23 @@
                     </ListView.View>
                 </ListView>
             </StackPanel>
+            <Grid Grid.Row="0" Grid.Column="2" Visibility="{Binding FuseImagesFirst, Converter={StaticResource boolVisConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock>High Res Image:</TextBlock>
+                <Image Grid.Row="1" Margin="4" Width="250" Source="{Binding NumeratorHighRes}" Stretch="UniformToFill"/>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="buttonClearHighResNumerator" Width="20" Height="20" Click="buttonClearHighRes_Click" Margin="4" ToolTip="Delete">
+                        <Image Source="Images\Remove24.png"/>
+                    </Button>
+                    <Button x:Name="buttonLoadHighResNumerator" Width="20" Height="20" Click="buttonLoadHighRes_Click" Margin="4" ToolTip="Open">
+                        <Image Source="Images\OpenHS.png"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
 
             <!-- Denominator -->
             <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Row="2">
@@ -88,6 +107,23 @@
                     </ListView.View>
                 </ListView>
             </StackPanel>
+            <Grid Grid.Row="2" Grid.Column="2" Visibility="{Binding FuseImagesFirst, Converter={StaticResource boolVisConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock>High Res Image:</TextBlock>
+                <Image Grid.Row="1" Margin="4" Width="250" Source="{Binding DenominatorHighRes}" Stretch="UniformToFill"/>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="buttonClearHighResDenominator" Width="20" Height="20" Click="buttonClearHighRes_Click" Margin="4" ToolTip="Delete">
+                        <Image Source="Images\Remove24.png"/>
+                    </Button>
+                    <Button x:Name="buttonLoadHighResDenominator" Width="20" Height="20" Click="buttonLoadHighRes_Click" Margin="4" ToolTip="Open">
+                        <Image Source="Images\OpenHS.png"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
 
             <!-- Controls -->
             <Button Click="buttonInvert_Click" Width="50" Height="25" Margin="4" Grid.Row="1" Grid.Column="1">
@@ -106,6 +142,26 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock>Base name:</TextBlock>
                     <TextBox Grid.Column="1" Text="{Binding OutputBaseName}"/>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock>Fuse images first:</TextBlock>
+                    <CheckBox Grid.Column="1" IsChecked="{Binding FuseImagesFirst}"/>
+                    <TextBlock Grid.Column="2">Method:</TextBlock>
+                    <ComboBox Grid.Column="3" HorizontalAlignment="Stretch" Height="20" SelectedValue="{Binding FusionType}"
+                              ItemsSource="{Binding Source={StaticResource fusionFromEnum}}"
+                              IsEnabled="{Binding Path=FuseImagesFirst}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>

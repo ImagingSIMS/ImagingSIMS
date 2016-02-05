@@ -97,6 +97,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="RatioDropBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="RegistrationDropBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -157,6 +161,9 @@
       <DependentUpon>ProgressUpdaterControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileDialogs.cs" />
+    <Compile Include="RatioDropBox.xaml.cs">
+      <DependentUpon>RatioDropBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RegistrationDropBox.xaml.cs">
       <DependentUpon>RegistrationDropBox.xaml</DependentUpon>
     </Compile>

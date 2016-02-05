@@ -1,5 +1,8 @@
 ﻿using ImagingSIMS.Common.Dialogs;
+using ImagingSIMS.Common;
 using ImagingSIMS.Data;
+using ImagingSIMS.Data.Fusion;
+using ImagingSIMS.Data.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace ImagingSIMS.Controls
 {
@@ -107,6 +111,50 @@ namespace ImagingSIMS.Controls
             InputData.DenominatorTables = temp;
         }
 
+        public void SetHighResImage(BitmapSource bs, bool isNumeratorImage)
+        {
+            if (isNumeratorImage)
+                InputData.NumeratorHighRes = bs;            
+            else
+                InputData.DenominatorHighRes = bs;
+
+            InputData.FuseImagesFirst = true;
+        }
+
+        private void buttonClearHighRes_Click(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+            if (b == null) return;
+
+            if (b == buttonClearHighResNumerator)
+                InputData.NumeratorHighRes = null;
+
+            else if (b == buttonClearHighResDenominator)
+                InputData.DenominatorHighRes = null;
+        }
+        private void buttonLoadHighRes_Click(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+            if (b == null) return;
+
+            OpenFileDialog ofd = FileDialogs.OpenImageDialog;
+            ofd.Multiselect = false;
+            if (ofd.ShowDialog() != true) return;
+
+            BitmapImage src = new BitmapImage();
+
+            src.BeginInit();
+            src.UriSource = new Uri(ofd.FileName, UriKind.Absolute);
+            src.CacheOption = BitmapCacheOption.OnLoad;
+            src.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+            src.EndInit();
+
+            if (b == buttonLoadHighResNumerator)
+                InputData.NumeratorHighRes = src;
+            else if (b == buttonLoadHighResDenominator)
+                InputData.DenominatorHighRes = src;
+        }
+
         private void buttonDoRatio_Click(object sender, RoutedEventArgs e)
         {
             // Validate input parameters
@@ -175,6 +223,49 @@ namespace ImagingSIMS.Controls
                 return;
             }
 
+            // Validate fusion
+            if (InputData.FuseImagesFirst)
+            {
+                if(InputData.NumeratorHighRes == null)
+                {
+                    DialogBox.Show("Missing high resolution image.",
+                        "Open or drop a high resolution image for the numerator tables or uncheck the option to fuse images.",
+                        "Ratio", DialogBoxIcon.Stop);
+                    return;
+                }
+                if(InputData.DenominatorHighRes == null)
+                {
+                    //DialogBox.Show("Missing high resolution image.",
+                    //    "Open or drop a high resolution image for the numerator tables or uncheck the option to fuse images.",
+                    //    "Ratio", DialogBoxIcon.Stop);
+                    //return;
+
+                    // If there is a numerator but no denominator, use the numerator
+                    // for both.
+                    InputData.DenominatorHighRes = InputData.NumeratorHighRes;
+                }
+
+                // Numerator
+                if(InputData.NumeratorHighRes.PixelWidth < numWidth ||
+                    InputData.NumeratorHighRes.PixelHeight < numHeight)
+                {
+                    DialogBox.Show("Invalid image size.",
+                        "One or both of the dimensions of the high resolution numerator image is (are) smaller than the data tables.",
+                        "Ratio", DialogBoxIcon.Stop);
+                    return;
+                }
+
+                // Denominator
+                if (InputData.DenominatorHighRes.PixelWidth < denWidth ||
+                    InputData.DenominatorHighRes.PixelHeight < denHeight)
+                {
+                    DialogBox.Show("Invalid image size.",
+                        "One or both of the dimensions of the high resolution denominator image is (are) smaller than the data tables.",
+                        "Ratio", DialogBoxIcon.Stop);
+                    return;
+                }
+            }
+
             // Set up background worker
             BackgroundWorker bw = new BackgroundWorker();
             bw.WorkerReportsProgress = true;
@@ -186,14 +277,26 @@ namespace ImagingSIMS.Controls
             _pw = new ProgressWindow("Calculating ratio tables. Please wait...", "Ratio");
             _pw.Show();
 
+            Data2D numHighRes = null;
+            Data2D denHighRes = null;
+            if (InputData.FuseImagesFirst)
+            {
+                numHighRes = ImageHelper.ConvertToData2D(InputData.NumeratorHighRes, Data2DConverionType.Grayscale);
+                denHighRes = ImageHelper.ConvertToData2D(InputData.DenominatorHighRes, Data2DConverionType.Grayscale);
+            }
+
             // args
-            // [0]: Data2D[]    Numerator tables
-            // [1]: Data2D[]    Denominator tables
-            // [2]: string      Output base name
-            // [3]: bool        Do cross
-            // [4]: bool        Multiply by factor
-            // [5]: double      Factor
-            // [6]: bool        Remove original tables
+            // [0]: Data2D[]        Numerator tables
+            // [1]: Data2D[]        Denominator tables
+            // [2]: string          Output base name
+            // [3]: bool            Do cross
+            // [4]: bool            Multiply by factor
+            // [5]: double          Factor
+            // [6]: bool            Remove original tables
+            // [7]: bool            Fuse images first
+            // [8]: FusionType      Fusion method
+            // [9]: Data2D          Numerator high res image
+            // [10]:Data2D          Denominator high res image
             object[] args = new object[]
             {
                 InputData.NumeratorTables.ToList(),
@@ -202,12 +305,13 @@ namespace ImagingSIMS.Controls
                 InputData.DoCrossRatio,
                 InputData.MultiplyByFactor,
                 InputData.MultiplyFactor,
-                InputData.RemoveOriginalTables
+                InputData.RemoveOriginalTables,
+                InputData.FuseImagesFirst,
+                InputData.FusionType,
+                numHighRes,
+                denHighRes
             };
             bw.RunWorkerAsync(args);
-
-            // Run background workder
-
         }
 
         private void Bw_DoWork(object sender, DoWorkEventArgs e)
@@ -215,6 +319,18 @@ namespace ImagingSIMS.Controls
             BackgroundWorker bw = sender as BackgroundWorker;
             object[] args = (object[])e.Argument;
 
+            // args
+            // [0]: Data2D[]        Numerator tables
+            // [1]: Data2D[]        Denominator tables
+            // [2]: string          Output base name
+            // [3]: bool            Do cross
+            // [4]: bool            Multiply by factor
+            // [5]: double          Factor
+            // [6]: bool            Remove original tables
+            // [7]: bool            Fuse images first
+            // [8]: FusionType      Fusion method
+            // [9]: Data2D          Numerator high res image
+            // [10]:Data2D          Denominator high res image
             List<Data2D> numeratorTables = (List<Data2D>)args[0];
             List<Data2D> denominatorTables = (List<Data2D>)args[1];
             string baseName = (string)args[2];            
@@ -222,6 +338,146 @@ namespace ImagingSIMS.Controls
             bool multiplyByFactor = (bool)args[4];
             double multiplyFactor = (double)args[5];
             bool removeOriginal = (bool)args[6];
+            bool fusionFirst = (bool)args[7];
+            FusionType fusionType = (FusionType)args[8];
+            Data2D numHighRes = (Data2D)args[9];
+            Data2D denHighRes = (Data2D)args[10];
+
+            int totalSteps = 0;
+            int pos = 0;
+            if (fusionFirst)
+            {
+                totalSteps += numeratorTables.Count + denominatorTables.Count;
+            }
+            if (doCross)
+            {
+                totalSteps += numeratorTables.Count;
+            }
+            else
+            {
+                totalSteps += numeratorTables.Count + 1;
+            }
+
+            if (fusionFirst)
+            {
+                int numTables = numeratorTables.Count;
+                for (int i = 0; i < numTables; i++)
+                {
+                    Fusion fusionNum;
+
+                    switch (fusionType)
+                    {
+                        case FusionType.HSL:
+                            fusionNum = new HSLFusion((float[,])numHighRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            break;
+                        //case FusionType.WeightedAverage:
+                        //    fusionNum = new WeightedAverageFusion((float[,])numHighRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
+                        //    break;
+                        case FusionType.HSLSmooth:
+                            fusionNum = new HSLSmoothFusion((float[,])numHighRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            break;
+                        case FusionType.Adaptive:
+                            fusionNum = new AdaptiveIHSFusion((float[,])numHighRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            break;
+                        case FusionType.HSLShift:
+                            fusionNum = new HSLShiftFusion((float[,])numHighRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            ((HSLShiftFusion)fusionNum).WindowSize = 11;
+                            break;
+                        default:
+                            fusionNum = new HSLFusion((float[,])numHighRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            return;
+                    }
+
+                    Data3D fusedNum3D = fusionNum.DoFusion();
+                    Data2D fusedNum = new Data2D(fusedNum3D.Width, fusedNum3D.Height);
+                    for (int x = 0; x < fusedNum3D.Width; x++)
+                    {
+                        for (int y = 0; y < fusedNum3D.Height; y++)
+                        {
+                            // BGRA
+                            float[] pixel = fusedNum3D[x, y];
+
+                            // Check each pixel. Original data is encoded as blue
+                            if(pixel[0] > 0)
+                            {
+                                // If pixel is gray though, that means there is no
+                                // signal present from the low res image, so output
+                                // value should be zero
+                                if (pixel[0] == pixel[1] && pixel[1] == pixel[2])
+                                    continue;
+
+                                // Data encoded as blue for this procedure
+                                fusedNum[x, y] = pixel[0];
+                            }
+                        }
+                    }
+
+                    // Replace original table with the fused data
+                    numeratorTables[i] = fusedNum;
+
+                    // Update progress
+                    pos++;
+                    if (bw != null)
+                        bw.ReportProgress(pos * 100 / totalSteps);
+
+                    Fusion fusionDen;
+
+                    switch (fusionType)
+                    {
+                        case FusionType.HSL:
+                            fusionDen = new HSLFusion((float[,])denHighRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            break;
+                        //case FusionType.WeightedAverage:
+                        //    fusionDen = new WeightedAverageFusion((float[,])denHighRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
+                        //    break;
+                        case FusionType.HSLSmooth:
+                            fusionDen = new HSLSmoothFusion((float[,])denHighRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            break;
+                        case FusionType.Adaptive:
+                            fusionDen = new AdaptiveIHSFusion((float[,])denHighRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            break;
+                        case FusionType.HSLShift:
+                            fusionDen = new HSLShiftFusion((float[,])denHighRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            ((HSLShiftFusion)fusionNum).WindowSize = 11;
+                            break;
+                        default:
+                            fusionDen = new HSLFusion((float[,])denHighRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            return;
+                    }
+
+                    Data3D fusedDen3D = fusionDen.DoFusion();
+                    Data2D fusedDen = new Data2D(fusedDen3D.Width, fusedDen3D.Height);
+                    for (int x = 0; x < fusedDen3D.Width; x++)
+                    {
+                        for (int y = 0; y < fusedDen3D.Height; y++)
+                        {
+                            // BGRA
+                            float[] pixel = fusedDen3D[x, y];
+
+                            // Check each pixel. Original data is encoded as blue
+                            if (pixel[0] > 0)
+                            {
+                                // If pixel is gray though, that means there is no
+                                // signal present from the low res image, so output
+                                // value should be zero
+                                if (pixel[0] == pixel[1] && pixel[1] == pixel[2])
+                                    continue;
+
+                                // Data encoded as blue for this procedure
+                                fusedDen[x, y] = pixel[0];
+                            }
+                        }
+                    }
+
+                    // Replace original table with the fused data
+                    denominatorTables[i] = fusedDen;
+
+                    // Update progress
+                    pos++;
+                    if (bw != null)
+                        bw.ReportProgress(pos * 100 / totalSteps);
+                }
+            }            
 
             List<Data2D> ratioTables = new List<Data2D>();
             int outWidth = numeratorTables[0].Width;
@@ -237,14 +493,15 @@ namespace ImagingSIMS.Controls
                     ratio.DataName = $"{baseName}_{i}";
                     ratioTables.Add(ratio);
 
+                    pos++;
+
                     if (bw != null)
-                        bw.ReportProgress(i / toRatio);
+                        bw.ReportProgress(pos * 100 / totalSteps);
                 }
             }
             else
             {
                 int toSum = numeratorTables.Count;
-                int totalSteps = toSum + 1;
 
                 Data2D summedNum = new Data2D(outWidth, outHeight);
                 Data2D summedDen = new Data2D(outWidth, outHeight);
@@ -254,14 +511,18 @@ namespace ImagingSIMS.Controls
                     summedNum += numeratorTables[i];
                     summedDen += denominatorTables[i];
 
+                    pos++;
+
                     if (bw != null)
-                        bw.ReportProgress(i / totalSteps);
+                        bw.ReportProgress(pos * 100 / totalSteps);
                 }
 
                 Data2D ratio = summedNum / summedDen;
                 ratio.DataName = baseName;
                 ratioTables.Add(ratio);
-                bw.ReportProgress((toSum + 1) / totalSteps);
+                pos++;
+
+                bw.ReportProgress(pos * 100 / totalSteps);
             }
 
             // Remove NaN from resulting data sets and 
@@ -297,13 +558,11 @@ namespace ImagingSIMS.Controls
             };
             e.Result = results;
         }
-
         private void Bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (_pw != null)
                 _pw.UpdateProgress(e.ProgressPercentage);
         }
-
         private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             // See if an exception was thrown on the background thread
@@ -364,6 +623,10 @@ namespace ImagingSIMS.Controls
         bool _doCrossRatio;
         bool _multiplyByFactor;
         double _multiplyFactor;
+        bool _fuseImagesFirst;
+        FusionType _fusionType;
+        BitmapSource _numeratorHighRes;
+        BitmapSource _denominatorHighRes;
 
         public ObservableCollection<Data2D> AvailableTables
         {
@@ -459,6 +722,54 @@ namespace ImagingSIMS.Controls
                 {
                     _multiplyFactor = value;
                     NotifyPropertyChanged("MultiplyFactor");
+                }
+            }
+        }
+        public bool FuseImagesFirst
+        {
+            get { return _fuseImagesFirst; }
+            set
+            {
+                if(_fuseImagesFirst != value)
+                {
+                    _fuseImagesFirst = value;
+                    NotifyPropertyChanged("FuseImagesFirst");
+                }
+            }
+        }
+        public FusionType FusionType
+        {
+            get { return _fusionType; }
+            set
+            {
+                if(_fusionType!= value)
+                {
+                    _fusionType = value;
+                    NotifyPropertyChanged("FusionType");
+                }
+            }
+        }
+        public BitmapSource NumeratorHighRes
+        {
+            get { return _numeratorHighRes; }
+            set
+            {
+                if(_numeratorHighRes != value)
+                {
+                    _numeratorHighRes = value;
+                    NotifyPropertyChanged("NumeratorHighRes");
+                }
+            }
+        }
+        public BitmapSource DenominatorHighRes
+        {
+            get { return _denominatorHighRes; }
+            set
+            {
+                if(_denominatorHighRes != value)
+                {
+                    _denominatorHighRes = value;
+                    NotifyPropertyChanged("DenominatorHighRes");
                 }
             }
         }
