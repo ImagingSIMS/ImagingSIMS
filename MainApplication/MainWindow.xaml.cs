@@ -1399,6 +1399,14 @@ namespace ImagingSIMS.MainApplication
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
+        private void ribbonOpenRatioTab_Click(object sender, RoutedEventArgs e)
+        {
+            RatioTab rt = new RatioTab();
+            rt.InputData.AvailableTables = Workspace.Data;
+            ClosableTabItem cti = ClosableTabItem.Create(rt, TabType.Ratio, "Ratio", true);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+        }
         private void ribbonOpenCropTab_Click(object sender, RoutedEventArgs e)
         {
             CropTab ct = new CropTab();
