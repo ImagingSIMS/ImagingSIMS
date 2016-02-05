@@ -111,7 +111,13 @@
                         <TextBlock>Data display width</TextBlock>
                         <ComboBox SelectedValue="{Binding RegSettings.DataDisplayWidth}" 
                                   ItemsSource="{Binding AvailableDataWidths}"
-                                  Margin="4" Height="23" Width="75" IsEditable="False" Foreground="Black"/>
+                                  Margin="4" Height="23" Width="75">
+                            <ComboBox.ItemTemplate>
+                                <ItemContainerTemplate>
+                                    <TextBlock Margin="2" Text="{Binding}" Foreground="Black"/>
+                                </ItemContainerTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </StackPanel>
                 </StackPanel>
             </Grid>

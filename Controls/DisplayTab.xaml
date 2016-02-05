@@ -64,7 +64,10 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             
-                            <ContentControl Width="200" Height="200" Margin="4" Content="{Binding}">
+                            <ContentControl 
+                                Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Registry.DataDisplayWidth}" 
+                                Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Registry.DataDisplayWidth}" 
+                                Margin="4" Content="{Binding}">
                                 <ContentControl.ToolTip>
                                     <ToolTip Background="{StaticResource MenuBackground}" BorderBrush="#FF4D5578">
                                         <TextBlock Text="{Binding Converter={StaticResource displayImageToDimensionsConverter}}" Foreground="White"/>
