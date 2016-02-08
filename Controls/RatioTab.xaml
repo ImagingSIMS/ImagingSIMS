@@ -43,14 +43,16 @@
 
             <!-- Numerator -->
             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                <Button x:Name="buttonAddNumerator" Click="buttonAdd_Click" Width="50" Height="25" Margin="4">
+                <Button x:Name="buttonAddNumerator" Click="buttonAdd_Click" Width="50" Height="25" Margin="4"
+                        ToolTip="Add Selected Tables">
                     <Image Source="Images\MoveArrow.png">
                         <Image.LayoutTransform>
                             <RotateTransform Angle="90"/>
                         </Image.LayoutTransform>
                     </Image>
                 </Button>
-                <Button x:Name="buttonRemoveNumerator" Click="buttonRemove_Click"  Width="50" Height="25" Margin="4">
+                <Button x:Name="buttonRemoveNumerator" Click="buttonRemove_Click"  Width="50" Height="25" Margin="4"
+                        ToolTip="Clear Selected Tables">
                     <Image Source="Images\Remove24.png"/>
                 </Button>
             </StackPanel>
@@ -72,12 +74,12 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock>High Res Image:</TextBlock>
-                <Image Grid.Row="1" Margin="4" Width="250" Source="{Binding NumeratorHighRes}" Stretch="UniformToFill"/>
+                <Image Grid.Row="1" Margin="4" Width="250" Source="{Binding HighRes}" Stretch="UniformToFill"/>
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button x:Name="buttonClearHighResNumerator" Width="20" Height="20" Click="buttonClearHighRes_Click" Margin="4" ToolTip="Delete">
+                    <Button x:Name="buttonClearHighRes" Width="20" Height="20" Click="buttonClearHighRes_Click" Margin="4" ToolTip="Delete">
                         <Image Source="Images\Remove24.png"/>
                     </Button>
-                    <Button x:Name="buttonLoadHighResNumerator" Width="20" Height="20" Click="buttonLoadHighRes_Click" Margin="4" ToolTip="Open">
+                    <Button x:Name="buttonLoadHighRes" Width="20" Height="20" Click="buttonLoadHighRes_Click" Margin="4" ToolTip="Open">
                         <Image Source="Images\OpenHS.png"/>
                     </Button>
                 </StackPanel>
@@ -85,14 +87,16 @@
 
             <!-- Denominator -->
             <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Row="2">
-                <Button x:Name="buttonAddDenomintor" Click="buttonAdd_Click" Width="50" Height="25" Margin="4">
+                <Button x:Name="buttonAddDenomintor" Click="buttonAdd_Click" Width="50" Height="25" Margin="4"
+                        ToolTip="Add Selected Tables">
                     <Image Source="Images\MoveArrow.png">
                         <Image.LayoutTransform>
                             <RotateTransform Angle="90"/>
                         </Image.LayoutTransform>
                     </Image>
                 </Button>
-                <Button x:Name="buttonRemoveDenominator" Click="buttonRemove_Click"  Width="50" Height="25" Margin="4">
+                <Button x:Name="buttonRemoveDenominator" Click="buttonRemove_Click"  Width="50" Height="25" Margin="4"
+                        ToolTip="Clear Selected Tables">
                     <Image Source="Images\Remove24.png"/>
                 </Button>
             </StackPanel>
@@ -107,32 +111,22 @@
                     </ListView.View>
                 </ListView>
             </StackPanel>
-            <Grid Grid.Row="2" Grid.Column="2" Visibility="{Binding FuseImagesFirst, Converter={StaticResource boolVisConverter}}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock>High Res Image:</TextBlock>
-                <Image Grid.Row="1" Margin="4" Width="250" Source="{Binding DenominatorHighRes}" Stretch="UniformToFill"/>
-                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button x:Name="buttonClearHighResDenominator" Width="20" Height="20" Click="buttonClearHighRes_Click" Margin="4" ToolTip="Delete">
-                        <Image Source="Images\Remove24.png"/>
-                    </Button>
-                    <Button x:Name="buttonLoadHighResDenominator" Width="20" Height="20" Click="buttonLoadHighRes_Click" Margin="4" ToolTip="Open">
-                        <Image Source="Images\OpenHS.png"/>
-                    </Button>
-                </StackPanel>
-            </Grid>
 
             <!-- Controls -->
-            <Button Click="buttonInvert_Click" Width="50" Height="25" Margin="4" Grid.Row="1" Grid.Column="1">
-                <Image Source="Images\Reverse.png">
-                    <Image.LayoutTransform>
-                        <RotateTransform Angle="90"/>
-                    </Image.LayoutTransform>
-                </Image>
-            </Button>
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"
+                        ToolTip="Swap Tables">
+                <Button Click="buttonInvert_Click" Width="50" Height="25" Margin="4" Grid.Row="1" Grid.Column="1">
+                    <Image Source="Images\Reverse.png">
+                        <Image.LayoutTransform>
+                            <RotateTransform Angle="90"/>
+                        </Image.LayoutTransform>
+                    </Image>
+                </Button>
+                <Button Click="buttonClearAll_Click" Width="50" Height="25" Margin="4" Grid.Row="1" Grid.Column="1"
+                        ToolTip="Clear All">
+                    <Image Source="Images\Remove24.png"/>
+                </Button>
+            </StackPanel>
 
             <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="3">
                 <Grid>

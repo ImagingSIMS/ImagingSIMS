@@ -110,27 +110,22 @@ namespace ImagingSIMS.Controls
             InputData.NumeratorTables = InputData.DenominatorTables;
             InputData.DenominatorTables = temp;
         }
-
-        public void SetHighResImage(BitmapSource bs, bool isNumeratorImage)
+        private void buttonClearAll_Click(object sender, RoutedEventArgs e)
         {
-            if (isNumeratorImage)
-                InputData.NumeratorHighRes = bs;            
-            else
-                InputData.DenominatorHighRes = bs;
+            InputData.NumeratorTables.Clear();
+            InputData.DenominatorTables.Clear();
+        }
+
+        public void SetHighResImage(BitmapSource bs)
+        {
+            InputData.HighRes = bs;            
 
             InputData.FuseImagesFirst = true;
         }
 
         private void buttonClearHighRes_Click(object sender, RoutedEventArgs e)
         {
-            Button b = sender as Button;
-            if (b == null) return;
-
-            if (b == buttonClearHighResNumerator)
-                InputData.NumeratorHighRes = null;
-
-            else if (b == buttonClearHighResDenominator)
-                InputData.DenominatorHighRes = null;
+            InputData.HighRes = null;
         }
         private void buttonLoadHighRes_Click(object sender, RoutedEventArgs e)
         {
@@ -148,11 +143,8 @@ namespace ImagingSIMS.Controls
             src.CacheOption = BitmapCacheOption.OnLoad;
             src.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
             src.EndInit();
-
-            if (b == buttonLoadHighResNumerator)
-                InputData.NumeratorHighRes = src;
-            else if (b == buttonLoadHighResDenominator)
-                InputData.DenominatorHighRes = src;
+            
+            InputData.HighRes = src;
         }
 
         private void buttonDoRatio_Click(object sender, RoutedEventArgs e)
@@ -226,28 +218,17 @@ namespace ImagingSIMS.Controls
             // Validate fusion
             if (InputData.FuseImagesFirst)
             {
-                if(InputData.NumeratorHighRes == null)
+                if(InputData.HighRes == null)
                 {
                     DialogBox.Show("Missing high resolution image.",
-                        "Open or drop a high resolution image for the numerator tables or uncheck the option to fuse images.",
+                        "Open or drop a high resolution image for the tables or uncheck the option to fuse images.",
                         "Ratio", DialogBoxIcon.Stop);
                     return;
                 }
-                if(InputData.DenominatorHighRes == null)
-                {
-                    //DialogBox.Show("Missing high resolution image.",
-                    //    "Open or drop a high resolution image for the numerator tables or uncheck the option to fuse images.",
-                    //    "Ratio", DialogBoxIcon.Stop);
-                    //return;
-
-                    // If there is a numerator but no denominator, use the numerator
-                    // for both.
-                    InputData.DenominatorHighRes = InputData.NumeratorHighRes;
-                }
 
                 // Numerator
-                if(InputData.NumeratorHighRes.PixelWidth < numWidth ||
-                    InputData.NumeratorHighRes.PixelHeight < numHeight)
+                if(InputData.HighRes.PixelWidth < numWidth ||
+                    InputData.HighRes.PixelHeight < numHeight)
                 {
                     DialogBox.Show("Invalid image size.",
                         "One or both of the dimensions of the high resolution numerator image is (are) smaller than the data tables.",
@@ -255,9 +236,9 @@ namespace ImagingSIMS.Controls
                     return;
                 }
 
-                // Denominator
-                if (InputData.DenominatorHighRes.PixelWidth < denWidth ||
-                    InputData.DenominatorHighRes.PixelHeight < denHeight)
+                // Denominator -- Probably redundant since table dimensions were already checked
+                if (InputData.HighRes.PixelWidth < denWidth ||
+                    InputData.HighRes.PixelHeight < denHeight)
                 {
                     DialogBox.Show("Invalid image size.",
                         "One or both of the dimensions of the high resolution denominator image is (are) smaller than the data tables.",
@@ -277,12 +258,10 @@ namespace ImagingSIMS.Controls
             _pw = new ProgressWindow("Calculating ratio tables. Please wait...", "Ratio");
             _pw.Show();
 
-            Data2D numHighRes = null;
-            Data2D denHighRes = null;
+            Data2D highRes = null;
             if (InputData.FuseImagesFirst)
             {
-                numHighRes = ImageHelper.ConvertToData2D(InputData.NumeratorHighRes, Data2DConverionType.Grayscale);
-                denHighRes = ImageHelper.ConvertToData2D(InputData.DenominatorHighRes, Data2DConverionType.Grayscale);
+                highRes = ImageHelper.ConvertToData2D(InputData.HighRes, Data2DConverionType.Grayscale);
             }
 
             // args
@@ -295,8 +274,7 @@ namespace ImagingSIMS.Controls
             // [6]: bool            Remove original tables
             // [7]: bool            Fuse images first
             // [8]: FusionType      Fusion method
-            // [9]: Data2D          Numerator high res image
-            // [10]:Data2D          Denominator high res image
+            // [9]: Data2D          High res image
             object[] args = new object[]
             {
                 InputData.NumeratorTables.ToList(),
@@ -308,8 +286,7 @@ namespace ImagingSIMS.Controls
                 InputData.RemoveOriginalTables,
                 InputData.FuseImagesFirst,
                 InputData.FusionType,
-                numHighRes,
-                denHighRes
+                highRes
             };
             bw.RunWorkerAsync(args);
         }
@@ -329,8 +306,7 @@ namespace ImagingSIMS.Controls
             // [6]: bool            Remove original tables
             // [7]: bool            Fuse images first
             // [8]: FusionType      Fusion method
-            // [9]: Data2D          Numerator high res image
-            // [10]:Data2D          Denominator high res image
+            // [9]: Data2D          High res image
             List<Data2D> numeratorTables = (List<Data2D>)args[0];
             List<Data2D> denominatorTables = (List<Data2D>)args[1];
             string baseName = (string)args[2];            
@@ -340,8 +316,7 @@ namespace ImagingSIMS.Controls
             bool removeOriginal = (bool)args[6];
             bool fusionFirst = (bool)args[7];
             FusionType fusionType = (FusionType)args[8];
-            Data2D numHighRes = (Data2D)args[9];
-            Data2D denHighRes = (Data2D)args[10];
+            Data2D highRes = (Data2D)args[9];
 
             int totalSteps = 0;
             int pos = 0;
@@ -368,23 +343,23 @@ namespace ImagingSIMS.Controls
                     switch (fusionType)
                     {
                         case FusionType.HSL:
-                            fusionNum = new HSLFusion((float[,])numHighRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            fusionNum = new HSLFusion((float[,])highRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
                             break;
                         //case FusionType.WeightedAverage:
                         //    fusionNum = new WeightedAverageFusion((float[,])numHighRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
                         //    break;
                         case FusionType.HSLSmooth:
-                            fusionNum = new HSLSmoothFusion((float[,])numHighRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            fusionNum = new HSLSmoothFusion((float[,])highRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
                             break;
                         case FusionType.Adaptive:
-                            fusionNum = new AdaptiveIHSFusion((float[,])numHighRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            fusionNum = new AdaptiveIHSFusion((float[,])highRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
                             break;
                         case FusionType.HSLShift:
-                            fusionNum = new HSLShiftFusion((float[,])numHighRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            fusionNum = new HSLShiftFusion((float[,])highRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
                             ((HSLShiftFusion)fusionNum).WindowSize = 11;
                             break;
                         default:
-                            fusionNum = new HSLFusion((float[,])numHighRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            fusionNum = new HSLFusion((float[,])highRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
                             return;
                     }
 
@@ -425,23 +400,23 @@ namespace ImagingSIMS.Controls
                     switch (fusionType)
                     {
                         case FusionType.HSL:
-                            fusionDen = new HSLFusion((float[,])denHighRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            fusionDen = new HSLFusion((float[,])highRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
                             break;
                         //case FusionType.WeightedAverage:
                         //    fusionDen = new WeightedAverageFusion((float[,])denHighRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
                         //    break;
                         case FusionType.HSLSmooth:
-                            fusionDen = new HSLSmoothFusion((float[,])denHighRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            fusionDen = new HSLSmoothFusion((float[,])highRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
                             break;
                         case FusionType.Adaptive:
-                            fusionDen = new AdaptiveIHSFusion((float[,])denHighRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            fusionDen = new AdaptiveIHSFusion((float[,])highRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
                             break;
                         case FusionType.HSLShift:
-                            fusionDen = new HSLShiftFusion((float[,])denHighRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            fusionDen = new HSLShiftFusion((float[,])highRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
                             ((HSLShiftFusion)fusionNum).WindowSize = 11;
                             break;
                         default:
-                            fusionDen = new HSLFusion((float[,])denHighRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            fusionDen = new HSLFusion((float[,])highRes, (float[,])denominatorTables[i], Color.FromArgb(255, 0, 0, 255));
                             return;
                     }
 
@@ -626,7 +601,6 @@ namespace ImagingSIMS.Controls
         bool _fuseImagesFirst;
         FusionType _fusionType;
         BitmapSource _numeratorHighRes;
-        BitmapSource _denominatorHighRes;
 
         public ObservableCollection<Data2D> AvailableTables
         {
@@ -749,7 +723,7 @@ namespace ImagingSIMS.Controls
                 }
             }
         }
-        public BitmapSource NumeratorHighRes
+        public BitmapSource HighRes
         {
             get { return _numeratorHighRes; }
             set
@@ -757,19 +731,7 @@ namespace ImagingSIMS.Controls
                 if(_numeratorHighRes != value)
                 {
                     _numeratorHighRes = value;
-                    NotifyPropertyChanged("NumeratorHighRes");
-                }
-            }
-        }
-        public BitmapSource DenominatorHighRes
-        {
-            get { return _denominatorHighRes; }
-            set
-            {
-                if(_denominatorHighRes != value)
-                {
-                    _denominatorHighRes = value;
-                    NotifyPropertyChanged("DenominatorHighRes");
+                    NotifyPropertyChanged("HighRes");
                 }
             }
         }

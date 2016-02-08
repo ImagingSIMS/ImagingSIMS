@@ -463,22 +463,12 @@ namespace ImagingSIMS.Controls
                     BitmapSource bs = (BitmapSource)e.Data.GetData(DataFormats.Bitmap);
                     if (bs == null) return;
 
-                    RatioDropBox rdb = new RatioDropBox();
-                    Nullable<bool> dialogResult = rdb.ShowDialog();
-                    if (dialogResult == true)
-                    {
-                        RatioDropResult dropResult = rdb.DropResult;
-                        if (dropResult == RatioDropResult.Numerator)
-                        {
-                            rt.SetHighResImage(bs, true);
-                        }
-                        else if (dropResult == RatioDropResult.Denominator)
-                        {
-                            rt.SetHighResImage(bs, false);
-                        }
-                        didDrop = true;
-                        e.Handled = true;
-                    }
+
+                    rt.SetHighResImage(bs);
+
+                    didDrop = true;
+                    e.Handled = true;
+
                 }
                 else if (e.Data.GetDataPresent("DisplayImage"))
                 {
@@ -486,22 +476,10 @@ namespace ImagingSIMS.Controls
                     BitmapSource bs = (BitmapSource)image.Source;
                     if (bs == null) return;
 
-                    RatioDropBox rdb = new RatioDropBox();
-                    Nullable<bool> dialogResult = rdb.ShowDialog();
-                    if (dialogResult == true)
-                    {
-                        RatioDropResult dropResult = rdb.DropResult;
-                        if (dropResult == RatioDropResult.Numerator)
-                        {
-                            rt.SetHighResImage(bs, true);
-                        }
-                        else if (dropResult == RatioDropResult.Denominator)
-                        {
-                            rt.SetHighResImage(bs, false);
-                        }
-                        didDrop = true;
-                        e.Handled = true;
-                    }
+                    rt.SetHighResImage(bs);
+
+                    didDrop = true;
+                    e.Handled = true;
                 }
                 else if (e.Data.GetDataPresent("Data2D"))
                 {
@@ -510,22 +488,11 @@ namespace ImagingSIMS.Controls
 
                     BitmapSource bs = ImagingSIMS.Data.Imaging.ImageHelper.CreateColorScaleImage(d, Data.Imaging.ColorScaleTypes.Gray);
 
-                    RatioDropBox rdb = new RatioDropBox();
-                    Nullable<bool> dialogResult = rdb.ShowDialog();
-                    if (dialogResult == true)
-                    {
-                        RatioDropResult dropResult = rdb.DropResult;
-                        if (dropResult == RatioDropResult.Numerator)
-                        {
-                            rt.SetHighResImage(bs, true);
-                        }
-                        else if (dropResult == RatioDropResult.Denominator)
-                        {
-                            rt.SetHighResImage(bs, false);
-                        }
-                        didDrop = true;
-                        e.Handled = true;
-                    }
+
+                    rt.SetHighResImage(bs);
+
+                    didDrop = true;
+                    e.Handled = true;
                 }
             }
 
