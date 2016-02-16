@@ -78,13 +78,6 @@ namespace ImagingSIMS.Controls
                 this.AllowDrop = true;
                 this.Drop += ClosableTabItem_Drop;
             }
-
-            // Keep this separate since this appears only in PNNL version
-            if(TabType == TabType.Ratio)
-            {
-                this.AllowDrop = true;
-                this.Drop += ClosableTabItem_Drop;
-            }
         }
         public ClosableTabItem(TabType TabType)
         {
@@ -94,13 +87,6 @@ namespace ImagingSIMS.Controls
                 TabType == TabType.HeightMap || TabType == TabType.DataRegistration ||
                 TabType == TabType.SpectrumCrop || TabType == TabType.Data2DDisplay || 
                 TabType == TabType.Cluster)
-            {
-                this.AllowDrop = true;
-                this.Drop += ClosableTabItem_Drop;
-            }
-
-            // Keep this separate since this appears only in PNNL version
-            if (TabType == TabType.Ratio)
             {
                 this.AllowDrop = true;
                 this.Drop += ClosableTabItem_Drop;
@@ -453,49 +439,6 @@ namespace ImagingSIMS.Controls
                 }
             }
 
-            if(TabType == TabType.Ratio)
-            {
-                RatioTab rt = this.Content as RatioTab;
-                if (rt == null) return;
-
-                if (e.Data.GetDataPresent(DataFormats.Bitmap))
-                {
-                    BitmapSource bs = (BitmapSource)e.Data.GetData(DataFormats.Bitmap);
-                    if (bs == null) return;
-
-
-                    rt.SetHighResImage(bs);
-
-                    didDrop = true;
-                    e.Handled = true;
-
-                }
-                else if (e.Data.GetDataPresent("DisplayImage"))
-                {
-                    ImagingSIMS.Data.Imaging.DisplayImage image = (ImagingSIMS.Data.Imaging.DisplayImage)e.Data.GetData("DisplayImage");
-                    BitmapSource bs = (BitmapSource)image.Source;
-                    if (bs == null) return;
-
-                    rt.SetHighResImage(bs);
-
-                    didDrop = true;
-                    e.Handled = true;
-                }
-                else if (e.Data.GetDataPresent("Data2D"))
-                {
-                    ImagingSIMS.Data.Data2D d = e.Data.GetData("Data2D") as ImagingSIMS.Data.Data2D;
-                    if (d == null) return;
-
-                    BitmapSource bs = ImagingSIMS.Data.Imaging.ImageHelper.CreateColorScaleImage(d, Data.Imaging.ColorScaleTypes.Gray);
-
-
-                    rt.SetHighResImage(bs);
-
-                    didDrop = true;
-                    e.Handled = true;
-                }
-            }
-
             if (didDrop)
             {
                 TabControl tc = this.Parent as TabControl;
@@ -691,7 +634,7 @@ namespace ImagingSIMS.Controls
         Correction, ZCorrection, SpectrumCrop,
         HeightMap, Data2DDisplay, Cluster,
         DataRegistration, DepthProfile,
-        Ratio
+        
     }
 
 
