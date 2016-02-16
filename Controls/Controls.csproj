@@ -107,6 +107,7 @@
     </Compile>
     <Compile Include="History.cs" />
     <Compile Include="Hyperlink.cs" />
+    <Compile Include="IAvailableTables.cs" />
     <Compile Include="MaskedTextBox.cs" />
     <Compile Include="PCATab.xaml.cs">
       <DependentUpon>PCATab.xaml</DependentUpon>

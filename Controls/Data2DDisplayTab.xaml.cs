@@ -191,7 +191,7 @@ namespace ImagingSIMS.Controls
 
             if (notSaved.Count == 0)
             {
-                DialogBox.Show("Image(s) saved successfully!", sfd.FileName, "Save", DialogBoxIcon.GreenCheck);
+                DialogBox.Show("Image(s) saved successfully!", sfd.FileName, "Save", DialogBoxIcon.Ok);
             }
             else
             {
@@ -201,7 +201,7 @@ namespace ImagingSIMS.Controls
                     sb.AppendLine(item.DataSource.DataName + string.Format("({0})", notSaved[item]));
                 }
                 DialogBox.Show("One or more images were not saved successfully and are listed below. Any other images have been saved.",
-                    sb.ToString(), "Save", DialogBoxIcon.Stop);
+                    sb.ToString(), "Save", DialogBoxIcon.Error);
             }
         }
         private void saveImage(BitmapSource src, string filePath)
@@ -225,7 +225,7 @@ namespace ImagingSIMS.Controls
 
             if (selectedTables.Count == 0)
             {
-                DialogBox.Show("No tables selected.", "Select one or more tables to expand and try again.", "Expand", DialogBoxIcon.Stop);
+                DialogBox.Show("No tables selected.", "Select one or more tables to expand and try again.", "Expand", DialogBoxIcon.Error);
             }
 
             foreach (Data2D d in selectedTables)
@@ -286,14 +286,14 @@ namespace ImagingSIMS.Controls
             if (imgCount == 0)
             {
                 DialogBox db = new DialogBox("No images selected", "Select two or more images to overlay and try again.",
-                    "Overlay", DialogBoxIcon.Stop);
+                    "Overlay", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return null;
             }
             if (imgCount == 1)
             {
                 DialogBox db = new DialogBox("Only one image selected", "Select two or more images to overlay and try again.",
-                    "Overlay", DialogBoxIcon.Stop);
+                    "Overlay", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return null;
             }
@@ -326,7 +326,7 @@ namespace ImagingSIMS.Controls
             {
                 DialogBox db = new DialogBox("Invalid image dimensions",
                     "One or more images selected does not match the rest of the collection in width or height.",
-                    "Overlay", DialogBoxIcon.Stop);
+                    "Overlay", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return null;
             }

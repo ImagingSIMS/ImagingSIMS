@@ -219,7 +219,7 @@ namespace ImagingSIMS.Controls
                 if (numInLayer == 0)
                 {
                     DialogBox.Show("No tables selected for a cross.",
-                        string.Format("Cross number {0} does not have any tables added.", (i + 1).ToString()), "Depth Profile", DialogBoxIcon.Stop);
+                        string.Format("Cross number {0} does not have any tables added.", (i + 1).ToString()), "Depth Profile", DialogBoxIcon.Error);
                     return;
                 }
 
@@ -232,7 +232,7 @@ namespace ImagingSIMS.Controls
                 if (numTablesPerLayers != numInLayer)
                 {
                     DialogBox.Show("Cross lengths don't match.",
-                        "Each cross does not have the same number of tables. Make sure all dimensions match.", "Depth Profile", DialogBoxIcon.Stop);
+                        "Each cross does not have the same number of tables. Make sure all dimensions match.", "Depth Profile", DialogBoxIcon.Error);
                     return;
                 }
             }
@@ -282,7 +282,7 @@ namespace ImagingSIMS.Controls
             await generateDepthProfileAsync(toGenerate, sfd.FileName, StaggerLayers);
 
             DialogBox.Show("Depth profile saved successfully!", 
-                sfd.FileName, "Depth Profile", DialogBoxIcon.GreenCheck);
+                sfd.FileName, "Depth Profile", DialogBoxIcon.Ok);
         }
 
         private Task generateDepthProfileAsync(Data2D[,] tables, string pathToSave, bool doStagger)

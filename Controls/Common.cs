@@ -40,7 +40,7 @@ namespace ImagingSIMS.Controls
                     inner = ICex.InnerException.Message;
                 }
                 DialogBox db = new DialogBox(ICex.Message, inner,
-                    "Bitmap Display", DialogBoxIcon.Stop);
+                    "Bitmap Display", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return "Error in operation";
             }
@@ -77,7 +77,7 @@ namespace ImagingSIMS.Controls
                     inner = ICex.InnerException.Message;
                 }
                 DialogBox db = new DialogBox(ICex.Message, inner,
-                    "Bitmap Display", DialogBoxIcon.Stop);
+                    "Bitmap Display", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return false;
             }

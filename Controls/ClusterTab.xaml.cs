@@ -115,7 +115,7 @@ namespace ImagingSIMS.Controls
         {
             if (Parameters.InputImageSource == null)
             {
-                DialogBox.Show("No input image selected.", "Load an input image and try again.", "Identify", DialogBoxIcon.Stop);
+                DialogBox.Show("No input image selected.", "Load an input image and try again.", "Identify", DialogBoxIcon.Error);
                 return;
             }
 
@@ -177,7 +177,7 @@ namespace ImagingSIMS.Controls
             if (FoundClusters == null || FoundClusters.NumberClusters == 0)
             {
                 DialogBox.Show("No found cluster data.",
-                    "Load an image and identify clusters first, then try again.", "Clusters", DialogBoxIcon.Stop);
+                    "Load an image and identify clusters first, then try again.", "Clusters", DialogBoxIcon.Error);
                 return;
             }
 
@@ -190,11 +190,11 @@ namespace ImagingSIMS.Controls
             {
                 //FoundClusters.SaveTextArray(sfd.FileName);
                 FoundClusters.SaveBinaryArray(sfd.FileName);
-                DialogBox.Show("Cluster data saved sucessfully!", sfd.FileName, "Clusters", DialogBoxIcon.GreenCheck);
+                DialogBox.Show("Cluster data saved sucessfully!", sfd.FileName, "Clusters", DialogBoxIcon.Ok);
             }
             catch (Exception ex)
             {
-                DialogBox.Show("Could not save array data.", ex.Message, "Clusters", DialogBoxIcon.Stop);
+                DialogBox.Show("Could not save array data.", ex.Message, "Clusters", DialogBoxIcon.Error);
                 return;
             }
         }
@@ -203,7 +203,7 @@ namespace ImagingSIMS.Controls
             if (FoundClusters == null)
             {
                 DialogBox.Show("No found cluster data.",
-                    "Load an image and identify clusters first, then try again.", "Clusters", DialogBoxIcon.Stop);
+                    "Load an image and identify clusters first, then try again.", "Clusters", DialogBoxIcon.Error);
                 return;
             }
 
@@ -292,13 +292,13 @@ namespace ImagingSIMS.Controls
             if (FoundClusters == null)
             {
                 DialogBox.Show("No clusters found.",
-                    "Run the cluster analysis and try again.", "Stats", DialogBoxIcon.Stop);
+                    "Run the cluster analysis and try again.", "Stats", DialogBoxIcon.Error);
                 return;
             }
             if (DataInput == null)
             {
                 DialogBox.Show("No data selected.", 
-                    "Drop a data table to analyze and try agein.", "Stats", DialogBoxIcon.Stop);
+                    "Drop a data table to analyze and try agein.", "Stats", DialogBoxIcon.Error);
                 return;
             }
 
@@ -309,7 +309,7 @@ namespace ImagingSIMS.Controls
             }
             catch (Exception ex)
             {
-                DialogBox.Show("Could not generate statistics from data source.", ex.Message, "Stats", DialogBoxIcon.Stop);
+                DialogBox.Show("Could not generate statistics from data source.", ex.Message, "Stats", DialogBoxIcon.Error);
                 return;
             }
 
@@ -329,7 +329,7 @@ namespace ImagingSIMS.Controls
             List<CountedClusterStatistic> stats = listViewStats.ItemsSource as List<CountedClusterStatistic>;
             if(stats == null)
             {
-                DialogBox.Show("Could not copy stats results.", "Generate stats and try again.", "Stats", DialogBoxIcon.Stop);
+                DialogBox.Show("Could not copy stats results.", "Generate stats and try again.", "Stats", DialogBoxIcon.Error);
                 return;
             }
 
@@ -399,13 +399,13 @@ namespace ImagingSIMS.Controls
             if(listViewResults.SelectedItems.Count == 0)
             {
                 DialogBox.Show("No clusters selected.", 
-                    "Select two or more clusters to merge and try again.", "Merge", DialogBoxIcon.Stop);
+                    "Select two or more clusters to merge and try again.", "Merge", DialogBoxIcon.Error);
                 return;
             }
             if(listViewResults.SelectedItems.Count == 1)
             {
                 DialogBox.Show("Only one clusters selected.",
-                    "Select two or more clusters to merge and try again.", "Merge", DialogBoxIcon.Stop);
+                    "Select two or more clusters to merge and try again.", "Merge", DialogBoxIcon.Error);
                 return;
             }
 

@@ -292,7 +292,7 @@ namespace ImagingSIMS.Controls
             if (d == null)
             {
                 DialogBox db = new DialogBox("No data table selected.", "Use the ListBox to select a data table to correct.",
-                    "Correction", DialogBoxIcon.Stop);
+                    "Correction", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -307,7 +307,7 @@ namespace ImagingSIMS.Controls
             catch (Exception ex)
             {
                 DialogBox db = new DialogBox("Could not perform the correction.", ex.Message,
-                       "Correction", DialogBoxIcon.Stop);
+                       "Correction", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -324,7 +324,7 @@ namespace ImagingSIMS.Controls
             catch (Exception ex)
             {
                 DialogBox db = new DialogBox("Could not add the corrected table to the collection.", ex.Message,
-                         "Correction", DialogBoxIcon.Stop);
+                         "Correction", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }

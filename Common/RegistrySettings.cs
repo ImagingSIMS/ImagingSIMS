@@ -43,7 +43,6 @@ namespace ImagingSIMS.Common.Registry
     }
     public class RegSettings : DependencyObject, IDisposable
     {
-
         // To add new setting:
         // 1. Add new DependencyProperty and Propery accessor
         // 2. Add line in SaveSettings()
@@ -181,7 +180,13 @@ namespace ImagingSIMS.Common.Registry
             {
                 keyFiles.SetValue(string.Format("File{0}", (i + 1).ToString()), RecentFiles[i]);
             }
-
+            //for (int i = RecentFiles.Count; i < RecentFiles.MaxSize; i++)
+            //{
+            //    if (keyFiles.GetValue(string.Format("File{0}", (i + 1).ToString())) != null)
+            //    {
+            //        keyFiles.SetValue(string.Format("File{0}", (i + 1).ToString()), string.Empty);
+            //    }
+            //}
         }
         //Call this in workspace constructor
         public bool ReadSettings()

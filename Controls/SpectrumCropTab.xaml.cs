@@ -429,7 +429,7 @@ namespace ImagingSIMS.Controls
             if (parts.Length != 4)
             {
                 DialogBox.Show("Incorrect number of parameters.",
-                    "Please enter four coordinates in the format Start X,End X,StartY,End Y", "Crop", DialogBoxIcon.Stop);
+                    "Please enter four coordinates in the format Start X,End X,StartY,End Y", "Crop", DialogBoxIcon.Error);
                 return;
             }
 
@@ -448,20 +448,20 @@ namespace ImagingSIMS.Controls
             catch(Exception)
             {
                 DialogBox.Show("Could not parse rectangle coordinates.",
-                    "Please enter four coordinates in the format Start X,End X,StartY,End Y", "Crop", DialogBoxIcon.Stop);
+                    "Please enter four coordinates in the format Start X,End X,StartY,End Y", "Crop", DialogBoxIcon.Error);
                 return;
             }
 
             if (startX >= endX)
             {
                 DialogBox.Show("Invalid X coordinates.",
-                    "End X coordinate is less than or equal to start X coordinate.", "Crop", DialogBoxIcon.Stop);
+                    "End X coordinate is less than or equal to start X coordinate.", "Crop", DialogBoxIcon.Error);
                 return;
             }
             if (startY >= endY)
             {
                 DialogBox.Show("Invalid Y coordinates.",
-                    "End Y coordinate is less than or equal to start Y coordinate.", "Crop", DialogBoxIcon.Stop);
+                    "End Y coordinate is less than or equal to start Y coordinate.", "Crop", DialogBoxIcon.Error);
                 return;
             }
 
@@ -585,7 +585,7 @@ namespace ImagingSIMS.Controls
             if (e.Result == null)
             {
                 DialogBox db = new DialogBox("There was an error cropping the spectrum.", "No return value from the BackgroundWorker",
-                    "Crop", DialogBoxIcon.Stop);
+                    "Crop", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -599,14 +599,14 @@ namespace ImagingSIMS.Controls
                     if (ex.InnerException != null) message += "\n" + ex.InnerException.Message;
 
                     DialogBox db = new DialogBox("There was an error cropping the spectrum.", message,
-                        "Crop", DialogBoxIcon.Stop);
+                        "Crop", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
                 else
                 {
                     DialogBox db = new DialogBox("There was an error cropping the spectrum.", "No return Spectrum and no Exception thrown.",
-                        "Crop", DialogBoxIcon.Stop);
+                        "Crop", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -623,7 +623,7 @@ namespace ImagingSIMS.Controls
                 if (ex.InnerException != null) message += "\n" + ex.InnerException.Message;
 
                 DialogBox db = new DialogBox("There was an error addind the spectrum to the collection.", message,
-                    "Crop", DialogBoxIcon.Stop);
+                    "Crop", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -643,14 +643,14 @@ namespace ImagingSIMS.Controls
             if (d == null)
             {
                 DialogBox.Show("No spectrum selected.", 
-                    "Select a mass spectrum and generate a preview image and try again.", "Mask Drop", DialogBoxIcon.Stop);
+                    "Select a mass spectrum and generate a preview image and try again.", "Mask Drop", DialogBoxIcon.Error);
                 return false;
             }
 
             if (d.Width != width || d.Height != height)
             {
                 DialogBox.Show("Invalid mask dimensions.", 
-                    "The mask width and height does not match the selected spectrum dimensions.", "Mask Drop", DialogBoxIcon.Stop);
+                    "The mask width and height does not match the selected spectrum dimensions.", "Mask Drop", DialogBoxIcon.Error);
                 return false;
             }
 
@@ -661,7 +661,7 @@ namespace ImagingSIMS.Controls
             }
             catch(Exception ex)
             {
-                DialogBox.Show("Could not drop mask data.", ex.Message, "Mask Drop", DialogBoxIcon.Stop);
+                DialogBox.Show("Could not drop mask data.", ex.Message, "Mask Drop", DialogBoxIcon.Error);
                 return false;
             }
         }

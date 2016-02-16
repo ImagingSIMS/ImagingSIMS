@@ -95,36 +95,40 @@ namespace ImagingSIMS.Common.Dialogs
         private ImageSource GetIconSource(DialogBoxIcon icon)
         {
             string iconPath = "";
-            switch (icon)
-            {
-                case DialogBoxIcon.BlueQuestion:
-                    iconPath = "Images/BlueQuestion.png";
-                    break;
-                case DialogBoxIcon.Bubble:
-                    iconPath = "Images/Bubble.png";
-                    break;
-                case DialogBoxIcon.CyanCheck:
-                    iconPath = "Images/CyanCheck.png";
-                    break;
-                case DialogBoxIcon.GreenCheck:
-                    iconPath = "Images/GreenCheck.png";
-                    break;
-                case DialogBoxIcon.Information:
-                    iconPath = "Images/Information.png";
-                    break;
-                case DialogBoxIcon.RedQuestion:
-                    iconPath = "Images/RedQuestion.png";
-                    break;
-                case DialogBoxIcon.Stop:
-                    iconPath = "Images/Stop.png";
-                    break;
-                case DialogBoxIcon.Warning:
-                    iconPath = "Images/Warning.png";
-                    break;
-                default: 
-                    iconPath = "Images/Information.png";
-                    break;
-            }
+
+            // Issue here is that icons get copied to output directory of library
+            // but not to ImagingSIMS executable
+
+            //switch (icon)
+            //{
+            //    case DialogBoxIcon.Help:
+            //        iconPath = "Images/Help.png";
+            //        break;
+            //    case DialogBoxIcon.Bubble:
+            //        iconPath = "Images/Bubble.png";
+            //        break;
+            //    case DialogBoxIcon.CyanCheck:
+            //        iconPath = "Images/CyanCheck.png";
+            //        break;
+            //    case DialogBoxIcon.Ok:
+            //        iconPath = "Images/GreenCheck.png";
+            //        break;
+            //    case DialogBoxIcon.Information:
+            //        iconPath = "Images/Information.png";
+            //        break;
+            //    case DialogBoxIcon.RedQuestion:
+            //        iconPath = "Images/RedQuestion.png";
+            //        break;
+            //    case DialogBoxIcon.Error:
+            //        iconPath = "Images/Stop.png";
+            //        break;
+            //    case DialogBoxIcon.Warning:
+            //        iconPath = "Images/Warning.png";
+            //        break;
+            //    default: 
+            //        iconPath = "Images/Information.png";
+            //        break;
+            //}
             BitmapImage src = new BitmapImage();
 
             src.BeginInit();

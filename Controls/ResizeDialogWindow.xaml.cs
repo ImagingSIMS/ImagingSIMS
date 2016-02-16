@@ -110,7 +110,7 @@ namespace ImagingSIMS.Controls
                 {
                     DialogBox db = new DialogBox("Invalid width.",
                         string.Format("Resized width ({0}) falls outside the bounds of the original image.", ResizedWidth, OriginalWidth),
-                        "Resize", DialogBoxIcon.Stop);
+                        "Resize", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -118,7 +118,7 @@ namespace ImagingSIMS.Controls
                 {
                     DialogBox db = new DialogBox("Invalid height.",
                         string.Format("Resized height ({0}) falls outside the bounds of the original image.", ResizedHeight, OriginalHeight),
-                        "Resize", DialogBoxIcon.Stop);
+                        "Resize", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -129,7 +129,7 @@ namespace ImagingSIMS.Controls
                 {
                     DialogBox db = new DialogBox("Invalid width.",
                         string.Format("Resized width ({0}) must be greater than the original width ({1}).", ResizedWidth, OriginalWidth),
-                        "Resize", DialogBoxIcon.Stop);
+                        "Resize", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -137,7 +137,7 @@ namespace ImagingSIMS.Controls
                 {
                     DialogBox db = new DialogBox("Invalid height.",
                         string.Format("Resized height ({0}) must be greater than the original height ({1}).", ResizedHeight, OriginalHeight),
-                        "Resize", DialogBoxIcon.Stop);
+                        "Resize", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -163,7 +163,7 @@ namespace ImagingSIMS.Controls
                 hdr = "Resize";
             }
 
-            DialogBox db_confirm = new DialogBox(msg1, msg2, hdr, DialogBoxIcon.BlueQuestion);
+            DialogBox db_confirm = new DialogBox(msg1, msg2, hdr, DialogBoxIcon.Help);
             if (db_confirm.ShowDialog() != true) return;
 
             this.DialogResult = true;

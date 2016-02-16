@@ -337,7 +337,7 @@ namespace ImagingSIMS.Controls
             if (_selectedTablesFixed.Count == 0 && _selectedTablesMoving.Count == 0)
             {
                 DialogBox.Show("No tables selected.", "Add one or more tables to the moving and/or fixed list and try again.",
-                    "Transform", DialogBoxIcon.Stop);
+                    "Transform", DialogBoxIcon.Error);
                 return;
             }
             // Do dimension check and find target width and height
@@ -358,7 +358,7 @@ namespace ImagingSIMS.Controls
                 {
                     DialogBox.Show("Dimensions are not valid.",
                         "One or more of the selected moving tables does not match the dimensions of the others.", 
-                        "Transform", DialogBoxIcon.Stop);
+                        "Transform", DialogBoxIcon.Error);
                     return;
                 }
             }
