@@ -249,10 +249,6 @@
                                   LargeImageSource="Images\Sum.ico" Click="ribbonOpenSumTab_Click"
                                   ToolTipTitle="Summation"
                                   ToolTipDescription="Opens a table selector to perform table summations."/>
-                    <RibbonButton x:Name="rubbonOpenRatioTab" Label="Ratio"
-                                  LargeImageSource="Images\Isotope.ico" Click="ribbonOpenRatioTab_Click"
-                                  ToolTipTitle="Ratio"
-                                  ToolTipDescription="Opens a table selector to create new data sets that are ratios of input data."/>
                     <RibbonButton x:Name="ribbonOpenCropTab" Label="Crop"
                                   LargeImageSource="Images\Crop.ico" Click="ribbonOpenCropTab_Click"
                                   ToolTipTitle="Crop"
