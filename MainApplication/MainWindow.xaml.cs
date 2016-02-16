@@ -1442,6 +1442,14 @@ namespace ImagingSIMS.MainApplication
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
+        private void ribbonOpenRatioTab_Click(object sender, RoutedEventArgs e)
+        {
+            RatioTab rt = new RatioTab();
+            rt.InputData.AvailableTables = Workspace.Data;
+            ClosableTabItem cti = ClosableTabItem.Create(rt, TabType.Ratio, "Ratio", true);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+        }
         private void NewSampleData(object sender, RoutedEventArgs e)
         {
             SampleData sd = new SampleData(Workspace.SampleXDimension, Workspace.SampleYDimension, Workspace.SampleZDimension);

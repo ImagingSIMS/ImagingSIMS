@@ -4,6 +4,9 @@
         Title="Fusion" Background="#FF414141" Width="400" MaxWidth="400" 
         SizeToContent="Height" WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
         Icon="Images\PaintPalette.ico">
+    <Window.Resources>
+        <ResourceDictionary Source="Themes\Generic.xaml"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -13,8 +16,7 @@
             <ColumnDefinition Width="70" />
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <controls:BitmapDisplay HorizontalAlignment="Left" Margin="8,8,0,0" x:Name="displayIcon" VerticalAlignment="Top" Width="54" Height="54"
-                                     ContextMenuIsEnabled="False"/>
+        <Image Margin="8" Source="{StaticResource HelpIcon}"/>
         <TextBlock x:Name="msg" TextWrapping="Wrap" Foreground="#FFD8D8D8" Margin="8" Grid.Column="1">
             You are attempting to drop an image to a ratop tab. Is this the high resolution image for the numerator or denomiator tables?
         </TextBlock>
