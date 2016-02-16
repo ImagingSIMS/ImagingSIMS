@@ -97,7 +97,7 @@ namespace ImagingSIMS.Controls
             if (itemsControl.SelectedItems.Count == 0)
             {
                 DialogBox db = new DialogBox("No images selected.", "Select one or more images to save.",
-                    "Save", DialogBoxIcon.Stop);
+                    "Save", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -146,7 +146,7 @@ namespace ImagingSIMS.Controls
             }
             else
             {
-                DialogBox db = new DialogBox("Image(s) saved successfully!", sfd.FileName, "Save", DialogBoxIcon.GreenCheck);
+                DialogBox db = new DialogBox("Image(s) saved successfully!", sfd.FileName, "Save", DialogBoxIcon.Ok);
                 db.ShowDialog();
             }
         }

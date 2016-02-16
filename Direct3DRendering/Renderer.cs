@@ -223,7 +223,7 @@ namespace Direct3DRendering
             _orbitCamera = new OrbitCamera(_device, _parent, windowHandle);
 
             // Set camera position so that (-x, -y, -z) of the volume is the top of the rendering
-            _orbitCamera.SetInitialConditions(new Vector3(0, -5f, -2.5f), new Vector3(0, 1, 0));
+            _orbitCamera.SetInitialConditions(new Vector3(0, 5f, 2.5f), new Vector3(0, 1, 0));
 
             _needsResize = true;
 

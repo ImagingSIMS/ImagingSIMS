@@ -27,9 +27,6 @@ namespace ImagingSIMS.Common.Dialogs
 
             Loaded += FusionDropBox_Loaded;
             SizeChanged += FusionDropBox_SizeChanged;
-
-            displayIcon.ShowBorder(false);
-            displayIcon.SetImage(GetDialogIcon(DialogBoxIcon.BlueQuestion));
         }
 
         void FusionDropBox_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -66,32 +63,6 @@ namespace ImagingSIMS.Common.Dialogs
             this.DialogResult = false;
             DropResult = FusionDropResult.Cancel;
             this.Close();
-        }
-
-        private Bitmap GetDialogIcon(DialogBoxIcon Type)
-        {
-            Uri baseUri = new Uri("pack://application:,,,/Resources/Resources.resx");
-            switch (Type)
-            {
-                case DialogBoxIcon.BlueQuestion:
-                    return Properties.Resources.BlueQuestion;
-                case DialogBoxIcon.Bubble:
-                    return Properties.Resources.Bubble;
-                case DialogBoxIcon.CyanCheck:
-                    return Properties.Resources.CyanCheck;
-                case DialogBoxIcon.GreenCheck:
-                    return Properties.Resources.GreenCheck;
-                case DialogBoxIcon.Information:
-                    return Properties.Resources.Information;
-                case DialogBoxIcon.RedQuestion:
-                    return Properties.Resources.RedQuestion;
-                case DialogBoxIcon.Stop:
-                    return Properties.Resources.Stop;
-                case DialogBoxIcon.Warning:
-                    return Properties.Resources.Warning;
-                default:
-                    return Properties.Resources.Information;
-            }
         }
     }
     public enum FusionDropResult { SEM, SIMS, Cancel }

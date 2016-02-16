@@ -1,5 +1,5 @@
 
-  const char features[] = {""
+  const char features[] = {"\n"
 "CXX_FEATURE:"
 #if _MSC_VER >= 1800
 "1"

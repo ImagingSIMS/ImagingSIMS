@@ -115,7 +115,7 @@ namespace ImagingSIMS.Controls
             catch (Exception ex)
             {
                 DialogBox db = new DialogBox("Registry settings could not be saved.", ex.Message,
-                    "Settings", DialogBoxIcon.Stop);
+                    "Settings", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }

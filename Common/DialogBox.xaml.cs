@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Globalization;
 
 namespace ImagingSIMS.Common.Dialogs
 {
@@ -20,14 +21,23 @@ namespace ImagingSIMS.Common.Dialogs
     /// </summary>
     public partial class DialogBox : Window
     {
+        public static readonly DependencyProperty IconTypeProperty = DependencyProperty.Register("IconType",
+            typeof(DialogBoxIcon), typeof(DialogBox));
+
+        public DialogBoxIcon IconType
+        {
+            get { return (DialogBoxIcon)GetValue(IconTypeProperty); }
+            set { SetValue(IconTypeProperty, value); }
+        }
+
         public DialogBox()
         {
         }
         public DialogBox(string Message1, string Message2, string Header, DialogBoxIcon Icon)
         {
+            IconType = Icon;
+
             InitializeComponent();
-            displayIcon.BorderVisibility = Visibility.Hidden;
-            displayIcon.SetImage(GetDialogIcon(Icon));
 
             this.Title = Header;
             msg1.Text = Message1;
@@ -40,9 +50,9 @@ namespace ImagingSIMS.Common.Dialogs
         }        
         public DialogBox(string Message1, string Message2, string Header, DialogBoxIcon Icon, bool ShowCancel)
         {
+            IconType = Icon;
+
             InitializeComponent();
-            displayIcon.BorderVisibility = Visibility.Hidden;
-            displayIcon.SetImage(GetDialogIcon(Icon));
 
             this.Title = Header;
             msg1.Text = Message1;
@@ -69,32 +79,6 @@ namespace ImagingSIMS.Common.Dialogs
             if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
             {
                 return;
-            }
-        }
-
-        private Bitmap GetDialogIcon(DialogBoxIcon Type)
-        {
-            Uri baseUri = new Uri("pack://application:,,,/Resources/Resources.resx");
-            switch (Type)
-            {
-                case DialogBoxIcon.BlueQuestion:
-                    return Properties.Resources.BlueQuestion;
-                case DialogBoxIcon.Bubble:
-                    return Properties.Resources.Bubble;
-                case DialogBoxIcon.CyanCheck:
-                    return Properties.Resources.CyanCheck;
-                case DialogBoxIcon.GreenCheck:
-                    return Properties.Resources.GreenCheck;
-                case DialogBoxIcon.Information:
-                    return Properties.Resources.Information;
-                case DialogBoxIcon.RedQuestion:
-                    return Properties.Resources.RedQuestion;
-                case DialogBoxIcon.Stop:
-                    return Properties.Resources.Stop;
-                case DialogBoxIcon.Warning:
-                    return Properties.Resources.Warning;
-                default:
-                    return Properties.Resources.Information;
             }
         }
 
@@ -141,8 +125,99 @@ namespace ImagingSIMS.Common.Dialogs
 
     public enum DialogBoxIcon
     {
-        BlueQuestion, Bubble, CyanCheck, GreenCheck,
-        Information, RedQuestion, Stop, Warning
+        Alert, Blocked, Error, Help, Information,
+        Invalid, Offline, Ok, Pause, Run, SecurityWarning, 
+        Stop, Suppressed, Warning, WarningGray
     }
     public enum DialogBoxButtons { OK, OKCancel }
+
+    //class DialogBoxIconToImageConverter : IValueConverter
+    //{
+    //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        try
+    //        {
+    //            DialogBoxIcon iconType = (DialogBoxIcon)value;
+
+    //            switch (iconType)
+    //            {
+    //                case DialogBoxIcon.Alert:
+    //                    break;
+    //                case DialogBoxIcon.Blocked:
+    //                    break;
+    //                case DialogBoxIcon.Error:
+    //                    break;
+    //                case DialogBoxIcon.Help:
+    //                    break;
+    //                case DialogBoxIcon.Information:
+    //                    break;
+    //                case DialogBoxIcon.Invalid:
+    //                    break;
+    //                case DialogBoxIcon.Ok:
+    //                    break;
+    //                case DialogBoxIcon.Pause:
+    //                    break;
+    //                case DialogBoxIcon.Run:
+    //                    break;
+    //                case DialogBoxIcon.SecurityWarning:
+    //                    break;
+    //                case DialogBoxIcon.Error:
+    //                    break;
+    //                case DialogBoxIcon.ErrorSquare:
+    //                    break;
+    //                case DialogBoxIcon.Suppressed:
+    //                    break;
+    //                case DialogBoxIcon.Warning:
+    //                    break;
+    //                case DialogBoxIcon.WarningGray:
+    //                    break;
+    //            }
+    //        }
+    //    }
+
+    //    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
+
+    //public static class IconHelper
+    //{
+    //    public static Bitmap GetIcon(DialogBoxIcon icon)
+    //    {
+    //        switch (icon)
+    //        {
+    //            case DialogBoxIcon.AlertBlue:
+    //                return Properties.Resources.Alert.ToBitmap();
+    //            case DialogBoxIcon.AlertGray:
+    //                return Properties.Resources.AlertGrey.ToBitmap();
+    //            case DialogBoxIcon.Blocked:
+    //                return Properties.Resources.Blocked.ToBitmap();
+    //            case DialogBoxIcon.CheckGray:
+    //                return Properties.Resources.OKGrey.ToBitmap();
+    //            case DialogBoxIcon.Pause:
+    //                return Properties.Resources.PauseGrey.ToBitmap();
+    //            case DialogBoxIcon.Run:
+    //                return Properties.Resources.Run.ToBitmap();
+    //            case DialogBoxIcon.SecurityOk:
+    //                return Properties.Resources.SecurityOKy.ToBitmap();
+    //            case DialogBoxIcon.Suppressed:
+    //                return Properties.Resources.Suppressed.ToBitmap();
+    //            case DialogBoxIcon.WarningGray:
+    //                return Properties.Resources.WarningGrey.ToBitmap();
+    //            case DialogBoxIcon.Help:
+    //                return Properties.Resources.Help.ToBitmap();
+    //            case DialogBoxIcon.Ok:
+    //                return Properties.Resources.OK.ToBitmap();
+    //            case DialogBoxIcon.Information:
+    //                return Properties.Resources.Information.ToBitmap();
+    //            case DialogBoxIcon.Error:
+    //                return Properties.Resources.Critical.ToBitmap();
+    //            case DialogBoxIcon.Warning:
+    //                return Properties.Resources.Warning.ToBitmap();
+    //            default:
+    //                return Properties.Resources.Information.ToBitmap();
+    //        }
+    //    }
+    //}
 }

@@ -418,7 +418,7 @@ namespace ImagingSIMS.Common.Controls
                     }
 
                     DialogBox db = new DialogBox("Image saved successfully!",
-                       sfd.FileName, "Save", DialogBoxIcon.GreenCheck);
+                       sfd.FileName, "Save", DialogBoxIcon.Ok);
                     db.ShowDialog();
                 }
                 catch (Exception ex)
@@ -429,7 +429,7 @@ namespace ImagingSIMS.Common.Controls
                         inner = ex.InnerException.Message;
                     }
                     DialogBox db = new DialogBox(ex.Message, inner,
-                        "Save", DialogBoxIcon.GreenCheck);
+                        "Save", DialogBoxIcon.Ok);
                     db.ShowDialog();
                 }
             }
@@ -442,7 +442,7 @@ namespace ImagingSIMS.Common.Controls
                 if (bmp == null)
                 {
                     DialogBox db = new DialogBox("Incorrect image format.",
-                        "Only bitmap images can be copied.", "Copy", DialogBoxIcon.Stop);
+                        "Only bitmap images can be copied.", "Copy", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -706,7 +706,7 @@ namespace ImagingSIMS.Common.Controls
             else
             {
                 DialogBox db = new DialogBox("Could not rescale the image.",
-                    r.ErrorMessage, "Image Display", DialogBoxIcon.Stop);
+                    r.ErrorMessage, "Image Display", DialogBoxIcon.Error);
                 db.ShowDialog();
             }
         }
@@ -815,7 +815,7 @@ namespace ImagingSIMS.Common.Controls
                     inner = ICex.InnerException.Message;
                 }
                 DialogBox db = new DialogBox(ICex.Message, inner,
-                    "Bitmap Display", DialogBoxIcon.Stop);
+                    "Bitmap Display", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return "Error in operation";
             }
@@ -852,7 +852,7 @@ namespace ImagingSIMS.Common.Controls
                     inner = ICex.InnerException.Message;
                 }
                 DialogBox db = new DialogBox(ICex.Message, inner,
-                    "Bitmap Display", DialogBoxIcon.Stop);
+                    "Bitmap Display", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return false;
             }

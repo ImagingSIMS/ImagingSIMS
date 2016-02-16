@@ -21,9 +21,6 @@ namespace ImagingSIMS.Common.Dialogs
             Loaded += ExceptionWindow_Loaded;
             SizeChanged += ExceptionWindow_SizeChanged;
 
-            displayIcon.BorderVisibility = Visibility.Hidden;
-            displayIcon.SetImage(GetDialogIcon());
-
             this.Title = "Unhandled Exception";
             reportedException = Exception;
 
@@ -171,12 +168,6 @@ namespace ImagingSIMS.Common.Dialogs
                 outputText += @"A crash dump can be found in the current user's AppData\Roaming folder.";
             }
             textBoxOutput.Text = outputText;
-        }
-
-        private System.Drawing.Bitmap GetDialogIcon()
-        {
-            Uri baseUri = new Uri("pack://application:,,,/Resources/Resources.resx");
-            return Properties.Resources.Stop;
         }
     }
 }

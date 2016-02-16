@@ -166,27 +166,27 @@ namespace ImagingSIMS.Controls
             if(HighResImage.IsRegistered && LowResImage.IsRegistered)
             {
                 if (DialogBox.Show("Images are already registered.",
-                    "Click OK to register anyway or Cancel to return", "Registration", DialogBoxIcon.RedQuestion, true) != true) return;
+                    "Click OK to register anyway or Cancel to return", "Registration", DialogBoxIcon.Help, true) != true) return;
             }
             //Check input parameters
             ImageRegistrationTypes regType = RegistrationParameters.RegType;
             if (regType == ImageRegistrationTypes.NoRegistration)
             {
                 DialogBox.Show("No registration method selected.",
-                    "Please choose one of the available registration methods and try again.", "Registration", DialogBoxIcon.Stop);
+                    "Please choose one of the available registration methods and try again.", "Registration", DialogBoxIcon.Error);
                 return;
             }
             if (HighResImage.ImageSource == null)
             {
                 DialogBox db = new DialogBox("No high resolution image loaded.",
-                    "Drop or load a high resolution image into the tab and try again.", "Registration", DialogBoxIcon.Stop);
+                    "Drop or load a high resolution image into the tab and try again.", "Registration", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
             if (LowResImage.ImageSource == null)
             {
                 DialogBox db = new DialogBox("No low resolution image loaded.",
-                    "Drop or load a low resolution image into the tab and try again.", "Registration", DialogBoxIcon.Stop);
+                    "Drop or load a low resolution image into the tab and try again.", "Registration", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -194,7 +194,7 @@ namespace ImagingSIMS.Controls
             {
                 DialogBox.Show("Invalid maximum iterations.",
                     "Set the maximum number of iterations to a value greater than 0 to perform automatic registration or to 0 to specify a transform.", 
-                    "Registration", DialogBoxIcon.Stop);
+                    "Registration", DialogBoxIcon.Error);
                 return;
             }
             //if ((regType == ImageRegistrationTypes.CenterRigid2D || regType == ImageRegistrationTypes.CenterSimilarity)
@@ -215,14 +215,14 @@ namespace ImagingSIMS.Controls
             {
                 DialogBox.Show("Invalid maximum step length.",
                    "Set the maximum step length for multi modal registration to a value greater than 0.",
-                   "Registration", DialogBoxIcon.Stop);
+                   "Registration", DialogBoxIcon.Error);
                 return;
             }
             if (RegistrationParameters.MinStepLength < 0)
             {
                 DialogBox.Show("Invalid minimum step length.",
                    "Set the minimum step length for multi modal registration to a value greater than 0.",
-                   "Registration", DialogBoxIcon.Stop);
+                   "Registration", DialogBoxIcon.Error);
                 return;
             }
 
@@ -232,14 +232,14 @@ namespace ImagingSIMS.Controls
                 {
                     DialogBox.Show("Invalid number of bins.",
                        "Set the number of bins for multi modal registration to a value greater than 0.",
-                       "Registration", DialogBoxIcon.Stop);
+                       "Registration", DialogBoxIcon.Error);
                     return;
                 }
                 if (RegistrationParameters.NumberSamples < 0)
                 {
                     DialogBox.Show("Invalid number of samples.",
                        "Set the number of samples for multi modal registration to a value greater than 0.",
-                       "Registration", DialogBoxIcon.Stop);
+                       "Registration", DialogBoxIcon.Error);
                     return;
                 }                
             }
@@ -264,13 +264,13 @@ namespace ImagingSIMS.Controls
                         {
                             DialogBox.Show("Moving points file not found.",
                                 string.Format("Could not find file {0} to open. If Clear App Data is set to true, the file could have been deleted on last exit.", 
-                                fnfEx.Message), "Point Set", DialogBoxIcon.Stop);
+                                fnfEx.Message), "Point Set", DialogBoxIcon.Error);
                             return;
                         }
                         catch (Exception ex)
                         {
                             DialogBox.Show("Could not open recent points file.",
-                                ex.Message, "Point Set", DialogBoxIcon.Stop);
+                                ex.Message, "Point Set", DialogBoxIcon.Error);
                             return;
                         }
                         break;
@@ -288,13 +288,13 @@ namespace ImagingSIMS.Controls
                         {
                             DialogBox.Show("Moving points file not found.",
                                    string.Format("Could not find file {0} to open. If Clear App Data is set to true, the file could have been deleted on last exit.", 
-                                   fnfEx.Message), "Point Set", DialogBoxIcon.Stop);
+                                   fnfEx.Message), "Point Set", DialogBoxIcon.Error);
                             return;
                         }
                         catch (Exception ex)
                         {
                             DialogBox.Show("Could not open points file.",
-                                ex.Message, "Point Set", DialogBoxIcon.Stop);
+                                ex.Message, "Point Set", DialogBoxIcon.Error);
                             return;
                         }
                         break;
@@ -303,7 +303,7 @@ namespace ImagingSIMS.Controls
                 {
                     DialogBox.Show("No points selected.",
                         "Select or load one or more points in the low resolution image or opt for non-point based registration.",
-                        "Registration", DialogBoxIcon.Stop);
+                        "Registration", DialogBoxIcon.Error);
                     return;
                 }
 
@@ -321,13 +321,13 @@ namespace ImagingSIMS.Controls
                         catch (FileNotFoundException fnfEx)
                         {
                             DialogBox.Show("Points file not found.",
-                                string.Format("Could not find file {0} to open.", fnfEx.Message), "Point Set", DialogBoxIcon.Stop);
+                                string.Format("Could not find file {0} to open.", fnfEx.Message), "Point Set", DialogBoxIcon.Error);
                             return;
                         }
                         catch (Exception ex)
                         {
                             DialogBox.Show("Could not open recent points file.",
-                                ex.Message, "Point Set", DialogBoxIcon.Stop);
+                                ex.Message, "Point Set", DialogBoxIcon.Error);
                             return;
                         }
                         break;
@@ -344,13 +344,13 @@ namespace ImagingSIMS.Controls
                         catch (FileNotFoundException fnfEx)
                         {
                             DialogBox.Show("Points file not found.",
-                                   string.Format("Could not find file {0} to open.", fnfEx.Message), "Point Set", DialogBoxIcon.Stop);
+                                   string.Format("Could not find file {0} to open.", fnfEx.Message), "Point Set", DialogBoxIcon.Error);
                             return;
                         }
                         catch (Exception ex)
                         {
                             DialogBox.Show("Could not open points file.",
-                                ex.Message, "Point Set", DialogBoxIcon.Stop);
+                                ex.Message, "Point Set", DialogBoxIcon.Error);
                             return;
                         }
                         break;
@@ -359,7 +359,7 @@ namespace ImagingSIMS.Controls
                 {
                     DialogBox.Show("No points selected.",
                         "Select one or more points in the high resolution image or opt for non-point based registration.",
-                        "Registration", DialogBoxIcon.Stop);
+                        "Registration", DialogBoxIcon.Error);
                     return;
                 }
             }
@@ -419,7 +419,7 @@ namespace ImagingSIMS.Controls
             }
             catch (Exception ex)
             {
-                DialogBox.Show("Could not initialize image registration.", ex.Message, "Image Registration", DialogBoxIcon.Stop);
+                DialogBox.Show("Could not initialize image registration.", ex.Message, "Image Registration", DialogBoxIcon.Error);
                 return;
             }
 
@@ -459,7 +459,7 @@ namespace ImagingSIMS.Controls
             if (_lastHighRes == null || _lastLowRes == null)
             {
                 DialogBox.Show("Could not undo the image registration.", 
-                    "The previous images are missing.", "Undo", DialogBoxIcon.Stop);
+                    "The previous images are missing.", "Undo", DialogBoxIcon.Error);
             }
 
             HighResImage = _lastHighRes;
@@ -483,14 +483,14 @@ namespace ImagingSIMS.Controls
             if (HighResImage.ImageSource == null)
             {
                 DialogBox db = new DialogBox("No high resolution image loaded.",
-                    "Drop or load a high resolution image into the tab and try again.", "Fusion", DialogBoxIcon.Stop);
+                    "Drop or load a high resolution image into the tab and try again.", "Fusion", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
             if (LowResImage.ImageSource == null)
             {
                 DialogBox db = new DialogBox("No low resolution image loaded.",
-                    "Drop or load a low resolution image into the tab and try again.", "Fusion", DialogBoxIcon.Stop);
+                    "Drop or load a low resolution image into the tab and try again.", "Fusion", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -498,7 +498,7 @@ namespace ImagingSIMS.Controls
                 HighResImage.ImageSource.PixelHeight < LowResImage.ImageSource.PixelHeight)
             {
                 DialogBox db = new DialogBox("Invalid image size.",
-                    "One or both of the dimensions of the high resolution image is(are) smaller than the low resolution image.", "Fusion", DialogBoxIcon.Stop);
+                    "One or both of the dimensions of the high resolution image is(are) smaller than the low resolution image.", "Fusion", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -511,7 +511,7 @@ namespace ImagingSIMS.Controls
                 if (fusionType != FusionType.HSLShift)
                 {
                     if (DialogBox.Show("Input images are not registered.", "Click OK to proceed with fusion anyway or Cancel to return.",
-                        "Registration", DialogBoxIcon.RedQuestion, true) != true) return;
+                        "Registration", DialogBoxIcon.Help, true) != true) return;
                 }
             }
 
@@ -534,7 +534,7 @@ namespace ImagingSIMS.Controls
             if (fusionType == FusionType.HSLShift && ShiftWindowSize <= 0)
             {
                 DialogBox.Show("Invalid window size.", "Window size must be greater than 0.",
-                    "Fusion", DialogBoxIcon.Stop);
+                    "Fusion", DialogBoxIcon.Error);
                 return;
             }
 
@@ -593,7 +593,7 @@ namespace ImagingSIMS.Controls
             }
             catch (Exception ex)
             {
-                DialogBox db = new DialogBox("There was a problem fusing the two images.", ex.Message, "Fusion", DialogBoxIcon.Stop);
+                DialogBox db = new DialogBox("There was a problem fusing the two images.", ex.Message, "Fusion", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -607,21 +607,21 @@ namespace ImagingSIMS.Controls
             if (FusedImage.ImageSource == null)
             {
                 DialogBox db = new DialogBox("No fused image to analyze.", "You must first perform image fusion to analyze the result.",
-                    "QPS", DialogBoxIcon.Stop);
+                    "QPS", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
             if (LowResImage.ImageSource == null)
             {
                 DialogBox db = new DialogBox("No low resolution image to compare.", "You must have a low resolution image to compare the result to.",
-                    "QPS", DialogBoxIcon.Stop);
+                    "QPS", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
             if (HighResImage.ImageSource == null)
             {
                 DialogBox db = new DialogBox("No high resolution image to compare.", "You must have a high resolution image to compare the result to.",
-                    "QPS", DialogBoxIcon.Stop);
+                    "QPS", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -708,12 +708,12 @@ namespace ImagingSIMS.Controls
                 DialogBox db;
                 if (error == "")
                 {
-                    db = new DialogBox("File saved successfully!", System.IO.Path.GetFileName(sfd.FileName), "Save", DialogBoxIcon.GreenCheck);
+                    db = new DialogBox("File saved successfully!", System.IO.Path.GetFileName(sfd.FileName), "Save", DialogBoxIcon.Ok);
                     db.ShowDialog();
                 }
                 else
                 {
-                    db = new DialogBox("Could not save the image.", error, "Save", DialogBoxIcon.Stop);
+                    db = new DialogBox("Could not save the image.", error, "Save", DialogBoxIcon.Error);
                     db.ShowDialog();
                 }
             }
@@ -837,12 +837,12 @@ namespace ImagingSIMS.Controls
                             encoder.Save(stream);
 
                             DialogBox db = new DialogBox("File saved successfully!",
-                            System.IO.Path.GetFileName(sfd.FileName), "Save", DialogBoxIcon.GreenCheck);
+                            System.IO.Path.GetFileName(sfd.FileName), "Save", DialogBoxIcon.Ok);
                             db.ShowDialog();
                         }
                         catch (Exception ex)
                         {
-                            DialogBox db = new DialogBox("Could not save the image.", ex.Message, "Save", DialogBoxIcon.Stop);
+                            DialogBox db = new DialogBox("Could not save the image.", ex.Message, "Save", DialogBoxIcon.Error);
                             db.ShowDialog();
                             return;
                         }
@@ -858,12 +858,12 @@ namespace ImagingSIMS.Controls
                             encoder.Save(stream);
 
                             DialogBox db = new DialogBox("File saved successfully!",
-                            System.IO.Path.GetFileName(sfd.FileName), "Save", DialogBoxIcon.GreenCheck);
+                            System.IO.Path.GetFileName(sfd.FileName), "Save", DialogBoxIcon.Ok);
                             db.ShowDialog();
                         }
                         catch (Exception ex)
                         {
-                            DialogBox db = new DialogBox("Could not save the image.", ex.Message, "Save", DialogBoxIcon.Stop);
+                            DialogBox db = new DialogBox("Could not save the image.", ex.Message, "Save", DialogBoxIcon.Error);
                             db.ShowDialog();
                             return;
                         }
@@ -879,12 +879,12 @@ namespace ImagingSIMS.Controls
                             encoder.Save(stream);
 
                             DialogBox db = new DialogBox("File saved successfully!",
-                            System.IO.Path.GetFileName(sfd.FileName), "Save", DialogBoxIcon.GreenCheck);
+                            System.IO.Path.GetFileName(sfd.FileName), "Save", DialogBoxIcon.Ok);
                             db.ShowDialog();
                         }
                         catch (Exception ex)
                         {
-                            DialogBox db = new DialogBox("Could not save the image.", ex.Message, "Save", DialogBoxIcon.Stop);
+                            DialogBox db = new DialogBox("Could not save the image.", ex.Message, "Save", DialogBoxIcon.Error);
                             db.ShowDialog();
                             return;
                         }
@@ -935,7 +935,7 @@ namespace ImagingSIMS.Controls
                     if (errors.Count == 0)
                     {
                         DialogBox db = new DialogBox("File(s) saved successfully!",
-                            System.IO.Path.GetFileName(sfd.FileName), "Save", DialogBoxIcon.GreenCheck);
+                            System.IO.Path.GetFileName(sfd.FileName), "Save", DialogBoxIcon.Ok);
                         db.ShowDialog();
                     }
                     else

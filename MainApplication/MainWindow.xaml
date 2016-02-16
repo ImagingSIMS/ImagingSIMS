@@ -201,16 +201,6 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <!--<RibbonButton Label="{Binding Converter={StaticResource shortPathConverter}}" 
-                                                                   ToolTip="{Binding}" Click="ribbonOpenRecentFile_Click"
-                                                                   SmallImageSource="Images\Workspace.ico">
-                                    <RibbonButton.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Remove From List" Click="ribbonRecentRemove_Click"/>
-                                            <MenuItem Header="Open File Location" Click="ribbonRecentOpenLocation_Click"/>
-                                        </ContextMenu>
-                                    </RibbonButton.ContextMenu>
-                                </RibbonButton>-->
                                 <c:FileItem FilePath="{Binding}" FileClicked="recentItem_FileClicked" RemoveFileClicked="recentItem_RemoveFileClicked" ShowIcon="True" ShowGlyph="False"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -360,10 +350,11 @@
                     <RibbonButton x:Name="imagingNewComp" Label="New" LargeImageSource="Images\NewComp.ico" Click="NewComponent"
                                       ToolTipTitle="New Component" ToolTipDescription="Opens a Build Component tab to create a new image component."
                                       ToolTipImageSource="Images\NewComp.ico"/>
-                    <RibbonMenuButton x:Name="imagingCompMenu" Label="Select"  LargeImageSource="Images\Settings.ico"
-                                          ToolTipTitle="Select Components" ToolTipImageSource="Images\Settings.ico"
-                                          ToolTipDescription="Choose one or more built components to create a 2D or 3D image series."
-                                          IsEnabled="{Binding ElementName=listBoxComponents, Path=HasItems}">
+                    <RibbonMenuButton Label="Select"  LargeImageSource="Images\Settings.ico"
+                                        ToolTipTitle="Select Components" ToolTipImageSource="Images\Settings.ico"
+                                        ToolTipDescription="Choose one or more built components to create a 2D or 3D image series.">
+                        <!-- Possible .NET bug? This line in 4.6.2 does not allow for items in the ListBox to be selected -->
+                        <!-- IsEnabled="{Binding ElementName=listBoxComponents, Path=HasItems}" -->
                         <RibbonGallery BorderBrush="#FF211C1C" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                             <ListBox x:Name="listBoxComponents" Width="Auto" ItemsSource="{Binding Workspace.Components}" SelectionMode="Multiple" Background="Transparent">
                                 <ListBox.ItemTemplate>
@@ -382,16 +373,6 @@
                                         </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
-                                <ListBox.ItemContainerStyle>
-                                    <Style TargetType="{x:Type ListBoxItem}">
-                                        <Setter Property="Background" Value="Transparent"/>
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="true">
-                                                <Setter Property="Background" Value="Orange"/>
-                                            </Trigger>
-                                        </Style.Triggers>    
-                                    </Style>
-                                </ListBox.ItemContainerStyle>
                             </ListBox>
                         </RibbonGallery>
                     </RibbonMenuButton>
@@ -654,11 +635,12 @@
                                         ToolTipImageSource="Images\VolumeOpen.ico"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Volume Rendering">
-                <RibbonMenuButton x:Name="renderingVolumesMenu" Label="Select"  LargeImageSource="Images\Volume.png"
+                    <RibbonMenuButton x:Name="renderingVolumesMenu" Label="Select"  LargeImageSource="Images\Volume.png"
                                           SmallImageSource="Images\eraser.ico"
                                           ToolTipTitle="Select Volumes" ToolTipImageSource="Images\Volume.png"
-                                          ToolTipDescription="Choose one or more volume data sets to render."
-                                          IsEnabled="{Binding ElementName=listBoxRenderingVolumes, Path=HasItems}">
+                                          ToolTipDescription="Choose one or more volume data sets to render.">
+                        <!-- Possible .NET bug? This line in 4.6.2 does not allow for items in the ListBox to be selected -->
+                        <!-- IsEnabled="{Binding ElementName=listBoxRenderingVolumes, Path=HasItems}" -->
                         <RibbonGallery BorderBrush="#FF211C1C" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                             <ListBox x:Name="listBoxRenderingVolumes" Width="Auto" ItemsSource="{Binding Workspace.Volumes}" SelectionMode="Multiple" Background="Transparent">
                                 <ListBox.ItemTemplate>

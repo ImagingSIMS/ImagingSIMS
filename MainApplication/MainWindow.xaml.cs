@@ -148,7 +148,7 @@ namespace ImagingSIMS.MainApplication
 
                 if (DialogBox.Show(string.Format("An autosave file was found from {0}.", Workspace.Registry.CrashDateTime),
                            "Click OK to load the workspace or cancel to continue. If you click cancel, the autosave will be deleted permanently.",
-                           "Autosave", DialogBoxIcon.BlueQuestion, true) == false)
+                           "Autosave", DialogBoxIcon.Help, true) == false)
                 {
                     Trace.WriteLine("Autosave aborted by user.");
 
@@ -163,7 +163,7 @@ namespace ImagingSIMS.MainApplication
                         Workspace.Load(Workspace.Registry.CrashFilePath);
 
                         DialogBox.Show("The autosave was able to load the previous workspace.",
-                            "You should manually save a copy of this workspace using the File menu.", "Recovery", DialogBoxIcon.GreenCheck);
+                            "You should manually save a copy of this workspace using the File menu.", "Recovery", DialogBoxIcon.Ok);
 
                         File.Delete(Workspace.Registry.CrashFilePath);
 
@@ -314,21 +314,21 @@ namespace ImagingSIMS.MainApplication
                 catch (DeploymentDownloadException dde)
                 {
                     DialogBox db = new DialogBox("The new version of the application cannot be downloaded at this time. Please check your network connection, or try again later.",
-                        dde.Message, "Update", DialogBoxIcon.Stop);
+                        dde.Message, "Update", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
                 catch (InvalidDeploymentException ide)
                 {
                     DialogBox db = new DialogBox("Cannot check for a new version of the application. The ClickOnce deployment is corrupt. Please redeploy the application and try again.",
-                        ide.Message, "Update", DialogBoxIcon.Stop);
+                        ide.Message, "Update", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
                 catch (InvalidOperationException ioe)
                 {
                     DialogBox db = new DialogBox("This application cannot be updated. It is likely not a ClickOnce application.",
-                        ioe.Message, "Update", DialogBoxIcon.Stop);
+                        ioe.Message, "Update", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -340,7 +340,7 @@ namespace ImagingSIMS.MainApplication
                     if (!info.IsUpdateRequired)
                     {
                         DialogBox db = new DialogBox("An update is available!", "Would you like to update the application now?",
-                            "Update Available", DialogBoxIcon.BlueQuestion, true);
+                            "Update Available", DialogBoxIcon.Help, true);
                         if (db.ShowDialog() != true) doUpdate = false;
                     }
                     else
@@ -348,7 +348,7 @@ namespace ImagingSIMS.MainApplication
                         // Display a message that the app MUST reboot. Display the minimum required version.
                         DialogBox db = new DialogBox("This application has detected a mandatory update from your current " +
                             "version to version " + info.MinimumRequiredVersion.ToString(), "The application will now install the update and restart.",
-                            "Update Available", DialogBoxIcon.GreenCheck);
+                            "Update Available", DialogBoxIcon.Ok);
                         db.ShowDialog();
                     }
 
@@ -367,7 +367,7 @@ namespace ImagingSIMS.MainApplication
                         catch (DeploymentDownloadException dde)
                         {
                             DialogBox db = new DialogBox("The new version of the application cannot be downloaded at this time. Please check your network connection, or try again later.",
-                                dde.Message, "Update", DialogBoxIcon.Stop);
+                                dde.Message, "Update", DialogBoxIcon.Error);
                             db.ShowDialog();
 
                             return;
@@ -376,7 +376,7 @@ namespace ImagingSIMS.MainApplication
                 }
                 else
                 {
-                    DialogBox db = new DialogBox("", "The application is up to date!", "Update", DialogBoxIcon.GreenCheck);
+                    DialogBox db = new DialogBox("", "The application is up to date!", "Update", DialogBoxIcon.Ok);
                     db.ShowDialog();
                     return;
                 }
@@ -384,7 +384,7 @@ namespace ImagingSIMS.MainApplication
             else
             {
                 DialogBox db = new DialogBox("Update check failed because the application is not a ClickOnce application.",
-                    "Only ClickOnce deployed applications can be updated.", "Update", DialogBoxIcon.Stop);
+                    "Only ClickOnce deployed applications can be updated.", "Update", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -404,7 +404,7 @@ namespace ImagingSIMS.MainApplication
 
             DialogBox db = new DialogBox("Are you sure you want to clear the current workspace?", 
                 "Click OK to delete all data or Cancel to return.",
-                "Workspace", DialogBoxIcon.Stop, true);
+                "Workspace", DialogBoxIcon.Error, true);
             if(db.ShowDialog() == true)
             {
                 Workspace = new Workspace();
@@ -503,7 +503,7 @@ namespace ImagingSIMS.MainApplication
 
                 pw.Close();
                 DialogBox.Show("The workspace could not be loaded.",
-                    message, "Load", DialogBoxIcon.Stop);
+                    message, "Load", DialogBoxIcon.Error);
                 return;
             }
 
@@ -521,7 +521,7 @@ namespace ImagingSIMS.MainApplication
             {
                 pw.Close();
                 DialogBox.Show("The workspace could not be loaded.",
-                    "Most likely this is caused by an outdated workspace file version.", "Load", DialogBoxIcon.Stop);
+                    "Most likely this is caused by an outdated workspace file version.", "Load", DialogBoxIcon.Error);
                 return;
             }
 
@@ -593,8 +593,19 @@ namespace ImagingSIMS.MainApplication
             Workspace workspace = (Workspace)args[0];
             string fileName = (string)args[1];
 
+            string tempFile = fileName + ".temp";
+            if (File.Exists(fileName))
+            {
+                File.Copy(fileName, tempFile);
+            }
+
             workspace.Save(fileName, sender as BackgroundWorker);
             e.Result = fileName;
+
+            if (File.Exists(tempFile))
+            {
+                File.Delete(tempFile);
+            }
         }
         private void bw_RunWorkerCompletedSaveWorkspace(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -671,7 +682,7 @@ namespace ImagingSIMS.MainApplication
                 Mouse.OverrideCursor = Cursors.Arrow;
                 DialogBox.Show(string.Format("Could not load the specified file: {0}", IOex.Message),
                     string.Format("Check to make sure you are loading data tables that match the specified file type ({0}).", fileType),
-                    "Load", DialogBoxIcon.Stop);
+                    "Load", DialogBoxIcon.Error);
                 return;
             }
             catch (Exception ex)
@@ -683,7 +694,7 @@ namespace ImagingSIMS.MainApplication
                     msg += (" " + ex.InnerException.Message);
                 }
 
-                DialogBox.Show("Could not load the specified file.", msg, "Load", DialogBoxIcon.Stop);
+                DialogBox.Show("Could not load the specified file.", msg, "Load", DialogBoxIcon.Error);
                 return;
             }
 
@@ -749,7 +760,7 @@ namespace ImagingSIMS.MainApplication
                 if (ofd.FileNames.Length > 1)
                 {
                     DialogBox db = new DialogBox("Only one J105 spectrum file can be loaded at a time.",
-                        "Click OK to load the first selected spectrum or Cancel to return.", "Load", DialogBoxIcon.BlueQuestion, true);
+                        "Click OK to load the first selected spectrum or Cancel to return.", "Load", DialogBoxIcon.Help, true);
                     Nullable<bool> r = db.ShowDialog();
                     if (r != true) return;
                 }
@@ -832,7 +843,7 @@ namespace ImagingSIMS.MainApplication
                 pw.Close();
                 pw = null;
 
-                DialogBox db = new DialogBox(message, inner, "Load", DialogBoxIcon.Stop);
+                DialogBox db = new DialogBox(message, inner, "Load", DialogBoxIcon.Error);
                 db.ShowDialog();
 
                 return;
@@ -912,7 +923,7 @@ namespace ImagingSIMS.MainApplication
             if (cti == null)
             {
                 DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an Image Display tab and try again.",
-                    "Images", DialogBoxIcon.Stop);
+                    "Images", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -941,7 +952,7 @@ namespace ImagingSIMS.MainApplication
                     break;
                 default:
                     DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an Image Display tab and try again.",
-                       "Images", DialogBoxIcon.Stop);
+                       "Images", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
             }
@@ -960,7 +971,7 @@ namespace ImagingSIMS.MainApplication
             if (!File.Exists(file))
             {
                 DialogBox db = new DialogBox(string.Format("The file {0} does not exist in the target location.", System.IO.Path.GetFileName(file)),
-                    "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.BlueQuestion, true);
+                    "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.Help, true);
                 Nullable<bool> result = db.ShowDialog();
 
                 if (result == true)
@@ -981,7 +992,7 @@ namespace ImagingSIMS.MainApplication
             string file = fi.FilePath;
 
             DialogBox db = new DialogBox(string.Format("Are you sure you wish to remove {0} from the recent files list?", file),
-                "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.BlueQuestion, true);
+                "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.Help, true);
             if (db.ShowDialog() != true) return;
 
             Workspace.Registry.RecentFiles.Remove(file);
@@ -1004,7 +1015,7 @@ namespace ImagingSIMS.MainApplication
             if(!File.Exists(file))
             {
                 DialogBox db = new DialogBox(string.Format("The file {0} does not exist in the target location.", System.IO.Path.GetFileName(file)),
-                    "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.BlueQuestion, true);
+                    "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.Help, true);
                 Nullable<bool> result = db.ShowDialog();
 
                 if(result == true)
@@ -1035,7 +1046,7 @@ namespace ImagingSIMS.MainApplication
                     string file = (string)rami.ToolTip;
 
                     DialogBox db = new DialogBox(string.Format("Are you sure you wish to remove {0} from the recent files list?", file),
-                        "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.BlueQuestion, true);
+                        "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.Help, true);
                     if (db.ShowDialog() != true) return;
 
                     Workspace.Registry.RecentFiles.Remove(file);
@@ -1049,7 +1060,7 @@ namespace ImagingSIMS.MainApplication
                         string file = (string)rb.ToolTip;
 
                         DialogBox db = new DialogBox(string.Format("Are you sure you wish to remove {0} from the recent files list?", file),
-                            "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.BlueQuestion, true);
+                            "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.Help, true);
                         if (db.ShowDialog() != true) return;
 
                         Workspace.Registry.RecentFiles.Remove(file);
@@ -1084,7 +1095,7 @@ namespace ImagingSIMS.MainApplication
                 if (file == "")
                 {
                     DialogBox db = new DialogBox("Could not determine the location of the recent item.",
-                        "Verify the recent item still exists and try again.", "Recent File", DialogBoxIcon.Stop);
+                        "Verify the recent item still exists and try again.", "Recent File", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -1093,7 +1104,7 @@ namespace ImagingSIMS.MainApplication
                 {
                     DialogBox db = new DialogBox("Could not find the file associated with the recent item.",
                         "Verify the recent item still exists and try again. If it does not, consider removing it from the Recent File List.", 
-                        "Recent File", DialogBoxIcon.Stop);
+                        "Recent File", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -1249,7 +1260,7 @@ namespace ImagingSIMS.MainApplication
             if (!Workspace.IsDirty) return;
 
             DialogBox db = new DialogBox("The current workspace has been modified. Do you wish to save changes?",
-                      "Click OK to save or Cancel to quit.", "Close", DialogBoxIcon.BlueQuestion, true);
+                      "Click OK to save or Cancel to quit.", "Close", DialogBoxIcon.Help, true);
             Nullable<bool> result = db.ShowDialog();
             if (result == true)
             {
@@ -1482,7 +1493,7 @@ namespace ImagingSIMS.MainApplication
             if (!File.Exists(file))
             {
                 DialogBox db = new DialogBox(string.Format("The file {0} does not exist in the target location.", System.IO.Path.GetFileName(file)),
-                    "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.BlueQuestion, true);
+                    "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.Help, true);
                 Nullable<bool> result = db.ShowDialog();
 
                 if (result == true)
@@ -1503,7 +1514,7 @@ namespace ImagingSIMS.MainApplication
             string file = fi.FilePath;
 
             DialogBox db = new DialogBox(string.Format("Are you sure you wish to remove {0} from the recent files list?", file),
-                "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.BlueQuestion, true);
+                "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.Help, true);
             if (db.ShowDialog() != true) return;
 
             Workspace.Registry.RecentFiles.Remove(file);
@@ -1595,7 +1606,7 @@ namespace ImagingSIMS.MainApplication
             {
                 DialogBox db = new DialogBox("No image components selected.",
                     "Use the drop down menu to select one or more components to create the image series.",
-                    "Create Image", DialogBoxIcon.Stop);
+                    "Create Image", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -1658,7 +1669,7 @@ namespace ImagingSIMS.MainApplication
             if (cti.TabType != TabType.Display)
             {
                 DialogBox db = new DialogBox("Selected tab not an overlay document.", "Open a new or navigate to an existing overlay document to add an image.",
-                    "Overlay", DialogBoxIcon.Stop);
+                    "Overlay", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -1673,7 +1684,7 @@ namespace ImagingSIMS.MainApplication
             if (ot == null)
             {
                 DialogBox db = new DialogBox("Selected tab not an overlay document.", "Open a new or navigate to an existing overlay document to add an image.",
-                    "Overlay", DialogBoxIcon.Stop);
+                    "Overlay", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -1705,7 +1716,7 @@ namespace ImagingSIMS.MainApplication
                 {
                     DialogBox.Show("Selected tab not an image document which supports overlaying.",
                         "Open a new or navigate to an existing overlay document to add an image.",
-                        "Overlay", DialogBoxIcon.Stop);
+                        "Overlay", DialogBoxIcon.Error);
                     return;
                 }
                 dt.CallEvent(ImageTabEvent.Overlay);
@@ -1717,7 +1728,7 @@ namespace ImagingSIMS.MainApplication
                 {
                     DialogBox.Show("Selected tab not an image document which supports overlaying.",
                         "Open a new or navigate to an existing overlay document to add an image.",
-                        "Overlay", DialogBoxIcon.Stop);
+                        "Overlay", DialogBoxIcon.Error);
                     return;
                 }
                 BitmapSource overlay = d2dt.GetOverlay();
@@ -1741,7 +1752,7 @@ namespace ImagingSIMS.MainApplication
             {
                 DialogBox.Show("Selected tab not an image document which supports overlaying.",
                         "Open a new or navigate to an existing overlay document to add an image.",
-                        "Overlay", DialogBoxIcon.Stop);
+                        "Overlay", DialogBoxIcon.Error);
                 return;
             }            
         }
@@ -1758,7 +1769,7 @@ namespace ImagingSIMS.MainApplication
             {
                 DialogBox.Show("No window size specified.", 
                     "Please enter a positive integer value for the window size parameter and try again.", 
-                    "Expand", DialogBoxIcon.Stop);
+                    "Expand", DialogBoxIcon.Error);
                 return;
             }
 
@@ -1766,7 +1777,7 @@ namespace ImagingSIMS.MainApplication
             {
                 DialogBox.Show("Invalid window size specified.",
                     "Please enter a positive integer value for the window size parameter and try again.",
-                    "Expand", DialogBoxIcon.Stop);
+                    "Expand", DialogBoxIcon.Error);
                 return;
             }
 
@@ -1779,7 +1790,7 @@ namespace ImagingSIMS.MainApplication
             if (cti == null)
             {
                 DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an Image Display tab and try again.",
-                    "Images", DialogBoxIcon.Stop);
+                    "Images", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -1787,7 +1798,7 @@ namespace ImagingSIMS.MainApplication
             if (it == null)
             {
                 DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an Image Display tab and try again.",
-                      "Images", DialogBoxIcon.Stop);
+                      "Images", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -1823,7 +1834,7 @@ namespace ImagingSIMS.MainApplication
             if (cti == null)
             {
                 DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an Image Display tab and try again.",
-                    "Images", DialogBoxIcon.Stop);
+                    "Images", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -1832,7 +1843,7 @@ namespace ImagingSIMS.MainApplication
             if (it == null)
             {
                 DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an Image Display tab and try again.",
-                        "Images", DialogBoxIcon.Stop);
+                        "Images", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -1840,14 +1851,14 @@ namespace ImagingSIMS.MainApplication
             if (it.ItemsControl.SelectedItems.Count == 0)
             {
                 DialogBox db = new DialogBox("No images selected.", "Select two or more images to perform the 3D slice on and try again.",
-                          "Images", DialogBoxIcon.Stop);
+                          "Images", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
             else if (it.ItemsControl.SelectedItems.Count == 1)
             {
                 DialogBox db = new DialogBox("Insufficient images selected.", "Select two or more images to perform the 3D slice on and try again.",
-                             "Images", DialogBoxIcon.Stop);
+                             "Images", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -1900,7 +1911,7 @@ namespace ImagingSIMS.MainApplication
             if (listViewVolumes.SelectedItems.Count == 0)
             {
                 DialogBox db = new DialogBox("No volumes selected.", "No volumes have been selected to save. Select one or more and try again.",
-                    "Volume", DialogBoxIcon.Stop);
+                    "Volume", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -1976,7 +1987,7 @@ namespace ImagingSIMS.MainApplication
             }
             else
             {
-                dbResult = new DialogBox("Volume(s) saved successfully!", "", "Volume", DialogBoxIcon.GreenCheck);
+                dbResult = new DialogBox("Volume(s) saved successfully!", "", "Volume", DialogBoxIcon.Ok);
                 dbResult.ShowDialog();
             }
         }
@@ -2005,7 +2016,7 @@ namespace ImagingSIMS.MainApplication
             if (numberVolumes == 0)
             {
                 DialogBox db = new DialogBox("No volumes selected.", "Select one or more volumes to render.",
-                    "Rendering", DialogBoxIcon.Stop);
+                    "Rendering", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2028,7 +2039,7 @@ namespace ImagingSIMS.MainApplication
                 if (Workspace.ImagingZCorrectThresh < 0)
                 {
                     DialogBox.Show("Invalid Z-Correct threshold.",
-                        "Enter a threshold greater than or equal to zero and try again.", "Z-Correct", DialogBoxIcon.Stop);
+                        "Enter a threshold greater than or equal to zero and try again.", "Z-Correct", DialogBoxIcon.Error);
                     return;
                 }
                 try
@@ -2047,7 +2058,7 @@ namespace ImagingSIMS.MainApplication
                     if (ex.InnerException != null) message += ex.InnerException.Message;
 
                     DialogBox.Show("Could not perform Z-Correction on the selected volumes.",
-                        message, "Z-Correct", DialogBoxIcon.Stop);
+                        message, "Z-Correct", DialogBoxIcon.Error);
                     return;
                 }
             }
@@ -2080,7 +2091,7 @@ namespace ImagingSIMS.MainApplication
             }
             catch (Exception ex)
             {
-                DialogBox db = new DialogBox("There was an error creating the 3D rendering.", ex.Message, "Direct3D", DialogBoxIcon.Stop);
+                DialogBox db = new DialogBox("There was an error creating the 3D rendering.", ex.Message, "Direct3D", DialogBoxIcon.Error);
                 db.ShowDialog();
 
                 if (window != null)
@@ -2103,14 +2114,14 @@ namespace ImagingSIMS.MainApplication
             if (hmt.HeightData == null)
             {
                 DialogBox db = new DialogBox("No height data loaded.",
-                    "Drag-Drop an image to serve as the height data for the depth render and try again.", "Depth Render", DialogBoxIcon.Stop);
+                    "Drag-Drop an image to serve as the height data for the depth render and try again.", "Depth Render", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
             if (hmt.ColorData == null)
             {
                 DialogBox db = new DialogBox("No color data loaded.",
-                    "Drag-Drop an image to serve as the color data for the depth render and try again.", "Depth Render", DialogBoxIcon.Stop);
+                    "Drag-Drop an image to serve as the color data for the depth render and try again.", "Depth Render", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2123,7 +2134,7 @@ namespace ImagingSIMS.MainApplication
             catch (ArgumentException ARex)
             {
                 DialogBox db = new DialogBox("Could not create HeightMap.",
-                    ARex.Message, "Depth Render", DialogBoxIcon.Stop);
+                    ARex.Message, "Depth Render", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2133,7 +2144,7 @@ namespace ImagingSIMS.MainApplication
                 if (ex.InnerException != null) message += "\n" + ex.InnerException.Message;
 
                 DialogBox db = new DialogBox("Could not create HeightMap.",
-                    message, "Depth Render", DialogBoxIcon.Stop);
+                    message, "Depth Render", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2148,7 +2159,7 @@ namespace ImagingSIMS.MainApplication
             }
             catch (Exception ex)
             {
-                DialogBox db = new DialogBox("There was an error creating the 3D rendering.", ex.Message, "Direct3D", DialogBoxIcon.Stop);
+                DialogBox db = new DialogBox("There was an error creating the 3D rendering.", ex.Message, "Direct3D", DialogBoxIcon.Error);
                 db.ShowDialog();
 
                 if (window != null)
@@ -2221,7 +2232,7 @@ namespace ImagingSIMS.MainApplication
             if (st == null)
             {
                 DialogBox db = new DialogBox("No spectrum selected.", "Navigate to a loaded spectrum and try again.",
-                    "Spectrum", DialogBoxIcon.Stop);
+                    "Spectrum", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2257,7 +2268,7 @@ namespace ImagingSIMS.MainApplication
                         message += ": " + ARex.InnerException.Message;
                     }
 
-                    DialogBox.Show("Could not parse the specified mass ranges.", message, "Spectra", DialogBoxIcon.Stop);
+                    DialogBox.Show("Could not parse the specified mass ranges.", message, "Spectra", DialogBoxIcon.Error);
                     return;
                 }
                 catch(Exception ex)
@@ -2268,14 +2279,14 @@ namespace ImagingSIMS.MainApplication
                         message += ": " + ex.InnerException.Message;
                     }
 
-                    DialogBox.Show("Could not parse the specified mass ranges.", message, "Spectra", DialogBoxIcon.Stop);
+                    DialogBox.Show("Could not parse the specified mass ranges.", message, "Spectra", DialogBoxIcon.Error);
                     return;
                 }
             }
             else
             {
                 DialogBox.Show("Value not selected.", 
-                    "Could not determine the desired type of range.", "Mass Range", DialogBoxIcon.Stop);
+                    "Could not determine the desired type of range.", "Mass Range", DialogBoxIcon.Error);
                 return;
             }
             // Validate common parameters
@@ -2293,7 +2304,7 @@ namespace ImagingSIMS.MainApplication
             catch(ArgumentException ARex)
             {
                 DialogBox.Show("Invalid parameter.", ARex.Message,
-                    "Tables", DialogBoxIcon.Stop);
+                    "Tables", DialogBoxIcon.Error);
                 return;
             }
             // Validate all mass ranges
@@ -2321,7 +2332,7 @@ namespace ImagingSIMS.MainApplication
             catch(ArgumentException ARex)
             {
                 DialogBox.Show("Invalid parameter.", ARex.Message,
-                    "Tables", DialogBoxIcon.Stop);
+                    "Tables", DialogBoxIcon.Error);
                 return;
             }
 
@@ -2348,7 +2359,7 @@ namespace ImagingSIMS.MainApplication
             if (st == null)
             {
                 DialogBox db = new DialogBox("No spectrum selected.", "Navigate to a loaded spectrum and try again.",
-                    "Spectrum", DialogBoxIcon.Stop);
+                    "Spectrum", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2383,14 +2394,14 @@ namespace ImagingSIMS.MainApplication
                         message += ": " + ARex.InnerException.Message;
                     }
 
-                    DialogBox.Show("Could not parse the specified mass ranges.", message, "Spectra", DialogBoxIcon.Stop);
+                    DialogBox.Show("Could not parse the specified mass ranges.", message, "Spectra", DialogBoxIcon.Error);
                     return;
                 }
             }
             else
             {
                 DialogBox.Show("Value not selected.",
-                    "Could not determine the desired type of range.", "Mass Range", DialogBoxIcon.Stop);
+                    "Could not determine the desired type of range.", "Mass Range", DialogBoxIcon.Error);
                 return;
             }
             // Validate common parameters
@@ -2404,7 +2415,7 @@ namespace ImagingSIMS.MainApplication
             catch (ArgumentException ARex)
             {
                 DialogBox.Show("Invalid parameter.", ARex.Message,
-                    "Depth Profile", DialogBoxIcon.Stop);
+                    "Depth Profile", DialogBoxIcon.Error);
                 return;
             }
 
@@ -2412,7 +2423,7 @@ namespace ImagingSIMS.MainApplication
             {
                 if (DialogBox.Show("No depth to the spectrum.",
                    "The spectrum only has one layer, which doesn't really make a depth profile. Click OK to continue anyway or Cancel to return.",
-                   "Depth Profile", DialogBoxIcon.BlueQuestion, true) != true)
+                   "Depth Profile", DialogBoxIcon.Help, true) != true)
                     return;
             }
             // Validate all mass ranges
@@ -2440,7 +2451,7 @@ namespace ImagingSIMS.MainApplication
             catch (ArgumentException ARex)
             {
                 DialogBox.Show("Invalid parameter.", ARex.Message,
-                    "Depth Profile", DialogBoxIcon.Stop);
+                    "Depth Profile", DialogBoxIcon.Error);
                 return;
             }
 
@@ -2522,7 +2533,7 @@ namespace ImagingSIMS.MainApplication
             catch (ArgumentException ARex)
             {
                 pw.Close();
-                DialogBox db = new DialogBox(ARex.Message, "Please try again.", "Tables", DialogBoxIcon.Stop);
+                DialogBox db = new DialogBox(ARex.Message, "Please try again.", "Tables", DialogBoxIcon.Error);
                 db.ShowDialog();
             }
             finally
@@ -2607,7 +2618,7 @@ namespace ImagingSIMS.MainApplication
             if (e.Result == null)
             {
                 DialogBox.Show("The depth profile failed to save.",
-                    "Verify the integrity of the spectrum and try again.", "Depth Profile", DialogBoxIcon.Stop);
+                    "Verify the integrity of the spectrum and try again.", "Depth Profile", DialogBoxIcon.Error);
                 return;
             }
 
@@ -2635,7 +2646,7 @@ namespace ImagingSIMS.MainApplication
             }
             savedPathsString.Remove(savedPathsString.Length - 2);
 
-            DialogBox.Show("Depth profile saved successfully!", savedPathsString, "Depth Profile", DialogBoxIcon.GreenCheck);            
+            DialogBox.Show("Depth profile saved successfully!", savedPathsString, "Depth Profile", DialogBoxIcon.Ok);            
         }
 
         private async void specShowPreview_Click(object sender, RoutedEventArgs e)
@@ -2661,14 +2672,14 @@ namespace ImagingSIMS.MainApplication
             else if (!int.TryParse(ribbonTextBoxSpecExportBinSize.Text, out binSize))
             {
                 DialogBox.Show("Invalid bin size.", 
-                    "Enter an integer greater than zero and try again.", "Export", DialogBoxIcon.Stop);
+                    "Enter an integer greater than zero and try again.", "Export", DialogBoxIcon.Error);
                 return;
             }
 
             if (binSize <= 0)
             {
                 DialogBox.Show("Invalid bin size.",
-                   "Enter an integer greater than zero and try again.", "Export", DialogBoxIcon.Stop);
+                   "Enter an integer greater than zero and try again.", "Export", DialogBoxIcon.Error);
                 return;
             }
 
@@ -2695,7 +2706,7 @@ namespace ImagingSIMS.MainApplication
             if (cti == null)
             {
                 DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an Image Display tab and try again.",
-                    "Images", DialogBoxIcon.Stop);
+                    "Images", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2747,7 +2758,7 @@ namespace ImagingSIMS.MainApplication
                     break;
                 default:
                      DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an Image Display tab and try again.",
-                        "Images", DialogBoxIcon.Stop);
+                        "Images", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2758,7 +2769,7 @@ namespace ImagingSIMS.MainApplication
             if (cti == null)
             {
                 DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an SEM Image Display tab and try again.",
-                    "Images", DialogBoxIcon.Stop);
+                    "Images", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2766,7 +2777,7 @@ namespace ImagingSIMS.MainApplication
             if (st == null)
             {
                 DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an SEM Image Display tab and try again.",
-                        "Images", DialogBoxIcon.Stop);
+                        "Images", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2779,7 +2790,7 @@ namespace ImagingSIMS.MainApplication
             if (cti == null)
             {
                 DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an Image Display tab and try again.",
-                    "Images", DialogBoxIcon.Stop);
+                    "Images", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2787,7 +2798,7 @@ namespace ImagingSIMS.MainApplication
             if (dt == null)
             {
                 DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an Image Display tab and try again.",
-                                    "Images", DialogBoxIcon.Stop);
+                                    "Images", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2911,7 +2922,7 @@ namespace ImagingSIMS.MainApplication
             if (cti == null)
             {
                 DialogBox db = new DialogBox("No document available to save.",
-                    "Navigate to or open a new fusion tab and try again.", "Save", DialogBoxIcon.Stop);
+                    "Navigate to or open a new fusion tab and try again.", "Save", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2920,7 +2931,7 @@ namespace ImagingSIMS.MainApplication
             if (ft == null)
             {
                 DialogBox db = new DialogBox("No fusion document available to save.",
-                    "Navigate to or open a new fusion tab and try again.", "Save", DialogBoxIcon.Stop);
+                    "Navigate to or open a new fusion tab and try again.", "Save", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2943,7 +2954,7 @@ namespace ImagingSIMS.MainApplication
             if (parameter == FusionSaveParameter.None)
             {
                 DialogBox db = new DialogBox("Could not perform the selected operation.",
-                    "For some reason, the save parameter could not be determined.", "Save", DialogBoxIcon.Stop);
+                    "For some reason, the save parameter could not be determined.", "Save", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2956,7 +2967,7 @@ namespace ImagingSIMS.MainApplication
             if (cti == null)
             {
                 DialogBox db = new DialogBox("No document available to save.",
-                    "Navigate to or open a new fusion tab and try again.", "Save", DialogBoxIcon.Stop);
+                    "Navigate to or open a new fusion tab and try again.", "Save", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2965,7 +2976,7 @@ namespace ImagingSIMS.MainApplication
             if (ft == null)
             {
                 DialogBox db = new DialogBox("No fusion document available to save.",
-                    "Navigate to or open a new fusion tab and try again.", "Save", DialogBoxIcon.Stop);
+                    "Navigate to or open a new fusion tab and try again.", "Save", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -2979,14 +2990,14 @@ namespace ImagingSIMS.MainApplication
             if (cti == null)
             {
                 DialogBox.Show("Not a valid fusion document.", "Navigate to a fusion document and try again.",
-                    "Registration", DialogBoxIcon.Stop);
+                    "Registration", DialogBoxIcon.Error);
             }
 
             FusionTab ft = cti.Content as FusionTab;
             if (ft == null)
             {
                 DialogBox.Show("Not a valid fusion document.", "Navigate to a fusion document and try again.",
-                    "Registration", DialogBoxIcon.Stop);
+                    "Registration", DialogBoxIcon.Error);
             }
 
             ft.OpenOverlay();
@@ -3022,13 +3033,13 @@ namespace ImagingSIMS.MainApplication
             if (String.IsNullOrEmpty(te.EnteredText))
             {
                 DialogBox.Show("Could not update the title of the selected object.", 
-                        "No text entered.", "Title", DialogBoxIcon.Stop);
+                        "No text entered.", "Title", DialogBoxIcon.Error);
                 return;
             }
             if (char.IsWhiteSpace(te.EnteredText, 0))
             {
                 DialogBox.Show("Could not update the title of the selected object.",
-                    "First character is a space.", "Title", DialogBoxIcon.Stop);
+                    "First character is a space.", "Title", DialogBoxIcon.Error);
                 return;
             }
 
@@ -3040,7 +3051,7 @@ namespace ImagingSIMS.MainApplication
 
             DialogBox db = new DialogBox("Are you sure you want to clear the current workspace?",
                 "Click OK to delete all data or Cancel to return.",
-                "Workspace", DialogBoxIcon.Stop, true);
+                "Workspace", DialogBoxIcon.Error, true);
             if (db.ShowDialog() == true)
             {
                 Workspace = new Workspace();
@@ -3058,7 +3069,7 @@ namespace ImagingSIMS.MainApplication
                 msg = string.Format("Delete {0} tables?", listViewData.SelectedItems.Count);
             }
             DialogBox db = new DialogBox(msg,
-                "Click OK to confirm or Cancel to return.", "Confirm", DialogBoxIcon.BlueQuestion, true);
+                "Click OK to confirm or Cancel to return.", "Confirm", DialogBoxIcon.Help, true);
             Nullable<bool> result = db.ShowDialog();
             if (result != true) return;
 
@@ -3188,7 +3199,7 @@ namespace ImagingSIMS.MainApplication
                 }
             }
 
-            DialogBox db = new DialogBox("File(s) saved successfully!", sfd.FileName, "Save", DialogBoxIcon.GreenCheck);
+            DialogBox db = new DialogBox("File(s) saved successfully!", sfd.FileName, "Save", DialogBoxIcon.Ok);
             db.ShowDialog();
         }
         private void CMDataRename(object sender, RoutedEventArgs e)
@@ -3207,14 +3218,14 @@ namespace ImagingSIMS.MainApplication
                 if(String.IsNullOrEmpty(te.EnteredText))
                 {
                     DialogBox db = new DialogBox("Could not update the title of the selected object.", 
-                        "No text entered.", "Title", DialogBoxIcon.Stop);
+                        "No text entered.", "Title", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
                 if(char.IsWhiteSpace(te.EnteredText, 0))
                 {
                     DialogBox db = new DialogBox("Could not update the title of the selected object.",
-                        "First character is a space.", "Title", DialogBoxIcon.Stop);
+                        "First character is a space.", "Title", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -3271,7 +3282,7 @@ namespace ImagingSIMS.MainApplication
             {
                 DialogBox db = new DialogBox("Could not open the selected spectra.",
                     "If you are trying to open multiple spectra, try opening them one at a time.",
-                    "Spectra", DialogBoxIcon.Stop);
+                    "Spectra", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -3286,7 +3297,7 @@ namespace ImagingSIMS.MainApplication
                 msg = string.Format("Delete {0} spectra?", listViewSpectra.SelectedItems.Count);
             }
             DialogBox db = new DialogBox(msg, 
-                "Click OK to confirm or Cancel to return.", "Confirm", DialogBoxIcon.BlueQuestion, true);
+                "Click OK to confirm or Cancel to return.", "Confirm", DialogBoxIcon.Help, true);
             Nullable<bool> result = db.ShowDialog();
             if (result != true) return;
 
@@ -3356,14 +3367,14 @@ namespace ImagingSIMS.MainApplication
                 if (String.IsNullOrEmpty(te.EnteredText))
                 {
                     DialogBox db = new DialogBox("Could not update the title of the selected object.",
-                        "No text entered.", "Title", DialogBoxIcon.Stop);
+                        "No text entered.", "Title", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
                 if (char.IsWhiteSpace(te.EnteredText, 0))
                 {
                     DialogBox db = new DialogBox("Could not update the title of the selected object.",
-                        "First character is a space.", "Title", DialogBoxIcon.Stop);
+                        "First character is a space.", "Title", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -3426,7 +3437,7 @@ namespace ImagingSIMS.MainApplication
             }
             else
             {
-                DialogBox.Show("The spectra were saved successfully.", sfd.FileName, "Save", DialogBoxIcon.GreenCheck);
+                DialogBox.Show("The spectra were saved successfully.", sfd.FileName, "Save", DialogBoxIcon.Ok);
                 return;
             }
         }
@@ -3486,7 +3497,7 @@ namespace ImagingSIMS.MainApplication
             }
             else
             {
-                DialogBox.Show("The spectra were saved successfully.", sfd.FileName, "Save", DialogBoxIcon.GreenCheck);
+                DialogBox.Show("The spectra were saved successfully.", sfd.FileName, "Save", DialogBoxIcon.Ok);
                 return;
             }
         }
@@ -3512,7 +3523,7 @@ namespace ImagingSIMS.MainApplication
                 msg = string.Format("Delete {0} components?", listViewComponents.SelectedItems.Count);
             }
             DialogBox db = new DialogBox(msg,
-                "Click OK to confirm or Cancel to return.", "Confirm", DialogBoxIcon.BlueQuestion, true);
+                "Click OK to confirm or Cancel to return.", "Confirm", DialogBoxIcon.Help, true);
             Nullable<bool> result = db.ShowDialog();
             if (result != true) return;
 
@@ -3568,14 +3579,14 @@ namespace ImagingSIMS.MainApplication
                 if (String.IsNullOrEmpty(te.EnteredText))
                 {
                     DialogBox db = new DialogBox("Could not update the title of the selected object.",
-                        "No text entered.", "Title", DialogBoxIcon.Stop);
+                        "No text entered.", "Title", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
                 if (char.IsWhiteSpace(te.EnteredText, 0))
                 {
                     DialogBox db = new DialogBox("Could not update the title of the selected object.",
-                        "First character is a space.", "Title", DialogBoxIcon.Stop);
+                        "First character is a space.", "Title", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -3592,7 +3603,7 @@ namespace ImagingSIMS.MainApplication
                 msg = string.Format("Delete {0} volumes?", listViewVolumes.SelectedItems.Count);
             }
             DialogBox db = new DialogBox(msg,
-                "Click OK to confirm or Cancel to return.", "Confirm", DialogBoxIcon.BlueQuestion, true);
+                "Click OK to confirm or Cancel to return.", "Confirm", DialogBoxIcon.Help, true);
             Nullable<bool> result = db.ShowDialog();
             if (result != true) return;
 
@@ -3648,14 +3659,14 @@ namespace ImagingSIMS.MainApplication
                 if (String.IsNullOrEmpty(te.EnteredText))
                 {
                     DialogBox db = new DialogBox("Could not update the title of the selected object.",
-                        "No text entered.", "Title", DialogBoxIcon.Stop);
+                        "No text entered.", "Title", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
                 if (char.IsWhiteSpace(te.EnteredText, 0))
                 {
                     DialogBox db = new DialogBox("Could not update the title of the selected object.",
-                        "First character is a space.", "Title", DialogBoxIcon.Stop);
+                        "First character is a space.", "Title", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -3690,7 +3701,7 @@ namespace ImagingSIMS.MainApplication
                 msg = string.Format("Delete {0} image series?", listViewImageSeries.SelectedItems.Count);
             }
             DialogBox db = new DialogBox(msg,
-                "Click OK to confirm or Cancel to return.", "Confirm", DialogBoxIcon.BlueQuestion, true);
+                "Click OK to confirm or Cancel to return.", "Confirm", DialogBoxIcon.Help, true);
             Nullable<bool> result = db.ShowDialog();
             if (result != true) return;
 
@@ -3746,14 +3757,14 @@ namespace ImagingSIMS.MainApplication
                 if (String.IsNullOrEmpty(te.EnteredText))
                 {
                     DialogBox db = new DialogBox("Could not update the title of the selected object.",
-                        "No text entered.", "Title", DialogBoxIcon.Stop);
+                        "No text entered.", "Title", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
                 if (char.IsWhiteSpace(te.EnteredText, 0))
                 {
                     DialogBox db = new DialogBox("Could not update the title of the selected object.",
-                        "First character is a space.", "Title", DialogBoxIcon.Stop);
+                        "First character is a space.", "Title", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -3787,7 +3798,7 @@ namespace ImagingSIMS.MainApplication
                 msg = string.Format("Delete {0} SEM images?", listViewSEMs.SelectedItems.Count);
             }
             DialogBox db = new DialogBox(msg,
-                "Click OK to confirm or Cancel to return.", "Confirm", DialogBoxIcon.BlueQuestion, true);
+                "Click OK to confirm or Cancel to return.", "Confirm", DialogBoxIcon.Help, true);
             Nullable<bool> result = db.ShowDialog();
             if (result != true) return;
 
@@ -3843,14 +3854,14 @@ namespace ImagingSIMS.MainApplication
                 if (String.IsNullOrEmpty(te.EnteredText))
                 {
                     DialogBox db = new DialogBox("Could not update the title of the selected object.",
-                        "No text entered.", "Title", DialogBoxIcon.Stop);
+                        "No text entered.", "Title", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
                 if (char.IsWhiteSpace(te.EnteredText, 0))
                 {
                     DialogBox db = new DialogBox("Could not update the title of the selected object.",
-                        "First character is a space.", "Title", DialogBoxIcon.Stop);
+                        "First character is a space.", "Title", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -3964,21 +3975,21 @@ namespace ImagingSIMS.MainApplication
                 if (ft == null)
                 {
                     DialogBox.Show("Not a valid fusion document.",
-                        "Navigate to an open fusion document and try again.", "Transform", DialogBoxIcon.Stop);
+                        "Navigate to an open fusion document and try again.", "Transform", DialogBoxIcon.Error);
                     return;
                 }
 
                 if (ft.HighResImage.ImageSource == null || ft.LowResImage.ImageSource == null)
                 {
                     DialogBox.Show("One or more input images is missing.",
-                        "Make sure a moving image and fixed image are loaded and try again.", "Transform", DialogBoxIcon.Stop);
+                        "Make sure a moving image and fixed image are loaded and try again.", "Transform", DialogBoxIcon.Error);
                     return;
                 }
 
                 if (!ft.IsRegistered)
                 {
                     DialogBox.Show("Images are not registered.",
-                        "Register images to generate a transform and then try again.", "Transform", DialogBoxIcon.Stop);
+                        "Register images to generate a transform and then try again.", "Transform", DialogBoxIcon.Error);
                     return;
                 }
 
@@ -4044,7 +4055,7 @@ namespace ImagingSIMS.MainApplication
         private async void test4_Click(object sender, RoutedEventArgs e)
         {
             //bool result = ImagingSIMS.Data.PCA.PCA.VerifyPython();
-            //DialogBox.Show("Result: " + result.ToString(), "", "Python", result ? DialogBoxIcon.GreenCheck : DialogBoxIcon.Stop);
+            //DialogBox.Show("Result: " + result.ToString(), "", "Python", result ? DialogBoxIcon.GreenCheck : DialogBoxIcon.Error);
             
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
@@ -4053,6 +4064,10 @@ namespace ImagingSIMS.MainApplication
             //ClosableTabItem cti = ClosableTabItem.Create(ost, TabType.Spectrum);
             //tabMain.Items.Add(cti);
             //tabMain.SelectedItem = cti;
+            for (int i = 0; i < 15; i++)
+            {
+                DialogBox.Show("Test", "Test", "Test", (DialogBoxIcon)i);
+            }
         }
 #pragma warning restore 1998
 

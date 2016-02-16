@@ -105,7 +105,7 @@ namespace ImagingSIMS.Controls
             if (ComponentName == "")
             {
                 DialogBox db = new DialogBox("Invalid component title.", "Please enter a title for this component.",
-                       "Component Builder", DialogBoxIcon.Stop);
+                       "Component Builder", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -114,7 +114,7 @@ namespace ImagingSIMS.Controls
             {
                 DialogBox db = new DialogBox("Are you sure you want to set the component color to black?",
                     "The default color is black. Click OK confirm this choice, or click Cancel to choose a different color.",
-                    "Component Builder", DialogBoxIcon.RedQuestion, true);
+                    "Component Builder", DialogBoxIcon.Help, true);
                 Nullable<bool> result = db.ShowDialog();
                 if (result == false)
                 {
@@ -124,7 +124,7 @@ namespace ImagingSIMS.Controls
             if (listTables.SelectedItems.Count == 0)
             {
                 DialogBox db = new DialogBox("No tables are selected.", "Please add at least one data table to the selected tables list.",
-                       "Component Builder", DialogBoxIcon.Stop);
+                       "Component Builder", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -138,7 +138,7 @@ namespace ImagingSIMS.Controls
                 if (d.Height != height || d.Width != width)
                 {
                     DialogBox db = new DialogBox("Invalid data dimensions.", "Not all selected data sets match in pixel dimension.",
-                      "Component Builder", DialogBoxIcon.Stop);
+                      "Component Builder", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -157,7 +157,7 @@ namespace ImagingSIMS.Controls
                 catch (ArgumentException Aex)
                 {
                     DialogBox db = new DialogBox("There was a problem updating the component.", 
-                        Aex.Message, "Component", DialogBoxIcon.Stop);
+                        Aex.Message, "Component", DialogBoxIcon.Error);
                     db.ShowDialog();
                 }
             }

@@ -113,14 +113,14 @@ namespace ImagingSIMS.Controls
             if (selectedTables.Count == 0)
             {
                 DialogBox db = new DialogBox("No tables selected.", "Select two or more tables to correct and try again.",
-                    "Z-Correction", DialogBoxIcon.Stop);
+                    "Z-Correction", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
             if (selectedTables.Count == 1)
             {
                 DialogBox db = new DialogBox("Insufficient tables selected.", "Select two or more tables to correct and try again.",
-                    "Z-Correction", DialogBoxIcon.Stop);
+                    "Z-Correction", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -136,14 +136,14 @@ namespace ImagingSIMS.Controls
                 if (selectedTables[i].Width != width)
                 {
                     DialogBox db = new DialogBox("Invalid table dimensions.", "Not all selected tables have the same dimensions.",
-                         "Z-Correction", DialogBoxIcon.Stop);
+                         "Z-Correction", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
                 if (selectedTables[i].Height != height)
                 {
                     DialogBox db = new DialogBox("Invalid table dimensions.", "Not all selected tables have the same dimensions.",
-                         "Z-Correction", DialogBoxIcon.Stop);
+                         "Z-Correction", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -161,7 +161,7 @@ namespace ImagingSIMS.Controls
                 if (listViewMasks.SelectedItems.Count == 0)
                 {
                     DialogBox db = new DialogBox("No correction base selected.", "Select a base to use for the ZCorrection and try again.",
-                       "Z-Correction", DialogBoxIcon.Stop);
+                       "Z-Correction", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -175,7 +175,7 @@ namespace ImagingSIMS.Controls
                 if (tbThresholdValue.Text == null || tbThresholdValue.Text == "")
                 {
                     DialogBox db = new DialogBox("No threshold value specified.", "Enter an integer value for the threshold and try again.",
-                       "Z-Correction", DialogBoxIcon.Stop);
+                       "Z-Correction", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 } 
@@ -184,7 +184,7 @@ namespace ImagingSIMS.Controls
                 if (!int.TryParse(tbThresholdValue.Text, out threshold))
                 {
                     DialogBox db = new DialogBox("Invalid threshold value.", "Enter an integer value for the threshold and try again.",
-                       "Z-Correction", DialogBoxIcon.Stop);
+                       "Z-Correction", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -192,7 +192,7 @@ namespace ImagingSIMS.Controls
                 if (threshold < 0)
                 {
                     DialogBox db = new DialogBox("Invalid threshold value.", "Enter an integer value for the threshold and try again.",
-                       "Z-Correction", DialogBoxIcon.Stop);
+                       "Z-Correction", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -284,14 +284,14 @@ namespace ImagingSIMS.Controls
             //if (selectedTables.Count == 0)
             //{
             //    DialogBox db = new DialogBox("No tables selected.", "Select two or more tables to create a base and try again.",
-            //        "Z-Correction", DialogBoxIcon.Stop);
+            //        "Z-Correction", DialogBoxIcon.Error);
             //    db.ShowDialog();
             //    return;
             //}
             //if (selectedTables.Count == 1)
             //{
             //    DialogBox db = new DialogBox("Insufficient tables selected.", "Select two or more tables to create a base and try again.",
-            //        "Z-Correction", DialogBoxIcon.Stop);
+            //        "Z-Correction", DialogBoxIcon.Error);
             //    db.ShowDialog();
             //    return;
             //}
@@ -300,7 +300,7 @@ namespace ImagingSIMS.Controls
             //if (!int.TryParse(tbThreshold.Text, out threshold))
             //{
             //    DialogBox db = new DialogBox("Invalid threshold value.", "Enter a valid integer and try again.",
-            //             "Z-Correction", DialogBoxIcon.Stop);
+            //             "Z-Correction", DialogBoxIcon.Error);
             //    db.ShowDialog();
             //    return;
             //}
@@ -309,7 +309,7 @@ namespace ImagingSIMS.Controls
             //if (maskName==null||maskName =="")
             //{
             //    DialogBox db = new DialogBox("No specified mask name.", "Enter a name for the base and try again.",
-            //             "Z-Correction", DialogBoxIcon.Stop);
+            //             "Z-Correction", DialogBoxIcon.Error);
             //    db.ShowDialog();
             //    return;
             //}

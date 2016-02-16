@@ -949,7 +949,7 @@ public class ScorePlot
             catch (Exception ex)
             {
                 ImagingSIMS.Common.DialogBox db = new Common.DialogBox("The image could not be saved.", 
-                    ex.Message, "Save", Common.DialogBoxIcon.Stop);
+                    ex.Message, "Save", Common.DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }

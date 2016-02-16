@@ -79,7 +79,7 @@ namespace ImagingSIMS.Controls
             if (listAvailable.SelectedItems.Count == 0)
             {
                 DialogBox db = new DialogBox("No data tables selected.", "Select one or more data tables to crop.",
-                    "Crop", DialogBoxIcon.Stop);
+                    "Crop", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -91,7 +91,7 @@ namespace ImagingSIMS.Controls
                 if (d.Width != width || d.Height != height)
                 {
                     DialogBox db = new DialogBox("Invalid table dimensions.", "One or more of the selected tables does not match the dimensions of the others.",
-                    "Crop", DialogBoxIcon.Stop);
+                    "Crop", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -100,21 +100,21 @@ namespace ImagingSIMS.Controls
                 || preview.PixelStartY + preview.PixelHeight > height)
             {
                 DialogBox db = new DialogBox("Invalid crop placement.", "Make sure the crop area is completely within the available area.",
-                    "Crop", DialogBoxIcon.Stop);
+                    "Crop", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
             if (preview.PixelWidth <= 0 || preview.PixelHeight <= 0)
             {
                 DialogBox db = new DialogBox("Invalid crop placement.", "The width and/or height is not valid.",
-                      "Crop", DialogBoxIcon.Stop);
+                      "Crop", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
             if (preview.PixelStartX < 0 || preview.PixelStartY < 0)
             {
                 DialogBox db = new DialogBox("Invalid crop placement.", "The start point is not valid.",
-                      "Crop", DialogBoxIcon.Stop);
+                      "Crop", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -131,7 +131,7 @@ namespace ImagingSIMS.Controls
             if (toCrop.Depth == 0)
             {
                 DialogBox db = new DialogBox("No data tables selected.", "Select one or more data tables to crop.",
-                       "Crop", DialogBoxIcon.Stop);
+                       "Crop", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -309,7 +309,7 @@ namespace ImagingSIMS.Controls
                 {
                     DialogBox db = new DialogBox("Invalid table dimensions.", 
                         "One or more of the selected tables does not match the dimensions of the others and a preview image cannot be created.",
-                        "Crop", DialogBoxIcon.Stop);
+                        "Crop", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }

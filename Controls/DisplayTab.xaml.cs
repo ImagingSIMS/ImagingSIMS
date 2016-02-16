@@ -163,7 +163,7 @@ namespace ImagingSIMS.Controls
             if (!CurrentSeries.Images.Contains(image))
             {
                 DialogBox db = new DialogBox("Could not remove the image from the collection.", "Image not found.", "Remove",
-                    DialogBoxIcon.RedQuestion);
+                    DialogBoxIcon.WarningGray);
                 db.ShowDialog();
                 return;
             }
@@ -174,7 +174,7 @@ namespace ImagingSIMS.Controls
             catch (Exception ex)
             {
                 DialogBox db = new DialogBox("Could not remove the image from the collection.", ex.Message, "Remove",
-                       DialogBoxIcon.RedQuestion);
+                       DialogBoxIcon.WarningGray);
                 db.ShowDialog();
             }
         }
@@ -195,12 +195,12 @@ namespace ImagingSIMS.Controls
             }
             catch (Exception ex)
             {
-                db = new DialogBox("Could not save the image.", ex.Message, "Save", DialogBoxIcon.Stop);
+                db = new DialogBox("Could not save the image.", ex.Message, "Save", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
 
-            db = new DialogBox("Image saved successfully!", sfd.FileName, "Save", DialogBoxIcon.GreenCheck);
+            db = new DialogBox("Image saved successfully!", sfd.FileName, "Save", DialogBoxIcon.Ok);
             db.ShowDialog();
         }
         private void contentButtonCopy_Click(object sender, RoutedEventArgs e)
@@ -362,7 +362,7 @@ namespace ImagingSIMS.Controls
             if (itemsControl.SelectedItems.Count == 0)
             {
                 DialogBox db = new DialogBox("No images selected.", "Select one or more images to copy and try again.",
-                    "Copy", DialogBoxIcon.Stop);
+                    "Copy", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -378,7 +378,7 @@ namespace ImagingSIMS.Controls
             if (itemsControl.SelectedItems.Count == 0)
             {
                 DialogBox db = new DialogBox("No images selected.", "Select one or more images to flip and try again.",
-                    "Filp", DialogBoxIcon.Stop);
+                    "Filp", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -393,7 +393,7 @@ namespace ImagingSIMS.Controls
             if (itemsControl.SelectedItems.Count == 0)
             {
                 DialogBox db = new DialogBox("No images selected.", "Select one or more images to rotate and try again.",
-                    "Rotate", DialogBoxIcon.Stop);
+                    "Rotate", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -408,7 +408,7 @@ namespace ImagingSIMS.Controls
             if (itemsControl.SelectedItems.Count == 0)
             {
                 DialogBox db = new DialogBox("No images selected.", "Select one or more images to convert and try again.",
-                    "Convert", DialogBoxIcon.Stop);
+                    "Convert", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -423,7 +423,7 @@ namespace ImagingSIMS.Controls
             if (itemsControl.SelectedItems.Count == 0)
             {
                 DialogBox db = new DialogBox("No images selected.", "Select one or more images to save and try again.",
-                    "Save", DialogBoxIcon.Stop);
+                    "Save", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -454,7 +454,7 @@ namespace ImagingSIMS.Controls
             if (itemsControl.SelectedItems.Count == 0)
             {
                 DialogBox db = new DialogBox("No images selected.", "Select one or more images to resize and try again.",
-                    "Resize", DialogBoxIcon.Stop);
+                    "Resize", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -481,7 +481,7 @@ namespace ImagingSIMS.Controls
                         }
                         catch (Exception ex)
                         {
-                            DialogBox.Show("Could not resize image " + image.Title, ex.Message, "Resize", DialogBoxIcon.Stop);
+                            DialogBox.Show("Could not resize image " + image.Title, ex.Message, "Resize", DialogBoxIcon.Error);
                         }
                     }
                     else
@@ -494,7 +494,7 @@ namespace ImagingSIMS.Controls
                         }
                         catch (Exception ex)
                         {
-                            DialogBox.Show("Could not crop image " + image.Title, ex.Message, "Crop", DialogBoxIcon.Stop);
+                            DialogBox.Show("Could not crop image " + image.Title, ex.Message, "Crop", DialogBoxIcon.Error);
                         }
                     }
                     
@@ -536,14 +536,14 @@ namespace ImagingSIMS.Controls
             if (numImages == 0)
             {
                 DialogBox db = new DialogBox("No input images selected.", "Click OK to select all images and perform desired filter or cancel to return.",
-                    "Filter", DialogBoxIcon.BlueQuestion, true);
+                    "Filter", DialogBoxIcon.Help, true);
                 Nullable<bool> result = db.ShowDialog();
 
                 if (result != true) return;
 
                 if (itemsControl.Items.Count == 0)
                 {
-                    DialogBox db_1 = new DialogBox("No images are available to select.", "Load or create an image series and try again.", "Filter", DialogBoxIcon.Stop);
+                    DialogBox db_1 = new DialogBox("No images are available to select.", "Load or create an image series and try again.", "Filter", DialogBoxIcon.Error);
                     db_1.ShowDialog();
                     return;
                 }
@@ -687,21 +687,21 @@ namespace ImagingSIMS.Controls
             catch (NullReferenceException NRex)
             {
                 DialogBox db = new DialogBox("There was a problem with one or more of the images.", NRex.Message,
-                    "Slice", DialogBoxIcon.Stop);
+                    "Slice", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
             catch (IndexOutOfRangeException IOORex)
             {
                 DialogBox db = new DialogBox("There was a problem with one or more of the image dimensions.", IOORex.Message,
-                       "Slice", DialogBoxIcon.Stop);
+                       "Slice", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
             catch (Exception ex)
             {
                 DialogBox db = new DialogBox("There was a problem slicing the image series.", ex.Message,
-                       "Slice", DialogBoxIcon.Stop);
+                       "Slice", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -730,14 +730,14 @@ namespace ImagingSIMS.Controls
             if (imgCount == 0)
             {
                 DialogBox db = new DialogBox("No images selected", "Select two or more images to overlay and try again.",
-                    "Overlay", DialogBoxIcon.Stop);
+                    "Overlay", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
             if (imgCount == 1)
             {
                 DialogBox db = new DialogBox("Only one image selected", "Select two or more images to overlay and try again.",
-                    "Overlay", DialogBoxIcon.Stop);
+                    "Overlay", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -773,7 +773,7 @@ namespace ImagingSIMS.Controls
             {
                 DialogBox db = new DialogBox("Invalid image dimensions",
                     "One or more images selected does not match the rest of the collection in width or height.",
-                    "Overlay", DialogBoxIcon.Stop);
+                    "Overlay", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -842,14 +842,14 @@ namespace ImagingSIMS.Controls
             if (numImages == 0)
             {
                 DialogBox db = new DialogBox("No input images selected.", "Click OK to select all images and create an image series or cancel to return.",
-                    "Create Series", DialogBoxIcon.BlueQuestion, true);
+                    "Create Series", DialogBoxIcon.Help, true);
                 Nullable<bool> result = db.ShowDialog();
 
                 if (result != true) return null;
 
                 if (itemsControl.Items.Count == 0)
                 {
-                    DialogBox db_1 = new DialogBox("No images are available to select.", "Load or create an image series and try again.", "Create Series", DialogBoxIcon.Stop);
+                    DialogBox db_1 = new DialogBox("No images are available to select.", "Load or create an image series and try again.", "Create Series", DialogBoxIcon.Error);
                     db_1.ShowDialog();
                     return null;
                 }
@@ -876,7 +876,7 @@ namespace ImagingSIMS.Controls
 
             if(te.EnteredText == String.Empty)
             {
-                DialogBox db = new DialogBox("Invalid series name.", "Please try again and enter a value for the series name.", "Image Series", DialogBoxIcon.Stop);
+                DialogBox db = new DialogBox("Invalid series name.", "Please try again and enter a value for the series name.", "Image Series", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return null;
             }
