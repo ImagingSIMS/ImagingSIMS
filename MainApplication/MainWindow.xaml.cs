@@ -4070,7 +4070,33 @@ namespace ImagingSIMS.MainApplication
         {
             //bool result = ImagingSIMS.Data.PCA.PCA.VerifyPython();
             //DialogBox.Show("Result: " + result.ToString(), "", "Python", result ? DialogBoxIcon.GreenCheck : DialogBoxIcon.Error);
-            
+
+            string[] criteria = new string[]
+            {
+                "234U", "236.1", "236U", "238U 1H"
+            };
+
+            int ct = 0;
+            List<Data2D> toRemove = new List<Data2D>();
+            foreach(Data2D d in Workspace.Data)
+            {
+                foreach (string s in criteria)
+                {
+                    if (d.DataName.Contains(s))
+                        toRemove.Add(d);
+                    ct++;
+                    continue;
+                }
+            }
+
+            for (int i = 0; i < toRemove.Count; i++)
+            {
+                Data2D d = toRemove[i];
+                if (Workspace.Data.Contains(d))
+                    Workspace.Data.Remove(d);
+            }
+
+            DialogBox.Show($"Removed {ct} tables.", "", "Tables", DialogBoxIcon.Ok);
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
