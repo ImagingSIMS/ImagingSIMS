@@ -847,6 +847,9 @@ namespace ImagingSIMS.Data
                         case FileType.CSV:
                             d = FromCSV(lines);
                             break;
+                    case FileType.CamecaAPM:
+                        d = FromCamecaAPM(lines);
+                        break;
                     }
 
                     //Set Data2D name
@@ -993,6 +996,53 @@ namespace ImagingSIMS.Data
                 foreach (string st in lineDelim)
                 {
                     d[x, y] = float.Parse(st);
+                    x++;
+                }
+                y++;
+                x = 0;
+            }
+
+            //Return object
+            return d;
+        }
+        private static Data2D FromCamecaAPM(List<string> FileLines)
+        {
+            //Get matrix dimensions
+            int w = 0;
+            int h = 0;
+
+            string firstLine = FileLines[0];
+
+            foreach (char c in firstLine)
+            {
+                //if (c == ',') w++;
+                if (_delimiters.Contains(c)) w++;
+            }
+
+            //Last value in line does not have comma, so add one to account and get actual width
+            w = w + 1;
+
+            //Height is just the number of lines in file
+            // For Cameca APM the last line is just a space, so don't count that
+            h = FileLines.Count - 1;
+
+            //Create Data2D object
+            Data2D d = new Data2D(w, h);
+
+            //Populate Data2D matrix with data from file
+            int x = 0;
+            int y = 0;
+            foreach (string line in FileLines)
+            {
+                //char delimiter = ',';
+                //string[] lineDelim = line.Split(delimiter);
+                string[] lineDelim = line.Split(_delimiters);
+
+                if (lineDelim.Length == 1) continue;
+
+                foreach (string st in lineDelim)
+                {
+                    d[x, y] = (int)double.Parse(st);
                     x++;
                 }
                 y++;

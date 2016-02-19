@@ -30,6 +30,7 @@ namespace ImagingSIMS.Data
     {
         public enum FileType
         {
+            CamecaAPM,
             J105, BioToF, QStar, CSV
         }
     }

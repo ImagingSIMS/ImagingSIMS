@@ -644,6 +644,12 @@ namespace ImagingSIMS.MainApplication
                 ofd.Title = "Open J105 Data";
                 ofd.Filter = "Text File (.txt)|*.txt|All Files |*.*";
             }
+            else if(sender == ribbonButtonDataCamecaAPM)
+            {
+                fileType = FileType.CamecaAPM;
+                ofd.Title = "Open Cameca APM Data";
+                ofd.Filter = "Text File (.txt)|*.txt|All Files |*.*";
+            }
             else if (sender == ribbonButtonDataQStar)
             {
                 fileType = FileType.QStar;

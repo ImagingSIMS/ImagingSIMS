@@ -226,6 +226,9 @@
                         <RibbonSplitMenuItem x:Name="ribbonButtonDataJ105"
                                                     Header="From J105" Click="LoadDataTable" 
                                              ToolTipTitle="Open J105" ToolTipDescription="Opens an ASCII 105 data table."/>
+                        <RibbonSplitMenuItem x:Name="ribbonButtonDataCamecaAPM"
+                                                    Header="From Cameca APM" Click="LoadDataTable" 
+                                             ToolTipTitle="Open Cameca APM" ToolTipDescription="Opens an ASCII Cameca APM data table."/>
                         <RibbonSplitMenuItem x:Name="ribbonButtonDataQStar"
                                                     Header="From QStar" Click="LoadDataTable" 
                                              ToolTipTitle="Open QStar" ToolTipDescription="Opens an ASCII QStar data table."
