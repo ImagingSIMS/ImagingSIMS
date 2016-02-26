@@ -1456,6 +1456,15 @@ namespace ImagingSIMS.MainApplication
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
+        private void ribbonOpenStitchTab_Click(object sender, RoutedEventArgs e)
+        {
+            ImageStitchTab ist = new ImageStitchTab();
+            ist.Workspace = Workspace;
+
+            ClosableTabItem cti = ClosableTabItem.Create(ist, TabType.ImageStitch, "Image Stitch", true);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+        }
         private void NewSampleData(object sender, RoutedEventArgs e)
         {
             SampleData sd = new SampleData(Workspace.SampleXDimension, Workspace.SampleYDimension, Workspace.SampleZDimension);
@@ -4100,14 +4109,7 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            //OxySpectrumTab ost = new OxySpectrumTab();
-            //ClosableTabItem cti = ClosableTabItem.Create(ost, TabType.Spectrum);
-            //tabMain.Items.Add(cti);
-            //tabMain.SelectedItem = cti;
-            for (int i = 0; i < 15; i++)
-            {
-                DialogBox.Show("Test", "Test", "Test", (DialogBoxIcon)i);
-            }
+            throw new ArgumentException();
         }
 #pragma warning restore 1998
 

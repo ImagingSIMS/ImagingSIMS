@@ -108,6 +108,9 @@
     <Compile Include="History.cs" />
     <Compile Include="Hyperlink.cs" />
     <Compile Include="IAvailableTables.cs" />
+    <Compile Include="ImageStitchTab.xaml.cs">
+      <DependentUpon>ImageStitchTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MaskedTextBox.cs" />
     <Compile Include="PCATab.xaml.cs">
       <DependentUpon>PCATab.xaml</DependentUpon>
@@ -362,6 +365,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="HighlightableImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ImageStitchTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

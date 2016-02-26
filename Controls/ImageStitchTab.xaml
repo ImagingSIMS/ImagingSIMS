@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.ImageStitchTab"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImagingSIMS.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="600">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\Generic.xaml"/>
+                <ResourceDictionary>
+                    <local:HasDataToBorderBrushConverter x:Key="hasDataToBorderBrushConverter"/>
+                    <local:Data2DToBitmapSourceConverter x:Key="data2DToBitmapSourceConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <local:GridAwareItemsControl x:Name="itemsControl" ItemsSource="{Binding ElementName=userControl, Path=ItemsToStitch}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid local:GridAutoLayout.NumberOfRows="{Binding ElementName=userControl, Path=MaxRows}"
+                              local:GridAutoLayout.NumberOfColumns="{Binding ElementName=userControl, Path=MaxColumns}"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:ImageStitchItemViewModel}">
+                        <Border Grid.Row="{Binding IndexY}" Grid.Column="{Binding IndexX}" 
+                                BorderThickness="1" BorderBrush="{Binding DataItem, Converter={StaticResource hasDataToBorderBrushConverter}}"
+                                Background="Transparent"
+                                PreviewMouseDown="Border_PreviewMouseDown"
+                                Drop="Border_Drop" AllowDrop="True">
+                            <Grid>
+                                <Image Source="{Binding DataItem, Converter={StaticResource data2DToBitmapSourceConverter}}"
+                                    Stretch="Fill"/>
+                                <TextBlock Margin="2" TextWrapping="Wrap" 
+                                           HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                           Text="{Binding DataItem.DataName}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </local:GridAwareItemsControl>
+        </ScrollViewer>
+
+        <Grid Grid.Row="1">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>Columns:</TextBlock>
+                <ComboBox Margin="4" Height="23" Width="50" 
+                          SelectedValue="{Binding ElementName=userControl, Path=MaxColumns}"
+                          ItemsSource="{Binding ElementName=userControl, Path=AvailableDimensions}">
+                    <ComboBox.ItemTemplate>
+                        <ItemContainerTemplate>
+                            <TextBlock Margin="2" Text="{Binding}" Foreground="Black"/>
+                        </ItemContainerTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock>Rows:</TextBlock>
+                <ComboBox Margin="4" Height="23" Width="50" 
+                          SelectedValue="{Binding ElementName=userControl, Path=MaxRows}"
+                          ItemsSource="{Binding ElementName=userControl, Path=AvailableDimensions}">
+                    <ComboBox.ItemTemplate>
+                        <ItemContainerTemplate>
+                            <TextBlock Margin="2" Text="{Binding}" Foreground="Black"/>
+                        </ItemContainerTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock>Output name:</TextBlock>
+                <TextBox Margin="4" Height="23" Width="150" 
+                         Text="{Binding ElementName=userControl, Path=OutputName}"/>
+                <Button Margin="4" Width="75" Click="buttonStitch_Click">Stitch</Button>
+                <Button Margin="4" Width="75" Click="buttonClear_Click">Clear</Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -80,7 +80,7 @@ namespace ImagingSIMS.Controls
             }
 
             // Keep this separate since this appears only in PNNL version
-            if(TabType == TabType.Ratio)
+            if(TabType == TabType.Ratio || TabType == TabType.ImageStitch)
             {
                 this.AllowDrop = true;
                 this.Drop += ClosableTabItem_Drop;
@@ -100,7 +100,7 @@ namespace ImagingSIMS.Controls
             }
 
             // Keep this separate since this appears only in PNNL version
-            if (TabType == TabType.Ratio)
+            if (TabType == TabType.Ratio || TabType == TabType.ImageStitch)
             {
                 this.AllowDrop = true;
                 this.Drop += ClosableTabItem_Drop;
@@ -691,7 +691,7 @@ namespace ImagingSIMS.Controls
         Correction, ZCorrection, SpectrumCrop,
         HeightMap, Data2DDisplay, Cluster,
         DataRegistration, DepthProfile,
-        Ratio
+        Ratio, ImageStitch
     }
 
 

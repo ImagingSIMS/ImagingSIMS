@@ -256,6 +256,10 @@
                                   LargeImageSource="Images\Isotope.ico" Click="ribbonOpenRatioTab_Click"
                                   ToolTipTitle="Ratio"
                                   ToolTipDescription="Opens a table selector to create new data sets that are ratios of input data."/>
+                    <RibbonButton x:Name="rubbonOpenStitchTab" Label="Stitch"
+                                  LargeImageSource="Images\Grid.ico" Click="ribbonOpenStitchTab_Click"
+                                  ToolTipTitle="Stitch"
+                                  ToolTipDescription="Opens a tab to drag and drop tables into in order to stitch multiple adjacent data tables into a single table."/>
                     <RibbonButton x:Name="ribbonOpenCropTab" Label="Crop"
                                   LargeImageSource="Images\Crop.ico" Click="ribbonOpenCropTab_Click"
                                   ToolTipTitle="Crop"

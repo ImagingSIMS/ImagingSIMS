@@ -11,6 +11,7 @@ using ImagingSIMS.Common.Dialogs;
 using ImagingSIMS.Data;
 using ImagingSIMS.Data.Imaging;
 using ImagingSIMS.Data.ClusterIdentification;
+using System.Windows.Media;
 
 namespace ImagingSIMS.Controls
 {
@@ -624,6 +625,21 @@ namespace ImagingSIMS.Controls
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return 0;
+        }
+    }
+    public class HasDataToBorderBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Data2D d = value as Data2D;
+            if (d == null) return new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+
+            return new SolidColorBrush(Color.FromArgb(255, 20, 255, 80));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }
