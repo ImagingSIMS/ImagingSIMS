@@ -19,21 +19,10 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <ListView x:Name="listViewTables" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Data}" 
-                     Height="Auto" Width="Auto" VerticalAlignment="Stretch" Margin="4" Background="Transparent" BorderBrush="Transparent"
-                     ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                     SelectionChanged="listViewTables_SelectionChanged">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding DataName}" Width="300"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        </Grid.ColumnDefinitions>      
         
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="0">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -41,7 +30,23 @@
                 </Grid.RowDefinitions>
                 <StackPanel>
                     <Label>Preview:</Label>
-                    <data:EditableImage x:Name="imagePreview" Width="250" Height="250" Stretch="Fill"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button x:Name="buttonAdd" Click="buttonPreview_Click" Width="50" Height="25" Margin="4">
+                            <Image Source="Images\MoveArrow.png">
+                                <Image.LayoutTransform>
+                                    <RotateTransform Angle="90"/>
+                                </Image.LayoutTransform>
+                            </Image>
+                        </Button>
+
+                        <data:EditableImage x:Name="imagePreview" Grid.Column="1" Width="250" Height="250" Stretch="Fill"/>
+                    </Grid>
+                    
                 </StackPanel>
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
@@ -70,8 +75,7 @@
                                 </StackPanel>
                                 <ListView x:Name="listViewMasks" ItemsSource="{Binding ZCorrectionBases}"
                                         Height="175" Width="Auto" VerticalAlignment="Stretch" Margin="4" Background="Transparent" BorderBrush="Transparent" SelectionMode="Single"
-                                        ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                        SelectionChanged="listViewTables_SelectionChanged">
+                                        ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                                     <ListView.View>
                                         <GridView>
                                             <GridViewColumn Header="Correction Bases" DisplayMemberBinding="{Binding MaskName}" Width="225"/>

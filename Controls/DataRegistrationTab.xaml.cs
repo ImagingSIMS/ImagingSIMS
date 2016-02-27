@@ -152,11 +152,8 @@ namespace ImagingSIMS.Controls
         {
             List<KeyValuePair<Data2D, string>> notAdded = new List<KeyValuePair<Data2D, string>>();
 
-            foreach (object obj in listViewAvailableTables.SelectedItems)
+            foreach (Data2D d in AvailableTablesHost.AvailableTablesSource.GetSelectedTables())
             {
-                Data2D d = obj as Data2D;
-                if (d == null) continue;
-
                 try
                 {
                     if (SelectedTablesFixed.Contains(d))
@@ -189,11 +186,8 @@ namespace ImagingSIMS.Controls
         {
             List<KeyValuePair<Data2D, string>> notAdded = new List<KeyValuePair<Data2D, string>>();
 
-            foreach (object obj in listViewAvailableTables.SelectedItems)
+            foreach (Data2D d in AvailableTablesHost.AvailableTablesSource.GetSelectedTables())
             {
-                Data2D d = obj as Data2D;
-                if (d == null) continue;
-
                 try
                 {
                     if (SelectedTablesMoving.Contains(d))

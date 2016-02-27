@@ -31,8 +31,6 @@ namespace ImagingSIMS.Controls
     {
         ProgressWindow pw;
 
-        ObservableCollection<Data2D> _availableTables;
-
         public static readonly DependencyProperty RemoveOriginalProperty = DependencyProperty.Register("RemoveOriginal",
             typeof(bool), typeof(CropTab));
         public static readonly DependencyProperty IsCroppingProperty = DependencyProperty.Register("IsCropping",
@@ -56,38 +54,25 @@ namespace ImagingSIMS.Controls
             set { SetValue(PositionTextProperty, value); }
         }
 
-        public ObservableCollection<Data2D> AvailableTables
-        {
-            get { return _availableTables; }
-            set { _availableTables = value; }
-        }
         public CropTab()
         {
-            AvailableTables = new ObservableCollection<Data2D>();
-
             InitializeComponent();
-        }
-
-        public void SetTables(ObservableCollection<Data2D> AvailableTables)
-        {
-            this.AvailableTables = AvailableTables;
-            listAvailable.ItemsSource = AvailableTables;
         }
 
         private void buttonDoCrop_Click(object sender, RoutedEventArgs e)
         {
-            if (listAvailable.SelectedItems.Count == 0)
+            List<Data2D> selected = AvailableTablesHost.AvailableTablesSource.GetSelectedTables();
+            if (selected.Count == 0)
             {
                 DialogBox db = new DialogBox("No data tables selected.", "Select one or more data tables to crop.",
                     "Crop", DialogBoxIcon.Error);
                 db.ShowDialog();
                 return;
             }
-            int width = ((Data2D)listAvailable.SelectedItems[0]).Width;
-            int height = ((Data2D)listAvailable.SelectedItems[0]).Height;
-            foreach (object obj in listAvailable.SelectedItems)
+            int width = selected[0].Width;
+            int height = selected[0].Height;
+            foreach(Data2D d in selected)
             {
-                Data2D d = (Data2D)obj;
                 if (d.Width != width || d.Height != height)
                 {
                     DialogBox db = new DialogBox("Invalid table dimensions.", "One or more of the selected tables does not match the dimensions of the others.",
@@ -120,11 +105,8 @@ namespace ImagingSIMS.Controls
             }
 
             Data3D toCrop = new Data3D();
-            foreach (object obj in listAvailable.SelectedItems)
+            foreach (Data2D d in selected)
             {
-                Data2D d = (Data2D)obj;
-                if (d == null) continue;
-
                 toCrop.AddLayer(d);
             }
 
@@ -212,71 +194,13 @@ namespace ImagingSIMS.Controls
 
             CropResult r = (CropResult)e.Result;
 
-            List<KeyValuePair<Data2D,string>> notAdded = new List<KeyValuePair<Data2D,string>>();
-            foreach (Data2D d in r.ToAdd.Layers)
-            {
-                if (AvailableTables.Contains(d))
-                {
-                    notAdded.Add(new KeyValuePair<Data2D,string>(d, "Table already present in the collection."));
-                    continue;
-                }
-                try
-                {
-                    AvailableTables.Add(d);
-                }
-                catch(Exception ex)
-                {
-                    notAdded.Add(new KeyValuePair<Data2D, string>(d, ex.Message));
-                }
-            }
+            AvailableTablesHost.AvailableTablesSource.AddTables(r.ToAdd.Layers);
             
             ClosableTabItem.SendStatusUpdate(this, "Crop operation complete");
-            if (notAdded.Count > 0)
-            {
-                string list = "";
-                foreach (KeyValuePair<Data2D, string> kvp in notAdded)
-                {
-                    list += string.Format("{0}: {1}\n", kvp.Key.ToString(), kvp.Value);
-                }
-                list.Remove(list.Length - 2, 2);
-
-                DialogBox db = new DialogBox("The following tables were not added to the collection:", list, "Crop", DialogBoxIcon.Warning);
-                db.ShowDialog();
-            }
 
             if (!r.RemoveOriginal) return;
 
-            notAdded.Clear();
-
-            foreach (Data2D d in r.ToRemove.Layers)
-            {
-                if (!AvailableTables.Contains(d))
-                {
-                    notAdded.Add(new KeyValuePair<Data2D, string>(d, "Table not fount in the collection."));
-                    continue;
-                }
-                try
-                {
-                    AvailableTables.Remove(d);
-                }
-                catch (Exception ex)
-                {
-                    notAdded.Add(new KeyValuePair<Data2D, string>(d, ex.Message));
-                }
-            }
-
-            if (notAdded.Count > 0)
-            {
-                string list = "";
-                foreach (KeyValuePair<Data2D, string> kvp in notAdded)
-                {
-                    list += string.Format("{0}: {1}\n", kvp.Key.ToString(), kvp.Value);
-                }
-                list += "\nUnless there was a different error above, the cropped tables were added. This only applies to tables being removed.";
-
-                DialogBox db = new DialogBox("The following tables were not removed from the collection:", list, "Crop", DialogBoxIcon.Warning);
-                db.ShowDialog();
-            }
+            AvailableTablesHost.AvailableTablesSource.RemoveTables(r.ToRemove.Layers);
         }
         private void buttonCenter_Click(object sender, RoutedEventArgs e)
         {
@@ -287,17 +211,9 @@ namespace ImagingSIMS.Controls
             preview.AutoHalf();
         }
 
-        private void MenuItemPreview_Click(object sender, RoutedEventArgs e)
+        private void buttonPreview_Click(object sender, RoutedEventArgs e)
         {
-            List<Data2D> data = new List<Data2D>();
-            foreach (object obj in listAvailable.SelectedItems)
-            {
-                Data2D d = (Data2D)obj;
-                if (d == null) continue;
-
-                data.Add(d);
-            }
-
+            List<Data2D> data = AvailableTablesHost.AvailableTablesSource.GetSelectedTables();
             if (data.Count == 0) return;
 
             int width = data[0].Width;
@@ -307,7 +223,7 @@ namespace ImagingSIMS.Controls
             {
                 if (d.Width != width || d.Height != height)
                 {
-                    DialogBox db = new DialogBox("Invalid table dimensions.", 
+                    DialogBox db = new DialogBox("Invalid table dimensions.",
                         "One or more of the selected tables does not match the dimensions of the others and a preview image cannot be created.",
                         "Crop", DialogBoxIcon.Error);
                     db.ShowDialog();
@@ -329,7 +245,7 @@ namespace ImagingSIMS.Controls
             int xPixel = 0;
             int yPixel = 0;
 
-            Data2D d = (Data2D)listAvailable.SelectedItem;
+            Data2D d = AvailableTablesHost.AvailableTablesSource.GetAvailableTables().FirstOrDefault();
             if (d != null)
             {
                 int width = d.Width;

@@ -37,7 +37,7 @@ namespace ImagingSIMS.MainApplication
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : RibbonWindow
+    public partial class MainWindow : RibbonWindow, IAvailableTables
     {
         #region Properties
         public static readonly DependencyProperty WorkspaceProperty = DependencyProperty.Register("Workspace",
@@ -93,7 +93,7 @@ namespace ImagingSIMS.MainApplication
 
             Workspace = new Workspace();
 
-            if(Workspace.Registry.StartWithTrace)
+            if (Workspace.Registry.StartWithTrace)
             {
                 tlw = new TraceListenerWindow();
                 Trace.Listeners.Add(tlw.TraceListener);
@@ -183,6 +183,8 @@ namespace ImagingSIMS.MainApplication
             }
 
             Trace.WriteLine(string.Format("Is Debug: {0}", IsDebug));
+
+            AvailableTablesHost.AvailableTablesSource = this;
         }
         private void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -244,7 +246,7 @@ namespace ImagingSIMS.MainApplication
                     {
                         st.OnCancel();
                         goto finish;
-                    }      
+                    }
                     FusionTab ft = cti.Content as FusionTab;
                     if (ft != null)
                     {
@@ -252,7 +254,7 @@ namespace ImagingSIMS.MainApplication
                         goto finish;
                     }
                 }
-            finish:
+                finish:
                 {
                     cti.CloseTab -= CloseTab;
                     TabControl tc = ti.Parent as TabControl;
@@ -272,10 +274,10 @@ namespace ImagingSIMS.MainApplication
         {
             ClosableTabItem cti = ClosableTabItem.Create(new SettingsTab(Workspace.Registry), TabType.Settings, true);
             tabMain.Items.Add(cti);
-            tabMain.SelectedItem = cti;            
+            tabMain.SelectedItem = cti;
         }
         private void ribbonButtonAbout_Click(object sender, RoutedEventArgs e)
-        {            
+        {
             About a = new About();
             a.Show();
         }
@@ -291,13 +293,13 @@ namespace ImagingSIMS.MainApplication
                 string.Format("Memory usage:\nBefore collection: {0} bytes\nAfter Collection: {1} bytes\nMemory freed: {2} bytes ({3}%)",
                 allocatedBefore, allocatedAfter, allocatedBefore - allocatedAfter, Percentage.GetPercent(allocatedBefore - allocatedAfter, allocatedBefore).ToString("0.00")),
                 "Cleanup", DialogBoxIcon.Information);
-            db.ShowDialog();            
+            db.ShowDialog();
         }
         private void ribbonButtonTraceWindow_Click(object sender, RoutedEventArgs e)
         {
             tlw = new TraceListenerWindow();
             Trace.Listeners.Add(tlw.TraceListener);
-            
+
             tlw.Show();
         }
         private void ribbonButtonCheckUpdates_Click(object sender, RoutedEventArgs e)
@@ -357,10 +359,10 @@ namespace ImagingSIMS.MainApplication
                     {
                         try
                         {
-                            Mouse.OverrideCursor = Cursors.Wait;                            
+                            Mouse.OverrideCursor = Cursors.Wait;
                             ad.Update();
                             Mouse.OverrideCursor = Cursors.Arrow;
-                            DialogBox db = new DialogBox("The application has been upgraded and needs to restart.", 
+                            DialogBox db = new DialogBox("The application has been upgraded and needs to restart.",
                                 "Save your workspace (if necessary) and restart the program.",
                                 "Update", DialogBoxIcon.Information);
                             db.ShowDialog();
@@ -390,7 +392,7 @@ namespace ImagingSIMS.MainApplication
                 return;
             }
         }
-        
+
         #endregion
 
         #region IO
@@ -403,10 +405,10 @@ namespace ImagingSIMS.MainApplication
         {
             if (!Workspace.HasContents) return;
 
-            DialogBox db = new DialogBox("Are you sure you want to clear the current workspace?", 
+            DialogBox db = new DialogBox("Are you sure you want to clear the current workspace?",
                 "Click OK to delete all data or Cancel to return.",
                 "Workspace", DialogBoxIcon.Error, true);
-            if(db.ShowDialog() == true)
+            if (db.ShowDialog() == true)
             {
                 Workspace = new Workspace();
                 Workspace.InitializeRegistry();
@@ -480,11 +482,11 @@ namespace ImagingSIMS.MainApplication
                 //3: (Workspace)Loaded workspace
                 e.Result = new object[4] { args[0], args[1], args[2], w };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 e.Result = ex;
             }
-            
+
         }
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
@@ -494,10 +496,10 @@ namespace ImagingSIMS.MainApplication
         {
             // Check if load failed due to exception
             Exception ex = e.Result as Exception;
-            if(ex != null)
+            if (ex != null)
             {
                 string message = ex.Message;
-                if(ex.InnerException != null)
+                if (ex.InnerException != null)
                 {
                     message += ": " + ex.InnerException.Message;
                 }
@@ -532,15 +534,15 @@ namespace ImagingSIMS.MainApplication
             //Need to recreate registry settings so that DependencyProperties are available to the main UI thread
             w.InitializeRegistry();
 
-            if((bool)result[1])
+            if ((bool)result[1])
             {
                 Workspace.Merge(w);
             }
             else
             {
                 Workspace = w;
-            }            
-            
+            }
+
 
             if ((bool)result[2]) pw.Close();
             else pw.ProgressFinished("Load complete!");
@@ -626,7 +628,7 @@ namespace ImagingSIMS.MainApplication
         }
 
         private async void LoadDataTable(object sender, RoutedEventArgs e)
-        {            
+        {
             e.Handled = true;
 
             OpenFileDialog ofd = new OpenFileDialog();
@@ -671,7 +673,7 @@ namespace ImagingSIMS.MainApplication
 
             try
             {
-                foreach(string s in ofd.FileNames)
+                foreach (string s in ofd.FileNames)
                 {
                     Data2D loaded = await Data2D.LoadData2DAsync(s, fileType);
                     Workspace.Data.Add(loaded);
@@ -750,13 +752,13 @@ namespace ImagingSIMS.MainApplication
             LoadMSArguments args = new LoadMSArguments();
 
             string extension = Path.GetExtension(ofd.FileName).ToLower();
-            if (extension.ToLower().Contains("xyt") ||  extension.ToLower().Contains("dat"))
+            if (extension.ToLower().Contains("xyt") || extension.ToLower().Contains("dat"))
             {
                 args.NumberFiles = ofd.FileNames.Length;
                 args.FileNames = ofd.FileNames;
                 args.Type = SpectrumType.BioToF;
             }
-            else if (extension.ToLower().Contains("zip") ||  extension.ToLower().Contains("IonoptikaIA2DspectrV2".ToLower()))
+            else if (extension.ToLower().Contains("zip") || extension.ToLower().Contains("IonoptikaIA2DspectrV2".ToLower()))
             {
                 if (ofd.FileNames.Length > 1)
                 {
@@ -871,7 +873,7 @@ namespace ImagingSIMS.MainApplication
             {
                 DisplayImage image = new DisplayImage();
                 BitmapImage src = new BitmapImage();
- 
+
                 src.BeginInit();
                 src.UriSource = new Uri(ofd.FileNames[i], UriKind.Absolute);
                 src.CacheOption = BitmapCacheOption.OnLoad;
@@ -1001,25 +1003,25 @@ namespace ImagingSIMS.MainApplication
         private void ribbonOpenRecentFile_Click(object sender, RoutedEventArgs e)
         {
             string file = String.Empty;
-            if(sender is RibbonApplicationMenuItem)
+            if (sender is RibbonApplicationMenuItem)
             {
                 file = (string)((RibbonApplicationMenuItem)sender).ToolTip;
             }
-            else if(sender is RibbonButton)
+            else if (sender is RibbonButton)
             {
                 file = (string)((RibbonButton)sender).ToolTip;
             }
             else return;
-            
+
             if (file == String.Empty) return;
 
-            if(!File.Exists(file))
+            if (!File.Exists(file))
             {
                 DialogBox db = new DialogBox(string.Format("The file {0} does not exist in the target location.", System.IO.Path.GetFileName(file)),
                     "Click OK to remove the file from the recent list, or click Cancel to return.", "Recent Files", DialogBoxIcon.Help, true);
                 Nullable<bool> result = db.ShowDialog();
 
-                if(result == true)
+                if (result == true)
                 {
                     Workspace.Registry.RecentFiles.Remove(file);
                 }
@@ -1089,7 +1091,7 @@ namespace ImagingSIMS.MainApplication
 
                     if (rb != null)
                     {
-                        file = (string)rb.ToolTip;                        
+                        file = (string)rb.ToolTip;
                     }
                 }
 
@@ -1104,7 +1106,7 @@ namespace ImagingSIMS.MainApplication
                 if (!File.Exists(file))
                 {
                     DialogBox db = new DialogBox("Could not find the file associated with the recent item.",
-                        "Verify the recent item still exists and try again. If it does not, consider removing it from the Recent File List.", 
+                        "Verify the recent item still exists and try again. If it does not, consider removing it from the Recent File List.",
                         "Recent File", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
@@ -1113,7 +1115,7 @@ namespace ImagingSIMS.MainApplication
                 p.StartInfo.FileName = @"C:\Windows\explorer.exe";
                 p.StartInfo.Arguments = @"/select, " + file;
                 p.Start();
-            }            
+            }
         }
         #endregion
 
@@ -1266,7 +1268,7 @@ namespace ImagingSIMS.MainApplication
             if (result == true)
             {
                 CommandSave(this, null);
-            }   
+            }
         }
 
         private void CommandPrintPreview(object sender, ExecutedRoutedEventArgs e)
@@ -1314,14 +1316,14 @@ namespace ImagingSIMS.MainApplication
 
         private void CanExecuteSpecBack(object sender, CanExecuteRoutedEventArgs e)
         {
-            if(tabMain.SelectedItem == null)
+            if (tabMain.SelectedItem == null)
             {
                 e.CanExecute = false;
                 return;
             }
 
             ClosableTabItem cti = (ClosableTabItem)tabMain.SelectedItem;
-            if(cti == null)
+            if (cti == null)
             {
                 e.CanExecute = false;
                 return;
@@ -1407,14 +1409,12 @@ namespace ImagingSIMS.MainApplication
         {
             TableSumTab tst = new TableSumTab();
             ClosableTabItem cti = ClosableTabItem.Create(tst, TabType.TableSelector, "Sum");
-            tst.SetData(Workspace.Data);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
         private void ribbonOpenCropTab_Click(object sender, RoutedEventArgs e)
         {
             CropTab ct = new CropTab();
-            ct.SetTables(Workspace.Data);
             ClosableTabItem cti = ClosableTabItem.Create(ct, TabType.Crop, "Crop");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
@@ -1422,14 +1422,13 @@ namespace ImagingSIMS.MainApplication
         private void ribbonOpenCorrectionTab_Click(object sender, RoutedEventArgs e)
         {
             DataCorrectionTab dct = new DataCorrectionTab();
-            dct.SetData(Workspace.Data);
             ClosableTabItem cti = ClosableTabItem.Create(dct, TabType.Correction, "Data Correction");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
         private void ribbonOpenZCorrectionTab_Click(object sender, RoutedEventArgs e)
         {
-            ZCorrectionTab zct = new ZCorrectionTab(this.Workspace);
+            ZCorrectionTab zct = new ZCorrectionTab();
             ClosableTabItem cti = ClosableTabItem.Create(zct, TabType.ZCorrection, "Z-Correction");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
@@ -1439,7 +1438,6 @@ namespace ImagingSIMS.MainApplication
         {
             DepthProfileTab dpt = new DepthProfileTab();
             ClosableTabItem cti = ClosableTabItem.Create(dpt, TabType.DepthProfile, "Depth Profile");
-            dpt.SetData(Workspace.Data);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -1533,7 +1531,7 @@ namespace ImagingSIMS.MainApplication
             }
             else
             {
-                sd.CreateSphere(Workspace.SampleCenterX1, Workspace.SampleCenterY1, 
+                sd.CreateSphere(Workspace.SampleCenterX1, Workspace.SampleCenterY1,
                     Workspace.SampleCenterZ1, Workspace.SampleRadius1);
             }
 
@@ -1558,7 +1556,7 @@ namespace ImagingSIMS.MainApplication
         }
         private void ComponentCreated(object sender, RoutedEventArgs e)
         {
-            Workspace.Components.Add(((ComponentTab)e.Source).NewComponent);  
+            Workspace.Components.Add(((ComponentTab)e.Source).NewComponent);
         }
         private void ComponentUpdated(object sender, RoutedEventArgs e)
         {
@@ -1747,7 +1745,7 @@ namespace ImagingSIMS.MainApplication
                 tabMain.Items.Add(cti2);
                 tabMain.SelectedItem = cti2;
 
-                StatusUpdated(this, new StatusUpdatedRoutedEventArgs("Overlay complete."));                
+                StatusUpdated(this, new StatusUpdatedRoutedEventArgs("Overlay complete."));
             }
             else
             {
@@ -1755,7 +1753,7 @@ namespace ImagingSIMS.MainApplication
                         "Open a new or navigate to an existing overlay document to add an image.",
                         "Overlay", DialogBoxIcon.Error);
                 return;
-            }            
+            }
         }
         private void ribbonButtonExpandPixels_Click(object sender, RoutedEventArgs e)
         {
@@ -1768,8 +1766,8 @@ namespace ImagingSIMS.MainApplication
             int windowSize = 0;
             if (!int.TryParse(tbExpandPixelsWindowSize.Text, out windowSize))
             {
-                DialogBox.Show("No window size specified.", 
-                    "Please enter a positive integer value for the window size parameter and try again.", 
+                DialogBox.Show("No window size specified.",
+                    "Please enter a positive integer value for the window size parameter and try again.",
                     "Expand", DialogBoxIcon.Error);
                 return;
             }
@@ -1889,7 +1887,7 @@ namespace ImagingSIMS.MainApplication
             {
                 tb.SelectAll();
             }
-        }       
+        }
         #endregion
 
         #region Render Tab
@@ -1941,7 +1939,7 @@ namespace ImagingSIMS.MainApplication
                 {
                     notSaved.Add(new KeyValuePair<object, string>(listViewVolumes.SelectedItem, ex.Message));
                 }
-            }                
+            }
             else
             {
                 int ct = 0;
@@ -1951,13 +1949,13 @@ namespace ImagingSIMS.MainApplication
                     Volume v = (Volume)obj;
                     if (v == null)
                     {
-                        notSaved.Add(new KeyValuePair<object, string>(obj, 
+                        notSaved.Add(new KeyValuePair<object, string>(obj,
                             "Could not convert to volume type."));
                     }
 
                     try
                     {
-                        if(sfd.FilterIndex == 1)
+                        if (sfd.FilterIndex == 1)
                         {
                             v.Save(fileName);
                         }
@@ -1965,7 +1963,7 @@ namespace ImagingSIMS.MainApplication
                         {
                             v.SaveRawVolume(fileName);
                         }
-                        
+
                     }
                     catch (Exception ex)
                     {
@@ -2025,7 +2023,7 @@ namespace ImagingSIMS.MainApplication
             List<Volume> volumes = new List<Volume>();
             float maxIntensity = 0;
 
-            foreach(object obj in listBoxRenderingVolumes.SelectedItems)
+            foreach (object obj in listBoxRenderingVolumes.SelectedItems)
             {
                 Volume v = obj as Volume;
                 if (v != null)
@@ -2077,10 +2075,10 @@ namespace ImagingSIMS.MainApplication
                 //    renderVolumes.Add(new RenderVolume(volume.Data.ToFloatArray(maxIntensity), volume.DataColor));
                 //}
 
-                renderVolumes.Add(new RenderVolume(volume.Data.ToFloatArray(maxIntensity), volume.DataColor));                
+                renderVolumes.Add(new RenderVolume(volume.Data.ToFloatArray(maxIntensity), volume.DataColor));
             }
 
-            
+
 
             RenderWindow window = new RenderWindow();
             try
@@ -2175,7 +2173,7 @@ namespace ImagingSIMS.MainApplication
 
         private void createDepthRender_Click(object sender, RoutedEventArgs e)
         {
-            ClosableTabItem cti = ClosableTabItem.Create(new HeightMapTab(), 
+            ClosableTabItem cti = ClosableTabItem.Create(new HeightMapTab(),
                 TabType.HeightMap, "Depth Render", true);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
@@ -2200,7 +2198,7 @@ namespace ImagingSIMS.MainApplication
         }
         private void SpecSelectionRangeUpdated(object sender, RangeUpdatedRoutedEventArgs e)
         {
-            if(radioSpecSingleRange.IsChecked == true)
+            if (radioSpecSingleRange.IsChecked == true)
             {
                 Workspace.SpectraMassStart = e.MassStart;
                 Workspace.SpectraMassEnd = e.MassEnd;
@@ -2208,7 +2206,7 @@ namespace ImagingSIMS.MainApplication
                 double avg = MathEx.Average(Workspace.SpectraMassStart, Workspace.SpectraMassEnd);
                 specTableName.Text = avg.ToString("0.0");
             }
-            else if(radioSpecCustomRange.IsChecked == true)
+            else if (radioSpecCustomRange.IsChecked == true)
             {
                 string currentRange = Workspace.SpectraCustomRange;
 
@@ -2218,7 +2216,7 @@ namespace ImagingSIMS.MainApplication
                     List<MassRangePair> ranges = MassRangePair.ParseString(currentRange);
                     ranges.Add(new MassRangePair(e.MassStart, e.MassEnd));
                     ranges.Sort();
-                    currentRange = MassRangePair.CreateString(ranges);                    
+                    currentRange = MassRangePair.CreateString(ranges);
                 }
                 finally
                 {
@@ -2246,25 +2244,25 @@ namespace ImagingSIMS.MainApplication
 
             MassRangePair[] massRanges = new MassRangePair[1];
 
-            if(radioSpecSingleRange.IsChecked == true)
+            if (radioSpecSingleRange.IsChecked == true)
             {
-                massRanges[0] =new MassRangePair()
-                    {
-                        StartMass = Workspace.SpectraMassStart,
-                        EndMass = Workspace.SpectraMassEnd
-                    };
- 
+                massRanges[0] = new MassRangePair()
+                {
+                    StartMass = Workspace.SpectraMassStart,
+                    EndMass = Workspace.SpectraMassEnd
+                };
+
             }
-            else if(radioSpecCustomRange.IsChecked == true)
+            else if (radioSpecCustomRange.IsChecked == true)
             {
                 try
                 {
                     massRanges = MassRangePair.ParseString(Workspace.SpectraCustomRange).ToArray();
                 }
-                catch(ArgumentException ARex)
+                catch (ArgumentException ARex)
                 {
                     string message = ARex.Message;
-                    if(ARex.InnerException != null)
+                    if (ARex.InnerException != null)
                     {
                         message += ": " + ARex.InnerException.Message;
                     }
@@ -2272,10 +2270,10 @@ namespace ImagingSIMS.MainApplication
                     DialogBox.Show("Could not parse the specified mass ranges.", message, "Spectra", DialogBoxIcon.Error);
                     return;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     string message = ex.Message;
-                    if(ex.InnerException!= null)
+                    if (ex.InnerException != null)
                     {
                         message += ": " + ex.InnerException.Message;
                     }
@@ -2286,7 +2284,7 @@ namespace ImagingSIMS.MainApplication
             }
             else
             {
-                DialogBox.Show("Value not selected.", 
+                DialogBox.Show("Value not selected.",
                     "Could not determine the desired type of range.", "Mass Range", DialogBoxIcon.Error);
                 return;
             }
@@ -2302,7 +2300,7 @@ namespace ImagingSIMS.MainApplication
                     throw new ArgumentException("Specify a base name for the generated tables and try again.");
                 }
             }
-            catch(ArgumentException ARex)
+            catch (ArgumentException ARex)
             {
                 DialogBox.Show("Invalid parameter.", ARex.Message,
                     "Tables", DialogBoxIcon.Error);
@@ -2311,7 +2309,7 @@ namespace ImagingSIMS.MainApplication
             // Validate all mass ranges
             try
             {
-                foreach(MassRangePair range in massRanges)
+                foreach (MassRangePair range in massRanges)
                 {
                     double start = range.StartMass;
                     double end = range.EndMass;
@@ -2330,7 +2328,7 @@ namespace ImagingSIMS.MainApplication
                     }
                 }
             }
-            catch(ArgumentException ARex)
+            catch (ArgumentException ARex)
             {
                 DialogBox.Show("Invalid parameter.", ARex.Message,
                     "Tables", DialogBoxIcon.Error);
@@ -2390,7 +2388,7 @@ namespace ImagingSIMS.MainApplication
                 catch (ArgumentException ARex)
                 {
                     string message = ARex.Message;
-                    if(ARex.InnerException != null)
+                    if (ARex.InnerException != null)
                     {
                         message += ": " + ARex.InnerException.Message;
                     }
@@ -2411,7 +2409,7 @@ namespace ImagingSIMS.MainApplication
                 if (st.Spectrum == null)
                 {
                     throw new ArgumentException("Null spectrum.");
-                }             
+                }
             }
             catch (ArgumentException ARex)
             {
@@ -2510,10 +2508,10 @@ namespace ImagingSIMS.MainApplication
                     pw.UpdateMessage(string.Format("Generating tables for range {0} of {1}: {2} - {3}. Please wait...",
                         (i + 1).ToString(), numberRanges, startMass, endMass))
                 );
-                
-                tables.AddRange(spectrum.FromMassRange(new MassRangePair(range.StartMass, range.EndMass), 
+
+                tables.AddRange(spectrum.FromMassRange(new MassRangePair(range.StartMass, range.EndMass),
                     baseName, omitNumbering, sender as BackgroundWorker));
-            }            
+            }
 
             e.Result = tables;
         }
@@ -2641,13 +2639,13 @@ namespace ImagingSIMS.MainApplication
             p.Start();
 
             string savedPathsString = String.Empty;
-            foreach(string s in savedPaths)
+            foreach (string s in savedPaths)
             {
                 savedPathsString += s + "\n";
             }
             savedPathsString.Remove(savedPathsString.Length - 2);
 
-            DialogBox.Show("Depth profile saved successfully!", savedPathsString, "Depth Profile", DialogBoxIcon.Ok);            
+            DialogBox.Show("Depth profile saved successfully!", savedPathsString, "Depth Profile", DialogBoxIcon.Ok);
         }
 
         private async void specShowPreview_Click(object sender, RoutedEventArgs e)
@@ -2666,13 +2664,13 @@ namespace ImagingSIMS.MainApplication
         {
             int binSize;
 
-            if(string.IsNullOrEmpty(ribbonTextBoxSpecExportBinSize.Text))
+            if (string.IsNullOrEmpty(ribbonTextBoxSpecExportBinSize.Text))
             {
                 binSize = 1;
             }
             else if (!int.TryParse(ribbonTextBoxSpecExportBinSize.Text, out binSize))
             {
-                DialogBox.Show("Invalid bin size.", 
+                DialogBox.Show("Invalid bin size.",
                     "Enter an integer greater than zero and try again.", "Export", DialogBoxIcon.Error);
                 return;
             }
@@ -2742,7 +2740,7 @@ namespace ImagingSIMS.MainApplication
                 eventType = ImageTabEvent.Resize;
             }
             TabType t = cti.TabType;
-            
+
             switch (t)
             {
                 case TabType.Display:
@@ -2758,10 +2756,10 @@ namespace ImagingSIMS.MainApplication
                     if (ft != null) ft.CallEvent(eventType);
                     break;
                 default:
-                     DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an Image Display tab and try again.",
-                        "Images", DialogBoxIcon.Error);
-                db.ShowDialog();
-                return;
+                    DialogBox db = new DialogBox("Image series not selected.", "Please navigate to an Image Display tab and try again.",
+                       "Images", DialogBoxIcon.Error);
+                    db.ShowDialog();
+                    return;
             }
         }
         private void ResetImage(object sender, RoutedEventArgs e)
@@ -2847,7 +2845,7 @@ namespace ImagingSIMS.MainApplication
             {
                 ft = cti.Content as FusionTab;
                 if (ft != null) goto UseTab;
-                foreach(TabItem ti in tabMain.Items)
+                foreach (TabItem ti in tabMain.Items)
                 {
                     cti = (ClosableTabItem)ti;
                     if (cti == null) continue;
@@ -2857,14 +2855,14 @@ namespace ImagingSIMS.MainApplication
                 }
             }
 
-        NewTab:
+            NewTab:
             {
                 ft = new FusionTab();
                 cti = ClosableTabItem.Create(ft, TabType.Fusion, true);
                 tabMain.Items.Add(cti);
                 goto UseTab;
             }
-        UseTab:
+            UseTab:
             {
                 ft.SetHighRes(src);
                 tabMain.SelectedItem = cti;
@@ -2903,14 +2901,14 @@ namespace ImagingSIMS.MainApplication
                 }
             }
 
-        NewTab:
+            NewTab:
             {
                 ft = new FusionTab();
                 cti = ClosableTabItem.Create(ft, TabType.Fusion, true);
                 tabMain.Items.Add(cti);
                 goto UseTab;
             }
-        UseTab:
+            UseTab:
             {
                 ft.SetLowRes(src);
                 tabMain.SelectedItem = cti;
@@ -3033,7 +3031,7 @@ namespace ImagingSIMS.MainApplication
 
             if (String.IsNullOrEmpty(te.EnteredText))
             {
-                DialogBox.Show("Could not update the title of the selected object.", 
+                DialogBox.Show("Could not update the title of the selected object.",
                         "No text entered.", "Title", DialogBoxIcon.Error);
                 return;
             }
@@ -3059,7 +3057,7 @@ namespace ImagingSIMS.MainApplication
                 Workspace.InitializeRegistry();
             }
         }
-        
+
         private void CMDataDelete(object sender, RoutedEventArgs e)
         {
             if (listViewData.SelectedItems.Count == 0) return;
@@ -3125,7 +3123,7 @@ namespace ImagingSIMS.MainApplication
                 titles.Add(d.DataName);
             }
 
-           DoDataPreview(data, titles, ColorScaleTypes.ThermalWarm);
+            DoDataPreview(data, titles, ColorScaleTypes.ThermalWarm);
         }
         private void CMDataPreviewScale(object sender, RoutedEventArgs e)
         {
@@ -3196,7 +3194,7 @@ namespace ImagingSIMS.MainApplication
             }
             else if (toSave.Count > 1)
             {
-                for(int i=0;i<toSave.Count;i++)
+                for (int i = 0; i < toSave.Count; i++)
                 {
                     string savePath = sfd.FileName.Insert(sfd.FileName.Length - 4, string.Format("_{0}", i.ToString()));
                     toSave[i].Save(savePath, FileType.J105);
@@ -3213,20 +3211,20 @@ namespace ImagingSIMS.MainApplication
 
             Data2D d2d = listViewData.SelectedItem as Data2D;
             if (d2d == null) return;
-            
+
             string currentTitle = d2d.DataName;
 
             TextEntryDialog te = new TextEntryDialog("Enter a new title:", currentTitle);
-            if(te.ShowDialog() == true)
+            if (te.ShowDialog() == true)
             {
-                if(String.IsNullOrEmpty(te.EnteredText))
+                if (String.IsNullOrEmpty(te.EnteredText))
                 {
-                    DialogBox db = new DialogBox("Could not update the title of the selected object.", 
+                    DialogBox db = new DialogBox("Could not update the title of the selected object.",
                         "No text entered.", "Title", DialogBoxIcon.Error);
                     db.ShowDialog();
                     return;
                 }
-                if(char.IsWhiteSpace(te.EnteredText, 0))
+                if (char.IsWhiteSpace(te.EnteredText, 0))
                 {
                     DialogBox db = new DialogBox("Could not update the title of the selected object.",
                         "First character is a space.", "Title", DialogBoxIcon.Error);
@@ -3300,7 +3298,7 @@ namespace ImagingSIMS.MainApplication
             {
                 msg = string.Format("Delete {0} spectra?", listViewSpectra.SelectedItems.Count);
             }
-            DialogBox db = new DialogBox(msg, 
+            DialogBox db = new DialogBox(msg,
                 "Click OK to confirm or Cancel to return.", "Confirm", DialogBoxIcon.Help, true);
             Nullable<bool> result = db.ShowDialog();
             if (result != true) return;
@@ -3407,12 +3405,12 @@ namespace ImagingSIMS.MainApplication
                     continue;
                 }
 
-                string savePath = sfd.FileName.Insert(sfd.FileName.Length - 4, 
+                string savePath = sfd.FileName.Insert(sfd.FileName.Length - 4,
                     string.Format("_{0}", (++counter).ToString("000")));
                 BioToFSpectrum btSpec = s as BioToFSpectrum;
 
                 try
-                {                    
+                {
                     if (btSpec == null)
                     {
                         notSaved.Add(s, "Invalid spectrum type. Must be Bio-ToF");
@@ -3677,7 +3675,7 @@ namespace ImagingSIMS.MainApplication
                 v.VolumeName = te.EnteredText;
             }
         }
-        
+
         private void CMImgsView(object sender, RoutedEventArgs e)
         {
             if (listViewImageSeries.SelectedItems.Count == 0) return;
@@ -3921,7 +3919,7 @@ namespace ImagingSIMS.MainApplication
         {
             StatusBarText = e.Message;
             Trace.WriteLine(e.Message);
-        }    
+        }
 
         private void statusBarAnimation_Completed(object sender, EventArgs e)
         {
@@ -3935,7 +3933,7 @@ namespace ImagingSIMS.MainApplication
             var tabItem = e.Source as TabItem;
             if (tabItem == null) return;
 
-            if(e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
                 DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.Move);
             }
@@ -4028,7 +4026,7 @@ namespace ImagingSIMS.MainApplication
             BioToFSpectrum bts = new BioToFSpectrum(Path.GetFileNameWithoutExtension(fileNames[0]));
             bts.LoadFromFile(fileNames, null, true, headerPath);
             Workspace.Spectra.Add(bts);
-            
+
         }
         private async void test2_Click(object sender, RoutedEventArgs e)
         {
@@ -4060,7 +4058,7 @@ namespace ImagingSIMS.MainApplication
         {
             //bool result = ImagingSIMS.Data.PCA.PCA.VerifyPython();
             //DialogBox.Show("Result: " + result.ToString(), "", "Python", result ? DialogBoxIcon.GreenCheck : DialogBoxIcon.Error);
-            
+
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
@@ -4098,7 +4096,7 @@ namespace ImagingSIMS.MainApplication
 
                 cti = ClosableTabItem.Create(new SettingsTab(Workspace.Registry), TabType.Settings, true);
                 tabMain.Items.Add(cti);
-                tabMain.SelectedItem = cti;   
+                tabMain.SelectedItem = cti;
             }
         }
         #endregion
@@ -4107,6 +4105,186 @@ namespace ImagingSIMS.MainApplication
         private void ribbonExecuteCode_Click(object sender, RoutedEventArgs e)
         {
             System.CodeDom.Compiler.CompilerResults results = externalCodeEditor.CompileCode();
+        }
+        #endregion
+
+        #region IAvailableTables
+
+        public List<Data2D> GetSelectedTables()
+        {
+            List<Data2D> tables = new List<Data2D>();
+            foreach (object obj in listViewData.SelectedItems)
+            {
+                Data2D d = obj as Data2D;
+                if (d != null)
+                    tables.Add(d);
+            }
+            return tables;
+        }
+        public List<Data2D> GetAvailableTables()
+        {
+            return Workspace.Data.ToList();
+        }
+        public void RemoveTables(List<Data2D> tablesToRemove)
+        {
+            List<Data2D> notRemoved = new List<Data2D>();
+            
+            foreach(Data2D d in tablesToRemove)
+            {
+                if (Workspace.Data.Contains(d))
+                {
+                    try
+                    {
+                        Workspace.Data.Remove(d);
+                    }
+                    catch (Exception)
+                    {
+                        notRemoved.Add(d);
+                    }
+                }
+                else notRemoved.Add(d);
+            }
+
+            if(notRemoved.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach(Data2D d in notRemoved)
+                {
+                    sb.AppendLine(d.DataName);
+                }
+
+                DialogBox.Show("The following tables could not be removed from the workspace:",
+                    sb.ToString(), "Remove", DialogBoxIcon.Alert);
+            }
+        }
+        public void RemoveTables(Data2D[] tablesToRemove)
+        {
+            List<Data2D> notRemoved = new List<Data2D>();
+
+            foreach (Data2D d in tablesToRemove)
+            {
+                if (Workspace.Data.Contains(d))
+                {
+                    try
+                    {
+                        Workspace.Data.Remove(d);
+                    }
+                    catch (Exception)
+                    {
+                        notRemoved.Add(d);
+                    }
+                }
+                else notRemoved.Add(d);
+            }
+
+            if (notRemoved.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Data2D d in notRemoved)
+                {
+                    sb.AppendLine(d.DataName);
+                }
+
+                DialogBox.Show("The following tables could not be removed from the workspace:",
+                    sb.ToString(), "Remove", DialogBoxIcon.Alert);
+            }
+        }
+        public void AddTables(List<Data2D> tablesToAdd)
+        {
+            List<Data2D> notAdded = new List<Data2D>();
+
+            foreach(Data2D d in tablesToAdd)
+            {
+                try
+                {
+                    Workspace.Data.Add(d);
+                }
+                catch (Exception)
+                {
+                    notAdded.Add(d);
+                }
+            }
+
+            if (notAdded.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Data2D d in notAdded)
+                {
+                    sb.AppendLine(d.DataName);
+                }
+
+                DialogBox.Show("The following tables could not be added to the workspace:",
+                    sb.ToString(), "Add", DialogBoxIcon.Alert);
+            }
+        }
+        public void AddTables(Data2D[] tablesToAdd)
+        {
+            List<Data2D> notAdded = new List<Data2D>();
+
+            foreach (Data2D d in tablesToAdd)
+            {
+                try
+                {
+                    Workspace.Data.Add(d);
+                }
+                catch (Exception)
+                {
+                    notAdded.Add(d);
+                }
+            }
+
+            if (notAdded.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Data2D d in notAdded)
+                {
+                    sb.AppendLine(d.DataName);
+                }
+
+                DialogBox.Show("The following tables could not be added to the workspace:",
+                    sb.ToString(), "Add", DialogBoxIcon.Alert);
+            }
+        }
+        public void ReplaceTable(Data2D tableToReplace, Data2D newTable)
+        {
+            bool isSelected = false;
+
+            try
+            {
+                if (Workspace.Data.Contains(tableToReplace))
+                {                    
+                    foreach(Data2D d in GetSelectedTables())
+                    {
+                        if (d == tableToReplace)
+                            isSelected = true;
+                        break;
+                    }
+
+                    int index = Workspace.Data.IndexOf(tableToReplace);
+                    Workspace.Data.Remove(tableToReplace);
+                    Workspace.Data.Insert(index, newTable);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogBox.Show("Could not add the new table to the collection.", ex.Message,
+                         "Replace", DialogBoxIcon.Error);
+                return;
+            }
+
+            if (isSelected)
+            {
+                try
+                {
+                    listViewData.SelectedItems.Add(newTable);
+                }
+                catch(Exception ex)
+                {
+                    DialogBox.Show("Could not restore the state of the list. Don't worry though, the table replacement did function properly.",
+                        ex.Message, "Replace", DialogBoxIcon.Alert);
+                    return;
+                }
+            }
         }
         #endregion
     }

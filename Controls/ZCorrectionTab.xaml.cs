@@ -28,13 +28,6 @@ namespace ImagingSIMS.Controls
     {
         ProgressWindow _pw;
 
-        Workspace _workspace;
-        public Workspace Workspace
-        {
-            get { return _workspace; }
-            set { _workspace = value; }
-        }
-
         ObservableCollection<ZCorrection> _zCorrectionBases;
         public ObservableCollection<ZCorrection> ZCorrectionBases
         {
@@ -49,23 +42,6 @@ namespace ImagingSIMS.Controls
             InitializeComponent();
 
             tbThreshold.Text = "10";
-        }
-        public ZCorrectionTab(Workspace Workspace)
-        {
-            ZCorrectionBases = new ObservableCollection<ZCorrection>();
-
-            InitializeComponent();
-
-            tbThreshold.Text = "10";
-
-            this.Workspace = Workspace;
-            listViewTables.ItemsSource = Workspace.Data;
-        }
-
-        public void SetData(Workspace Workspace)
-        {
-            this.Workspace = Workspace;
-            listViewTables.ItemsSource = Workspace.Data;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -83,16 +59,9 @@ namespace ImagingSIMS.Controls
             }
         }
 
-        private void listViewTables_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void buttonPreview_Click(object sender, RoutedEventArgs e)
         {
-            List<Data2D> selectedTables = new List<Data2D>();
-
-            foreach(object obj in listViewTables.SelectedItems)
-            {
-                Data2D d = obj as Data2D;
-                if (d != null) selectedTables.Add(d);
-            }
-
+            List<Data2D> selectedTables = AvailableTablesHost.AvailableTablesSource.GetSelectedTables();
             if (selectedTables.Count == 0) return;
 
             Data2D summed = Data2D.Sum(selectedTables);
@@ -102,13 +71,7 @@ namespace ImagingSIMS.Controls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            List<Data2D> selectedTables = new List<Data2D>();
-
-            foreach (object obj in listViewTables.SelectedItems)
-            {
-                Data2D d = obj as Data2D;
-                if (d != null) selectedTables.Add(d);
-            }
+            List<Data2D> selectedTables = AvailableTablesHost.AvailableTablesSource.GetSelectedTables();
 
             if (selectedTables.Count == 0)
             {
@@ -263,10 +226,13 @@ namespace ImagingSIMS.Controls
             bw.DoWork -= bw_DoWork;
             bw.Dispose();
 
-            foreach (Data2D d in corrected)
+            if(corrected == null)
             {
-                Workspace.Data.Add(d);
+                DialogBox.Show("No tables were returned.",
+                    "The Z-Correction operation did not result in any corrected tables.", "Z-Correction", DialogBoxIcon.Error);
+                return;
             }
+            AvailableTablesHost.AvailableTablesSource.AddTables(corrected);
 
             ClosableTabItem.SendStatusUpdate(this, "Z-Correction complete.");
         }

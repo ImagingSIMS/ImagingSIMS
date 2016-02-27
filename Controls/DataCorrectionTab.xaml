@@ -27,30 +27,32 @@
     
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="listViewTables" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Data}" 
-                     Height="Auto" Width="Auto" VerticalAlignment="Stretch" Margin="4" Background="Transparent" BorderBrush="Transparent"
-                     ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" SelectionMode="Single"
-                     SelectionChanged="listViewTables_SelectionChanged">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding DataName}" Width="300"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            
-            <ScrollViewer x:Name="scrollViewer" Width="500" Height="500" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden"
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="buttonAdd" Click="buttonAdd_Click" Width="50" Height="25" Margin="4">
+                    <Image Source="Images\MoveArrow.png">
+                        <Image.LayoutTransform>
+                            <RotateTransform Angle="90"/>
+                        </Image.LayoutTransform>
+                    </Image>
+                </Button>
+
+                <ScrollViewer x:Name="scrollViewer" Grid.Column="1" Width="500" Height="500" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden"
                           ScrollChanged="ScrollViewer_ScrollChanged"
                           PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                           PreviewMouseLeftButtonDown="scrollViewer_MouseLeftButtonDown"
@@ -58,10 +60,11 @@
                           MouseLeftButtonUp="scrollViewer_MouseLeftButtonUp"
                           MouseRightButtonUp="scrollViewer_MouseRightButtonUp"
                           MouseMove="ScrollViewer_MouseMove">
-                <i:EditableImage x:Name="imagePreview" Width="{Binding TransformedWidth}" Height="{Binding TransformedHeight}"
+                    <i:EditableImage x:Name="imagePreview" Width="{Binding TransformedWidth}" Height="{Binding TransformedHeight}"
                                  SelectionColor="LimeGreen" Stretch="Fill"/>
-            </ScrollViewer>
-            
+                </ScrollViewer>
+            </Grid>
+
             <StackPanel Orientation="Horizontal" Grid.Row="1">
                 <Label>Brush size: </Label>
                 <TextBox Margin="4" Text="{Binding BrushSize}" Width="50" Height="23"/>

@@ -34,14 +34,6 @@ namespace ImagingSIMS.Controls
         Point? lastMousePositionOnTarget;
         Point? lastDragPoint;
 
-        ObservableCollection<Data2D> _tables;
-
-        public ObservableCollection<Data2D> Tables
-        {
-            get { return _tables; }
-            set { _tables = value; }
-        }
-
         public static readonly DependencyProperty TransformedWidthProperty = DependencyProperty.Register("TransformedWidth",
             typeof(double), typeof(DataCorrectionTab));
         public static readonly DependencyProperty TransformedHeightProperty = DependencyProperty.Register("TransformedHeight",
@@ -88,17 +80,10 @@ namespace ImagingSIMS.Controls
 
         public DataCorrectionTab()
         {
-            _tables = new ObservableCollection<Data2D>();
-            
             InitializeComponent();
 
             BrushSize = 1;
             CorrectionMethod = CorrectionOperationMethod.Zero;
-        }
-
-        public void SetData(ObservableCollection<Data2D> AvailableTables)
-        {
-            Tables = AvailableTables;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -196,7 +181,7 @@ namespace ImagingSIMS.Controls
         {
             _isHighlighting = true;
 
-            Data2D d = (Data2D)listViewTables.SelectedItem;
+            Data2D d = imagePreview.DataSource;
             if (d != null)
             {
                 int width = d.Width;
@@ -238,7 +223,7 @@ namespace ImagingSIMS.Controls
             int xPixel = 0;
             int yPixel = 0;
 
-            Data2D d = (Data2D)listViewTables.SelectedItem;
+            Data2D d = imagePreview.DataSource;
             if (d != null)
             {
                 int width = d.Width;
@@ -273,9 +258,9 @@ namespace ImagingSIMS.Controls
                 xPixel, yPixel, e.GetPosition(scrollViewer).X, e.GetPosition(scrollViewer).Y);
         }
 
-        private void listViewTables_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void buttonAdd_Click(object sender, RoutedEventArgs e)
         {
-            Data2D d = (Data2D)listViewTables.SelectedItem;
+            Data2D d = AvailableTablesHost.AvailableTablesSource.GetSelectedTables().FirstOrDefault();
             if (d == null) return;
 
             imagePreview.ChangeDataSource(d);
@@ -288,7 +273,7 @@ namespace ImagingSIMS.Controls
 
         private void buttonCommit_Click(object sender, RoutedEventArgs e)
         {
-            Data2D d = (Data2D)listViewTables.SelectedItem;
+            Data2D d = imagePreview.DataSource;
             if (d == null)
             {
                 DialogBox db = new DialogBox("No data table selected.", "Use the ListBox to select a data table to correct.",
@@ -311,23 +296,12 @@ namespace ImagingSIMS.Controls
                 db.ShowDialog();
                 return;
             }
-            try
-            {
-                if (Tables.Contains(d))
-                {
-                    int index = Tables.IndexOf(d);
-                    Tables.Remove(d);
-                    Tables.Insert(index, corrected);
-                }
-                ClosableTabItem.SendStatusUpdate(this, "Data correction complete.");
-            }
-            catch (Exception ex)
-            {
-                DialogBox db = new DialogBox("Could not add the corrected table to the collection.", ex.Message,
-                         "Correction", DialogBoxIcon.Error);
-                db.ShowDialog();
-                return;
-            }
+
+            AvailableTablesHost.AvailableTablesSource.ReplaceTable(d, corrected);
+
+            imagePreview.ChangeDataSource(corrected);
+
+            ClosableTabItem.SendStatusUpdate(this, "Data correction complete.");
         }
         private void buttonClear_Click(object sender, RoutedEventArgs e)
         {

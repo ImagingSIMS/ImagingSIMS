@@ -37,15 +37,8 @@ namespace ImagingSIMS.Controls
             set { SetValue(StaggerLayersProperty, value); }
         }
 
-        public ObservableCollection<Data2D> AvailableTables
-        {
-            get;
-            set;
-        }
         public DepthProfileTab()
         {
-            AvailableTables = new ObservableCollection<Data2D>();
-
             InitializeComponent();
 
             Cross1 = new ObservableCollection<Data2D>();
@@ -54,11 +47,6 @@ namespace ImagingSIMS.Controls
             Cross4 = new ObservableCollection<Data2D>();
             Cross5 = new ObservableCollection<Data2D>();
             Cross6 = new ObservableCollection<Data2D>();
-        }
-        public void SetData(ObservableCollection<Data2D> AvailableTables)
-        {
-            this.AvailableTables = AvailableTables;
-            listAvailable.ItemsSource = this.AvailableTables;
         }
 
         public ObservableCollection<Data2D> Cross1 { get; set; }
@@ -127,11 +115,8 @@ namespace ImagingSIMS.Controls
             ObservableCollection<Data2D> destCollection = dest.ItemsSource as ObservableCollection<Data2D>;
             if (destCollection == null) return;
 
-            foreach (object obj in listAvailable.SelectedItems)
+            foreach (Data2D data in AvailableTablesHost.AvailableTablesSource.GetSelectedTables())
             {
-                Data2D data = obj as Data2D;
-                if (data == null) continue;
-
                 try
                 {
                     if (destCollection.Contains(data)) throw new ArgumentException("Cross already contains selected data.");

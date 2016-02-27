@@ -30,11 +30,6 @@ namespace ImagingSIMS.Controls
         BackgroundWorker bw;
         ProgressWindow pw;
 
-        public ObservableCollection<Data2D> AvailableTables
-        {
-            get;
-            set;
-        }
         public TableSumTab()
         {
             InitializeComponent();
@@ -45,11 +40,6 @@ namespace ImagingSIMS.Controls
             Cross4 = new ObservableCollection<Data2D>();
             Cross5 = new ObservableCollection<Data2D>();
             Cross6 = new ObservableCollection<Data2D>();
-        }
-        public void SetData(ObservableCollection<Data2D> AvailableTables)
-        {
-            this.AvailableTables = AvailableTables;
-            listAvailable.ItemsSource = this.AvailableTables;
         }
 
         public ObservableCollection<Data2D> Cross1 { get; set; }
@@ -267,20 +257,18 @@ namespace ImagingSIMS.Controls
         void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             TableSumCompletedArgs a = (TableSumCompletedArgs)e.Result;
-            foreach (Data2D d in a.ReturnTables)
-            {
-                AvailableTables.Add(d);
-            }
+            AvailableTablesHost.AvailableTablesSource.AddTables(a.ReturnTables);
             if (a.RemoveTables)
             {
+                List<Data2D> toRemove = new List<Data2D>();
                 for (int i = 0; i < a.TablesToRemove.Length; i++)
                 {
                     for (int j = 0; j < a.TablesToRemove[i].Count; j++)
                     {
-                        if (AvailableTables.Contains(a.TablesToRemove[i][j])) 
-                            AvailableTables.Remove(a.TablesToRemove[i][j]);
+                        toRemove.Add(a.TablesToRemove[i][j]);
                     }
                 }
+                AvailableTablesHost.AvailableTablesSource.RemoveTables(toRemove);
             }
 
             pw.ProgressFinished("Sum complete!");
@@ -320,11 +308,12 @@ namespace ImagingSIMS.Controls
             ObservableCollection<Data2D> destCollection = dest.ItemsSource as ObservableCollection<Data2D>;
             if (destCollection == null) return;
 
-            foreach (object obj in listAvailable.SelectedItems)
-            {
-                Data2D data = obj as Data2D;
-                if (data == null) continue;
-
+            //foreach (object obj in listAvailable.SelectedItems)
+            //{
+            //    Data2D data = obj as Data2D;
+            //    if (data == null) continue;
+            foreach(Data2D data in AvailableTablesHost.AvailableTablesSource.GetSelectedTables())
+            { 
                 try
                 {
                     if (destCollection.Contains(data)) throw new ArgumentException("Cross already contains selected data.");

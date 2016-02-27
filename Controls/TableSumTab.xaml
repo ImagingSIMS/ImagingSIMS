@@ -24,18 +24,10 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <ListView x:Name="listAvailable" ItemsSource="{Binding AvailableTables}" Grid.Row="0" Grid.RowSpan="3" Grid.Column="0"
-                      Width="300" Height="Auto" VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="4" Background="Transparent">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding DataName}" Width="275"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <Grid Grid.Column="1" >
+        
+        <Grid Grid.Column="0" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -90,7 +82,7 @@
                 </StackPanel>
             </Border>
         </Grid>
-        <StackPanel Orientation="Vertical" Grid.Column="2">
+        <StackPanel Orientation="Vertical" Grid.Column="1">
             <TabControl x:Name="tabDest" Margin="4" Width="Auto" Height="450" BorderThickness="0"
                         TabStripPlacement="Left" Background="Transparent" AllowDrop="True" ItemContainerStyle="{StaticResource BlueTabItemHeader}">
                 <TabItem Header="Cross 1">

@@ -21,22 +21,8 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <ListView x:Name="listAvailable" ItemsSource="{Binding AvailableTables}" Grid.Row="0" Grid.Column="0"
-                      Width="300" Height="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="4" Background="Transparent">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding DataName}" Width="275"/>
-                </GridView>
-            </ListView.View>
-            <ListView.ContextMenu>
-                <ContextMenu DataContext="{Binding RelativeSource={RelativeSource Self}}">
-                    <MenuItem Header="Preview" Click="MenuItemPreview_Click"/>
-                </ContextMenu>
-            </ListView.ContextMenu>
-        </ListView>
-        <Grid Grid.Column="1" >
+        <Grid Grid.Column="0" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -55,25 +41,29 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                
+                <Button Grid.Row="0" Grid.Column="0" Margin="4" Width="75" Height="23" Click="buttonPreview_Click">Preview</Button>
+                
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                     <Label Content="Start X:"/>
                     <TextBox x:Name="tbStartX" Width="30" Height="20" Text="{Binding ElementName=preview, Path=PixelStartX}" Margin="4" IsReadOnly="True"/>
                 </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
                     <Label Content="Start Y:"/>
                     <TextBox x:Name="tbStartY" Width="30" Height="20" Text="{Binding ElementName=preview, Path=PixelStartY}" Margin="4" IsReadOnly="True"/>
                 </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal">
                     <Label Content="Crop Width:"/>
                     <TextBox x:Name="tbCropX" Width="30" Height="20" Text="{Binding ElementName=preview, Path=PixelWidth}" Margin="4" IsReadOnly="True"/>
                 </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
                     <Label Content="Crop Height:"/>
                     <TextBox x:Name="tbCropY" Width="30" Height="20" Text="{Binding ElementName=preview, Path=PixelHeight}" Margin="4" IsReadOnly="True"/>
                 </StackPanel>
-                <Button Grid.Column="2" Grid.Row="0" x:Name="buttonCenter" Click="buttonCenter_Click"  Width="75" Content="Auto Center" Height="23" Margin="4"/>
-                <Button Grid.Column="2" Grid.Row="1" x:Name="buttonHalf" Click="buttonHalf_Click"  Width="75" Content="Auto Half" Height="23" Margin="4"/>
+                <Button Grid.Column="3" Grid.Row="0" x:Name="buttonCenter" Click="buttonCenter_Click"  Width="75" Content="Auto Center" Height="23" Margin="4"/>
+                <Button Grid.Column="3" Grid.Row="1" x:Name="buttonHalf" Click="buttonHalf_Click"  Width="75" Content="Auto Half" Height="23" Margin="4"/>
             </Grid>
             <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
                 <Label Content="Remove Original tables:"/>

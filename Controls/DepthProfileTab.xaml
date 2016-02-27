@@ -24,34 +24,10 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <ListView x:Name="listAvailable" ItemsSource="{Binding AvailableTables}" Grid.Row="0" Grid.RowSpan="3" Grid.Column="0"
-                      Width="300" Height="Auto" VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="4" Background="Transparent">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding DataName}" Width="275"/>
-                </GridView>
-            </ListView.View>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
-                    <Setter Property="ToolTip">
-                        <Setter.Value>
-                            <ToolTip Background="{StaticResource MenuBackground}" BorderBrush="#FF4D5578">
-                                <StackPanel Orientation="Vertical">
-                                    <Image Height="150" Width="150" Source="{Binding Converter={StaticResource data2DToBitmapSourceConverter}}"/>
-                                    <TextBlock Text="{Binding DataName}" HorizontalAlignment="Center" Foreground="White" />
-                                    <TextBlock Text="{Binding Converter={StaticResource data2DToSizeStringConverter}}" HorizontalAlignment="Center" Foreground="White"/>
-                                    <TextBlock Text="{Binding TotalCounts, StringFormat=Total Counts: {0}}" HorizontalAlignment="Center" Foreground="White"/>
-                                </StackPanel>
-                            </ToolTip>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.ItemContainerStyle>
-        </ListView>
-        <StackPanel Grid.Column="1" Orientation="Vertical">
+        
+        <StackPanel Grid.Column="0" Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
                 <TextBlock>Number of crosses:</TextBlock>
                 <ComboBox x:Name="comboCross" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="4" Width="75"
@@ -83,7 +59,7 @@
                 </StackPanel>
             </Border>
         </StackPanel>
-        <StackPanel Orientation="Vertical" Grid.Column="2">
+        <StackPanel Orientation="Vertical" Grid.Column="1">
             <TabControl x:Name="tabDest" Margin="4" Width="Auto" Height="500" BorderThickness="0"
                         TabStripPlacement="Left" Background="Transparent" AllowDrop="True" ItemContainerStyle="{StaticResource BlueTabItemHeader}">
                 <TabItem Header="Cross 1">
