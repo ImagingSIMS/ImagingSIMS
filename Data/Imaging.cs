@@ -154,6 +154,10 @@ namespace ImagingSIMS.Data.Imaging
             }
             return result;
         }
+        public static Task<BitmapSource[]> CreateImageAsync(ImageComponent[] components, ImageParameters parameters)
+        {
+            return Task.Run(() => CreateImage(components, parameters));
+        }
         /// <summary>
         /// Converts the specified BitmapSource to a Data2D array which is the equivalent of the grayscale image.
         /// </summary>
@@ -233,6 +237,10 @@ namespace ImagingSIMS.Data.Imaging
             }
 
             return array;
+        }
+        public static Task<Data2D> ConvertToData2DAsync(BitmapSource bitmapSource)
+        {
+            return Task.Run(() => ConvertToData2D(bitmapSource));
         }
         /// <summary>
         /// Converts the specified BitmapSource to a Data2D array based on the specified parameters.
@@ -332,6 +340,10 @@ namespace ImagingSIMS.Data.Imaging
 
             return array;
         }
+        public static Task<Data2D> ConvertToData2DAsync(BitmapSource bitmapSource, Data2DConverionType conversion, Color? color = null)
+        {
+            return Task.Run(() => ConvertToData2D(bitmapSource, conversion, color));
+        }
         /// <summary>
         /// Converts a Data3D representing image data to a Data2D grayscale image.
         /// </summary>
@@ -359,6 +371,10 @@ namespace ImagingSIMS.Data.Imaging
             }
 
             else throw new ArgumentException("Invalid number of color channels.");           
+        }
+        public static Task<Data2D> ConvertToData2DAsync(Data3D source)
+        {
+            return Task.Run(() => ConvertToData2D(source));
         }
 
         /// <summary>
@@ -504,6 +520,10 @@ namespace ImagingSIMS.Data.Imaging
 
             return new Data3D(arrays);
         }
+        public static Task<Data3D>ConvertToData3DAsync(BitmapSource bitmapSource)
+        {
+            return Task.Run(() => ConvertToData3D(bitmapSource));
+        }
         /// <summary>
         /// Creates an image from color channel data in the form of a Data3D object. If the alpha channel (Data3D[3]) is blank, 
         /// the image will be PixelFormats.BGR32 and PixelFormats.BGRA32 if not.
@@ -542,6 +562,10 @@ namespace ImagingSIMS.Data.Imaging
 
             return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
         }
+        public static Task<BitmapSource> CreateImageAsync(Data3D channelData)
+        {
+            return Task.Run(() => CreateImage(channelData));
+        }
         /// <summary>
         /// Converts a Data2D matrix into an image using the specified color scale.
         /// </summary>
@@ -577,7 +601,11 @@ namespace ImagingSIMS.Data.Imaging
             }
             return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
         }
-        public static BitmapSource CreateColorScaleImage(Data2D Data, float Saturation, ColorScaleTypes Scale)
+        public static Task<BitmapSource> CreateColorScaleImageAsync(Data2D data, ColorScaleTypes scale)
+        {
+            return Task.Run(() => CreateColorScaleImage(data, scale));
+        }
+        public static BitmapSource CreateColorScaleImage(Data2D Data, ColorScaleTypes Scale, float Saturation)
         {
             int sizeX = Data.Width;
             int sizeY = Data.Height;
@@ -605,6 +633,10 @@ namespace ImagingSIMS.Data.Imaging
                 }
             }
             return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+        }
+        public static Task<BitmapSource>CreateColorScaleImageAsync(Data2D data, ColorScaleTypes scale, float saturation)
+        {
+            return Task.Run(() => CreateColorScaleImage(data, scale, saturation));
         }
         public static BitmapSource CreateSolidColorImage(Data2D Data, Color SolidColor)
         {
@@ -635,7 +667,11 @@ namespace ImagingSIMS.Data.Imaging
             }
             return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
         }
-        public static BitmapSource CreateSolidColorImage(Data2D Data, float Saturation, Color SolidColor)
+        public static Task<BitmapSource> CreateSolidColorImageAsync(Data2D data, Color solidColor)
+        {
+            return Task.Run(() => CreateSolidColorImage(data, solidColor));
+        }
+        public static BitmapSource CreateSolidColorImage(Data2D Data, Color SolidColor, float Saturation)
         {
             int sizeX = Data.Width;
             int sizeY = Data.Height;
@@ -663,6 +699,10 @@ namespace ImagingSIMS.Data.Imaging
                 }
             }
             return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+        }
+        public static Task<BitmapSource> CreateSolidColorImageAsync(Data2D data, Color solidColor, float saturation)
+        {
+            return Task.Run(() => CreateSolidColorImage(data, solidColor, saturation));
         }
 
         public static BitmapSource GetXZ(BitmapSource[] Images, int YCoord)

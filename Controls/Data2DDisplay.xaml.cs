@@ -172,8 +172,11 @@ namespace ImagingSIMS.Controls
             DisplayItem.ImageTransformedWidth = originalWidth * scale;
             DisplayItem.ImageTransformedHeight = originalHeight * scale;
 
-            var centerOfViewport = new Point(scrollViewer.ViewportWidth / 2, scrollViewer.ViewportHeight / 2);
-            lastCenterPositionOnTarget = scrollViewer.TranslatePoint(centerOfViewport, image);
+            //var centerOfViewport = new Point(scrollViewer.ViewportWidth / 2, scrollViewer.ViewportHeight / 2);
+            //lastCenterPositionOnTarget = scrollViewer.TranslatePoint(centerOfViewport, image);
+
+            scrollViewer.ScrollToHorizontalOffset(lastMousePositionOnTarget.Value.X);
+            scrollViewer.ScrollToVerticalOffset(lastMousePositionOnTarget.Value.Y);
         }
         private void ScrollViewer_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -221,7 +224,7 @@ namespace ImagingSIMS.Controls
 
                 scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - dX);
                 scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - dY);
-            }
+             }
         }
         #endregion
 
@@ -284,6 +287,10 @@ namespace ImagingSIMS.Controls
 
             RaiseEvent(new RoutedEventArgs(AnalyzeDataEvent, this));
         }
+        private void contentButtonResetSaturation_Click(object sender, RoutedEventArgs e)
+        {
+            DisplayItem.Saturation = DisplayItem.InitialSaturation;
+        }
     }
 
     public class Data2DDisplayItem : INotifyPropertyChanged
@@ -291,6 +298,7 @@ namespace ImagingSIMS.Controls
         Data2D _dataSource;
         ImageSource _displayImageSource;
         double _saturation;
+        double _initialSaturation;
         ColorScaleTypes _colorScale;
         Color _solidColorScale;
         double _imageTransformedWidth;
@@ -331,6 +339,18 @@ namespace ImagingSIMS.Controls
                     _saturation = value;
                     NotifyPropertyChanged("Saturation");
                     Redraw();
+                }
+            }
+        }
+        public double InitialSaturation
+        {
+            get { return _initialSaturation; }
+            set
+            {
+                if(_initialSaturation != value)
+                {
+                    _initialSaturation = value;
+                    NotifyPropertyChanged("InitialSaturation");
                 }
             }
         }
@@ -394,6 +414,10 @@ namespace ImagingSIMS.Controls
             }
         }
 
+        private Data2DDisplayItem()
+        {
+
+        }
         public Data2DDisplayItem(Data2D DataSource, ColorScaleTypes ColorScale)
         {
             this.ImageTransformedHeight = 225d;
@@ -404,6 +428,7 @@ namespace ImagingSIMS.Controls
             this.DataSource = DataSource;
             this.ColorScale = ColorScale;
             this.Saturation = (int)DataSource.Maximum;
+            this.InitialSaturation = this.Saturation;
         }
         public Data2DDisplayItem(Data2D DataSource, Color SolidColorScale)
         {
@@ -415,6 +440,41 @@ namespace ImagingSIMS.Controls
 
             this.DataSource = DataSource;
             this.Saturation = (int)DataSource.Maximum;
+            this.InitialSaturation = this.Saturation;
+        }
+
+        public async Task SetData2DDisplayItemAsync(Data2D dataSource, ColorScaleTypes colorScale)
+        {
+            await Task.Run(() => setData2DDisplayItem(dataSource, colorScale));
+        }
+        public async Task SetData2DDisplayItemAsync(Data2D dataSource, Color solidColor)
+        {
+            await Task.Run(() => setData2DDisplayItem(dataSource, solidColor));
+        }
+
+        private void setData2DDisplayItem(Data2D dataSource, ColorScaleTypes colorScale)
+        {
+            this.ImageTransformedHeight = 225d;
+            this.ImageTransformedWidth = 225d;
+
+            this.SolidColorScale = Color.FromArgb(255, 255, 255, 255);
+
+            this.DataSource = dataSource;
+            this.ColorScale = colorScale;
+            this.Saturation = (int)DataSource.Maximum;
+            this.InitialSaturation = this.Saturation;
+        }
+        private void setData2DDisplayItem(Data2D dataSource, Color solidColorScale)
+        {
+            this.ImageTransformedHeight = 225d;
+            this.ImageTransformedWidth = 225d;
+
+            this.ColorScale = ColorScaleTypes.Solid;
+            this.SolidColorScale = solidColorScale;
+
+            this.DataSource = dataSource;
+            this.Saturation = (int)dataSource.Maximum;
+            this.InitialSaturation = this.Saturation;
         }
 
         private void Redraw()
@@ -422,11 +482,28 @@ namespace ImagingSIMS.Controls
             if (DataSource == null) return;
             if (ColorScale == ColorScaleTypes.Solid)
             {
-                DisplayImageSource = ImageHelper.CreateSolidColorImage(DataSource, (float)Saturation, SolidColorScale);
+                BitmapSource bs = ImageHelper.CreateSolidColorImage(DataSource, SolidColorScale, (float)Saturation);
+                bs.Freeze();
+                DisplayImageSource = bs;
             }
             else
             {
-                DisplayImageSource = ImageHelper.CreateColorScaleImage(DataSource, (float)Saturation, ColorScale);
+                BitmapSource bs = ImageHelper.CreateColorScaleImage(DataSource, ColorScale, (float)Saturation);
+                bs.Freeze();
+                DisplayImageSource = bs;
+            }
+        }
+
+        public static Data2DDisplayItem Empty
+        {
+            get
+            {
+                return new Data2DDisplayItem()
+                {
+                    ImageTransformedWidth = 255,
+                    ImageTransformedHeight = 255,
+                    SolidColorScale = Color.FromArgb(255, 255, 255, 255)
+                };
             }
         }
     }

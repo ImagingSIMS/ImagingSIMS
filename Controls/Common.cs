@@ -536,10 +536,10 @@ namespace ImagingSIMS.Controls
 
                 if (colorScale == ColorScaleTypes.Solid)
                 {
-                    return ImageHelper.CreateSolidColorImage(d, (float)saturation, solidColorScale);
+                    return ImageHelper.CreateSolidColorImage(d, solidColorScale, (float)saturation);
                 }
                 else
-                    return ImageHelper.CreateColorScaleImage(d, (float)saturation, colorScale);
+                    return ImageHelper.CreateColorScaleImage(d, colorScale, (float)saturation);
             }
             catch (Exception)
             {

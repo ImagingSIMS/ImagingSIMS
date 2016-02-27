@@ -53,6 +53,14 @@ namespace ImagingSIMS.Controls
 
             InitializeComponent();
         }
+        public Data2DDisplayTab(ColorScaleTypes ColorScale)
+        {
+            DisplayItems = new ObservableCollection<Data2DDisplayItem>();
+
+            BatchApply = new BatchApplyViewModel(ColorScale);
+
+            InitializeComponent();
+        }
         public Data2DDisplayTab(List<Data2D> DataSources)
         {
             DisplayItems = new ObservableCollection<Data2DDisplayItem>();
@@ -97,6 +105,19 @@ namespace ImagingSIMS.Controls
         {
             DisplayItems.Add(new Data2DDisplayItem(dataSource, BatchApply.ColorScale));
         }
+        public async Task AddDataSourceAsync(Data2D dataSource)
+        {
+            Data2DDisplayItem displayItem = Data2DDisplayItem.Empty;
+            await displayItem.SetData2DDisplayItemAsync(dataSource, BatchApply.ColorScale);
+            DisplayItems.Add(displayItem);
+        }
+        public async Task AddDataSourceAsync(List<Data2D> dataSources)
+        {
+            foreach(Data2D dataSource in dataSources)
+            {
+                await AddDataSourceAsync(dataSource);
+            }
+        }
 
         private void buttonShowColor_MouseEnter(object sender, RoutedEventArgs e)
         {
@@ -136,6 +157,22 @@ namespace ImagingSIMS.Controls
                     {
                         d.SolidColorScale = solid;
                     }
+                }
+            }
+        }
+        private void buttonReset_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (sender == null) return;
+
+            if(sender == buttonResetScale)
+            {
+                foreach(object o in itemsControl.Items)
+                {
+                    Data2DDisplayItem d = o as Data2DDisplayItem;
+                    if (d == null) return;
+
+                    d.Saturation = d.InitialSaturation;
                 }
             }
         }

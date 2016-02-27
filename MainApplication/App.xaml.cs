@@ -13,6 +13,7 @@ using ImagingSIMS.Common;
 using ImagingSIMS.Common.Dialogs;
 using ImagingSIMS.Common.Registry;
 using ImagingSIMS.Data;
+using ImagingSIMS.MainApplication;
 
 namespace ImagingSIMS
 {

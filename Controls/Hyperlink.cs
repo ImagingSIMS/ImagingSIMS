@@ -32,7 +32,10 @@ namespace ImagingSIMS.Controls
 
         private void Hyperlink_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            System.Diagnostics.Process.Start(LinkTarget);
+            if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
+            {
+                System.Diagnostics.Process.Start(LinkTarget);
+            }
         }
     }
 }

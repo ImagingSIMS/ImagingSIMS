@@ -30,6 +30,7 @@ using ImagingSIMS.Data.Analysis;
 using ImagingSIMS.Data.Imaging;
 using ImagingSIMS.Data.Spectra;
 using ImagingSIMS.Data.Rendering;
+using System.Threading.Tasks;
 
 namespace ImagingSIMS.MainApplication
 {
@@ -3124,7 +3125,7 @@ namespace ImagingSIMS.MainApplication
                 titles.Add(d.DataName);
             }
 
-            DoDataPreview(data, titles, ColorScaleTypes.ThermalWarm);
+           DoDataPreview(data, titles, ColorScaleTypes.ThermalWarm);
         }
         private void CMDataPreviewScale(object sender, RoutedEventArgs e)
         {
@@ -3155,15 +3156,18 @@ namespace ImagingSIMS.MainApplication
 
             DoDataPreview(data, titles, type);
         }
-        private void DoDataPreview(List<Data2D> data, List<string> titles, ColorScaleTypes type)
+        private async void DoDataPreview(List<Data2D> data, List<string> titles, ColorScaleTypes type)
         {
             string title = TitleBuilder.Create(titles.ToArray<string>(), '-', 40);
 
-            Data2DDisplayTab it = new Data2DDisplayTab(data, type);
+            //Data2DDisplayTab it = new Data2DDisplayTab(data, type);
+            Data2DDisplayTab it = new Data2DDisplayTab(type);
 
             ClosableTabItem cti = ClosableTabItem.Create(it, TabType.Data2DDisplay, title, true);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
+
+            await it.AddDataSourceAsync(data);
         }
 
         private void CMDataSave(object sender, RoutedEventArgs e)

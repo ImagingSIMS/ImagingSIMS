@@ -149,6 +149,9 @@
                 <Button Width="20" Height="20" Click="contentButtonStats_Click" Margin="4" ToolTip="Analyze">
                     <Image Source="Images\ChartWizard.png"/>
                 </Button>
+                <Button Width="20" Height="20" Click="contentButtonResetSaturation_Click" Margin="4" ToolTip="Reset Saturation">
+                    <Image Source="Images\Reverse.png"/>
+                </Button>
             </StackPanel>
             <!-- Removed because no longer necessary. These functions are handled in the Cluster Identification tab -->
             <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
