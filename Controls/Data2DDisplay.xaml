@@ -105,9 +105,12 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0">Saturation:</TextBlock>
                 <Slider x:Name="sliderSaturation" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch"
-                        Minimum="1" Maximum="{Binding DisplayItem.DataSource.Maximum, ElementName=userControl}" 
-                        Value="{Binding DisplayItem.Saturation, Mode=TwoWay, ElementName=userControl}" SmallChange="1" LargeChange="100" />
-                <TextBlock Grid.Column="2" Text="{Binding DisplayItem.Saturation, StringFormat=0, ElementName=userControl}"/>
+                        SmallChange="{Binding ElementName=userControl, Path=DisplayItem.DataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Small}"
+                        LargeChange="{Binding ElementName=userControl, Path=DisplayItem.DataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Large}"
+                        Minimum="{Binding ElementName=userControl, Path=DisplayItem.DataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Minimum}"
+                        Maximum="{Binding ElementName=userControl, Path=DisplayItem.DataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Maximum}"
+                        Value="{Binding DisplayItem.Saturation, Mode=TwoWay, ElementName=userControl}"/>
+                <TextBlock Grid.Column="2" Text="{Binding DisplayItem.Saturation, StringFormat=0.0, ElementName=userControl}"/>
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>

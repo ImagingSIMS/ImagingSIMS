@@ -15,12 +15,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Themes\Generic.xaml"/>
                 <ResourceDictionary>
-                    <c:HasImageToBoolConverter x:Key="hasImageToBoolConverter"/>
-                    <ObjectDataProvider x:Key="fusionFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
-                        <ObjectDataProvider.MethodParameters>
-                            <x:Type TypeName="data:FusionType"/>
-                        </ObjectDataProvider.MethodParameters>
-                    </ObjectDataProvider>
+                    <c:HasImageToBoolConverter x:Key="hasImageToBoolConverter"/>                    
                     <c:FusionEnumToVisibilityConverter x:Key="fusionEnumToVisibilityConverter"/>
                     <c:BitmapSourceToDimensionsConverter x:Key="bitmapSourceToDimensionsConverter"/>
                 </ResourceDictionary>

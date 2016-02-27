@@ -9,8 +9,8 @@ using System.Windows.Data;
 
 using ImagingSIMS.Common.Dialogs;
 using ImagingSIMS.Data;
-using ImagingSIMS.Data.ClusterIdentification;
 using ImagingSIMS.Data.Imaging;
+using ImagingSIMS.Data.ClusterIdentification;
 
 namespace ImagingSIMS.Controls
 {
@@ -550,6 +550,80 @@ namespace ImagingSIMS.Controls
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+    public class DataMaximumToSliderRangeConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                float maximum = (float)value;
+                string param = (string)parameter;
+                param = param.ToLower();
+
+                bool isLargeChange = false;
+                bool isSmallChange = false;
+                bool isMaximum = false;
+                bool isMinimum = false;
+
+                switch (param)
+                {
+                    case "large":
+                        isLargeChange = true;
+                        break;
+                    case "small":
+                        isSmallChange = true;
+                        break;
+                    case "maximum":
+                        isMaximum = true;
+                        break;
+                    case "minimum":
+                        isMinimum = true;
+                        break;
+                }
+
+                // Check maximum and set interval appropriately
+                if(maximum > 100)
+                {
+                    if (isLargeChange) return 25;
+                    else if (isSmallChange) return 1;
+                    else if (isMaximum) return maximum * 2.5;
+                    else if (isMinimum) return 1;
+                }
+                if(maximum > 10)
+                {
+                    if (isLargeChange) return 2;
+                    else if (isSmallChange) return 0.5;
+                    else if (isMaximum) return maximum * 2.5;
+                    else if (isMinimum) return 1;
+                }
+                if(maximum > 1)
+                {
+                    if (isLargeChange) return 0.1f;
+                    else if (isSmallChange) return 0.01f;
+                    else if (isMaximum) return maximum * 2.5;
+                    else if (isMinimum) return 1;
+                }
+                else
+                {
+                    if (isLargeChange) return 0.01f;
+                    else if (isSmallChange) return 0.001f;
+                    else if (isMaximum) return maximum * 2.5;
+                    else if (isMinimum) return 0.00001f;
+                }
+
+                return 0;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return 0;
         }
     }
 }

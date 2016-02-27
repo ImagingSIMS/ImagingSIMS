@@ -633,7 +633,8 @@ namespace ImagingSIMS.Controls
         Crop, SEM, RenderObject,
         Correction, ZCorrection, SpectrumCrop,
         HeightMap, Data2DDisplay, Cluster,
-        DataRegistration, DepthProfile
+        DataRegistration, DepthProfile,
+        
     }
 
 
