@@ -33,15 +33,7 @@
                     <TextBlock VerticalAlignment="Top">Select tables from the data sidebar</TextBlock>
                 </TabItem>
                 <TabItem x:Name="tabFromImages" Header="From Image Series" Style="{StaticResource BlueTabItemHeader}">
-                    <ListView x:Name="listImages" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.ImageSeries}"
-                              Height="Auto" Width="Auto" VerticalAlignment="Stretch" Margin="4" Background="Transparent" BorderBrush="Transparent"
-                              ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding SeriesName}" Width="225"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
+                    <TextBlock VerticalAlignment="Top">Select an image series from the data sidebar</TextBlock>
                 </TabItem>
             </TabControl>  
         </Grid>

@@ -152,7 +152,7 @@ namespace ImagingSIMS.Controls.Tabs
         {
             List<KeyValuePair<Data2D, string>> notAdded = new List<KeyValuePair<Data2D, string>>();
 
-            foreach (Data2D d in AvailableTablesHost.AvailableTablesSource.GetSelectedTables())
+            foreach (Data2D d in AvailableHost.AvailableTablesSource.GetSelectedTables())
             {
                 try
                 {
@@ -186,7 +186,7 @@ namespace ImagingSIMS.Controls.Tabs
         {
             List<KeyValuePair<Data2D, string>> notAdded = new List<KeyValuePair<Data2D, string>>();
 
-            foreach (Data2D d in AvailableTablesHost.AvailableTablesSource.GetSelectedTables())
+            foreach (Data2D d in AvailableHost.AvailableTablesSource.GetSelectedTables())
             {
                 try
                 {

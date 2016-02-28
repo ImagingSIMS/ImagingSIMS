@@ -114,7 +114,7 @@ namespace ImagingSIMS.Controls.Tabs
 
         private void CreateFromData()
         {
-            List<Data2D> selected = AvailableTablesHost.AvailableTablesSource.GetSelectedTables();
+            List<Data2D> selected = AvailableHost.AvailableTablesSource.GetSelectedTables();
 
             if (selected.Count == 0)
             {
@@ -196,7 +196,8 @@ namespace ImagingSIMS.Controls.Tabs
         }
         private void CreateFromImages()
         {
-            if (listImages.SelectedItems.Count == 0)
+            List<DisplaySeries> selected = AvailableHost.AvailableImageSeriesSource.GetSelectedImageSeries();
+            if (selected.Count == 0)
             {
                 DialogBox db = new DialogBox("No image series selected",
                        "Select an image series to create a volume.", "Create", DialogBoxIcon.Error);
@@ -223,10 +224,8 @@ namespace ImagingSIMS.Controls.Tabs
             int targetWidth = -1;
             int targetHeight = -1;
 
-            foreach (object obj in listImages.SelectedItems)
+            foreach (DisplaySeries series in selected)
             {
-                DisplaySeries series = obj as DisplaySeries;
-
                 foreach (DisplayImage image in series.Images)
                 {
                     Data2D d = ImageHelper.ConvertToData2D(image.Source as BitmapSource);

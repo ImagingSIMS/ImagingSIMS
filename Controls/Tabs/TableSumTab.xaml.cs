@@ -258,7 +258,7 @@ namespace ImagingSIMS.Controls.Tabs
         void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             TableSumCompletedArgs a = (TableSumCompletedArgs)e.Result;
-            AvailableTablesHost.AvailableTablesSource.AddTables(a.ReturnTables);
+            AvailableHost.AvailableTablesSource.AddTables(a.ReturnTables);
             if (a.RemoveTables)
             {
                 List<Data2D> toRemove = new List<Data2D>();
@@ -269,7 +269,7 @@ namespace ImagingSIMS.Controls.Tabs
                         toRemove.Add(a.TablesToRemove[i][j]);
                     }
                 }
-                AvailableTablesHost.AvailableTablesSource.RemoveTables(toRemove);
+                AvailableHost.AvailableTablesSource.RemoveTables(toRemove);
             }
 
             pw.ProgressFinished("Sum complete!");
@@ -313,7 +313,7 @@ namespace ImagingSIMS.Controls.Tabs
             //{
             //    Data2D data = obj as Data2D;
             //    if (data == null) continue;
-            foreach(Data2D data in AvailableTablesHost.AvailableTablesSource.GetSelectedTables())
+            foreach(Data2D data in AvailableHost.AvailableTablesSource.GetSelectedTables())
             { 
                 try
                 {

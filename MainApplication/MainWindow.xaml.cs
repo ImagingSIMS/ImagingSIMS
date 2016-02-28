@@ -40,7 +40,7 @@ namespace ImagingSIMS.MainApplication
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : RibbonWindow, IAvailableTables
+    public partial class MainWindow : RibbonWindow, IAvailableTables, IAvailableImageSeries
     {
         #region Properties
         public static readonly DependencyProperty WorkspaceProperty = DependencyProperty.Register("Workspace",
@@ -187,7 +187,8 @@ namespace ImagingSIMS.MainApplication
 
             Trace.WriteLine(string.Format("Is Debug: {0}", IsDebug));
 
-            AvailableTablesHost.AvailableTablesSource = this;
+            AvailableHost.AvailableTablesSource = this;
+            AvailableHost.AvailableImageSeriesSource = this;
         }
         private void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -4124,7 +4125,6 @@ namespace ImagingSIMS.MainApplication
         #endregion
 
         #region IAvailableTables
-
         public List<Data2D> GetSelectedTables()
         {
             List<Data2D> tables = new List<Data2D>();
@@ -4357,6 +4357,24 @@ namespace ImagingSIMS.MainApplication
                     ex.Message, "Select", DialogBoxIcon.Error);
                 return;
             }
+        }
+        #endregion
+
+        #region IAvailableImageSeries
+        public List<DisplaySeries> GetSelectedImageSeries()
+        {
+            List<DisplaySeries> series = new List<DisplaySeries>();
+            foreach(object obj in listViewImageSeries.SelectedItems)
+            {
+                DisplaySeries d = obj as DisplaySeries;
+                if (d != null)
+                    series.Add(d);
+            }
+            return series;
+        }
+        public List<DisplaySeries> GetAvailableImageSeries()
+        {
+            return Workspace.ImageSeries.ToList();
         }
         #endregion
     }

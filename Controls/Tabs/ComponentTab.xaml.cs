@@ -83,7 +83,7 @@ namespace ImagingSIMS.Controls.Tabs
                 colorPicker.SetColor(_originalComponent.PixelColor);
 
                 Data2D[] selected = _originalComponent.Data;
-                AvailableTablesHost.AvailableTablesSource.SelectTables(selected, true);
+                AvailableHost.AvailableTablesSource.SelectTables(selected, true);
             }
         }
 
@@ -114,7 +114,7 @@ namespace ImagingSIMS.Controls.Tabs
                     return;
                 }
             }
-            List<Data2D> selected = AvailableTablesHost.AvailableTablesSource.GetSelectedTables();
+            List<Data2D> selected = AvailableHost.AvailableTablesSource.GetSelectedTables();
             if (selected.Count == 0)
             {
                 DialogBox db = new DialogBox("No tables are selected.", "Please add at least one data table to the selected tables list.",

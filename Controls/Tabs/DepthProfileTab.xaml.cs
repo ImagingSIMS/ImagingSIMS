@@ -115,7 +115,7 @@ namespace ImagingSIMS.Controls.Tabs
             ObservableCollection<Data2D> destCollection = dest.ItemsSource as ObservableCollection<Data2D>;
             if (destCollection == null) return;
 
-            foreach (Data2D data in AvailableTablesHost.AvailableTablesSource.GetSelectedTables())
+            foreach (Data2D data in AvailableHost.AvailableTablesSource.GetSelectedTables())
             {
                 try
                 {

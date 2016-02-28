@@ -62,7 +62,7 @@ namespace ImagingSIMS.Controls.Tabs
 
         private void buttonPreview_Click(object sender, RoutedEventArgs e)
         {
-            List<Data2D> selectedTables = AvailableTablesHost.AvailableTablesSource.GetSelectedTables();
+            List<Data2D> selectedTables = AvailableHost.AvailableTablesSource.GetSelectedTables();
             if (selectedTables.Count == 0) return;
 
             Data2D summed = Data2D.Sum(selectedTables);
@@ -72,7 +72,7 @@ namespace ImagingSIMS.Controls.Tabs
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            List<Data2D> selectedTables = AvailableTablesHost.AvailableTablesSource.GetSelectedTables();
+            List<Data2D> selectedTables = AvailableHost.AvailableTablesSource.GetSelectedTables();
 
             if (selectedTables.Count == 0)
             {
@@ -233,7 +233,7 @@ namespace ImagingSIMS.Controls.Tabs
                     "The Z-Correction operation did not result in any corrected tables.", "Z-Correction", DialogBoxIcon.Error);
                 return;
             }
-            AvailableTablesHost.AvailableTablesSource.AddTables(corrected);
+            AvailableHost.AvailableTablesSource.AddTables(corrected);
 
             ClosableTabItem.SendStatusUpdate(this, "Z-Correction complete.");
         }

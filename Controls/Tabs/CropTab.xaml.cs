@@ -62,7 +62,7 @@ namespace ImagingSIMS.Controls
 
         private void buttonDoCrop_Click(object sender, RoutedEventArgs e)
         {
-            List<Data2D> selected = AvailableTablesHost.AvailableTablesSource.GetSelectedTables();
+            List<Data2D> selected = AvailableHost.AvailableTablesSource.GetSelectedTables();
             if (selected.Count == 0)
             {
                 DialogBox db = new DialogBox("No data tables selected.", "Select one or more data tables to crop.",
@@ -195,13 +195,13 @@ namespace ImagingSIMS.Controls
 
             CropResult r = (CropResult)e.Result;
 
-            AvailableTablesHost.AvailableTablesSource.AddTables(r.ToAdd.Layers);
+            AvailableHost.AvailableTablesSource.AddTables(r.ToAdd.Layers);
             
             ClosableTabItem.SendStatusUpdate(this, "Crop operation complete");
 
             if (!r.RemoveOriginal) return;
 
-            AvailableTablesHost.AvailableTablesSource.RemoveTables(r.ToRemove.Layers);
+            AvailableHost.AvailableTablesSource.RemoveTables(r.ToRemove.Layers);
         }
         private void buttonCenter_Click(object sender, RoutedEventArgs e)
         {
@@ -214,7 +214,7 @@ namespace ImagingSIMS.Controls
 
         private void buttonPreview_Click(object sender, RoutedEventArgs e)
         {
-            List<Data2D> data = AvailableTablesHost.AvailableTablesSource.GetSelectedTables();
+            List<Data2D> data = AvailableHost.AvailableTablesSource.GetSelectedTables();
             if (data.Count == 0) return;
 
             int width = data[0].Width;
@@ -246,7 +246,7 @@ namespace ImagingSIMS.Controls
             int xPixel = 0;
             int yPixel = 0;
 
-            Data2D d = AvailableTablesHost.AvailableTablesSource.GetAvailableTables().FirstOrDefault();
+            Data2D d = AvailableHost.AvailableTablesSource.GetAvailableTables().FirstOrDefault();
             if (d != null)
             {
                 int width = d.Width;

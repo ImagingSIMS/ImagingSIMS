@@ -74,8 +74,10 @@ namespace ImagingSIMS.Controls
         void SelectTables(Data2D[] toSelect, bool clearSelected = false);
     }
 
-    public static class AvailableTablesHost
+    public static class AvailableHost
     {
         public static IAvailableTables AvailableTablesSource { get; set; }
+
+        public static IAvailableImageSeries AvailableImageSeriesSource { get; set; }
     }
 }

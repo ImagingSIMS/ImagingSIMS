@@ -261,7 +261,7 @@ namespace ImagingSIMS.Controls.Tabs
 
         private void buttonAdd_Click(object sender, RoutedEventArgs e)
         {
-            Data2D d = AvailableTablesHost.AvailableTablesSource.GetSelectedTables().FirstOrDefault();
+            Data2D d = AvailableHost.AvailableTablesSource.GetSelectedTables().FirstOrDefault();
             if (d == null) return;
 
             imagePreview.ChangeDataSource(d);
@@ -298,7 +298,7 @@ namespace ImagingSIMS.Controls.Tabs
                 return;
             }
 
-            AvailableTablesHost.AvailableTablesSource.ReplaceTable(d, corrected);
+            AvailableHost.AvailableTablesSource.ReplaceTable(d, corrected);
 
             imagePreview.ChangeDataSource(corrected);
 
