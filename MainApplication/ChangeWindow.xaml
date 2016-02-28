@@ -44,7 +44,7 @@
         <TextBlock Grid.Row="1" FontSize="14" Text="{Binding ElementName=userControl, Path=VersionText,
             StringFormat=The application has been updated to version {0}}"/>
 
-        <ScrollViewer Grid.Row="2" MaxHeight="500" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="2" MaxHeight="500" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <ItemsControl Margin="4"  ItemsSource="{Binding ElementName=userControl, Path=ItemsToShow}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -55,7 +55,7 @@
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Margin="4,1" Foreground="White">&#x2022;</TextBlock>
-                                            <TextBlock Margin="4,1" Foreground="White" Text="{Binding}"/>
+                                            <TextBlock Margin="4,1" Foreground="White" TextWrapping="Wrap" Text="{Binding}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
