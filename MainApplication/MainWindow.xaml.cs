@@ -1560,6 +1560,18 @@ namespace ImagingSIMS.MainApplication
         private void ComponentCreated(object sender, RoutedEventArgs e)
         {
             Workspace.Components.Add(((ComponentTab)e.Source).NewComponent);
+
+            ComponentTab ct = e.Source as ComponentTab;
+            if (ct == null) return;
+
+            ClosableTabItem cti = tabMain.SelectedItem as ClosableTabItem;
+            if (cti == null) return;
+
+            if(cti.Content == ct)
+            {
+                tabMain.Items.Remove(cti);
+                ct = null;
+            }
         }
         private void ComponentUpdated(object sender, RoutedEventArgs e)
         {
@@ -4287,6 +4299,63 @@ namespace ImagingSIMS.MainApplication
                         ex.Message, "Replace", DialogBoxIcon.Alert);
                     return;
                 }
+            }
+        }
+        public void SelectTable(Data2D toSelect, bool clearSelected = false)
+        {
+            if (clearSelected)
+            {
+                listViewData.SelectedItems.Clear();
+            }
+            try
+            {
+                listViewData.SelectedItems.Add(toSelect);
+            }
+            catch(Exception ex)
+            {
+                DialogBox.Show("Could not select the specified table(s).",
+                    ex.Message, "Select", DialogBoxIcon.Error);
+                return;
+            }
+        }
+        public void SelectTables(List<Data2D> toSelect, bool clearSelected = false)
+        {
+            if (clearSelected)
+            {
+                listViewData.SelectedItems.Clear();
+            }
+            try
+            {
+                foreach (Data2D d in toSelect)
+                {
+                    listViewData.SelectedItems.Add(d);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogBox.Show("Could not select the specified table(s).",
+                    ex.Message, "Select", DialogBoxIcon.Error);
+                return;
+            }
+        }
+        public void SelectTables(Data2D[] toSelect, bool clearSelected = false)
+        {
+            if (clearSelected)
+            {
+                listViewData.SelectedItems.Clear();
+            }
+            try
+            {
+                foreach (Data2D d in toSelect)
+                {
+                    listViewData.SelectedItems.Add(d);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogBox.Show("Could not select the specified table(s).",
+                    ex.Message, "Select", DialogBoxIcon.Error);
+                return;
             }
         }
         #endregion

@@ -83,22 +83,14 @@ namespace ImagingSIMS.Controls.Tabs
                 colorPicker.SetColor(_originalComponent.PixelColor);
 
                 Data2D[] selected = _originalComponent.Data;
-                for (int i = 0; i < selected.Length; i++)
-                {
-                    if (listTables.Items.Contains(selected[i]))
-                    {
-                        listTables.SelectedItems.Add(selected[i]);
-                    }
-                }
+                AvailableTablesHost.AvailableTablesSource.SelectTables(selected, true);
             }
         }
 
         public void DoUpdate(ImageComponent ComponentToUpdate)
         {
             _isUpdate = true;
-            _originalComponent = ComponentToUpdate;
-
-            
+            _originalComponent = ComponentToUpdate;            
         }
 
         private void buttonAccept_Click(object sender, RoutedEventArgs e)
@@ -122,7 +114,8 @@ namespace ImagingSIMS.Controls.Tabs
                     return;
                 }
             }
-            if (listTables.SelectedItems.Count == 0)
+            List<Data2D> selected = AvailableTablesHost.AvailableTablesSource.GetSelectedTables();
+            if (selected.Count == 0)
             {
                 DialogBox db = new DialogBox("No tables are selected.", "Please add at least one data table to the selected tables list.",
                        "Component Builder", DialogBoxIcon.Error);
@@ -130,10 +123,10 @@ namespace ImagingSIMS.Controls.Tabs
                 return;
             }
 
-            int width = ((Data2D)listTables.SelectedItems[0]).Width;
-            int height = ((Data2D)listTables.SelectedItems[0]).Height;
+            int width = selected[0].Width;
+            int height = selected[0].Height;
             Data3D data = new Data3D();
-            foreach (Data2D d in listTables.SelectedItems)
+            foreach (Data2D d in selected)
             {
                 if (d == null) continue;
                 if (d.Height != height || d.Width != width)
@@ -164,8 +157,8 @@ namespace ImagingSIMS.Controls.Tabs
             }
             else
             {
-                this.RaiseEvent(new RoutedEventArgs(ComponentCreatedEvent, this));
                 ClosableTabItem.SendStatusUpdate(this, string.Format("Component {0} created.", ComponentName));
+                this.RaiseEvent(new RoutedEventArgs(ComponentCreatedEvent, this));                
             }
         }
     }

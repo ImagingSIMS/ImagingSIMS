@@ -114,7 +114,9 @@ namespace ImagingSIMS.Controls.Tabs
 
         private void CreateFromData()
         {
-            if (listData.SelectedItems.Count == 0)
+            List<Data2D> selected = AvailableTablesHost.AvailableTablesSource.GetSelectedTables();
+
+            if (selected.Count == 0)
             {
                 DialogBox db = new DialogBox("No tables selected",
                     "Select one or more data tables to create a volume.", "Create", DialogBoxIcon.Error);
@@ -136,15 +138,13 @@ namespace ImagingSIMS.Controls.Tabs
             }
 
             List<Data2D> tables = new List<Data2D>();
-            int numberTables = listData.SelectedItems.Count;
+            int numberTables = selected.Count;
 
             int targetWidth = -1;
             int targetHeight = -1;
 
-            foreach (object o in listData.SelectedItems)
+            foreach (Data2D d in selected)
             {
-                Data2D d = o as Data2D;
-
                 if (targetWidth == -1 && targetHeight == -1)
                 {
                     targetWidth = d.Width;
@@ -163,7 +163,7 @@ namespace ImagingSIMS.Controls.Tabs
 
             for (int i = 0; i < numberTables; i++)
             {
-                Data2D d = listData.SelectedItems[i] as Data2D;
+                Data2D d = selected[i];
 
                 if (!RepeatLayers)
                 {

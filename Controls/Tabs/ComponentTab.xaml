@@ -19,20 +19,9 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="listTables" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Data}" 
-                    Height="Auto" Width="Auto" VerticalAlignment="Stretch" Margin="8" Background="Transparent" BorderBrush="Transparent"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding DataName}" Width="250"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-
-        <StackPanel Grid.Column="1" VerticalAlignment="Top" Orientation="Vertical">
+        <StackPanel Grid.Column="0" VerticalAlignment="Top" Orientation="Vertical">
             <Label>Component Name: </Label>
             <TextBox Text="{Binding ComponentName}" Margin="8,4,8,4" Background="Transparent" Foreground="White"/>
             <StackPanel Orientation="Vertical">

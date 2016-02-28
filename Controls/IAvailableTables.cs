@@ -46,11 +46,32 @@ namespace ImagingSIMS.Controls
         void AddTables(Data2D[] tablesToAdd);
 
         /// <summary>
-        /// Replaces the specified table.
+        /// Replaces the specified table in the control that implements the interface.
         /// </summary>
         /// <param name="tableToReplace">Table to remove.</param>
         /// <param name="newTable">Table to insert.</param>
         void ReplaceTable(Data2D tableToReplace, Data2D newTable);
+
+        /// <summary>
+        /// Selects the specified table in the control that implements the interface.
+        /// </summary>
+        /// <param name="toSelect">Table to select.</param>
+        /// <param name="clearSelected">Select true to clear the currently selected items first.</param>
+        void SelectTable(Data2D toSelect, bool clearSelected = false);
+
+        /// <summary>
+        /// Selects the specified table in the control that implements the interface.
+        /// </summary>
+        /// <param name="toSelect">Tables to select.</param>
+        /// /// <param name="clearSelected">Select true to clear the currently selected items first.</param>
+        void SelectTables(List<Data2D> toSelect, bool clearSelected = false);
+
+        /// <summary>
+        /// Selects the specified table in the control that implements the interface.
+        /// </summary>
+        /// <param name="toSelect">Tables to select.</param>
+        /// /// <param name="clearSelected">Select true to clear the currently selected items first.</param>
+        void SelectTables(Data2D[] toSelect, bool clearSelected = false);
     }
 
     public static class AvailableTablesHost

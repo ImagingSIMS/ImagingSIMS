@@ -30,15 +30,7 @@
         <Grid Grid.Column="0" Margin="3">
         <TabControl x:Name="tabControl" Height="Auto" Width="275" Background="Transparent" Margin="4" BorderBrush="Transparent">
                 <TabItem x:Name="tabFromData" Header="From Data" Style="{StaticResource BlueTabItemHeader}">
-                    <ListView x:Name="listData" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Data}"
-                              Height="Auto" Width="Auto" VerticalAlignment="Stretch" Margin="4" Background="Transparent" BorderBrush="Transparent"
-                              ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding DataName}" Width="225"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
+                    <TextBlock VerticalAlignment="Top">Select tables from the data sidebar</TextBlock>
                 </TabItem>
                 <TabItem x:Name="tabFromImages" Header="From Image Series" Style="{StaticResource BlueTabItemHeader}">
                     <ListView x:Name="listImages" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.ImageSeries}"
