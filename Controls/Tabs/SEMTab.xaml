@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.Tabs.SEMTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="clr-namespace:ImagingSIMS.Controls"
+             xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             mc:Ignorable="d" 
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer Height="Auto" HorizontalAlignment="Stretch" x:Name="scrollView" 
+                      VerticalAlignment="Stretch" Width="Auto" Margin="0" 
+                      VerticalScrollBarVisibility="Auto">
+            <ListBox x:Name="itemsControl" Background="Transparent" ItemsSource="{Binding SEMImages}" SelectionMode="Single">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel MouseMove="DockPanel_MouseMove" MouseWheel="DockPanel_MouseWheel">
+                            <Image Source="{Binding SEMImage.Source}" Height="250" Width="250" Margin="4"/>
+                        </DockPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="Control.Background">
+                            <Setter.Value>
+                                <SolidColorBrush Color="{Binding ElementName=colorPicker, Path=SelectedColor}"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ListBox>
+        </ScrollViewer>
+        <cc:ColorSelector x:Name="colorPicker" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8"/>
+    </Grid>
+</UserControl>

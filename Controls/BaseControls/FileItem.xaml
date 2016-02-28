@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.BaseControls.FileItem"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImagingSIMS.Controls"
+             xmlns:converters="clr-namespace:ImagingSIMS.Controls.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="23" d:DesignWidth="125">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Themes\Generic.xaml"/>
+                <ResourceDictionary>
+                    <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+                    <converters:BoolVisInvertedConverter x:Key="boolVisInvertedConverter"/>
+                    <converters:ShortPathConverter x:Key="shortPathConverter"/>
+                    <LinearGradientBrush x:Key="glyphHoverBrush">
+                        <GradientStop Offset="0" Color="#FF1A1AAC"/>
+                        <GradientStop Offset="0.31" Color="#FF336BFF"/>
+                        <GradientStop Offset="1" Color="#FF73B3FF"/>
+                    </LinearGradientBrush>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Path x:Name="PART_glyph" Margin="2" Data="M 0 0 L 8 4 L 0 8 Z" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ElementName=userControl, Path=ShowGlyph, 
+            Converter={StaticResource booleanToVisibilityConverter}}">
+            <Path.Fill>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#FF8A909E" Offset="0"/>
+                    <GradientStop Color="#FFEAF0FF" Offset="1"/>
+                    <GradientStop Color="#FFB5BED6" Offset="0.31"/>
+                </LinearGradientBrush>
+            </Path.Fill>
+        </Path>
+        <Image Margin="2" VerticalAlignment="Center" Width="18" Height="18" Source="..\Images\Workspace.ico" 
+               Visibility="{Binding ElementName=userControl, Path=ShowIcon, Converter={StaticResource booleanToVisibilityConverter}}"/>
+        <TextBlock Margin="2" Grid.Column="1" VerticalAlignment="Center" FontSize="{Binding ElementName=userControl, Path=FontSize}"
+                   Text="{Binding ElementName=userControl, Path=FilePath, Converter={StaticResource shortPathConverter}}"
+                   MouseDown="TextBlock_MouseDown">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="TextBlock.Foreground" Value="{StaticResource ThemeBlueBrush}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+    </Grid>
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Remove File" Click="menuItemRemove_Click"/>
+            <MenuItem Header="Open File Location" Click="menuItemOpenLocation_Click"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+</UserControl>

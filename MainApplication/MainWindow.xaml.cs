@@ -31,6 +31,9 @@ using ImagingSIMS.Data.Imaging;
 using ImagingSIMS.Data.Spectra;
 using ImagingSIMS.Data.Rendering;
 using System.Threading.Tasks;
+using ImagingSIMS.Controls.Tabs;
+using ImagingSIMS.Controls.BaseControls;
+using ImagingSIMS.Controls.BaseControls.SpectrumView;
 
 namespace ImagingSIMS.MainApplication
 {

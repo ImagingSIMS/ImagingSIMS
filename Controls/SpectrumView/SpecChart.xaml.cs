@@ -2,23 +2,15 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-
-using ImagingSIMS.Controls.SpectrumView;
-using ImagingSIMS.Data;
 using ImagingSIMS.Data.Spectra;
 
-namespace ImagingSIMS.Controls
+namespace ImagingSIMS.Controls.BaseControls.SpectrumView
 {
     /// <summary>
     /// Interaction logic for SpecChart.xaml

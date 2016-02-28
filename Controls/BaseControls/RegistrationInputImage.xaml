@@ -1,0 +1,103 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.BaseControls.RegistrationInputImage"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="clr-namespace:ImagingSIMS.Controls"
+             xmlns:base="clr-namespace:ImagingSIMS.Controls.BaseControls"
+             xmlns:converters="clr-namespace:ImagingSIMS.Controls.Converters"
+             xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Themes\Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:BitmapSourceToDimensionsConverter x:Key="bitmapSourceToDimensionsConverter"/>
+            <ObjectDataProvider x:Key="pointSourceFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="base:PointSource"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Width="{Binding ElementName=userControl, Path=ImageWidth}"
+                    Height="{Binding ElementName=userControl, Path=ImageHeight}"
+                    PreviewMouseDown="gridMouseCapture_PreviewMouseDown"
+                    PreviewMouseMove="gridMouseCapture_PreviewMouseMove" PreviewMouseUp="gridMouseCapture_PreviewMouseUp">
+            <Image x:Name="originalImage" Source="{Binding ElementName=userControl, Path=OriginalImageSource}"/>
+            <Image x:Name="pointOverlayImage" Source="{Binding ElementName=userControl, Path=PointsOverlayImageSource}"
+                   Visibility="{Binding ElementName=userControl, Path=IsPointBased, Converter={StaticResource boolVisConverter}}"/>
+            <Border x:Name="roiRectangle" Visibility="Hidden" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="BorderBrush">
+                            <Setter.Value>
+                                <SolidColorBrush Color="{Binding ElementName=userControl, Path=SelectionColor}"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="BorderThickness" Value="5"/>
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <SolidColorBrush Color="{Binding ElementName=userControl, Path=SelectionColor}"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Opacity" Value="0.5"/>                        
+                    </Style>
+                </Border.Style>
+            </Border>
+            
+        </Grid>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" IsEnabled="{Binding ElementName=userControl, Path=IsPointBased}">
+            <TextBlock>Point Source:</TextBlock>
+            <ComboBox Width="100" Height="23" Margin="4"
+                      ItemsSource="{Binding Source={StaticResource pointSourceFromEnum}}"
+                      SelectedItem="{Binding ElementName=userControl, Path=PointSource}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock>Selection:</TextBlock>
+            <Button x:Name="buttonShowColor" Width="20" Height="20" Margin="4" 
+                    MouseEnter="buttonShowColor_MouseEnter" Click="buttonShowColor_Click">
+                <Image Source="..\Images\PaintPalette.ico"/>
+            </Button>
+            <Popup x:Name="popupSolidColorScale" IsOpen="False" PlacementTarget="{Binding ElementName=buttonShowColor}" StaysOpen="False">
+                <Grid Background="{StaticResource MenuBackground}">
+                    <cc:ColorSelector SelectedColor="{Binding Mode=TwoWay, ElementName=userControl, Path=SelectionColor}" IsAlphaEnabled="False"/>
+                </Grid>
+            </Popup>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="3">
+            <Button Margin="4" Width="75" Height="20" Click="buttonSave_Click" IsEnabled="{Binding ElementName=userControl, Path=IsPointBased}">Save Points</Button>
+            <Button Margin="4" Width="75" Height="20" Click="buttonClear_Click" IsEnabled="{Binding ElementName=userControl, Path=IsPointBased}">Clear Points</Button>
+            <Button Margin="4" Width="75" Height="20" Click="buttonClearROI_Click" Visibility="{Binding ElementName=userControl, 
+                Path=CanSelectROI, Converter={StaticResource boolVisConverter}}">Clear ROI</Button>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="4">
+            <TextBlock>Image size:</TextBlock>
+            <TextBlock Text="{Binding ElementName=userControl, Path=OriginalImageSource, Converter={StaticResource bitmapSourceToDimensionsConverter}}"/>
+            <TextBlock Text="{Binding ElementName=userControl, Path=SelectedPoints.Count, StringFormat=Number points: {0}}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

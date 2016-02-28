@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ImagingSIMS.Controls.SpectrumView
+namespace ImagingSIMS.Controls.BaseControls.SpectrumView
 {
     /// <summary>
     /// Interaction logic for TestControl.xaml
