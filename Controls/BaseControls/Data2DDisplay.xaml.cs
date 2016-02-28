@@ -79,8 +79,8 @@ namespace ImagingSIMS.Controls.BaseControls
 
         private void Data2DDisplay_Loaded(object sender, RoutedEventArgs e)
         {
-            DisplayItem.ImageTransformedWidth = ImageWidth;
-            DisplayItem.ImageTransformedHeight = ImageHeight;
+            DisplayItem.ImageTransformedWidth = ImageWidth * DisplayItem.Scale;
+            DisplayItem.ImageTransformedHeight = ImageHeight * DisplayItem.Scale;
         }
 
         private void buttonShowColor_MouseEnter(object sender, RoutedEventArgs e)
@@ -95,11 +95,8 @@ namespace ImagingSIMS.Controls.BaseControls
         }
 
         #region ScrollViewer
-        Point? lastCenterPositionOnTarget;
         Point? lastMousePositionOnTarget;
         Point? lastDragPoint;
-
-        double scale;
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
@@ -110,12 +107,12 @@ namespace ImagingSIMS.Controls.BaseControls
 
                 if (!lastMousePositionOnTarget.HasValue)
                 {
-                    if (lastCenterPositionOnTarget.HasValue)
+                    if (DisplayItem.LastCenterPositionOnTarget.HasValue)
                     {
                         var centerOfViewport = new Point(scrollViewer.ViewportWidth / 2, scrollViewer.ViewportHeight / 2);
                         Point centerOfTargetNow = scrollViewer.TranslatePoint(centerOfViewport, image);
 
-                        targetBefore = lastCenterPositionOnTarget;
+                        targetBefore = DisplayItem.LastCenterPositionOnTarget;
                         targetNow = centerOfTargetNow;
                     }
                 }
@@ -156,22 +153,22 @@ namespace ImagingSIMS.Controls.BaseControls
 
             lastMousePositionOnTarget = Mouse.GetPosition(image);
 
-            double originalWidth = image.ActualWidth / scale;
-            double originalHeight = image.ActualHeight / scale;
+            double originalWidth = image.ActualWidth / DisplayItem.Scale;
+            double originalHeight = image.ActualHeight / DisplayItem.Scale;
 
             if (e.Delta > 0)
             {
-                scale += 0.25f;
+                DisplayItem.Scale += 0.25f;
             }
             if (e.Delta < 0)
             {
-                scale -= 0.25f;
+                DisplayItem.Scale -= 0.25f;
             }
 
-            if (scale < 1) scale = 1;
+            if (DisplayItem.Scale < 1) DisplayItem.Scale = 1;
 
-            DisplayItem.ImageTransformedWidth = originalWidth * scale;
-            DisplayItem.ImageTransformedHeight = originalHeight * scale;
+            DisplayItem.ImageTransformedWidth = originalWidth * DisplayItem.Scale;
+            DisplayItem.ImageTransformedHeight = originalHeight * DisplayItem.Scale;
 
             //var centerOfViewport = new Point(scrollViewer.ViewportWidth / 2, scrollViewer.ViewportHeight / 2);
             //lastCenterPositionOnTarget = scrollViewer.TranslatePoint(centerOfViewport, image);

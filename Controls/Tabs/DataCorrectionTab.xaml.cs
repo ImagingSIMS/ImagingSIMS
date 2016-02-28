@@ -256,7 +256,7 @@ namespace ImagingSIMS.Controls.Tabs
             }
             
             Text = string.Format("Data Position X:{0} Y:{1}\nControl Position X:{2} Y:{3}", 
-                xPixel, yPixel, e.GetPosition(scrollViewer).X, e.GetPosition(scrollViewer).Y);
+                xPixel, yPixel, e.GetPosition(scrollViewer).X.ToString("0"), e.GetPosition(scrollViewer).Y.ToString("0"));
         }
 
         private void buttonAdd_Click(object sender, RoutedEventArgs e)

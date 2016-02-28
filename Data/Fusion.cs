@@ -164,6 +164,10 @@ namespace ImagingSIMS.Data.Fusion
             : base(HighRes, LowRes)
         {
         }
+        public WeightedAverageFusion(float[,] HighRes, float[,] LowRes, Color LowResBaseColor)
+            : base(HighRes, LowRes, LowResBaseColor)
+        {
+        }
         public WeightedAverageFusion(Data2D HighRes, Data3D LowRes)
             : base(HighRes, LowRes)
         {

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ImagingSIMS.Data;
@@ -21,6 +22,9 @@ namespace ImagingSIMS.Controls.ViewModels
         Color _solidColorScale;
         double _imageTransformedWidth;
         double _imageTransformedHeight;
+
+        Point? _lastCenterPositionOnTarget;
+        double _scale;
 
         public Data2D DataSource
         {
@@ -123,6 +127,31 @@ namespace ImagingSIMS.Controls.ViewModels
             }
         }
 
+        public Point? LastCenterPositionOnTarget
+        {
+            get { return _lastCenterPositionOnTarget; }
+            set
+            {
+                if(_lastCenterPositionOnTarget != value)
+                {
+                    _lastCenterPositionOnTarget = value;
+                    NotifyPropertyChanged("LastCenterPositionOnTarget");
+                }
+            }
+        }
+        public double Scale
+        {
+            get { return _scale; }
+            set
+            {
+                if(_scale != value)
+                {
+                    _scale = value;
+                    NotifyPropertyChanged("Scale");
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
@@ -147,6 +176,8 @@ namespace ImagingSIMS.Controls.ViewModels
             this.ColorScale = ColorScale;
             this.Saturation = (int)DataSource.Maximum;
             this.InitialSaturation = this.Saturation;
+
+            Scale = 1;
         }
         public Data2DDisplayViewModel(Data2D DataSource, Color SolidColorScale)
         {
@@ -159,6 +190,8 @@ namespace ImagingSIMS.Controls.ViewModels
             this.DataSource = DataSource;
             this.Saturation = (int)DataSource.Maximum;
             this.InitialSaturation = this.Saturation;
+
+            Scale = 1;
         }
 
         public async Task SetData2DDisplayItemAsync(Data2D dataSource, ColorScaleTypes colorScale)
@@ -181,6 +214,8 @@ namespace ImagingSIMS.Controls.ViewModels
             this.ColorScale = colorScale;
             this.Saturation = (int)DataSource.Maximum;
             this.InitialSaturation = this.Saturation;
+
+            Scale = 1;
         }
         private void setData2DDisplayItem(Data2D dataSource, Color solidColorScale)
         {
@@ -193,6 +228,8 @@ namespace ImagingSIMS.Controls.ViewModels
             this.DataSource = dataSource;
             this.Saturation = (int)dataSource.Maximum;
             this.InitialSaturation = this.Saturation;
+
+            Scale = 1;
         }
 
         private void Redraw()
