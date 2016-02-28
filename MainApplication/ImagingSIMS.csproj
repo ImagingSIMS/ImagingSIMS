@@ -20,7 +20,7 @@
     <SccProvider>SAK</SccProvider>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <PublishUrl>E:\Users\jayt\Source\Repos\ImagingSIMS3\deploy\pub\</PublishUrl>
+    <PublishUrl>C:\Users\jay50\Source\Repos\jay5026\ImagingSIMS3\ImagingSIMS\deploy\pub\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -32,15 +32,16 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>https://raw.githubusercontent.com/jay5026/ImagingSIMS/master/deploy/pub/</InstallUrl>
     <UpdateUrl>https://raw.githubusercontent.com/jay5026/ImagingSIMS/master/deploy/pub/</UpdateUrl>
-    <SupportUrl>http://128.118.169.171/ImagingSIMS/Support.aspx</SupportUrl>
+    <SupportUrl>https://github.com/jay5026/ImagingSIMS/wiki</SupportUrl>
+    <ErrorReportUrl>https://github.com/jay5026/ImagingSIMS/wiki</ErrorReportUrl>
     <ProductName>ImagingSIMS Version 3.6</ProductName>
-    <PublisherName>Winograd Lab</PublisherName>
+    <PublisherName>ImagingSIMS</PublisherName>
     <MinimumRequiredVersion>3.6.1.83</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>3.6.6.%2a</ApplicationVersion>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>3.6.2.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -70,7 +71,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>F057EF87E631E510250587FB7B94FCF629EFEC8D</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>C7E1499F9BFF22733F621062BDA9DC67F62DC599</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>ImagingSIMS_TemporaryKey.pfx</ManifestKeyFile>
@@ -79,7 +80,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>PaintPalette.ico</ApplicationIcon>
@@ -98,8 +99,9 @@
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MahApps.Metro">
-      <HintPath>..\packages\MahApps.Metro.0.14.0.0\lib\net45\MahApps.Metro.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="PresentationFramework.Aero2" />
@@ -114,9 +116,6 @@
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Windows.Controls.Ribbon" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.0.14.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -134,6 +133,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ChangeWindow.xaml.cs">
+      <DependentUpon>ChangeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ExternalCode\ExternalCodeEditor.xaml.cs">
       <DependentUpon>ExternalCodeEditor.xaml</DependentUpon>
     </Compile>
@@ -143,6 +145,10 @@
     <Page Include="About.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ChangeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ExternalCode\ExternalCodeEditor.xaml">
       <SubType>Designer</SubType>
@@ -325,6 +331,10 @@
     <Content Include="Plugins\ITKImageRegistration.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="ChangeLog.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="ImagingSIMS_TemporaryKey.pfx" />
     <None Include="Shaders\Axes.pso" />
     <None Include="Shaders\Axes.vso" />
     <None Include="Shaders\BoundingBox.pso" />
@@ -348,7 +358,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Images\DepthProfile.ico" />
-    <None Include="ImagingSIMS_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <Resource Include="Images\Update.png" />
     <Resource Include="Images\gaussian.ico" />

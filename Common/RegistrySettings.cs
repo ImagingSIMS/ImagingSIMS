@@ -50,6 +50,7 @@ namespace ImagingSIMS.Common.Registry
         RegistryKey keyFiles = Registry.CurrentUser.CreateSubKey("Software\\ImagingSIMS3\\RecentFiles");
         RegistryKey keyOptions = Registry.CurrentUser.CreateSubKey("Software\\ImagingSIMS3\\UserOptions");
         RegistryKey keyCrash = Registry.CurrentUser.CreateSubKey("Software\\ImagingSIMS3\\OnCrash");
+        RegistryKey keyUpdate = Registry.CurrentUser.CreateSubKey("Software\\ImagingSIMS3\\Update");
 
         public static readonly DependencyProperty RecentFilesProperty = DependencyProperty.Register("RecentFiles",
             typeof(FileList), typeof(RegSettings));
@@ -75,6 +76,8 @@ namespace ImagingSIMS.Common.Registry
             typeof(bool), typeof(RegSettings));
         public static readonly DependencyProperty DataDisplayWidthProperty = DependencyProperty.Register("DataDisplayWidth",
             typeof(double), typeof(RegSettings));
+        public static readonly DependencyProperty VersionLastReportedProperty = DependencyProperty.Register("VersionLastReported",
+            typeof(Version), typeof(RegSettings));
 
         public FileList RecentFiles
         {
@@ -136,12 +139,19 @@ namespace ImagingSIMS.Common.Registry
             get { return (double)GetValue(DataDisplayWidthProperty); }
             set { SetValue(DataDisplayWidthProperty, value); }
         }
+        public Version VersionLastReported
+        {
+            get { return (Version)GetValue(VersionLastReportedProperty); }
+            set { SetValue(VersionLastReportedProperty, value); }
+        }
 
         public RegSettings()
         {
             RecentFiles = new FileList();
             RecentFiles.MaxSize = 9;
             RecentFiles.CollectionChanged += RecentFiles_CollectionChanged;
+
+            VersionLastReported = new Version(3, 6, 2, 0);
 
             SettingsManager.RegSettings = this;
         }
@@ -166,6 +176,8 @@ namespace ImagingSIMS.Common.Registry
                 keyOptions.SetValue("StartWithTrace", BoolInt.Convert(StartWithTrace));
                 keyOptions.SetValue("SuppressRegistrationWarnings", BoolInt.Convert(SuppressRegistrationWarnings));
                 keyOptions.SetValue("DataDisplayWidth", DataDisplayWidth);
+
+                keyUpdate.SetValue("LastReported", VersionLastReported);
             }
             catch (Exception)
             {
@@ -180,13 +192,6 @@ namespace ImagingSIMS.Common.Registry
             {
                 keyFiles.SetValue(string.Format("File{0}", (i + 1).ToString()), RecentFiles[i]);
             }
-            //for (int i = RecentFiles.Count; i < RecentFiles.MaxSize; i++)
-            //{
-            //    if (keyFiles.GetValue(string.Format("File{0}", (i + 1).ToString())) != null)
-            //    {
-            //        keyFiles.SetValue(string.Format("File{0}", (i + 1).ToString()), string.Empty);
-            //    }
-            //}
         }
         //Call this in workspace constructor
         public bool ReadSettings()
@@ -212,6 +217,7 @@ namespace ImagingSIMS.Common.Registry
                 StartWithTrace = BoolInt.Convert((int)keyOptions.GetValue("StartWithTrace", 0));
                 SuppressRegistrationWarnings = BoolInt.Convert((int)keyOptions.GetValue("SuppressRegistrationWarnings", 0));
                 DataDisplayWidth = double.Parse((string)keyOptions.GetValue("DataDisplayWidth", 225d));
+                VersionLastReported = Version.Parse((string)keyUpdate.GetValue("LastReported", new Version(3, 6, 2, 0)));
 
                 HasCrashed = BoolInt.Convert((int)keyCrash.GetValue("HasCrashed", 0));
                 if (HasCrashed)

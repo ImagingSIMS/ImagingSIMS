@@ -217,6 +217,24 @@ namespace ImagingSIMS.MainApplication
             }
 
             Trace.WriteLine("Window load complete.");
+
+            Trace.WriteLine("Checking ClickOnce version information.");
+
+            // Debug won't have ClickOnce deployment information so pass in
+            // a test version
+            if (IsDebug)
+            {
+                Version testVersion = new Version(3, 6, 2, 1);
+                ChangeWindow.CheckAndShow(testVersion, "ChangeLog.json");
+            }
+
+            if (ApplicationDeployment.IsNetworkDeployed)
+            {
+                Version currentVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                ChangeWindow.CheckAndShow(currentVersion, "ChangeLog.json");
+            }
+            else Trace.WriteLine("Application is not ClickOnce deployed.");
+
         }
         #endregion
 
