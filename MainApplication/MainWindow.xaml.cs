@@ -222,11 +222,13 @@ namespace ImagingSIMS.MainApplication
 
             // Debug won't have ClickOnce deployment information so pass in
             // a test version
-            if (IsDebug)
+            // Include an option to test or skip during debug
+            bool testChangeWindow = false;
+            if (IsDebug && testChangeWindow)
             {
                 Version testVersion = new Version(3, 6, 2, 1);
                 ChangeWindow.CheckAndShow(testVersion, "ChangeLog.json");
-        }
+            }
 
             if (ApplicationDeployment.IsNetworkDeployed)
             {
