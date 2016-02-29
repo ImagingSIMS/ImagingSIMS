@@ -22,59 +22,81 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Image Margin="8">
-            <Image.Style>
-                <Style TargetType="{x:Type Image}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Alert">
-                            <Setter Property="Source" Value="{StaticResource AlertIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Blocked">
-                            <Setter Property="Source" Value="{StaticResource BlockedIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Error">
-                            <Setter Property="Source" Value="{StaticResource ErrorIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Help">
-                            <Setter Property="Source" Value="{StaticResource HelpIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Information">
-                            <Setter Property="Source" Value="{StaticResource InformationIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Invalid">
-                            <Setter Property="Source" Value="{StaticResource InvalidIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Offline">
-                            <Setter Property="Source" Value="{StaticResource OfflineIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Ok">
-                            <Setter Property="Source" Value="{StaticResource OkIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Pause">
-                            <Setter Property="Source" Value="{StaticResource PauseIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Run">
-                            <Setter Property="Source" Value="{StaticResource RunIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="SecurityWarning">
-                            <Setter Property="Source" Value="{StaticResource SecurityWarningIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Stop">
-                            <Setter Property="Source" Value="{StaticResource StopIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Suppressed">
-                            <Setter Property="Source" Value="{StaticResource SuppressedIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Warning">
-                            <Setter Property="Source" Value="{StaticResource WarningIcon}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="WarningGray">
-                            <Setter Property="Source" Value="{StaticResource WarningGrayIcon}"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Image.Style>
-        </Image>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Image x:Name="imageIcon" Margin="8">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Alert">
+                                <Setter Property="Source" Value="{StaticResource AlertIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Blocked">
+                                <Setter Property="Source" Value="{StaticResource BlockedIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Error">
+                                <Setter Property="Source" Value="{StaticResource ErrorIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Help">
+                                <Setter Property="Source" Value="{StaticResource HelpIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Information">
+                                <Setter Property="Source" Value="{StaticResource InformationIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Invalid">
+                                <Setter Property="Source" Value="{StaticResource InvalidIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Offline">
+                                <Setter Property="Source" Value="{StaticResource OfflineIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Ok">
+                                <Setter Property="Source" Value="{StaticResource OkIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Pause">
+                                <Setter Property="Source" Value="{StaticResource PauseIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Run">
+                                <Setter Property="Source" Value="{StaticResource RunIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="SecurityWarning">
+                                <Setter Property="Source" Value="{StaticResource SecurityWarningIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Stop">
+                                <Setter Property="Source" Value="{StaticResource StopIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Suppressed">
+                                <Setter Property="Source" Value="{StaticResource SuppressedIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Warning">
+                                <Setter Property="Source" Value="{StaticResource WarningIcon}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="WarningGray">
+                                <Setter Property="Source" Value="{StaticResource WarningGrayIcon}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+
+            <!--<Image Grid.Row="1" Margin="8,0,8,8" Source="{Binding ElementName=imageIcon, Path=Source}">
+                <Image.OpacityMask>
+                    <LinearGradientBrush StartPoint="0.5,1" EndPoint="0.5,0">
+                        <GradientStop Color="#BF000000" Offset="0"/>
+                        <GradientStop Color="#66000000" Offset="0.2"/>
+                        <GradientStop Color="#33000000" Offset="0.3"/>
+                        <GradientStop Color="#00000000" Offset="0.6"/>
+                    </LinearGradientBrush>
+                </Image.OpacityMask>
+                <Image.LayoutTransform>
+                    <ScaleTransform ScaleY="-1"/>
+                </Image.LayoutTransform>
+            </Image>-->
+        </Grid>
+        
         
         <Grid Grid.Column="1" Name="msg1Dock">
             <TextBlock x:Name="msg1" TextWrapping="Wrap" Text="TextBlock" Margin="8,8,8,8" Foreground="#FFD8D8D8" 

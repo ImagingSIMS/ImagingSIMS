@@ -5,6 +5,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:c="clr-namespace:ImagingSIMS.Controls;assembly=Controls"
+        xmlns:cbase="clr-namespace:ImagingSIMS.Controls.BaseControls;assembly=Controls"
+        xmlns:ctabs="clr-namespace:ImagingSIMS.Controls.Tabs;assembly=Controls"
         xmlns:data="clr-namespace:ImagingSIMS.Data;assembly=Data"
         xmlns:ns="clr-namespace:ImagingSIMS.MainApplication"
         xmlns:common="clr-namespace:ImagingSIMS.Common;assembly=Common"
@@ -201,7 +203,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <c:FileItem FilePath="{Binding}" FileClicked="recentItem_FileClicked" RemoveFileClicked="recentItem_RemoveFileClicked" ShowIcon="True" ShowGlyph="False"/>
+                                <cbase:FileItem FilePath="{Binding}" FileClicked="recentItem_FileClicked" RemoveFileClicked="recentItem_RemoveFileClicked" ShowIcon="True" ShowGlyph="False"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -1071,7 +1073,7 @@
                             HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Padding="4" SelectionChanged="tabMain_SelectionChanged"
                             BorderThickness="{Binding ElementName=tabMain, Path=HasItems, Converter={StaticResource hasItemsToThicknessConverter}}" BorderBrush="#FF007ACC" Margin="4,8,8,8" Background="Transparent">
                     <TabControl.Resources>
-                        <Style TargetType="c:ClosableTabItem">
+                        <Style TargetType="ctabs:ClosableTabItem">
                             <Setter Property="AllowDrop" Value="True"/>
                             <EventSetter Event="MouseMove" Handler="tabItem_MouseMove"/>
                             <EventSetter Event="Drop" Handler="tabItem_Drop"/>

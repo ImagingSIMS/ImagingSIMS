@@ -1,0 +1,71 @@
+﻿<Window x:Class="ImagingSIMS.MainApplication.ChangeWindow"
+        x:Name="userControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImagingSIMS.MainApplication"
+        mc:Ignorable="d"
+        Title="Update" Height="Auto" Width="500" Icon="Images\Info.ico"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Topmost="True"
+        MaxHeight="750" SizeToContent="Height">
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <LinearGradientBrush.RelativeTransform>
+                    <TransformGroup>
+                        <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                        <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                        <RotateTransform CenterY="0.5" CenterX="0.5" Angle="-296.565"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </LinearGradientBrush.RelativeTransform>
+                <GradientStop Color="#FF3E3C47" Offset="1"/>
+                <GradientStop Color="#FF265379"/>
+                <GradientStop Color="#FF3A3F4F" Offset="0.607"/>
+                <GradientStop Color="#FF3B3D4B" Offset="0.822"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock FontSize="16" HorizontalAlignment="Center">You've been updated!</TextBlock>
+
+        <TextBlock Grid.Row="1" FontSize="14" Text="{Binding ElementName=userControl, Path=VersionText,
+            StringFormat=The application has been updated to version {0}}"/>
+
+        <ScrollViewer Grid.Row="2" MaxHeight="500" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <ItemsControl Margin="4"  ItemsSource="{Binding ElementName=userControl, Path=ItemsToShow}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Margin="2,4" Foreground="White" FontWeight="Bold" Text="{Binding Version}"/>
+                            <ItemsControl ItemsSource="{Binding Updates}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Margin="4,1" Foreground="White">&#x2022;</TextBlock>
+                                            <TextBlock Margin="4,1" Foreground="White" TextWrapping="Wrap" Text="{Binding}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <Button Grid.Row="3" Margin="4" Width="75" Height="23" 
+                HorizontalAlignment="Right" Click="Button_Click">Close</Button>
+    </Grid>
+</Window>

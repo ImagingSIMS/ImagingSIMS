@@ -1,0 +1,87 @@
+﻿<Window x:Class="ImagingSIMS.Controls.Dialogs.ResizeDialogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Background="#FF414141" 
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="Resize" SizeToContent="Height" Width="550">
+    <Window.Resources>
+        <ResourceDictionary>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Margin" Value="4"/>
+                    </Style>
+                    <Style TargetType="{x:Type CheckBox}">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Setter Property="Margin" Value="4"/>
+                        <Setter Property="Height" Value="20"/>
+                        <Setter Property="Width" Value="50"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="Width" Value="75"/>
+                <Setter Property="Height" Value="23"/>
+            </Style>
+        </ResourceDictionary>        
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <Image Width="75" Height="75" Margin="8" Source="{Binding ResziePreviewImageSource}"/>
+        
+        <Grid Grid.Column="1" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding OriginalWidth, StringFormat=Original Width: {0}}"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding OriginalHeight, StringFormat=Original Height: {0}}"/>
+
+            <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
+                <TextBlock>Resized Width:</TextBlock>
+                <TextBox x:Name="tb3" Text="{Binding ResizedWidth}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
+                <TextBlock>Resized Height:</TextBlock>
+                <TextBox x:Name="tb4" Text="{Binding ResizedHeight}"/>
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+                <TextBlock>Crop:</TextBlock>
+                <CheckBox x:Name="checkBoxCrop" IsChecked="{Binding DoCrop}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" IsEnabled="{Binding ElementName=checkBoxCrop, Path=IsChecked}">
+                <TextBlock>Crop Start X:</TextBlock>
+                <TextBox x:Name="tb1" Text="{Binding CropStartX}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" IsEnabled="{Binding ElementName=checkBoxCrop, Path=IsChecked}">
+                <TextBlock>Crop Start Y:</TextBlock>
+                <TextBox x:Name="tb2" Text="{Binding CropStartY}"/>
+            </StackPanel>
+
+        </Grid>
+        
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="bt1" Content="OK" Click="buttonOK_Click"/>
+            <Button x:Name="bt2" Content="Cancel" Click="buttonCancel_Click"/>
+        </StackPanel>
+        
+    </Grid>
+</Window>

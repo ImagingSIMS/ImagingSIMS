@@ -1,0 +1,109 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.Tabs.DisplayTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:base="clr-namespace:ImagingSIMS.Controls.BaseControls"
+             xmlns:c="clr-namespace:ImagingSIMS.Controls"
+             xmlns:converters="clr-namespace:ImagingSIMS.Controls.Converters"
+             xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             xmlns:data="clr-namespace:ImagingSIMS.Data;assembly=Data"
+             mc:Ignorable="d" 
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DesignHeight="700" d:DesignWidth="500"
+             PreviewKeyDown="UserControl_PreviewKeyDown">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Themes\Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type Separator}">
+                <Setter Property="Margin" Value="4,2"/>
+            </Style>
+            <converters:DisplayImageToDimensionsConverter x:Key="displayImageToDimensionsConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Drop="Grid_Drop">
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Select All" Click="menuItemSelectAll_Click"/>
+                <MenuItem Header="Clear Selection" Click="menuItemClearSelection_Click"/>
+            </ContextMenu>
+        </Grid.ContextMenu>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Expander Grid.Column="1" ExpandDirection="Left" IsExpanded="False" x:Name="expanderSidePanel">
+            <StackPanel Orientation="Vertical">
+                <Label>Backcolor:</Label>
+                <cc:ColorSelector HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4" A="255"
+                                     SelectedColor="{Binding BackColor, Mode=TwoWay}"/>
+                <Separator/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Margin="4" Click="buttonSelectAll_Click" Width="75" Height="23">Select All</Button>
+                    <Button Margin="4" Click="buttonClear_Click" Width="75" Height="23">Clear</Button>
+                </StackPanel>
+                <Separator/>
+                <base:ColorScalePreview/>
+            </StackPanel>
+        </Expander>
+        
+        <ListBox x:Name="itemsControl" Background="Transparent" ItemsSource="{Binding CurrentSeries.Images}" SelectionMode="Multiple"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Width="Auto" Height="Auto"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" BorderThickness="0">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel MouseMove="DockPanel_MouseMove">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <ContentControl 
+                                Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Registry.DataDisplayWidth}" 
+                                Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Registry.DataDisplayWidth}" 
+                                Margin="4" Content="{Binding}">
+                                <ContentControl.ToolTip>
+                                    <ToolTip Background="{StaticResource MenuBackground}" BorderBrush="#FF4D5578">
+                                        <TextBlock Text="{Binding Converter={StaticResource displayImageToDimensionsConverter}}" Foreground="White"/>
+                                    </ToolTip>
+                                </ContentControl.ToolTip>
+                            </ContentControl>
+                            <StackPanel Orientation="Vertical" Grid.Row="1">                                
+                                <TextBlock Margin="4" VerticalAlignment="Center" Text="{Binding Path=Title}" Foreground="White" TextWrapping="Wrap"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Width="20" Height="20" Click="contentButtonRemove_Click" Margin="4" ToolTip="Delete">
+                                        <Image Source="..\Images\Remove24.png"/>
+                                    </Button>
+                                    <Button Width="20" Height="20" Click="contentButtonSave_Click" Margin="4" ToolTip="Save">
+                                        <Image Source="..\Images\saveHS.png"/>
+                                    </Button>
+                                    <Button Width="20" Height="20" Click="contentButtonCopy_Click" Margin="4" ToolTip="Copy">
+                                        <Image Source="..\Images\copy.ico"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>                            
+                        </Grid>
+                    </DockPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Control.Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{Binding BackColor}"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Control.BorderThickness" Value="{Binding BackColor.R}"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+        </ListBox>
+    </Grid>
+</UserControl>

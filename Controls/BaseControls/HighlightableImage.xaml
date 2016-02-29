@@ -1,0 +1,74 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.BaseControls.HighlightableImage"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:data="clr-namespace:ImagingSIMS.Data.Imaging;assembly=Data"
+             xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="500">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Themes\Generic.xaml"/>
+                <ResourceDictionary>
+                    <ObjectDataProvider x:Key="colorScaleFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                        <ObjectDataProvider.MethodParameters>
+                            <x:Type TypeName="data:ColorScaleTypes"/>
+                        </ObjectDataProvider.MethodParameters>
+                    </ObjectDataProvider>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0" x:Name="imageHost"
+              MouseLeftButtonDown="imageHost_PreviewMouseLeftButtonDown"
+              MouseLeftButtonUp="imageHost_PreviewMouseLeftButtonUp"
+              MouseRightButtonDown="imageHost_PreviewMouseRightButtonDown"
+              MouseRightButtonUp="imageHost_PreviewMouseRightButtonUp"
+              MouseMove="imageHost_MouseMove">
+            <Image Source="{Binding ElementName=userControl, Path=DisplayImage}"/>
+        </Grid>        
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <TextBlock>Brush size:</TextBlock>
+            <TextBox Height="20" Width="50" Text="{Binding ElementName=userControl, Path=BrushSize}"/>
+            <TextBlock>Color scale:</TextBlock>
+            <ComboBox Height="20" Width="75" Margin="4" IsEditable="False"
+                              ItemsSource="{Binding Source={StaticResource colorScaleFromEnum}}"
+                              SelectedItem="{Binding ColorScale, ElementName=userControl}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="2">
+            <TextBlock>Selection color:</TextBlock>
+            <Button x:Name="buttonShowColor" Width="20" Height="20" Margin="4" 
+                        MouseEnter="buttonShowColor_MouseEnter">
+                <Image Source="..\Images\PaintPalette.ico"/>
+            </Button>
+            <Popup x:Name="popupSolidColorScale" IsOpen="False" PlacementTarget="{Binding ElementName=buttonShowColor}" StaysOpen="False">
+                <Grid Background="{StaticResource MenuBackground}">
+                    <cc:ColorSelector SelectedColor="{Binding Mode=TwoWay, ElementName=userControl, Path=SelectionColor}" IsAlphaEnabled="False"/>
+                </Grid>
+            </Popup>
+            <Button Width="75" Height="20" Click="buttonClear_Click">Clear</Button>
+        </StackPanel>
+        <TextBlock Grid.Row="2" Text="{Binding ElementName=userControl, Path=DisplayTextLine1}"/>
+        <TextBlock Grid.Row="3" Text="{Binding ElementName=userControl, Path=DisplayTextLine2}"/>
+    </Grid>
+</UserControl>

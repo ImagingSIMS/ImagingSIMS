@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 using ImagingSIMS.Controls;
+using ImagingSIMS.Controls.Tabs;
 using ImagingSIMS.Data;
 using ImagingSIMS.Data.Imaging;
 using ImagingSIMS.Data.Spectra;

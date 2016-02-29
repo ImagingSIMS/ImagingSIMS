@@ -175,6 +175,11 @@ namespace ImagingSIMS.ImageRegistration
             string currentTime = DateTime.Now.ToFileTimeUtc().ToString();
             string filePath = AppDataFileHelper.GetFilePath(currentTime, ".tfm");
 
+            if (!Directory.Exists(Path.GetDirectoryName(filePath)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            }
+
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 using (BinaryWriter bw = new BinaryWriter(fileStream))

@@ -70,80 +70,81 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClosableTabItem.cs" />
-    <Compile Include="ClusterTab.xaml.cs">
+    <Compile Include="BaseControls\MoveThumb.cs" />
+    <Compile Include="BaseControls\ResizeThumb.cs" />
+    <Compile Include="IAvailableImageSeries.cs" />
+    <Compile Include="RatioTab.xaml.cs" />
+    <Compile Include="Tabs\ClosableTabItem.cs" />
+    <Compile Include="Tabs\ClusterTab.xaml.cs">
       <DependentUpon>ClusterTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ColorScalePreview.xaml.cs">
+    <Compile Include="BaseControls\ColorScalePreview.xaml.cs">
       <DependentUpon>ColorScalePreview.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Common.cs" />
-    <Compile Include="ComponentTab.xaml.cs">
+    <Compile Include="Converters.cs" />
+    <Compile Include="Tabs\ComponentTab.xaml.cs">
       <DependentUpon>ComponentTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Data2DDisplay.xaml.cs">
+    <Compile Include="BaseControls\Data2DDisplay.xaml.cs">
       <DependentUpon>Data2DDisplay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Data2DDisplayTab.xaml.cs">
+    <Compile Include="Tabs\Data2DDisplayTab.xaml.cs">
       <DependentUpon>Data2DDisplayTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DataCorrectionTab.xaml.cs">
+    <Compile Include="Tabs\DataCorrectionTab.xaml.cs">
       <DependentUpon>DataCorrectionTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DataRegistrationTab.xaml.cs">
+    <Compile Include="Tabs\DataRegistrationTab.xaml.cs">
       <DependentUpon>DataRegistrationTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DisplayTab.xaml.cs">
+    <Compile Include="Tabs\DisplayTab.xaml.cs">
       <DependentUpon>DisplayTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileItem.xaml.cs">
+    <Compile Include="BaseControls\FileItem.xaml.cs">
       <DependentUpon>FileItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HeightMapTab.xaml.cs">
+    <Compile Include="Tabs\HeightMapTab.xaml.cs">
       <DependentUpon>HeightMapTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HighlightableImage.xaml.cs">
+    <Compile Include="BaseControls\HighlightableImage.xaml.cs">
       <DependentUpon>HighlightableImage.xaml</DependentUpon>
     </Compile>
     <Compile Include="History.cs" />
-    <Compile Include="Hyperlink.cs" />
+    <Compile Include="BaseControls\Hyperlink.cs" />
     <Compile Include="IAvailableTables.cs" />
     <Compile Include="ImageStitchTab.xaml.cs">
       <DependentUpon>ImageStitchTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MaskedTextBox.cs" />
-    <Compile Include="PCATab.xaml.cs">
+    <Compile Include="BaseControls\MaskedTextBox.cs" />
+    <Compile Include="Tabs\PCATab.xaml.cs">
       <DependentUpon>PCATab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PeakPreview.xaml.cs">
+    <Compile Include="BaseControls\PeakPreview.xaml.cs">
       <DependentUpon>PeakPreview.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PointSelectImage.xaml.cs">
+    <Compile Include="BaseControls\PointSelectImage.xaml.cs">
       <DependentUpon>PointSelectImage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Printing.cs" />
-    <Compile Include="RatioTab.xaml.cs">
-      <DependentUpon>RatioTab.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="RegistrationInputImage.xaml.cs">
+    <Compile Include="BaseControls\RegistrationInputImage.xaml.cs">
       <DependentUpon>RegistrationInputImage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RegistrationParametersControl.xaml.cs">
+    <Compile Include="BaseControls\RegistrationParametersControl.xaml.cs">
       <DependentUpon>RegistrationParametersControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RenderObjectTab.xaml.cs">
+    <Compile Include="Tabs\RenderObjectTab.xaml.cs">
       <DependentUpon>RenderObjectTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CropPreview.xaml.cs">
+    <Compile Include="BaseControls\CropPreview.xaml.cs">
       <DependentUpon>CropPreview.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CropTab.xaml.cs">
+    <Compile Include="Tabs\CropTab.xaml.cs">
       <DependentUpon>CropTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FusionTab.xaml.cs">
+    <Compile Include="Tabs\FusionTab.xaml.cs">
       <DependentUpon>FusionTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ListView.cs" />
+    <Compile Include="BaseControls\ListView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -157,19 +158,19 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ResizeDialogWindow.xaml.cs">
+    <Compile Include="Dialogs\ResizeDialogWindow.xaml.cs">
       <DependentUpon>ResizeDialogWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SEMTab.xaml.cs">
+    <Compile Include="Tabs\SEMTab.xaml.cs">
       <DependentUpon>SEMTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingsTab.xaml.cs">
+    <Compile Include="Tabs\SettingsTab.xaml.cs">
       <DependentUpon>SettingsTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SpectrumCropTab.xaml.cs">
+    <Compile Include="Tabs\SpectrumCropTab.xaml.cs">
       <DependentUpon>SpectrumCropTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SpectrumTab.xaml.cs">
+    <Compile Include="Tabs\SpectrumTab.xaml.cs">
       <DependentUpon>SpectrumTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="SpectrumView\AxisX.xaml.cs">
@@ -193,33 +194,27 @@
     <Compile Include="SpectrumView\TestControl.xaml.cs">
       <DependentUpon>TestControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StartupTab.xaml.cs">
+    <Compile Include="Tabs\StartupTab.xaml.cs">
       <DependentUpon>StartupTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DepthProfileTab.xaml.cs">
+    <Compile Include="Tabs\DepthProfileTab.xaml.cs">
       <DependentUpon>DepthProfileTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TableSelector.xaml.cs">
-      <DependentUpon>TableSelector.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="TableSumTab.xaml.cs">
+    <Compile Include="Tabs\TableSumTab.xaml.cs">
       <DependentUpon>TableSumTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TestControl.xaml.cs">
-      <DependentUpon>TestControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="VolumeTab.xaml.cs">
+    <Compile Include="Tabs\VolumeTab.xaml.cs">
       <DependentUpon>VolumeTab.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WaitingSpinner.xaml.cs">
-      <DependentUpon>WaitingSpinner.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WorkableImage.xaml.cs">
-      <DependentUpon>WorkableImage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ZCorrectionTab.xaml.cs">
+    <Compile Include="Tabs\ZCorrectionTab.xaml.cs">
       <DependentUpon>ZCorrectionTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\ClusterTabViewModel.cs" />
+    <Compile Include="ViewModels\Data2DDisplayBatchApplyViewModel.cs" />
+    <Compile Include="ViewModels\Data2DDisplayViewModel.cs" />
+    <Compile Include="ViewModels\FusionImageViewModel.cs" />
+    <Compile Include="ViewModels\PeakPreviewViewModel.cs" />
+    <Compile Include="ViewModels\RegistrationParametersViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -324,47 +319,47 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ClusterTab.xaml">
+    <Page Include="RatioTab.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Tabs\ClusterTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ColorScalePreview.xaml">
+    <Page Include="BaseControls\ColorScalePreview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ComponentTab.xaml">
+    <Page Include="Tabs\ComponentTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Data2DDisplay.xaml">
+    <Page Include="BaseControls\Data2DDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Data2DDisplayTab.xaml">
+    <Page Include="Tabs\Data2DDisplayTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DataCorrectionTab.xaml">
+    <Page Include="Tabs\DataCorrectionTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DataRegistrationTab.xaml">
+    <Page Include="Tabs\DataRegistrationTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DisplayTab.xaml">
+    <Page Include="Tabs\DisplayTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FileItem.xaml">
+    <Page Include="BaseControls\FileItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="HeightMapTab.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="HighlightableImage.xaml">
+    <Page Include="Tabs\HeightMapTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -372,63 +367,63 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PCATab.xaml">
+    <Page Include="BaseControls\HighlightableImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PeakPreview.xaml">
+    <Page Include="Tabs\PCATab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PointSelectImage.xaml">
+    <Page Include="BaseControls\PeakPreview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RatioTab.xaml">
+    <Page Include="BaseControls\PointSelectImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RegistrationInputImage.xaml">
+    <Page Include="BaseControls\RegistrationInputImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RegistrationParametersControl.xaml">
+    <Page Include="BaseControls\RegistrationParametersControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RenderObjectTab.xaml">
+    <Page Include="Tabs\RenderObjectTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CropPreview.xaml">
+    <Page Include="BaseControls\CropPreview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CropTab.xaml">
+    <Page Include="Tabs\CropTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FusionTab.xaml">
+    <Page Include="Tabs\FusionTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ResizeDialogWindow.xaml">
+    <Page Include="Dialogs\ResizeDialogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SEMTab.xaml">
+    <Page Include="Tabs\SEMTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettingsTab.xaml">
+    <Page Include="Tabs\SettingsTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SpectrumCropTab.xaml">
+    <Page Include="Tabs\SpectrumCropTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SpectrumTab.xaml">
+    <Page Include="Tabs\SpectrumTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -460,23 +455,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="StartupTab.xaml">
+    <Page Include="Tabs\StartupTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DepthProfileTab.xaml">
+    <Page Include="Tabs\DepthProfileTab.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="TableSelector.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="TableSumTab.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="TestControl.xaml">
+    <Page Include="Tabs\TableSumTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -496,19 +483,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="VolumeTab.xaml">
+    <Page Include="Tabs\VolumeTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WaitingSpinner.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WorkableImage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ZCorrectionTab.xaml">
+    <Page Include="Tabs\ZCorrectionTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
