@@ -70,10 +70,13 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseControls\GridAware.cs" />
     <Compile Include="BaseControls\MoveThumb.cs" />
     <Compile Include="BaseControls\ResizeThumb.cs" />
     <Compile Include="IAvailableImageSeries.cs" />
-    <Compile Include="RatioTab.xaml.cs" />
+    <Compile Include="Tabs\RatioTab.xaml.cs">
+      <DependentUpon>RatioTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tabs\ClosableTabItem.cs" />
     <Compile Include="Tabs\ClusterTab.xaml.cs">
       <DependentUpon>ClusterTab.xaml</DependentUpon>
@@ -112,7 +115,7 @@
     <Compile Include="History.cs" />
     <Compile Include="BaseControls\Hyperlink.cs" />
     <Compile Include="IAvailableTables.cs" />
-    <Compile Include="ImageStitchTab.xaml.cs">
+    <Compile Include="Tabs\ImageStitchTab.xaml.cs">
       <DependentUpon>ImageStitchTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="BaseControls\MaskedTextBox.cs" />
@@ -213,7 +216,9 @@
     <Compile Include="ViewModels\Data2DDisplayBatchApplyViewModel.cs" />
     <Compile Include="ViewModels\Data2DDisplayViewModel.cs" />
     <Compile Include="ViewModels\FusionImageViewModel.cs" />
+    <Compile Include="ViewModels\ImageStitchViewModel.cs" />
     <Compile Include="ViewModels\PeakPreviewViewModel.cs" />
+    <Compile Include="ViewModels\RatioTabViewModel.cs" />
     <Compile Include="ViewModels\RegistrationParametersViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -319,7 +324,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="RatioTab.xaml">
+    <Page Include="Tabs\RatioTab.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -363,7 +368,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ImageStitchTab.xaml">
+    <Page Include="Tabs\ImageStitchTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

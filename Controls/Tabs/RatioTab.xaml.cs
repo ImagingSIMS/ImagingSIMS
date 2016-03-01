@@ -8,20 +8,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Win32;
+using ImagingSIMS.Controls.ViewModels;
 
-namespace ImagingSIMS.Controls
+namespace ImagingSIMS.Controls.Tabs
 {
     /// <summary>
     /// Interaction logic for RatioTab.xaml
@@ -51,11 +45,8 @@ namespace ImagingSIMS.Controls
             Button b = sender as Button;
             if (sender == null) return;
 
-            foreach(object o in listAvailable.SelectedItems)
+            foreach(Data2D d in AvailableHost.AvailableTablesSource.GetSelectedTables())
             {
-                Data2D d = o as Data2D;
-                if (d == null) continue;
-
                 if (b == buttonAddNumerator)
                 {
                     InputData.NumeratorTables.Add(d);
@@ -560,198 +551,17 @@ namespace ImagingSIMS.Controls
 
             _pw.ProgressFinished("Ratio complete");
 
-            foreach(Data2D d in ratioTables)
-            {
-                InputData.AvailableTables.Add(d);
-            }
+            AvailableHost.AvailableTablesSource.AddTables(ratioTables);
+
 
             if (removeOriginal)
             {
-                foreach(Data2D d in originalNumerator)
-                {
-                    if (InputData.AvailableTables.Contains(d))
-                    {
-                        InputData.AvailableTables.Remove(d);
-                    }
-                }
-                foreach(Data2D d in originalDenominator)
-                {
-                    if (InputData.AvailableTables.Contains(d))
-                    {
-                        InputData.AvailableTables.Remove(d);
-                    }
-                }
+                AvailableHost.AvailableTablesSource.RemoveTables(originalNumerator);
+                AvailableHost.AvailableTablesSource.RemoveTables(originalDenominator);
             }
             
             _pw.Close();
             _pw = null;
-        }
-    }
-
-    public class RatioTabViewModel : INotifyPropertyChanged
-    {
-        ObservableCollection<Data2D> _availabileTables;
-        ObservableCollection<Data2D> _numeratorTables;
-        ObservableCollection<Data2D> _denominatorTables;
-        string _outputBaseName;
-        bool _removeOriginalTables;
-        bool _doCrossRatio;
-        bool _multiplyByFactor;
-        double _multiplyFactor;
-        bool _fuseImagesFirst;
-        FusionType _fusionType;
-        BitmapSource _numeratorHighRes;
-
-        public ObservableCollection<Data2D> AvailableTables
-        {
-            get { return _availabileTables; }
-            set
-            {
-                if(_availabileTables != value)
-                {
-                    _availabileTables = value;
-                    NotifyPropertyChanged("AvailableTables");
-                }
-            }
-        }
-        public ObservableCollection<Data2D> NumeratorTables
-        {
-            get { return _numeratorTables; }
-            set
-            {
-                if(_numeratorTables != value)
-                {
-                    _numeratorTables = value;
-                    NotifyPropertyChanged("NumeratorTables");
-                }
-            }
-        }
-        public ObservableCollection<Data2D> DenominatorTables
-        {
-            get { return _denominatorTables; }
-            set
-            {
-                if(_denominatorTables!= value)
-                {
-                    _denominatorTables = value;
-                    NotifyPropertyChanged("DenominatorTables");
-                }
-            }
-        }
-
-        public string OutputBaseName
-        {
-            get { return _outputBaseName; }
-            set
-            {
-                if(_outputBaseName!= value)
-                {
-                    _outputBaseName = value;
-                    NotifyPropertyChanged("OutputBaseName");
-                }
-            }
-        }
-        public bool RemoveOriginalTables
-        {
-            get { return _removeOriginalTables; }
-            set
-            {
-                if(_removeOriginalTables != value)
-                {
-                    _removeOriginalTables = value;
-                    NotifyPropertyChanged("RemoveOriginalTables");
-                }
-            }
-        }
-        public bool DoCrossRatio
-        {
-            get { return _doCrossRatio; }
-            set
-            {
-                if(_doCrossRatio!= value)
-                {
-                    _doCrossRatio = value;
-                    NotifyPropertyChanged("DoCrossRatio");
-                }
-            }
-        }
-        public bool MultiplyByFactor
-        {
-            get { return _multiplyByFactor; }
-            set
-            {
-                if(_multiplyByFactor!= value)
-                {
-                    _multiplyByFactor = value;
-                    NotifyPropertyChanged("MultiplyByFactor");
-                }
-            }
-        }
-        public double MultiplyFactor
-        {
-            get { return _multiplyFactor; }
-            set
-            {
-                if(_multiplyFactor != value)
-                {
-                    _multiplyFactor = value;
-                    NotifyPropertyChanged("MultiplyFactor");
-                }
-            }
-        }
-        public bool FuseImagesFirst
-        {
-            get { return _fuseImagesFirst; }
-            set
-            {
-                if(_fuseImagesFirst != value)
-                {
-                    _fuseImagesFirst = value;
-                    NotifyPropertyChanged("FuseImagesFirst");
-                }
-            }
-        }
-        public FusionType FusionType
-        {
-            get { return _fusionType; }
-            set
-            {
-                if(_fusionType!= value)
-                {
-                    _fusionType = value;
-                    NotifyPropertyChanged("FusionType");
-                }
-            }
-        }
-        public BitmapSource HighRes
-        {
-            get { return _numeratorHighRes; }
-            set
-            {
-                if(_numeratorHighRes != value)
-                {
-                    _numeratorHighRes = value;
-                    NotifyPropertyChanged("HighRes");
-                }
-            }
-        }
-
-        public RatioTabViewModel()
-        {
-            AvailableTables = new ObservableCollection<Data2D>();
-            NumeratorTables = new ObservableCollection<Data2D>();
-            DenominatorTables = new ObservableCollection<Data2D>();
-
-            MultiplyFactor = 1;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void NotifyPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
     }
 }

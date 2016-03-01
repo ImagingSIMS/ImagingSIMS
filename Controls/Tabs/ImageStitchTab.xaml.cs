@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using ImagingSIMS.Common.Dialogs;
+using ImagingSIMS.Controls.ViewModels;
 using ImagingSIMS.Data;
 
-namespace ImagingSIMS.Controls
+namespace ImagingSIMS.Controls.Tabs
 {
     /// <summary>
     /// Interaction logic for ImageStitchTab.xaml
@@ -345,158 +337,6 @@ namespace ImagingSIMS.Controls
                 toRemove.DataItem = null;
 
                 e.Handled = true;
-            }
-        }
-    }
-
-    public class ImageStitchItemViewModel : INotifyPropertyChanged
-    {
-        int _indexX;
-        int _indexY;
-        Data2D _dataItem;
-
-        public int IndexX
-        {
-            get { return _indexX; }
-            set
-            {
-                if (_indexX != value)
-                {
-                    _indexX = value;
-                    NotifyPropertyChanged("IndexX");
-                }
-            }
-        }
-        public int IndexY
-        {
-            get { return _indexY; }
-            set
-            {
-                if (_indexY != value)
-                {
-                    _indexY = value;
-                    NotifyPropertyChanged("IndexY");
-                }
-            }
-        }
-        public Data2D DataItem
-        {
-            get { return _dataItem; }
-            set
-            {
-                if (_dataItem != value)
-                {
-                    _dataItem = value;
-                    NotifyPropertyChanged("DataItem");
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public ImageStitchItemViewModel()
-        {
-
-        }
-        public ImageStitchItemViewModel(int x, int y)
-        {
-            IndexX = x;
-            IndexY = y;
-        }
-
-        public void NotifyPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-
-    public class GridAwareItemsControl : ItemsControl
-    {
-        protected override DependencyObject GetContainerForItemOverride()
-        {
-            ContentPresenter container = (ContentPresenter)base.GetContainerForItemOverride();
-            if (ItemTemplate == null)
-            {
-                return container;
-            }
-
-            FrameworkElement content = (FrameworkElement)ItemTemplate.LoadContent();
-            BindingExpression rowBinding = content.GetBindingExpression(Grid.RowProperty);
-            BindingExpression columnBinding = content.GetBindingExpression(Grid.ColumnProperty);
-
-            if (rowBinding != null)
-            {
-                container.SetBinding(Grid.RowProperty, rowBinding.ParentBinding);
-            }
-
-            if (columnBinding != null)
-            {
-                container.SetBinding(Grid.ColumnProperty, columnBinding.ParentBinding);
-            }
-
-            return container;
-        }
-    }
-    public class GridAutoLayout
-    {
-        public static int GetNumberOfColumns(DependencyObject obj)
-        {
-            return (int)obj.GetValue(NumberOfColumnsProperty);
-        }
-
-        public static void SetNumberOfColumns(DependencyObject obj, int value)
-        {
-            obj.SetValue(NumberOfColumnsProperty, value);
-        }
-
-        // Using a DependencyProperty as the backing store for NumberOfColumns.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty NumberOfColumnsProperty =
-            DependencyProperty.RegisterAttached("NumberOfColumns", typeof(int), typeof(GridAutoLayout), new PropertyMetadata(1, NumberOfColumnsUpdated));
-
-        public static int GetNumberOfRows(DependencyObject obj)
-        {
-            return (int)obj.GetValue(NumberOfRowsProperty);
-        }
-
-        public static void SetNumberOfRows(DependencyObject obj, int value)
-        {
-            obj.SetValue(NumberOfRowsProperty, value);
-        }
-
-        // Using a DependencyProperty as the backing store for NumberOfRows.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty NumberOfRowsProperty =
-            DependencyProperty.RegisterAttached("NumberOfRows", typeof(int), typeof(GridAutoLayout), new PropertyMetadata(1, NumberOfRowsUpdated));
-
-        private static void NumberOfRowsUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            Grid grid = (Grid)d;
-
-            grid.RowDefinitions.Clear();
-            for (int i = 0; i < (int)e.NewValue; i++)
-            {
-                grid.RowDefinitions.Add(new RowDefinition()
-                {
-                    Height = new GridLength(1, GridUnitType.Star),
-                    MinHeight = 25
-                });
-            }
-        }
-
-        private static void NumberOfColumnsUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            Grid grid = (Grid)d;
-
-            grid.ColumnDefinitions.Clear();
-            for (int i = 0; i < (int)e.NewValue; i++)
-            {
-                grid.ColumnDefinitions.Add(new ColumnDefinition()
-                {
-                    Width = new GridLength(1, GridUnitType.Star),
-                    MinWidth = 25
-                });
             }
         }
     }
