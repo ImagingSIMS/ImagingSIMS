@@ -6,7 +6,7 @@
         x:Name="userControl"
         x:Class="ImagingSIMS.Common.Dialogs.DialogBox"
         Title="DialogBox" Background="#FF414141" Width="400" MaxWidth="400" 
-        SizeToContent="Height" WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        SizeToContent="Height" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
         Icon="Images\PaintPalette.ico">
     <Window.Resources>
         <ResourceDictionary Source="Themes\Generic.xaml"/>

@@ -178,7 +178,7 @@ namespace ImagingSIMS.Controls.Tabs
             catch(Exception ex)
             {
                 _skipAddToHistory = false;
-                DialogBox.Show("Cannot perform specified navigation.", ex.Message, "Back", DialogBoxIcon.Warning);
+                DialogBox.Show("Cannot perform specified navigation.", ex.Message, "Back", DialogIcon.Warning);
             }      
         }
         public void HistoryForward()
@@ -196,7 +196,7 @@ namespace ImagingSIMS.Controls.Tabs
             catch (Exception ex)
             {
                 _skipAddToHistory = false;
-                DialogBox.Show("Cannot perform specified navigation.", ex.Message, "Forward", DialogBoxIcon.Warning);
+                DialogBox.Show("Cannot perform specified navigation.", ex.Message, "Forward", DialogIcon.Warning);
             }      
         }
         public void Reset()

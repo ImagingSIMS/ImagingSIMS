@@ -179,7 +179,7 @@ namespace ImagingSIMS.Controls.Tabs
                 }
                 list.Remove(list.Length - 2, 2);
 
-                DialogBox.Show("The following tables were not added to the selected list:", list, "Transform", DialogBoxIcon.Warning);
+                DialogBox.Show("The following tables were not added to the selected list:", list, "Transform", DialogIcon.Warning);
             }
         }
         private void addMovingTables()
@@ -213,7 +213,7 @@ namespace ImagingSIMS.Controls.Tabs
                 }
                 list.Remove(list.Length - 2, 2);
 
-                DialogBox.Show("The following tables were not added to the selected list:", list, "Transform", DialogBoxIcon.Warning);
+                DialogBox.Show("The following tables were not added to the selected list:", list, "Transform", DialogIcon.Warning);
             }
         }
         private void removeFixedTables()
@@ -261,7 +261,7 @@ namespace ImagingSIMS.Controls.Tabs
                 }
                 list.Remove(list.Length - 2, 2);
 
-                DialogBox.Show("The following tables were not removed from the selected tables list:", list, "Transform", DialogBoxIcon.Warning);
+                DialogBox.Show("The following tables were not removed from the selected tables list:", list, "Transform", DialogIcon.Warning);
             }
         }
         private void removeMovingTables()
@@ -309,7 +309,7 @@ namespace ImagingSIMS.Controls.Tabs
                 }
                 list.Remove(list.Length - 2, 2);
 
-                DialogBox.Show("The following tables were not removed from the selected tables list:", list, "Transform", DialogBoxIcon.Warning);
+                DialogBox.Show("The following tables were not removed from the selected tables list:", list, "Transform", DialogIcon.Warning);
             }
         }
 
@@ -331,7 +331,7 @@ namespace ImagingSIMS.Controls.Tabs
             if (_selectedTablesFixed.Count == 0 && _selectedTablesMoving.Count == 0)
             {
                 DialogBox.Show("No tables selected.", "Add one or more tables to the moving and/or fixed list and try again.",
-                    "Transform", DialogBoxIcon.Error);
+                    "Transform", DialogIcon.Error);
                 return;
             }
             // Do dimension check and find target width and height
@@ -352,7 +352,7 @@ namespace ImagingSIMS.Controls.Tabs
                 {
                     DialogBox.Show("Dimensions are not valid.",
                         "One or more of the selected moving tables does not match the dimensions of the others.", 
-                        "Transform", DialogBoxIcon.Error);
+                        "Transform", DialogIcon.Error);
                     return;
                 }
             }
@@ -431,7 +431,7 @@ namespace ImagingSIMS.Controls.Tabs
                 line = line.Remove(line.Length - 2, 2);
 
                 DialogBox.Show("The following tables could not be transformed:", 
-                    line, "Transform", DialogBoxIcon.Warning);
+                    line, "Transform", DialogIcon.Warning);
             }
         }
 

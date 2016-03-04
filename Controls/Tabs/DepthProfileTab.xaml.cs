@@ -141,7 +141,7 @@ namespace ImagingSIMS.Controls.Tabs
                 }
                 list.Remove(list.Length - 2, 2);
 
-                DialogBox db = new DialogBox("The following tables were not added to the cross:", list, "Sum", DialogBoxIcon.Warning);
+                DialogBox db = new DialogBox("The following tables were not added to the cross:", list, "Sum", DialogIcon.Warning);
                 db.ShowDialog();
             }
         }
@@ -187,7 +187,7 @@ namespace ImagingSIMS.Controls.Tabs
                 }
                 list.Remove(list.Length - 2, 2);
 
-                DialogBox db = new DialogBox("The following tables were not removed from the cross:", list, "Sum", DialogBoxIcon.Warning);
+                DialogBox db = new DialogBox("The following tables were not removed from the cross:", list, "Sum", DialogIcon.Warning);
                 db.ShowDialog();
             }
         }
@@ -204,7 +204,7 @@ namespace ImagingSIMS.Controls.Tabs
                 if (numInLayer == 0)
                 {
                     DialogBox.Show("No tables selected for a cross.",
-                        string.Format("Cross number {0} does not have any tables added.", (i + 1).ToString()), "Depth Profile", DialogBoxIcon.Error);
+                        string.Format("Cross number {0} does not have any tables added.", (i + 1).ToString()), "Depth Profile", DialogIcon.Error);
                     return;
                 }
 
@@ -217,7 +217,7 @@ namespace ImagingSIMS.Controls.Tabs
                 if (numTablesPerLayers != numInLayer)
                 {
                     DialogBox.Show("Cross lengths don't match.",
-                        "Each cross does not have the same number of tables. Make sure all dimensions match.", "Depth Profile", DialogBoxIcon.Error);
+                        "Each cross does not have the same number of tables. Make sure all dimensions match.", "Depth Profile", DialogIcon.Error);
                     return;
                 }
             }
@@ -244,7 +244,7 @@ namespace ImagingSIMS.Controls.Tabs
                     {
                         if (DialogBox.Show("Not all table dimensions are the same.",
                             "This is OK since tables will be summed to generate the depth profile. Click OK to proceed or Cancel to return",
-                            "Depth Profile", DialogBoxIcon.Information) != true) return;
+                            "Depth Profile", DialogIcon.Information) != true) return;
                     }
                 }   
             }
@@ -267,7 +267,7 @@ namespace ImagingSIMS.Controls.Tabs
             await generateDepthProfileAsync(toGenerate, sfd.FileName, StaggerLayers);
 
             DialogBox.Show("Depth profile saved successfully!", 
-                sfd.FileName, "Depth Profile", DialogBoxIcon.Ok);
+                sfd.FileName, "Depth Profile", DialogIcon.Ok);
         }
 
         private Task generateDepthProfileAsync(Data2D[,] tables, string pathToSave, bool doStagger)

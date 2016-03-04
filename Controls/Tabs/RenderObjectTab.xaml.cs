@@ -115,7 +115,7 @@ namespace ImagingSIMS.Controls.Tabs
             if (listComps.SelectedItems.Count == 0)
             {
                 DialogBox db = new DialogBox("No components selected.", 
-                    "Select one or more components to create a render object.", "Create", DialogBoxIcon.Error);
+                    "Select one or more components to create a render object.", "Create", DialogIcon.Error);
                 db.ShowDialog();
                 return;
             }

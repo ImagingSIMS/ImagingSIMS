@@ -86,7 +86,7 @@ namespace ImagingSIMS.Controls.Tabs
         {
             if (tbBaseName.Text == null || tbBaseName.Text == "")
             {
-                DialogBox db = new DialogBox("Base name missing.", "Enter a base name for the summed tables.", "Sum", DialogBoxIcon.Error);
+                DialogBox db = new DialogBox("Base name missing.", "Enter a base name for the summed tables.", "Sum", DialogIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -99,7 +99,7 @@ namespace ImagingSIMS.Controls.Tabs
             {
                 if (!int.TryParse(tbSum.Text, out varLength))
                 {
-                    DialogBox db = new DialogBox("Invalid variable sum length", "Enter an integer value for the variable sum length.", "Sum", DialogBoxIcon.Error);
+                    DialogBox db = new DialogBox("Invalid variable sum length", "Enter an integer value for the variable sum length.", "Sum", DialogIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -120,7 +120,7 @@ namespace ImagingSIMS.Controls.Tabs
                 {
                     DialogBox db = new DialogBox("Invalid cross lenghts.",
                         "One or more crosses does not have enough tables assigned. Make sure each cross has two or more tables.",
-                        "Sum", DialogBoxIcon.Error);
+                        "Sum", DialogIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -134,7 +134,7 @@ namespace ImagingSIMS.Controls.Tabs
                 if (_collections[i].Count != tableCount)
                 {
                     DialogBox db = new DialogBox("Invalid cross lengths.", "Not all crosses have the same table length. Ensure each have the same number of tables.",
-                        "Sum", DialogBoxIcon.Error);
+                        "Sum", DialogIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -143,7 +143,7 @@ namespace ImagingSIMS.Controls.Tabs
                     if (_collections[i][j].Width != sizeX || _collections[i][j].Height != sizeY)
                     {
                         DialogBox db = new DialogBox("Invalid data dimensions.", "Not all selected data are of the same dimesions. Ensure same size data sets are selected.",
-                          "Sum", DialogBoxIcon.Error);
+                          "Sum", DialogIcon.Error);
                         db.ShowDialog();
                         return;
                     }
@@ -339,7 +339,7 @@ namespace ImagingSIMS.Controls.Tabs
                 }
                 list.Remove(list.Length - 2, 2);
 
-                DialogBox db = new DialogBox("The following tables were not added to the cross:", list, "Sum", DialogBoxIcon.Warning);
+                DialogBox db = new DialogBox("The following tables were not added to the cross:", list, "Sum", DialogIcon.Warning);
                 db.ShowDialog();
             }
         }
@@ -385,7 +385,7 @@ namespace ImagingSIMS.Controls.Tabs
                 }
                 list.Remove(list.Length - 2, 2);
 
-                DialogBox db = new DialogBox("The following tables were not removed from the cross:", list, "Sum", DialogBoxIcon.Warning);
+                DialogBox db = new DialogBox("The following tables were not removed from the cross:", list, "Sum", DialogIcon.Warning);
                 db.ShowDialog();
             }
         }

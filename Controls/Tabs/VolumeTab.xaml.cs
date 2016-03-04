@@ -96,14 +96,14 @@ namespace ImagingSIMS.Controls.Tabs
             if (VolumeName == null || VolumeName == "")
             {
                 DialogBox db = new DialogBox("No volume name specified.", "Please enter a name for the volume and try again.",
-                    "Create", DialogBoxIcon.Error);
+                    "Create", DialogIcon.Error);
                 db.ShowDialog();
                 return;
             }
             if (colorPicker.SelectedColor == Color.FromArgb(255, 0, 0, 0))
             {
                 DialogBox db = new DialogBox("Black? Really?", "Are you sure you want to color your model black?.",
-                    "Create", DialogBoxIcon.Help, true);
+                    "Create", DialogIcon.Help, true);
                 Nullable<bool> result = db.ShowDialog();
                 if (result != true) return;
             }
@@ -119,7 +119,7 @@ namespace ImagingSIMS.Controls.Tabs
             if (selected.Count == 0)
             {
                 DialogBox db = new DialogBox("No tables selected",
-                    "Select one or more data tables to create a volume.", "Create", DialogBoxIcon.Error);
+                    "Select one or more data tables to create a volume.", "Create", DialogIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -127,13 +127,13 @@ namespace ImagingSIMS.Controls.Tabs
             if (RepeatLayers && LayerLength <= 0)
             {
                 DialogBox.Show("Invalid layer length value.",
-                    "Enter a repeating length greater than 0 and try again.", "Volume", DialogBoxIcon.Error);
+                    "Enter a repeating length greater than 0 and try again.", "Volume", DialogIcon.Error);
                 return;
             }
             if (AddBlankLayers && LayerLength <= 0)
             {
                 DialogBox.Show("Invalid blank layer length value.",
-                "Enter a blank layer length value greater tahn 0 and try again.", "Volume", DialogBoxIcon.Error);
+                "Enter a blank layer length value greater tahn 0 and try again.", "Volume", DialogIcon.Error);
                 return;
             }
 
@@ -156,7 +156,7 @@ namespace ImagingSIMS.Controls.Tabs
                 if (targetWidth != d.Width || targetHeight != d.Height)
                 {
                     DialogBox.Show("Invalid data dimensions.",
-                        "One or more data tables has dimensions that do not match the rest.", "Volume", DialogBoxIcon.Error);
+                        "One or more data tables has dimensions that do not match the rest.", "Volume", DialogIcon.Error);
                     return;
                 }
             }
@@ -200,7 +200,7 @@ namespace ImagingSIMS.Controls.Tabs
             if (selected.Count == 0)
             {
                 DialogBox db = new DialogBox("No image series selected",
-                       "Select an image series to create a volume.", "Create", DialogBoxIcon.Error);
+                       "Select an image series to create a volume.", "Create", DialogIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -208,13 +208,13 @@ namespace ImagingSIMS.Controls.Tabs
             if (RepeatLayers && LayerLength <= 0)
             {
                 DialogBox.Show("Invalid layer length value.",
-                    "Enter a repeating length greater than 0 and try again.", "Volume", DialogBoxIcon.Error);
+                    "Enter a repeating length greater than 0 and try again.", "Volume", DialogIcon.Error);
                 return;
             }
             if (AddBlankLayers && LayerLength <= 0)
             {
                 DialogBox.Show("Invalid blank layer length value.",
-                "Enter a blank layer length value greater tahn 0 and try again.", "Volume", DialogBoxIcon.Error);
+                "Enter a blank layer length value greater tahn 0 and try again.", "Volume", DialogIcon.Error);
                 return;
             }
 
@@ -242,7 +242,7 @@ namespace ImagingSIMS.Controls.Tabs
                     if(targetWidth !=d.Width ||targetHeight !=d.Height)
                     {
                         DialogBox.Show("Invalid data dimensions.",
-                        "One or more data tables has dimensions that do not match the rest.", "Volume", DialogBoxIcon.Error);
+                        "One or more data tables has dimensions that do not match the rest.", "Volume", DialogIcon.Error);
                         return;
                     }
                 }

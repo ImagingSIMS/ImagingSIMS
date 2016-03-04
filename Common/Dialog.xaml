@@ -1,10 +1,13 @@
 ﻿<Window x:Class="ImagingSIMS.Common.Dialogs.Dialog"
+        x:Name="userControl"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="{Binding Header}" Background="#FF414141" Width="400" MaxWidth="400" 
-        SizeToContent="Height" WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Title="{Binding ElementName=userControl, Path=Header}" Background="#FF414141" Width="400" MaxWidth="400" 
+        SizeToContent="Height" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
         Icon="Images\PaintPalette.ico">
+    <Window.Resources>
+        <ResourceDictionary Source="Themes\Generic.xaml"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -15,15 +18,66 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Image HorizontalAlignment="Left" Margin="8" VerticalAlignment="Top" Width="54" Height="54"
-               Source="{Binding IconSourceUri}"/>
-        <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding TopMessage}"
+        <Image x:Name="imageIcon" Margin="8" VerticalAlignment="Top">
+            <Image.Style>
+                <Style TargetType="{x:Type Image}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Alert">
+                            <Setter Property="Source" Value="{StaticResource AlertIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Blocked">
+                            <Setter Property="Source" Value="{StaticResource BlockedIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Error">
+                            <Setter Property="Source" Value="{StaticResource ErrorIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Help">
+                            <Setter Property="Source" Value="{StaticResource HelpIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Information">
+                            <Setter Property="Source" Value="{StaticResource InformationIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Invalid">
+                            <Setter Property="Source" Value="{StaticResource InvalidIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Offline">
+                            <Setter Property="Source" Value="{StaticResource OfflineIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Ok">
+                            <Setter Property="Source" Value="{StaticResource OkIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Pause">
+                            <Setter Property="Source" Value="{StaticResource PauseIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Run">
+                            <Setter Property="Source" Value="{StaticResource RunIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="SecurityWarning">
+                            <Setter Property="Source" Value="{StaticResource SecurityWarningIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Stop">
+                            <Setter Property="Source" Value="{StaticResource StopIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Suppressed">
+                            <Setter Property="Source" Value="{StaticResource SuppressedIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="Warning">
+                            <Setter Property="Source" Value="{StaticResource WarningIcon}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=userControl, Path=IconType}" Value="WarningGray">
+                            <Setter Property="Source" Value="{StaticResource WarningGrayIcon}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
+        <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding ElementName=userControl, Path=TopMessage}"
                    Margin="8" Foreground="#FFD8D8D8" MouseMove="msg_MouseMove"/>
-        <TextBlock Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding BottomMessage}"
+        <TextBlock Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding ElementName=userControl, Path=BottomMessage}"
                    Margin="8" Foreground="#FFD8D8D8" MouseMove="msg_MouseMove"/>
         
         <ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                          HorizontalAlignment="Right" Margin="8" ItemsSource="{Binding DialogOptions}">
+                          HorizontalAlignment="Right" Margin="8" ItemsSource="{Binding ElementName=userControl, Path=DialogOptions}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal"/>

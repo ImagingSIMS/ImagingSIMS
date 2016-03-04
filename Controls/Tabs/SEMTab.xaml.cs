@@ -98,7 +98,7 @@ namespace ImagingSIMS.Controls.Tabs
             if (itemsControl.SelectedItems.Count == 0)
             {
                 DialogBox db = new DialogBox("No images selected.", "Select one or more images to save.",
-                    "Save", DialogBoxIcon.Error);
+                    "Save", DialogIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -142,12 +142,12 @@ namespace ImagingSIMS.Controls.Tabs
                     list += string.Format("{0}: {1}\n", kvp.Key.ToString(), kvp.Value.Message);
                 }
 
-                DialogBox db = new DialogBox("The following images were not saved:", list, "Save", DialogBoxIcon.Warning);
+                DialogBox db = new DialogBox("The following images were not saved:", list, "Save", DialogIcon.Warning);
                 db.ShowDialog();
             }
             else
             {
-                DialogBox db = new DialogBox("Image(s) saved successfully!", sfd.FileName, "Save", DialogBoxIcon.Ok);
+                DialogBox db = new DialogBox("Image(s) saved successfully!", sfd.FileName, "Save", DialogIcon.Ok);
                 db.ShowDialog();
             }
         }
