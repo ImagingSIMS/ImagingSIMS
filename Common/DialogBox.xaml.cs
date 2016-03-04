@@ -22,18 +22,18 @@ namespace ImagingSIMS.Common.Dialogs
     public partial class DialogBox : Window
     {
         public static readonly DependencyProperty IconTypeProperty = DependencyProperty.Register("IconType",
-            typeof(DialogBoxIcon), typeof(DialogBox));
+            typeof(DialogIcon), typeof(DialogBox));
 
-        public DialogBoxIcon IconType
+        public DialogIcon IconType
         {
-            get { return (DialogBoxIcon)GetValue(IconTypeProperty); }
+            get { return (DialogIcon)GetValue(IconTypeProperty); }
             set { SetValue(IconTypeProperty, value); }
         }
 
         public DialogBox()
         {
         }
-        public DialogBox(string Message1, string Message2, string Header, DialogBoxIcon Icon)
+        public DialogBox(string Message1, string Message2, string Header, DialogIcon Icon)
         {
             IconType = Icon;
 
@@ -48,7 +48,7 @@ namespace ImagingSIMS.Common.Dialogs
 
             HideCancel();
         }        
-        public DialogBox(string Message1, string Message2, string Header, DialogBoxIcon Icon, bool ShowCancel)
+        public DialogBox(string Message1, string Message2, string Header, DialogIcon Icon, bool ShowCancel)
         {
             IconType = Icon;
 
@@ -109,13 +109,13 @@ namespace ImagingSIMS.Common.Dialogs
             }
         }
 
-        public static bool? Show(string Message1, string Message2, string Header, DialogBoxIcon Icon)
+        public static bool? Show(string Message1, string Message2, string Header, DialogIcon Icon)
         {
             DialogBox db = new DialogBox(Message1, Message2, Header, Icon);
             db.ShowDialog();
             return db.DialogResult;
         }        
-        public static bool? Show(string Message1, string Message2, string Header, DialogBoxIcon Icon, bool ShowCancel)
+        public static bool? Show(string Message1, string Message2, string Header, DialogIcon Icon, bool ShowCancel)
         {
             DialogBox db = new DialogBox(Message1, Message2, Header, Icon, ShowCancel);
             db.ShowDialog();
@@ -123,7 +123,7 @@ namespace ImagingSIMS.Common.Dialogs
         }
     }
 
-    public enum DialogBoxIcon
+    public enum DialogIcon
     {
         Alert, Blocked, Error, Help, Information,
         Invalid, Offline, Ok, Pause, Run, SecurityWarning, 

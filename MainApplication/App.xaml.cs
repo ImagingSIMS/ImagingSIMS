@@ -60,7 +60,7 @@ namespace ImagingSIMS
                 {
                     DialogBox db = new DialogBox("The program was unable to save the crash settings to thre registry.",
                         "An attempt to save the crash file will be made. If the save is successful, you can find the file at {0}, however the program may not automatically load it on the next startup.",
-                        "Autosave", DialogBoxIcon.Error);
+                        "Autosave", DialogIcon.Error);
                     db.ShowDialog();
                 }
 
@@ -73,7 +73,7 @@ namespace ImagingSIMS
                 catch (Exception)
                 {
                     DialogBox db = new DialogBox("The program could not finish the autosave.",
-                        "This is most likely due to corrupt data or the original cause of the crash.", "Autosave", DialogBoxIcon.Error);
+                        "This is most likely due to corrupt data or the original cause of the crash.", "Autosave", DialogIcon.Error);
                     db.ShowDialog();
                     Environment.Exit(-2);
                 }

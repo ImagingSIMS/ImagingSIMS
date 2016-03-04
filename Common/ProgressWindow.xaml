@@ -8,7 +8,7 @@
         Title="DialogBox" Height="Auto" Background="#FF414141" Width="400" 
         Icon="Images\PaintPalette.ico"
         Closing="Window_Closing"
-        WindowStartupLocation="CenterOwner" ResizeMode="NoResize" SizeToContent="Height" ShowInTaskbar="True" WindowStyle="None" Topmost="True">
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" SizeToContent="Height" ShowInTaskbar="True" WindowStyle="None" Topmost="True">
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo />
     </Window.TaskbarItemInfo>

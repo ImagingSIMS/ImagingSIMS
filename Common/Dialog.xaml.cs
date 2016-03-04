@@ -26,8 +26,8 @@ namespace ImagingSIMS.Common.Dialogs
             typeof(string), typeof(Dialog));
         public static DependencyProperty HeaderProperty = DependencyProperty.Register("Header",
             typeof(string), typeof(Dialog));
-        public static DependencyProperty IconSourceProperty = DependencyProperty.Register("IconSource",
-            typeof(ImageSource), typeof(Dialog));
+        public static DependencyProperty IconTypeProperty = DependencyProperty.Register("IconType",
+            typeof(DialogIcon), typeof(Dialog));
 
         public string TopMessage
         {
@@ -44,10 +44,10 @@ namespace ImagingSIMS.Common.Dialogs
             get { return (string)GetValue(HeaderProperty); }
             set { SetValue(HeaderProperty, value); }
         }
-        public ImageSource IconSource
+        public DialogIcon IconType
         {
-            get { return (ImageSource)GetValue(IconSourceProperty); }
-            set { SetValue(IconSourceProperty, value); }
+            get { return (DialogIcon)GetValue(IconTypeProperty); }
+            set { SetValue(IconTypeProperty, value); }
         }
 
         ObservableCollection<string> _dialogOptions;
@@ -59,25 +59,43 @@ namespace ImagingSIMS.Common.Dialogs
 
         public string DialogResponse;
 
-        public Dialog()
+        public Dialog(string topMessage, string bottomMessage, string header, DialogIcon icon)
         {
-            DialogOptions = new ObservableCollection<string>();
-            DialogResponse = "None";
-
-            TopMessage = "Sample Text Top";
-            BottomMessage = "Sample Text Bottom";
-            Header = "Sample Header";
-            IconSource = GetIconSource(DialogBoxIcon.Information);
+            this.TopMessage = topMessage;
+            this.BottomMessage = bottomMessage;
+            this.Header = header;
+            this.IconType = icon;
+            this.DialogOptions = new ObservableCollection<string>(Dialogs.DialogOptions.OK);
 
             InitializeComponent();
         }
-        public Dialog(string TopMessage, string BottomMessage, string Header, DialogBoxIcon Icon)
+        public Dialog(string topMessage, string bottomMessage, string header, DialogIcon icon, ObservableCollection<string> dialogOptions)
         {
-            this.TopMessage = TopMessage;
-            this.BottomMessage = BottomMessage;
-            this.Header = Header;
-            this.IconSource = GetIconSource(Icon);
-            this.DialogOptions = new ObservableCollection<string>(DialogOptionChoices.OK);
+            this.TopMessage = topMessage;
+            this.BottomMessage = bottomMessage;
+            this.Header = header;
+            this.IconType = icon;
+            this.DialogOptions = dialogOptions;
+
+            InitializeComponent();
+        }
+        public Dialog(string topMessage, string bottomMessage, string header, DialogIcon icon, List<string> dialogOptions)
+        {
+            this.TopMessage = topMessage;
+            this.BottomMessage = bottomMessage;
+            this.Header = header;
+            this.IconType = icon;
+            this.DialogOptions = new ObservableCollection<string>(dialogOptions);
+
+            InitializeComponent();
+        }
+        public Dialog(string topMessage, string bottomMessage, string header, DialogIcon icon, string[] dialogOptions)
+        {
+            this.TopMessage = topMessage;
+            this.BottomMessage = bottomMessage;
+            this.Header = header;
+            this.IconType = icon;
+            this.DialogOptions = new ObservableCollection<string>(dialogOptions);
 
             InitializeComponent();
         }
@@ -91,55 +109,7 @@ namespace ImagingSIMS.Common.Dialogs
             }
 
             this.Close();
-        }
-        private ImageSource GetIconSource(DialogBoxIcon icon)
-        {
-            string iconPath = "";
-
-            // Issue here is that icons get copied to output directory of library
-            // but not to ImagingSIMS executable
-
-            //switch (icon)
-            //{
-            //    case DialogBoxIcon.Help:
-            //        iconPath = "Images/Help.png";
-            //        break;
-            //    case DialogBoxIcon.Bubble:
-            //        iconPath = "Images/Bubble.png";
-            //        break;
-            //    case DialogBoxIcon.CyanCheck:
-            //        iconPath = "Images/CyanCheck.png";
-            //        break;
-            //    case DialogBoxIcon.Ok:
-            //        iconPath = "Images/GreenCheck.png";
-            //        break;
-            //    case DialogBoxIcon.Information:
-            //        iconPath = "Images/Information.png";
-            //        break;
-            //    case DialogBoxIcon.RedQuestion:
-            //        iconPath = "Images/RedQuestion.png";
-            //        break;
-            //    case DialogBoxIcon.Error:
-            //        iconPath = "Images/Stop.png";
-            //        break;
-            //    case DialogBoxIcon.Warning:
-            //        iconPath = "Images/Warning.png";
-            //        break;
-            //    default: 
-            //        iconPath = "Images/Information.png";
-            //        break;
-            //}
-            BitmapImage src = new BitmapImage();
-
-            src.BeginInit();
-            src.UriSource = new Uri(iconPath, UriKind.RelativeOrAbsolute);
-            src.CacheOption = BitmapCacheOption.OnLoad;
-            src.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-            src.EndInit();
-
-            return src;
-        }
-
+        }   
         private void msg_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -150,9 +120,79 @@ namespace ImagingSIMS.Common.Dialogs
                 DragDrop.DoDragDrop(tb, toDrag, DragDropEffects.Copy);
             }
         }
+
+        public static string Show(string topMessage, string bottomMessage, string header, DialogIcon icon)
+        {
+            Dialog d = new Dialog(topMessage, bottomMessage, header, icon);
+            d.ShowDialog();
+            return d.DialogResponse;
+        }
+        public static string Show(string topMessage, string bottomMessage, string header, DialogIcon icon, List<string> dialogOptions)
+        {
+            Dialog d = new Dialog(topMessage, bottomMessage, header, icon, dialogOptions);
+            d.ShowDialog();
+            return d.DialogResponse;
+        }
+        public static string Show(string topMessage, string bottomMessage, string header, DialogIcon icon, ObservableCollection<string> dialogOptions)
+        {
+            Dialog d = new Dialog(topMessage, bottomMessage, header, icon, dialogOptions);
+            d.ShowDialog();
+            return d.DialogResponse;
+        }
+        public static string Show(string topMessage, string bottomMessage, string header, DialogIcon icon, string[] dialogOptions)
+        {
+            Dialog d = new Dialog(topMessage, bottomMessage, header, icon, dialogOptions);
+            d.ShowDialog();
+            return d.DialogResponse;
+        }
+
+        public static class HeightMapDropDialog
+        {
+            public static string Show()
+            {
+                Dialog d = new Dialog("You are attempting to drop an image into a depth rendering.",
+                    "Is this height data or color data?", "Height Map", DialogIcon.Help, 
+                    Dialogs.DialogOptions.Custom("Height Data", "Color Data", "Cancel"));
+                d.ShowDialog();
+                return d.DialogResponse;
+            }
+        }
+        public static class FusionDropDialog
+        {
+            public static string Show()
+            {
+                Dialog d = new Dialog("You are attempting to drop an image into a fusion tab.",
+                    "Is this a high or low resolution image?", "Fusion", DialogIcon.Help,
+                    Dialogs.DialogOptions.Custom("High Res", "Low Res", "Cancel"));
+                d.ShowDialog();
+                return d.DialogResponse;
+            }
+        }
+        public static class RegistrationDropDialog
+        {
+            public static string Show()
+            {
+                Dialog d = new Dialog("You are attempting to drop an image into a transform tab.",
+                    "Is this a moving or a fixed image?", "Registration", DialogIcon.Help,
+                    Dialogs.DialogOptions.Custom("Moving", "Fixed", "Cancel"));
+                d.ShowDialog();
+                return d.DialogResponse;
+            }
+        }
+        public static class Workspace
+        {
+            public static string Show()
+            {
+                Dialog d = new Dialog("The current workspace is already in use.",
+                    "Do you wish to overwrite or merge the current data with the saved workspace?", "Load Workspace", DialogIcon.Help,
+                    Dialogs.DialogOptions.Custom("Moving", "Fixed", "Cancel"));
+                d.ShowDialog();
+                return d.DialogResponse;
+            }
+        }
     }
 
-    public static class DialogOptionChoices
+    public static class DialogOptions
     {
         public static string[] OK
         {

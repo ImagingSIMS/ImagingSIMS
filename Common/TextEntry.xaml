@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="" Width="350" MaxWidth="350"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        SizeToContent="Height" WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        SizeToContent="Height" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
         WindowStyle="None"
         Background="#FF414141">
     <Grid>

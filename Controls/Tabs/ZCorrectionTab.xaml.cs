@@ -77,14 +77,14 @@ namespace ImagingSIMS.Controls.Tabs
             if (selectedTables.Count == 0)
             {
                 DialogBox db = new DialogBox("No tables selected.", "Select two or more tables to correct and try again.",
-                    "Z-Correction", DialogBoxIcon.Error);
+                    "Z-Correction", DialogIcon.Error);
                 db.ShowDialog();
                 return;
             }
             if (selectedTables.Count == 1)
             {
                 DialogBox db = new DialogBox("Insufficient tables selected.", "Select two or more tables to correct and try again.",
-                    "Z-Correction", DialogBoxIcon.Error);
+                    "Z-Correction", DialogIcon.Error);
                 db.ShowDialog();
                 return;
             }
@@ -100,14 +100,14 @@ namespace ImagingSIMS.Controls.Tabs
                 if (selectedTables[i].Width != width)
                 {
                     DialogBox db = new DialogBox("Invalid table dimensions.", "Not all selected tables have the same dimensions.",
-                         "Z-Correction", DialogBoxIcon.Error);
+                         "Z-Correction", DialogIcon.Error);
                     db.ShowDialog();
                     return;
                 }
                 if (selectedTables[i].Height != height)
                 {
                     DialogBox db = new DialogBox("Invalid table dimensions.", "Not all selected tables have the same dimensions.",
-                         "Z-Correction", DialogBoxIcon.Error);
+                         "Z-Correction", DialogIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -125,7 +125,7 @@ namespace ImagingSIMS.Controls.Tabs
                 if (listViewMasks.SelectedItems.Count == 0)
                 {
                     DialogBox db = new DialogBox("No correction base selected.", "Select a base to use for the ZCorrection and try again.",
-                       "Z-Correction", DialogBoxIcon.Error);
+                       "Z-Correction", DialogIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -139,7 +139,7 @@ namespace ImagingSIMS.Controls.Tabs
                 if (tbThresholdValue.Text == null || tbThresholdValue.Text == "")
                 {
                     DialogBox db = new DialogBox("No threshold value specified.", "Enter an integer value for the threshold and try again.",
-                       "Z-Correction", DialogBoxIcon.Error);
+                       "Z-Correction", DialogIcon.Error);
                     db.ShowDialog();
                     return;
                 } 
@@ -148,7 +148,7 @@ namespace ImagingSIMS.Controls.Tabs
                 if (!int.TryParse(tbThresholdValue.Text, out threshold))
                 {
                     DialogBox db = new DialogBox("Invalid threshold value.", "Enter an integer value for the threshold and try again.",
-                       "Z-Correction", DialogBoxIcon.Error);
+                       "Z-Correction", DialogIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -156,7 +156,7 @@ namespace ImagingSIMS.Controls.Tabs
                 if (threshold < 0)
                 {
                     DialogBox db = new DialogBox("Invalid threshold value.", "Enter an integer value for the threshold and try again.",
-                       "Z-Correction", DialogBoxIcon.Error);
+                       "Z-Correction", DialogIcon.Error);
                     db.ShowDialog();
                     return;
                 }
@@ -230,7 +230,7 @@ namespace ImagingSIMS.Controls.Tabs
             if(corrected == null)
             {
                 DialogBox.Show("No tables were returned.",
-                    "The Z-Correction operation did not result in any corrected tables.", "Z-Correction", DialogBoxIcon.Error);
+                    "The Z-Correction operation did not result in any corrected tables.", "Z-Correction", DialogIcon.Error);
                 return;
             }
             AvailableHost.AvailableTablesSource.AddTables(corrected);
