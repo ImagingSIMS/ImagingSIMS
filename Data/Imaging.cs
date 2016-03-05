@@ -192,9 +192,7 @@ namespace ImagingSIMS.Data.Imaging
                     }
                     else if (pf == PixelFormats.Gray8)
                     {
-                        Color c = BitmapSource.Palette.Colors[pixels[pos]];
-
-                        array[x, y] = MathEx.Average(c.R, c.G, c.B);
+                        array[x, y] = pixels[pos];
 
                         pos += 1;
                     }
@@ -289,10 +287,9 @@ namespace ImagingSIMS.Data.Imaging
                     }
                     else if (pf == PixelFormats.Gray8)
                     {
-                        Color c = BitmapSource.Palette.Colors[pixels[pos]];
-                        b = c.B;
-                        g = c.G;
-                        r = c.R;
+                        b = pixels[pos];
+                        g = pixels[pos];
+                        r = pixels[pos];
 
                         pos += 1;
                     }
