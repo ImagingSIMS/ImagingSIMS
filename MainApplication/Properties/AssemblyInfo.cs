@@ -8,12 +8,12 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ImagingSIMS")]
-[assembly: AssemblyDescription("ImagingSIMS is specifically licensed to members of the Winograd lab and any other use is strictly prohibited. " +
-    "Use of this program consitutes agreement with the license terms, a copy of which can be found in the installation directory.")]
+[assembly: AssemblyDescription("ImagingSIMS is open source software and its use, modification, and redistribution is covered under the Mozilla Public License, version 2.0. " + 
+    "A copy of the Mozilla Public License 2.0 is provided below and in the EULA file in the installation directory of this program.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ImagingSIMS")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
