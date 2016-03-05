@@ -17,5 +17,15 @@
       "Other minor bug fixes and improvements.",
       "Changed help url to https://github.com/jay5026/ImagingSIMS/wiki"
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 3,
+      "Revision": 1
+    },
+    "Updates": [
+      "Fixed issue converting some images to data tables"
   }
 ]
