@@ -4142,7 +4142,7 @@ namespace ImagingSIMS.MainApplication
                     Workspace.Data.Remove(d);
         }
 
-            DialogBox.Show($"Removed {ct} tables.", "", "Tables", DialogBoxIcon.Ok);
+            DialogBox.Show($"Removed {ct} tables.", "", "Tables", DialogIcon.Ok);
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {

@@ -144,19 +144,19 @@ namespace ImagingSIMS.Controls.Tabs
             if(InputData.NumeratorTables.Count == 0)
             {
                 DialogBox.Show("No numerator tables selected.",
-                    "Please select one or more tables for the ratio numerator.", "Ratio", DialogBoxIcon.Stop);
+                    "Please select one or more tables for the ratio numerator.", "Ratio", DialogIcon.Stop);
                 return;
             }
             if(InputData.DenominatorTables.Count == 0)
             {
                 DialogBox.Show("No denominator tables selected.",
-                    "Please select one or more tables for the ratio denominator.", "Ratio", DialogBoxIcon.Stop);
+                    "Please select one or more tables for the ratio denominator.", "Ratio", DialogIcon.Stop);
                 return;
             }
             if (string.IsNullOrEmpty(InputData.OutputBaseName))
             {
                 DialogBox.Show("No output base name specified.", 
-                    "Please enter a name (or base name) for the generated table(s).", "Ratio", DialogBoxIcon.Stop);
+                    "Please enter a name (or base name) for the generated table(s).", "Ratio", DialogIcon.Stop);
                 return;
             }
 
@@ -164,7 +164,7 @@ namespace ImagingSIMS.Controls.Tabs
             {
                 DialogBox.Show("Invalid number of numerator and denominator tables.",
                     "In order to perform a cross ratio calculation, the number of numerator tables must equal the number of denominator tables.",
-                    "Ratio", DialogBoxIcon.Stop);
+                    "Ratio", DialogIcon.Stop);
                 return;
             }
 
@@ -179,7 +179,7 @@ namespace ImagingSIMS.Controls.Tabs
                 if (numWidth != d.Width || numHeight != d.Height)
                 {
                     DialogBox.Show("Invalid table dimensions.",
-                        "One or more numerator tables does not match the dimensions of the others.", "Ratio", DialogBoxIcon.Stop);
+                        "One or more numerator tables does not match the dimensions of the others.", "Ratio", DialogIcon.Stop);
                     return;
                 }
             }
@@ -194,7 +194,7 @@ namespace ImagingSIMS.Controls.Tabs
                 if(denWidth != d.Width || denHeight != d.Height)
                 {
                     DialogBox.Show("Invalid table dimensions.",
-                        "One or more denominator tables does not match the dimensions of the others.", "Ratio", DialogBoxIcon.Stop);
+                        "One or more denominator tables does not match the dimensions of the others.", "Ratio", DialogIcon.Stop);
                     return;
                 }
             }
@@ -202,7 +202,7 @@ namespace ImagingSIMS.Controls.Tabs
             if(numWidth != denWidth || numHeight != denHeight)
             {
                 DialogBox.Show("Invalid table dimensions.",
-                    "The dimensions of the numerator table(s) must match that of the denominator table(s).", "Ratio", DialogBoxIcon.Stop);
+                    "The dimensions of the numerator table(s) must match that of the denominator table(s).", "Ratio", DialogIcon.Stop);
                 return;
             }
 
@@ -213,7 +213,7 @@ namespace ImagingSIMS.Controls.Tabs
                 {
                     DialogBox.Show("Missing high resolution image.",
                         "Open or drop a high resolution image for the tables or uncheck the option to fuse images.",
-                        "Ratio", DialogBoxIcon.Stop);
+                        "Ratio", DialogIcon.Stop);
                     return;
                 }
 
@@ -223,7 +223,7 @@ namespace ImagingSIMS.Controls.Tabs
                 {
                     DialogBox.Show("Invalid image size.",
                         "One or both of the dimensions of the high resolution numerator image is (are) smaller than the data tables.",
-                        "Ratio", DialogBoxIcon.Stop);
+                        "Ratio", DialogIcon.Stop);
                     return;
                 }
 
@@ -233,7 +233,7 @@ namespace ImagingSIMS.Controls.Tabs
                 {
                     DialogBox.Show("Invalid image size.",
                         "One or both of the dimensions of the high resolution denominator image is (are) smaller than the data tables.",
-                        "Ratio", DialogBoxIcon.Stop);
+                        "Ratio", DialogIcon.Stop);
                     return;
                 }
             }
@@ -534,7 +534,7 @@ namespace ImagingSIMS.Controls.Tabs
             // See if an exception was thrown on the background thread
             if(e.Error != null)
             {
-                DialogBox.Show("Could not perform the ratio caluclations.", e.Error.Message, "Ratio", DialogBoxIcon.Stop);
+                DialogBox.Show("Could not perform the ratio caluclations.", e.Error.Message, "Ratio", DialogIcon.Stop);
                 return;
             }
             // results

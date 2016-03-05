@@ -209,7 +209,7 @@ namespace ImagingSIMS.Controls.Tabs
                 message = message.Remove(message.Length - 1, 1);
                 if (DialogBox.Show(
                     "The following location(s) is(are) missing data. Click OK to proceed(and fill those pixels with blank values) or Cancel to return.",
-                    message, "Stitch", DialogBoxIcon.Error, true) == false) return;
+                    message, "Stitch", DialogIcon.Error, true) == false) return;
             }
 
             int width = 0;
@@ -234,7 +234,7 @@ namespace ImagingSIMS.Controls.Tabs
                         if(width!= i.DataItem.Width || height != i.DataItem.Height)
                         {
                             DialogBox.Show("Invalid dimensions.", 
-                                "One or more tables to be stitched does not match the dimensions of the others.", "Stitch", DialogBoxIcon.Error);
+                                "One or more tables to be stitched does not match the dimensions of the others.", "Stitch", DialogIcon.Error);
                             return;
                         }
                     }
@@ -244,7 +244,7 @@ namespace ImagingSIMS.Controls.Tabs
             if(string.IsNullOrEmpty(OutputName))
             {
                 DialogBox.Show("Missing output table name.", 
-                    "Please specify a name for the stitched table.", "Stitch", DialogBoxIcon.Error);
+                    "Please specify a name for the stitched table.", "Stitch", DialogIcon.Error);
                 return;
             }
 
