@@ -50,6 +50,22 @@ namespace ImagingSIMS.Controls.Tabs
         {
             get { return itemsControl; }
         }
+        public DisplaySeries CurrentSelectedSeries
+        {
+            get
+            {
+                int numImages = itemsControl.SelectedItems.Count;
+
+                DisplaySeries series = new DisplaySeries();
+
+                for (int i = 0; i < numImages; i++)
+                {
+                    series.Images.Add((DisplayImage)itemsControl.SelectedItems[i]);
+                }
+
+                return series;
+            }
+        }
 
         public bool CanUndo()
         {
@@ -887,6 +903,7 @@ namespace ImagingSIMS.Controls.Tabs
 
             return series;
         }
+
     }
 
     public enum ImageTabEvent
