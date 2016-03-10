@@ -335,20 +335,20 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="ImagingSIMS_TemporaryKey.pfx" />
-    <None Include="Shaders\Axes.pso" />
-    <None Include="Shaders\Axes.vso" />
-    <None Include="Shaders\BoundingBox.pso" />
-    <None Include="Shaders\BoundingBox.vso" />
-    <None Include="Shaders\CoordinateBox.pso" />
-    <None Include="Shaders\CoordinateBox.vso" />
-    <None Include="Shaders\HeightMap.pso" />
-    <None Include="Shaders\HeightMap.vso" />
-    <None Include="Shaders\Isosurface.pso" />
-    <None Include="Shaders\Isosurface.vso" />
-    <None Include="Shaders\Model.pso" />
-    <None Include="Shaders\Model.vso" />
-    <None Include="Shaders\Raycast.pso" />
-    <None Include="Shaders\Raycast.vso" />
+    <Content Include="Shaders\Axes.pso" />
+    <Content Include="Shaders\Axes.vso" />
+    <Content Include="Shaders\BoundingBox.pso" />
+    <Content Include="Shaders\BoundingBox.vso" />
+    <Content Include="Shaders\CoordinateBox.pso" />
+    <Content Include="Shaders\CoordinateBox.vso" />
+    <Content Include="Shaders\HeightMap.pso" />
+    <Content Include="Shaders\HeightMap.vso" />
+    <Content Include="Shaders\Isosurface.pso" />
+    <Content Include="Shaders\Isosurface.vso" />
+    <Content Include="Shaders\Model.pso" />
+    <Content Include="Shaders\Model.vso" />
+    <Content Include="Shaders\Raycast.pso" />
+    <Content Include="Shaders\Raycast.vso" />
     <Resource Include="Images\merge.png" />
     <Resource Include="Images\chart.png" />
     <Resource Include="Images\Clusters.ico" />
