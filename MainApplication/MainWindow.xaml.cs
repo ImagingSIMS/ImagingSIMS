@@ -2865,6 +2865,47 @@ namespace ImagingSIMS.MainApplication
 
             Workspace.ImageSeries.Add(series);
         }
+        private async void RibbonImagesToData(object sender, RoutedEventArgs e)
+        {
+            ClosableTabItem cti = tabMain.SelectedItem as ClosableTabItem;
+            if (cti == null)
+            {
+                Dialog.Show("Image series not selected.", "Please navigate to an Image Display tab and try again.",
+                    "Images", DialogIcon.Error);
+                return;
+            }
+            DisplayTab dt = cti.Content as DisplayTab;
+            if(dt== null)
+            {
+                Dialog.Show("Image series not selected.", "Please navigate to an Image Display tab and try again.",
+                    "Images", DialogIcon.Error);
+                return;
+            }
+
+            DisplaySeries series = dt.CurrentSelectedSeries;
+            if(series == null || series.Images.Count == 0)
+            {
+                Dialog.Show("No images selected.", "Select one or more images to convert and try again.",
+                    "Convert", DialogIcon.Error);
+                return;
+            }
+
+            BitmapSource[] toConvert = new BitmapSource[series.NumberImages];
+            string[] titles = new string[series.NumberImages];
+            for (int i = 0; i < series.NumberImages; i++)
+            {
+                toConvert[i] = series.Images[i].Source as BitmapSource;
+                toConvert[i].Freeze();
+                titles[i] = series.Images[i].Title;
+            }
+
+            for (int i = 0; i < toConvert.Length; i++)
+            {
+                Data2D converted = await ImageHelper.ConvertToData2DAsync(toConvert[i]);
+                converted.DataName = titles[i];
+                Workspace.Data.Add(converted);
+            }
+        }
         private void openClusterTab_Click(object sender, RoutedEventArgs e)
         {
             ClosableTabItem cti = ClosableTabItem.Create(new ClusterTab(), TabType.Cluster, "Clusters", true);
@@ -4438,5 +4479,6 @@ namespace ImagingSIMS.MainApplication
             return Workspace.ImageSeries.ToList();
         }
         #endregion
+
     }
 }
