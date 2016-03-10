@@ -439,6 +439,10 @@
                                       ToolTipDescription="Create an image series object from the selected images." ToolTipImageSource="Images\SaveCaps.ico"
                                       ToolTipTitle="Create Image Series" Click="RibbonCreateSeries"
                                       IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, Converter={StaticResource TabBoolConverter}, ConverterParameter=Display}"/>
+                    <RibbonButton Label="Convert To Data" LargeImageSource="Images\Table.ico"
+                                  ToolTipDescription="Covert the selected images to data tables and add them to the current workspace." ToolTipImageSource="Images\Table.ico"
+                                  ToolTipTitle="Covert to Data" Click="RibbonImagesToData"
+                                  IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, Converter={StaticResource TabBoolConverter}, ConverterParameter=Display}"/>
                     <RibbonButton x:Name="ribbonImagesResize" Label="Resize" LargeImageSource="Images\ImageResize.ico"
                                   ToolTipDescription="Resize the selected images to specified dimensions." ToolTipImageSource="Images\ImageResize.ico"
                                   ToolTipTitle="Resize" Click="RibbonImagesEvent"

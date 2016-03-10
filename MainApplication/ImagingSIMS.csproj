@@ -328,6 +328,7 @@
     <Content Include="Icons\Workspace.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Images\Table.ico" />
     <Content Include="Plugins\ITKImageRegistration.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
