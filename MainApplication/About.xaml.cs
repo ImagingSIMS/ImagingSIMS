@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Deployment.Application;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -41,6 +42,10 @@ namespace ImagingSIMS.Common
         {
             get
             {
+                if (ApplicationDeployment.IsNetworkDeployed)
+                {
+                    return ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
+                }
                 return Assembly.GetExecutingAssembly().GetName().Version.ToString();
             }
         }

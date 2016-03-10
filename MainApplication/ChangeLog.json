@@ -26,6 +26,10 @@
       "Revision": 1
     },
     "Updates": [
-      "Fixed issue converting some images to data tables"
+      "ImagingSIMS is now covered under the Mozilla Public License 2.0.",
+      "Fixed issue converting some images to data tables.",
+      "Version in About window now reflects the version number of the deployment.",
+      "Include missing files for 3D renderings."
+    ]
   }
 ]

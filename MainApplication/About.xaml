@@ -47,7 +47,7 @@
                    Foreground="#FFE4E4E4" FontFamily="SegoeUI"
                         Text="description" TextWrapping="Wrap" Margin="8"/>
         <Expander Grid.Row="2" Margin="4" ExpandDirection="Down" Header="View License Agreement" Foreground="#FFE4E4E4" FontFamily="SegoeUI">
-            <RichTextBox x:Name="richTextBoxLicense" Margin="8" Background="#FF252525" BorderBrush="Transparent" IsReadOnly="True" Foreground="#FF959595"
+            <RichTextBox x:Name="richTextBoxLicense" Margin="8" Background="White" BorderBrush="Transparent" IsReadOnly="True" Foreground="Black"
                          HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="Auto" MaxHeight="400" Height="Auto" FontSize="10" FontFamily="SegoeUI"
                          ScrollViewer.VerticalScrollBarVisibility="Auto">
                 

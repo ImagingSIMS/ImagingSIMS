@@ -185,7 +185,7 @@ namespace ImagingSIMS.Common.Dialogs
             {
                 Dialog d = new Dialog("The current workspace is already in use.",
                     "Do you wish to overwrite or merge the current data with the saved workspace?", "Load Workspace", DialogIcon.Help,
-                    Dialogs.DialogOptions.Custom("Moving", "Fixed", "Cancel"));
+                    Dialogs.DialogOptions.Custom("Overwrite", "Merge", "Cancel"));
                 d.ShowDialog();
                 return d.DialogResponse;
             }
