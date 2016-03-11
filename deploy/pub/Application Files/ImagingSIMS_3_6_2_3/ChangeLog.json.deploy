@@ -1,0 +1,35 @@
+﻿[
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 2
+    },
+    "Updates": [
+      "Dialog icons are updated to Windows 10 style icons.",
+      "Removed available tables from tabs. Now, just highlight the desired tabs in the data sidebar and click Add within the tab.",
+      "Data table visualization tabs load immediately and are more responsive as large sets of data are added.",
+      "Added a preference for image size when viewing data tables. The width of the control can be set in the Settings tab.",
+      "Fixed a with setting the desired output size when resizing images and data tables.",
+      "Additional types of images, including Tiff, can be loaded when using Load Image Series.",
+      "Startup tab now has a link for downloading DirectX runtime if needed.",
+      "Other minor bug fixes and improvements.",
+      "Changed help url to https://github.com/jay5026/ImagingSIMS/wiki"
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 3
+    },
+    "Updates": [
+      "ImagingSIMS is now covered under the Mozilla Public License 2.0.",
+      "Fixed issue converting some images to data tables.",
+      "Version in About window now reflects the version number of the deployment.",
+      "Include missing files for 3D renderings."
+    ]
+  }
+]
