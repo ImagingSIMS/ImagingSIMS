@@ -4,7 +4,7 @@
       "Major": 3,
       "Minor": 6,
       "Build": 2,
-      "Revision": 1
+      "Revision": 2
     },
     "Updates": [
       "Dialog icons are updated to Windows 10 style icons.",
@@ -22,8 +22,8 @@
     "Version": {
       "Major": 3,
       "Minor": 6,
-      "Build": 3,
-      "Revision": 1
+      "Build": 2,
+      "Revision": 3
     },
     "Updates": [
       "ImagingSIMS is now covered under the Mozilla Public License 2.0.",
