@@ -424,6 +424,12 @@ namespace ImagingSIMS.Controls.Tabs
         }
         void commitRect()
         {
+            if (string.IsNullOrEmpty(CropRectangle))
+            {
+                Dialog.Show("No coordinates entered.", 
+                    "List the rectangle coordiantes separated by a comma and try again.", "Crop", DialogIcon.Stop);
+                return;
+            }
             //Parse coordinates first and create pixels to keep
             string[] parts = CropRectangle.Split(',');
             if (parts.Length != 4)

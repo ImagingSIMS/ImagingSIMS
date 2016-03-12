@@ -69,7 +69,7 @@ namespace ImagingSIMS.MainApplication
                 VersionItem[] versionItems = JsonConvert.DeserializeObject<VersionItem[]>(versionInfo);                
                 foreach(VersionItem vi in versionItems)
                 {
-                    if(vi.Version >= currentVersion)
+                    if(vi.Version <= currentVersion)
                     {
                         toShow.Add(vi);
                     }

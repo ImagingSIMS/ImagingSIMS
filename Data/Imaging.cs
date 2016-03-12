@@ -1874,7 +1874,10 @@ namespace ImagingSIMS.Data.Imaging
 
             _history.Clear();
 
-            Source = ImageHelper.CreateImage(_visibleData);
+            if (_visibleData != null)
+            {
+                Source = ImageHelper.CreateImage(_visibleData);
+            }
         }
 
         public void SetMaskPoints(bool[,] maskData)

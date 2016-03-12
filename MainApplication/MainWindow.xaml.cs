@@ -74,11 +74,54 @@ namespace ImagingSIMS.MainApplication
 
         #region Load
         public MainWindow()
-        {
-            this.Workspace = new Workspace();
+        {            
 #if DEBUG
             IsDebug = true;
-#endif
+#endif          
+            Workspace = new Workspace();
+
+            InitializeComponent();
+
+        }
+        private void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Workspace.Registry.StartWithTrace)
+            {
+                tlw = new TraceListenerWindow();
+                Trace.Listeners.Add(tlw.TraceListener);
+
+                tlw.Show();
+
+                Trace.WriteLine("Trace listener added.");
+            }
+
+            InitializeCommands();
+
+            Trace.WriteLine("Adding RoutedEventHandlers.");
+
+            AddHandler(ClosableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
+            AddHandler(ClosableTabItem.StatusUpdatedEvent, new StatusUpdatedRoutedEventHandler(StatusUpdated));
+            AddHandler(ComponentTab.ComponentCreatedEvent, new RoutedEventHandler(ComponentCreated));
+            AddHandler(ComponentTab.ComponentUpdatedEvent, new RoutedEventHandler(ComponentUpdated));
+            AddHandler(SpecChart.RangeUpdatedEvent, new RangeUpdatedRoutedEventHandler(SpecRangeUpdated));
+            AddHandler(SpecChart.SelectionRangeUpdatedEvent, new RangeUpdatedRoutedEventHandler(SpecSelectionRangeUpdated));
+            AddHandler(VolumeTab.VolumeCreatedEvent, new RoutedEventHandler(VolumeCreated));
+
+            if (DesignerProperties.GetIsInDesignMode(this))
+            {
+                Workspace = Workspace.SampleWorkspace();
+            }
+
+            if (Workspace.Registry.ShowStartup)
+            {
+                StartupTab st = new StartupTab();
+                st.RecentFileClicked += startupTab_RecentFileClicked;
+                st.RecentFileRemoveClicked += startupTab_RecentFileRemoveClicked;
+                tabMain.Items.Add(ClosableTabItem.Create(st, TabType.Startup, true));
+                tabMain.SelectedIndex = 0;
+            }
+
+            Trace.WriteLine("Creating available color scales.");
             ColorScaleMenuItems = new List<MenuItem>();
             foreach (ColorScaleTypes type in EnumEx.EnumToList<ColorScaleTypes>())
             {
@@ -90,62 +133,74 @@ namespace ImagingSIMS.MainApplication
                 ColorScaleMenuItems.Add(mi);
             }
 
-            InitializeComponent();
+            Trace.WriteLine("Window load complete.");
 
-            InitializeCommands();
+            Trace.WriteLine("Checking ClickOnce version information.");
+            bool isClickOnce = ApplicationDeployment.IsNetworkDeployed;
+            Trace.WriteLine("ClickOnce deployment: " + isClickOnce);
 
-            Workspace = new Workspace();
-
-            if (Workspace.Registry.StartWithTrace)
+            // Debug won't have ClickOnce deployment information so pass in
+            // a test version
+            // Include option to test this or skip during debug
+            bool testVersionCheck = true;
+            if (IsDebug && testVersionCheck)
             {
-                tlw = new TraceListenerWindow();
-                Trace.Listeners.Add(tlw.TraceListener);
-
-                tlw.Show();
+                Version testVersion = new Version(3, 6, 2, 3);
+                ChangeWindow.CheckAndShow(testVersion, "ChangeLog.json");
             }
 
-            Trace.WriteLine("Checking ClickOnce activation arguments.");
-
-            if (AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null &&
-                AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData != null)
+            if (isClickOnce)
             {
-                string[] args = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
+                Version currentVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                ChangeWindow.CheckAndShow(currentVersion, "ChangeLog.json");
+            }
 
-                if (args.Length > 0)
+            if (isClickOnce)
+            {
+                Trace.WriteLine("Checking ClickOnce activation arguments.");
+
+                if (AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null &&
+                    AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData != null)
                 {
-                    string original = args[0];
-                    Uri uri = new Uri(original);
+                    string[] args = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
 
-                    string path = uri.ToString();
-                    path = path.Remove(0, 8);
-
-                    if (path.EndsWith(".wks"))
+                    if (args.Length > 0)
                     {
-                        Trace.WriteLine("Workspace argument found.");
+                        string original = args[0];
+                        Uri uri = new Uri(original);
 
-                        Workspace = new Workspace(path);
+                        string path = uri.ToString();
+                        path = path.Remove(0, 8);
 
-                        UpdateRecentFiles(path);
-                    }
-                    else if (path.EndsWith(".isd"))
-                    {
-                        Trace.WriteLine("Sample data argument found.");
-
-                        SampleData sd = new SampleData(path);
-                        foreach (Data2D d in sd.SphereData.Layers)
+                        if (path.EndsWith(".wks"))
                         {
-                            Workspace.Data.Add(d);
-                        }
-                    }
-                    else if (path.EndsWith(".vol"))
-                    {
-                        Trace.WriteLine("Volume argument found.");
+                            Trace.WriteLine("Workspace argument found.");
 
-                        Workspace.Volumes.Add(new Volume(path));
+                            Workspace = new Workspace(path);
+
+                            UpdateRecentFiles(path);
+                        }
+                        else if (path.EndsWith(".isd"))
+                        {
+                            Trace.WriteLine("Sample data argument found.");
+
+                            SampleData sd = new SampleData(path);
+                            foreach (Data2D d in sd.SphereData.Layers)
+                            {
+                                Workspace.Data.Add(d);
+                            }
+                        }
+                        else if (path.EndsWith(".vol"))
+                        {
+                            Trace.WriteLine("Volume argument found.");
+
+                            Workspace.Volumes.Add(new Volume(path));
+                        }
                     }
                 }
             }
 
+            Trace.WriteLine("Checking for autosaved workspace.");
             if (Workspace.Registry.HasCrashed)
             {
                 Trace.WriteLine("Previous instance crashed. Attempting to load autosave file.");
@@ -189,54 +244,8 @@ namespace ImagingSIMS.MainApplication
 
             AvailableHost.AvailableTablesSource = this;
             AvailableHost.AvailableImageSeriesSource = this;
-        }
-        private void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            Trace.WriteLine("Adding RoutedEventHandlers.");
-
-            AddHandler(ClosableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
-            AddHandler(ClosableTabItem.StatusUpdatedEvent, new StatusUpdatedRoutedEventHandler(StatusUpdated));
-            AddHandler(ComponentTab.ComponentCreatedEvent, new RoutedEventHandler(ComponentCreated));
-            AddHandler(ComponentTab.ComponentUpdatedEvent, new RoutedEventHandler(ComponentUpdated));
-            AddHandler(SpecChart.RangeUpdatedEvent, new RangeUpdatedRoutedEventHandler(SpecRangeUpdated));
-            AddHandler(SpecChart.SelectionRangeUpdatedEvent, new RangeUpdatedRoutedEventHandler(SpecSelectionRangeUpdated));
-            AddHandler(VolumeTab.VolumeCreatedEvent, new RoutedEventHandler(VolumeCreated));
-
-            if (DesignerProperties.GetIsInDesignMode(this))
-            {
-                Workspace = Workspace.SampleWorkspace();
-            }
-
-            if (Workspace.Registry.ShowStartup)
-            {
-                StartupTab st = new StartupTab();
-                st.RecentFileClicked += startupTab_RecentFileClicked;
-                st.RecentFileRemoveClicked += startupTab_RecentFileRemoveClicked;
-                tabMain.Items.Add(ClosableTabItem.Create(st, TabType.Startup, true));
-                tabMain.SelectedIndex = 0;
-            }
 
             Trace.WriteLine("Window load complete.");
-
-            Trace.WriteLine("Checking ClickOnce version information.");
-
-            // Debug won't have ClickOnce deployment information so pass in
-            // a test version
-            // Include option to test this or skip during debug
-            bool testVersionCheck = false;
-            if (IsDebug && testVersionCheck)
-            {
-                Version testVersion = new Version(3, 6, 2, 1);
-                ChangeWindow.CheckAndShow(testVersion, "ChangeLog.json");
-            }
-
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                Version currentVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion;
-                ChangeWindow.CheckAndShow(currentVersion, "ChangeLog.json");
-            }
-            else Trace.WriteLine("Application is not ClickOnce deployed.");
-
         }
         #endregion
 
@@ -1150,6 +1159,8 @@ namespace ImagingSIMS.MainApplication
 
         private void InitializeCommands()
         {
+            Trace.WriteLine("Initializing commands.");
+
             CommandBinding bindingNew = new CommandBinding(ApplicationCommands.New);
             bindingNew.Executed += CommandNew;
             this.CommandBindings.Add(bindingNew);
@@ -1198,6 +1209,8 @@ namespace ImagingSIMS.MainApplication
             bindingSpecReset.Executed += CommandSpecReset;
             bindingSpecReset.CanExecute += CanExecuteSpecReset;
             this.CommandBindings.Add(bindingSpecReset);
+
+            Trace.WriteLine("Commands initialized and bound.");
         }
 
         private void CanExecuteUndo(object sender, CanExecuteRoutedEventArgs e)
