@@ -31,5 +31,17 @@
       "Version in About window now reflects the version number of the deployment.",
       "Include missing files for 3D renderings."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 3
+    },
+    "Updates": [
+      "Change window now shows changes for all updates since previous update.",
+      "Fixed an issue with the spectrum crop tab."
+    ]
   }
 ]
