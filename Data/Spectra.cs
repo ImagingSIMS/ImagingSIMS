@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-
+using System.Xml;
 using ImagingSIMS.Common;
 using ImagingSIMS.Common.Math;
 
@@ -1089,6 +1089,9 @@ namespace ImagingSIMS.Data.Spectra
                     dt.DataName = string.Format("{0} {1}-{2}", TableBaseName, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"));
 
                 returnTables.Add(dt);
+
+                if (bw != null)
+                    bw.ReportProgress(i * 100 / _xyts.Count);
             }
             return returnTables;
         }
@@ -2064,6 +2067,457 @@ namespace ImagingSIMS.Data.Spectra
         }
         #endregion
     }
+
+    public class Cameca1280Spectrum : Spectrum
+    {
+        List<CamecaSpecies> _species;
+
+        // _matrix[layer][species][x,y]
+        List<Data2D[]> _matrix;
+
+        public int NumberSpecies
+        {
+            get
+            {
+                if (_species == null) return 0;
+                return _species.Count;
+            }
+        }
+
+        private void setMatrixValue(int x, int y, int z, int species, float value)
+        {
+            _matrix[z][species][x, y] = value;
+        }
+        private float getMatrixValue(int x, int y, int z, int species)
+        {
+            return _matrix[z][species][x, y];
+        }
+        private float getMatrixValue(int x, int y, int z, MassRangePair range)
+        {
+            float value = 0;
+            for (int i = 0; i < _species.Count; i++)
+            {
+                if(_species[i].Mass >= range.StartMass && _species[i].Mass < range.EndMass)
+                {
+                    value += getMatrixValue(x, y, z, i);
+                }
+
+            }
+
+            return value;
+        }
+
+        public Cameca1280Spectrum(string spectrumName)
+            : base(spectrumName)
+        {
+            _specType = SpectrumType.Cameca1280;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+        }
+
+
+        public override Data2D FromMassRange(MassRangePair MassRange, out float Max, BackgroundWorker bw = null)
+        {
+            Data2D dt = new Data2D(_sizeX, _sizeY);
+
+            List<Data2D> dts = FromMassRange(MassRange, "preview", true, bw);
+            Max = -1;
+
+            if (bw != null && bw.CancellationPending) return dt;
+
+            float max = 0;
+            for (int x = 0; x < _sizeX; x++)
+            {
+                for (int y = 0; y < _sizeY; y++)
+                {
+                    float sum = 0;
+                    for (int z = 0; z < dts.Count; z++)
+                    {
+                        sum += dts[z][x, y];
+                    }
+                    dt[x, y] = sum;
+                    if (sum > max) max = sum;
+                }
+                if (bw != null && bw.CancellationPending) return dt;
+            }
+
+            Max = max;
+            dt.DataName = string.Format("{0} {1}-{2}", Name, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"));
+            return dt;
+        }
+        public override List<Data2D> FromMassRange(MassRangePair MassRange, string TableBaseName, bool OmitNumbering, BackgroundWorker bw = null)
+        {
+            if (_matrix == null || _matrix.Count == 0)
+            {
+                throw new IndexOutOfRangeException("No xyt data has been loaded into memory.");
+            }
+
+            List<Data2D> returnTables = new List<Data2D>();
+
+            int i = 0;
+            for (int z = 0; z < _sizeZ; z++)
+            {
+                Data2D d = new Data2D(SizeX, SizeY);
+
+                for (int x = 0; x < SizeX; x++)
+                {
+                    for (int y = 0; y < SizeY; y++)
+                    {
+                        d[x, y] = getMatrixValue(x, y, z, MassRange);
+                    }
+                }
+
+                if (bw != null && bw.CancellationPending) return returnTables;
+
+                if (!OmitNumbering)
+                    d.DataName = string.Format("{0} {1}-{2} ({3})", TableBaseName, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"), ++i);
+                else
+                    d.DataName = string.Format("{0} {1}-{2}", TableBaseName, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"));
+
+                returnTables.Add(d);
+
+                if (bw != null)
+                    bw.ReportProgress(z * 100 / _sizeZ);
+            }
+
+            return returnTables;
+        }
+        public override Data2D FromMassRange(MassRangePair MassRange, int Layer, string TableBaseName, bool OmitNumbering, BackgroundWorker bw = null)
+        {
+            if (_matrix == null || _matrix.Count == 0)
+            {
+                throw new IndexOutOfRangeException("No xyt data has been loaded into memory.");
+            }
+            if (Layer >= SizeZ)
+                throw new ArgumentException(string.Format("Layer {0} does not exist in the spectrum (Number layers: {1}).", Layer, SizeZ));
+
+
+            Data2D d = new Data2D(SizeX, SizeY);
+            for (int x = 0; x < SizeX; x++)
+            {
+                for (int y = 0; y < SizeY; y++)
+                {
+                    d[x, y] = getMatrixValue(x, y, Layer, MassRange);
+                }
+            }
+
+            if (bw != null && bw.CancellationPending) return null;
+
+            if (!OmitNumbering)
+                d.DataName = string.Format("{0} {1}-{2} ({3})", TableBaseName, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"), Layer + 1);
+            else
+                d.DataName = string.Format("{0} {1}-{2}", TableBaseName, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"));
+
+            
+            return d;
+        }
+
+
+        public override uint[] GetSpectrum(out float[] Masses)
+        {
+            uint[] intensities = new uint[_species.Count];
+            float[] masses = new float[_species.Count];
+
+            for (int s = 0; s < NumberSpecies; s++)
+            {
+                masses[s] = (float)_species[s].Mass;
+
+                for (int z = 0; z < SizeZ; z++)
+                {
+                    for (int x = 0; x < SizeX; x++)
+                    {
+                        for (int y = 0; y < SizeY; y++)
+                        {
+                            intensities[s] += (uint)getMatrixValue(x, y, z, s);
+                        }
+                    }
+                }
+            }
+
+            Masses = masses;
+            return intensities;
+        }
+
+        public override void LoadFromFile(string[] FilePaths, BackgroundWorker bw)
+        {
+            doLoad(FilePaths, bw);
+        }
+        public override void LoadFromFile(string FilePath, BackgroundWorker bw)
+        {
+            doLoad(new string[] { FilePath }, bw);
+        }
+        private void doLoad(string[] filePaths, BackgroundWorker bw)
+        {
+            int imageSize = 0;
+            _species = new List<CamecaSpecies>();
+            int[] numCyclesForFile = new int[filePaths.Length];
+
+            _matrix = new List<Data2D[]>();
+
+            int totalSteps = filePaths.Length * 2;
+            if (bw != null)
+                bw.ReportProgress(0);
+
+            // Verify all input files have consistent paramters
+            for (int i = 0; i < filePaths.Length; i++)
+            {
+                byte[] fullBuffer;
+                int startIndexOfXml = 0;
+                int streamLength = 0;
+                
+                using (Stream stream = File.OpenRead(filePaths[i]))
+                {
+                    BinaryReader br = new BinaryReader(stream);
+                    streamLength = (int)stream.Length;
+                    fullBuffer = br.ReadBytes(streamLength);
+                }
+
+                startIndexOfXml = getXmlIndex(fullBuffer);
+                int xmlBufferSize = streamLength - startIndexOfXml - 1;
+                byte[] xmlBuffer = new byte[xmlBufferSize];
+                Array.Copy(fullBuffer, startIndexOfXml, xmlBuffer, 0, xmlBufferSize);
+
+                List<CamecaSpecies> speciesInFile = new List<CamecaSpecies>();
+
+                XmlDocument docDetails = new XmlDocument();
+                string xml = Encoding.UTF8.GetString(xmlBuffer);
+                docDetails.LoadXml(xml);
+
+                XmlNode nodeSize = docDetails.SelectSingleNode("/IMP/LOADEDFILE/PROPERTIES/DEFACQPARAMIMDATA/m_nSize");
+                int size = 0;
+
+                if(!int.TryParse(nodeSize.InnerText, out size))
+                    throw new ArgumentException($"Unable to parse the image size from file {Path.GetFileName(filePaths[i])}.");
+
+                if (size <= 0 || size == int.MaxValue)
+                    throw new ArgumentException($"Unable to parse the image size from file {Path.GetFileName(filePaths[i])}.");
+
+                if (imageSize == 0)
+                    imageSize = size;
+                else
+                {
+                    if (imageSize != size)
+                        throw new ArgumentException("Invalid image size. Dimension does not match across all files.");
+                }
+
+                XmlNodeList nodeSpeciesList = docDetails.SelectNodes("IMP/LOADEDFILE/SPECIES");
+                foreach(XmlNode node in nodeSpeciesList)
+                {
+                    try
+                    {
+                        speciesInFile.Add(CamecaSpecies.FromXmlNode(node));
+                    }
+                    catch(Exception ex)
+                    {
+                        throw new ArgumentException($"Could not parse a species from file {Path.GetFileName(filePaths[i])}.", ex);
+                    }
+                }
+
+                int numCycles = 0;
+                foreach(CamecaSpecies s in speciesInFile)
+                {
+                    if (numCycles == 0) numCycles = s.Cycles;
+
+                    if (s.Cycles != numCycles)
+                        throw new ArgumentException("Invalid species. The number of cycles do not match in the image.");
+                }
+
+                numCyclesForFile[i] = numCycles;
+
+                if(_species.Count == 0)
+                {
+                    _species.AddRange(speciesInFile);
+                }
+                else
+                {
+                    if (_species.Count != speciesInFile.Count)
+                        throw new ArgumentException("Invalid spectrum. Number of species do not match across files.");
+
+                    CamecaSpeciesIdentityComparer identityComparer = new CamecaSpeciesIdentityComparer();
+
+                    foreach(CamecaSpecies s in speciesInFile)
+                    {
+                        if (!_species.Contains(s, identityComparer))
+                            throw new ArgumentException("Invalid species list. One or more species is not present in all of the files.");
+                    }
+                }
+
+                if (bw != null)
+                    bw.ReportProgress(i * 100 / totalSteps);
+            }
+
+            // Read in binary data for files and populate matrices
+            for (int i = 0; i < filePaths.Length; i++)
+            {
+                byte[] fullBuffer;
+                int dataBufferSize = 0;
+
+                using (Stream stream = File.OpenRead(filePaths[i]))
+                {
+                    BinaryReader br = new BinaryReader(stream);
+
+                    fullBuffer = br.ReadBytes((int)stream.Length);
+
+                    // Get size of binary section at top of file
+                    int startIndexOfXml = getXmlIndex(fullBuffer);
+
+                    // First 24 bytes are garbage, so skip those
+                    dataBufferSize = startIndexOfXml - 24;
+                }
+
+                byte[] dataBuffer = new byte[dataBufferSize];
+                Array.Copy(fullBuffer, 24, dataBuffer, 0, dataBufferSize);
+
+                int pixelType = _species[0].PixelEncoding;
+                int integerSize = 0;
+
+                // Only know that 0 corresponds to Int16
+                if (pixelType == 0) integerSize = 2;
+
+                float[] values = new float[imageSize * imageSize * _species.Count];
+                for (int j = 0; j < values.Length; j++)
+                {
+                    //Int16
+                    if (pixelType == 0)
+                    {
+                        values[j] = BitConverter.ToInt16(dataBuffer, j * integerSize);
+                    }
+                }
+
+                int pos = 0;
+                float[,,,] tempValues = new float[_species.Count, numCyclesForFile[i], imageSize, imageSize];
+
+                for (int s = 0; s < _species.Count; s++)
+                {
+                    for (int z = 0; z < numCyclesForFile[i]; z++)
+                    {
+                        for (int y = 0; y < imageSize; y++)
+                        {
+                            for (int x = 0; x < imageSize; x++)
+                            {
+                                tempValues[s, z, y, x] = values[pos++];
+                            }
+                        }
+
+                    }
+                }
+
+                for (int z = 0; z < numCyclesForFile[i]; z++)
+                {
+                    Data2D[] layer = new Data2D[_species.Count];
+                    for (int s = 0; s < _species.Count; s++)
+                    {
+                        Data2D layerSpecies = new Data2D(imageSize, imageSize);
+                        for (int y = 0; y < imageSize; y++)
+                        {
+                            for (int x = 0; x < imageSize; x++)
+                            {
+                                layerSpecies[x, y] = tempValues[s, z, y, x];
+                            }
+                        }
+                    }
+                    _matrix.Add(layer);
+                }
+
+                if (bw != null)
+                    bw.ReportProgress((filePaths.Length + i) * 100 / totalSteps);
+            }
+
+            _sizeX = imageSize;
+            _sizeY = imageSize;
+            _sizeZ = _matrix.Count;
+
+            _intensities = GetSpectrum(out _masses);
+        }
+
+        private static int getXmlIndex(byte[] buffer)
+        {
+            int i = 2;
+            int length = buffer.Length;
+            while (i < length)
+            {
+                switch (buffer[i])
+                {
+                    case 120:
+                        if (buffer[i - 1] == 63 && buffer[i - 2] == 60)
+                        {
+                            return i - 2;
+                        }
+                        i += 3;
+                        continue;
+                    case 63:
+                        i += 1;
+                        continue;
+                    case 60:
+                        i += 2;
+                        continue;
+                    default:
+                        i += 3;
+                        continue;
+                }
+            }
+            return -1;
+        }
+
+        public override void SaveText(string filePath)
+        {
+            SaveText(filePath, 1);
+        }
+        public override void SaveText(string filePath, int binSize)
+        {
+            float[] masses;
+            uint[] intensities = GetSpectrum(out masses);
+
+            using (StreamWriter sw = new StreamWriter(filePath))
+            {
+                int numDataPoints = masses.Length / binSize;
+                if (masses.Length % binSize != 0) numDataPoints++;
+
+                int ct = 0;
+                for (int i = 0; i < numDataPoints; i++)
+                {
+                    uint sum = 0;
+                    for (int j = 0; j < binSize; j++)
+                    {
+                        if (ct >= intensities.Length) break;
+
+                        sum += intensities[i * binSize + j];
+                        ct++;
+                    }
+                    sw.WriteLine(string.Format("{0},{1}", masses[i * binSize], sum));
+                }
+            }
+        }
+
+        public override double[,] ToDoubleArray()
+        {
+            double[,] matrix = new double[SizeX, SizeY];
+
+            for (int s = 0; s < NumberSpecies; s++)
+            {
+                for (int z = 0; z < SizeZ; z++)
+                {
+                    for (int x = 0; x < SizeX; x++)
+                    {
+                        for (int y = 0; y < SizeY; y++)
+                        {
+                            matrix[x, y] += (double)getMatrixValue(x, y, z, s);
+                        }
+                    }
+                }
+            }
+
+            return matrix;
+        }
+    }
+
+
+
+
+
     public class FlightTimeArray
     {
         int[] _flightTimes;
@@ -2205,6 +2659,7 @@ namespace ImagingSIMS.Data.Spectra
             return new FlightTimeArray(_flightTimes, _intensities);
         }
     }
+
     public class MassCalibrationException : Exception
     {
         bool missingSlope;
@@ -2706,7 +3161,7 @@ namespace ImagingSIMS.Data.Spectra
 
     public enum SpectrumType
     {
-        J105, BioToF, Generic, None
+        J105, BioToF, Cameca1280, Generic, None
     }
 
     public delegate void SpectrumLoadedEventHandler(object sender, SpectrumLoadedEvenArgs e);
@@ -3998,6 +4453,66 @@ namespace ImagingSIMS.Data.Spectra
         public J105StreamException(string Message, Exception InnerException)
             : base(Message, InnerException)
         {
+        }
+    }
+
+    public struct CamecaSpecies
+    {
+        public int Cycles;
+        public int SizeInBytes;
+        public int PixelEncoding;
+        public double Mass;
+        public string Label;
+        public double WaitTime;
+        public double CountTime;
+        public double WellTime;
+        public double ExtraTime;
+
+        public static CamecaSpecies FromXmlNode(XmlNode node)
+        {
+            CamecaSpecies species = new CamecaSpecies();
+
+            XmlNode nodeNumberCycles = node.SelectSingleNode("n_AcquiredCycleNb");
+            species.Cycles = int.Parse(nodeNumberCycles.InnerText);
+
+            XmlNode nodeSizeBytes = node.SelectSingleNode("SIZE");
+            species.SizeInBytes = int.Parse(nodeSizeBytes.InnerText);
+
+            XmlNode nodePixelEncoding = node.SelectSingleNode("PROPERTIES/COMMON_TO_ALL_SPECIESPCTRS/n_EncodedPixelType");
+            species.PixelEncoding = int.Parse(nodePixelEncoding.InnerText);
+
+            XmlNode nodeMass = node.SelectSingleNode("PROPERTIES/DPSPECIESDATA/d_Mass");
+            species.Mass = double.Parse(nodeMass.InnerText);
+
+            XmlNode nodeLabel = node.SelectSingleNode("PROPERTIES/DPSPECIESDATA/psz_MatrixSpecies");
+            species.Label = nodeLabel.InnerText;
+
+            XmlNode nodeWaitTime = node.SelectSingleNode("PROPERTIES/DPSPECIESDATA/d_WaitTime");
+            species.WaitTime = double.Parse(nodeWaitTime.InnerText);
+
+            XmlNode nodeCountTime = node.SelectSingleNode("PROPERTIES/DPSPECIESDATA/d_CountTime");
+            species.CountTime = double.Parse(nodeCountTime.InnerText);
+
+            XmlNode nodeWellTime = node.SelectSingleNode("PROPERTIES/DPSPECIESDATA/d_WellTime");
+            species.WellTime = double.Parse(nodeWellTime.InnerText);
+
+            XmlNode nodeExtraTime = node.SelectSingleNode("PROPERTIES/DPSPECIESDATA/d_ExtraTime");
+            species.ExtraTime = double.Parse(nodeExtraTime.InnerText);
+
+            return species;
+        }
+    }
+
+    internal class CamecaSpeciesIdentityComparer : IEqualityComparer<CamecaSpecies>
+    {
+        public bool Equals(CamecaSpecies x, CamecaSpecies y)
+        {
+            return x.Label == y.Label && x.Mass == y.Mass;
+        }
+
+        public int GetHashCode(CamecaSpecies obj)
+        {
+            return obj.GetHashCode();
         }
     }
 }
