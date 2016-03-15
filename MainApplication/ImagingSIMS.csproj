@@ -13,16 +13,16 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <PublishUrl>C:\Users\jay50\Source\Repos\jay5026\ImagingSIMS3\ImagingSIMS\deploy\pub\</PublishUrl>
+    <PublishUrl>\\PNL\Projects\SIMS-materials\ImagingSIMS\deploy\pub\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Web</InstallFrom>
+    <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
@@ -30,17 +30,17 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://raw.githubusercontent.com/jay5026/ImagingSIMS/master/deploy/pub/</InstallUrl>
-    <UpdateUrl>https://raw.githubusercontent.com/jay5026/ImagingSIMS/master/deploy/pub/</UpdateUrl>
+    <InstallUrl>\\PNL\Projects\SIMS-materials\ImagingSIMS\deploy\pub\</InstallUrl>
     <SupportUrl>https://github.com/jay5026/ImagingSIMS/wiki</SupportUrl>
     <ErrorReportUrl>https://github.com/jay5026/ImagingSIMS/wiki</ErrorReportUrl>
-    <ProductName>ImagingSIMS Version 3.6</ProductName>
+    <ProductName>ImagingSIMS %28PNNL%29 Version 3.6</ProductName>
     <PublisherName>ImagingSIMS</PublisherName>
+    <SuiteName>PNNL Internal Version</SuiteName>
     <MinimumRequiredVersion>3.6.1.83</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>3.6.2.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

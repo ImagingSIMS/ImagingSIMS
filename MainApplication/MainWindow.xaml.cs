@@ -3406,7 +3406,7 @@ namespace ImagingSIMS.MainApplication
             return;
         }
 
-        private void CMSpecView(object sender, RoutedEventArgs e)
+        private async void CMSpecView(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -3415,11 +3415,41 @@ namespace ImagingSIMS.MainApplication
                     Spectrum s = (Spectrum)obj;
                     if (s == null) continue;
 
-                    SpectrumTab st = new SpectrumTab();
-                    st.SetData(s.Name, s);
-                    ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Spectrum, s.Name, true);
-                    tabMain.Items.Add(cti);
-                    tabMain.SelectedItem = cti;
+                    
+
+                    if (s.SpectrumType == SpectrumType.Cameca1280)
+                    {
+                        Cameca1280Spectrum cSpec = (Cameca1280Spectrum)s;
+
+                        Data2DDisplayTab dt = new Data2DDisplayTab();
+                        ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.Data2DDisplay, cSpec.Name, true);
+                        tabMain.Items.Add(cti);
+                        tabMain.SelectedItem = cti;
+
+                        pw = new ProgressWindow($"Generating images from spectrum {s.Name}. Please wait.", "Spectrum", true);
+                        pw.Show();
+
+                        foreach(CamecaSpecies species in cSpec.Species)
+                        {
+                            Data2D d = await cSpec.FromSpeciesAsync(species);
+                            await dt.AddDataSourceAsync(d);
+                        }
+
+                        pw.Close();
+                        pw = null;
+                    }
+                    else
+                    {
+                        SpectrumTab st = new SpectrumTab();
+                        st.SetData(s.Name, s);
+
+                        ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Spectrum, s.Name, true);
+                        tabMain.Items.Add(cti);
+                        tabMain.SelectedItem = cti;
+                    }
+
+                   
+                    
 
                     Ribbon.SelectedIndex = 3;
                 }

@@ -2075,6 +2075,11 @@ namespace ImagingSIMS.Data.Spectra
         // _matrix[layer][species][x,y]
         List<Data2D[]> _matrix;
 
+        public List<CamecaSpecies> Species
+        {
+            get { return _species; }
+        }
+
         public int NumberSpecies
         {
             get
@@ -2118,6 +2123,33 @@ namespace ImagingSIMS.Data.Spectra
             base.Dispose(disposing);
         }
         
+        public Data2D FromSpecies(CamecaSpecies species, out float Max, BackgroundWorker bw = null)
+        {
+            Data2D d = FromMassRange(new MassRangePair(species.Mass - 0.1d, species.Mass + 0.1d), out Max, bw);
+            return d;
+        }
+        public async Task<Data2D> FromSpeciesAsync(CamecaSpecies species)
+        {
+            float tableMax = 0;
+            Data2D d = await Task.Run(() => (FromSpecies(species, out tableMax, null)));
+            return d;
+        }
+        public List<Data2D> FromSpecies(CamecaSpecies species, string TableBaseName, bool OmitNumbering, BackgroundWorker bw = null)
+        {
+            return FromMassRange(new MassRangePair(species.Mass - 0.1d, species.Mass + 0.1d), TableBaseName, OmitNumbering, bw);
+        }
+        public async Task<List<Data2D>> FromSpeciesAsync(CamecaSpecies species, string tableBaseName, bool omitNumbering)
+        {
+            return await Task.Run(() => FromSpecies(species, tableBaseName, omitNumbering, null));
+        }
+        public Data2D FromSpecies(CamecaSpecies species, int Layer, string TableBaseName, bool OmitNumbering, BackgroundWorker bw= null)
+        {
+            return FromMassRange(new MassRangePair(species.Mass - 0.1d, species.Mass + 0.1d), Layer, TableBaseName, OmitNumbering, bw);
+        }
+        public async Task<Data2D> FromSpeciesAsync(CamecaSpecies species, int layer, string tableBaseName, bool omitNumbering)
+        {
+            return await Task.Run(() => FromSpecies(species, layer, tableBaseName, omitNumbering, null));
+        }
         public override Data2D FromMassRange(MassRangePair MassRange, out float Max, BackgroundWorker bw = null)
         {
             Data2D dt = new Data2D(_sizeX, _sizeY);
