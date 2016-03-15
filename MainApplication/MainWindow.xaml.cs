@@ -770,14 +770,27 @@ namespace ImagingSIMS.MainApplication
             StringBuilder filter = new StringBuilder();
             string j105 = "Ionoptika compressed V2 files (.zip)|*.zip;*.IonoptikaIA2DspectrV2";
             string bioToF = "Bio-ToF Spectra Files (.xyt, .dat)|*.xyt;*.dat";
+            string cameca1280 = "Cameca 1280 Spectra Files (.imp)|*.imp";
             if (Workspace.Registry.DefaultProgram == DefaultProgram.BioToF)
             {
                 filter.Append(bioToF);
                 filter.Append("|");
                 filter.Append(j105);
+                filter.Append("|");
+                filter.Append(cameca1280);
             }
             else if (Workspace.Registry.DefaultProgram == DefaultProgram.J105)
             {
+                filter.Append(j105);
+                filter.Append("|");
+                filter.Append(bioToF);
+                filter.Append("|");
+                filter.Append(cameca1280);
+            }
+            else if(Workspace.Registry.DefaultProgram == DefaultProgram.Cameca1280)
+            {
+                filter.Append(cameca1280);
+                filter.Append("|");
                 filter.Append(j105);
                 filter.Append("|");
                 filter.Append(bioToF);
@@ -810,6 +823,12 @@ namespace ImagingSIMS.MainApplication
                 args.FileName = ofd.FileName;
                 args.Type = SpectrumType.J105;
                 args.SaveQuickLoadFile = Workspace.Registry.SaveQuickLoad;
+            }
+            else if (extension.ToLower().Contains("imp"))
+            {
+                args.NumberFiles = ofd.FileName.Length;
+                args.FileNames = ofd.FileNames;
+                args.Type = SpectrumType.Cameca1280;
             }
 
             pw = new ProgressWindow("Loading " + System.IO.Path.GetFileName(ofd.FileName), "Load");
@@ -854,6 +873,19 @@ namespace ImagingSIMS.MainApplication
                     e.Result = btspec;
                 }
                 catch (Exception ex)
+                {
+                    e.Result = ex;
+                }
+            }
+            else if(args.Type == SpectrumType.Cameca1280)
+            {
+                try
+                {
+                    Cameca1280Spectrum camecaSpec = new Cameca1280Spectrum(System.IO.Path.GetFileNameWithoutExtension(args.FileName));
+                    camecaSpec.LoadFromFile(args.FileNames, sender as BackgroundWorker);
+                    e.Result = camecaSpec;
+                }
+                catch(Exception ex)
                 {
                     e.Result = ex;
                 }

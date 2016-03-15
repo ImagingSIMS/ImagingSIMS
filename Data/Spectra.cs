@@ -2117,8 +2117,7 @@ namespace ImagingSIMS.Data.Spectra
         {
             base.Dispose(disposing);
         }
-
-
+        
         public override Data2D FromMassRange(MassRangePair MassRange, out float Max, BackgroundWorker bw = null)
         {
             Data2D dt = new Data2D(_sizeX, _sizeY);
@@ -2214,8 +2213,7 @@ namespace ImagingSIMS.Data.Spectra
             
             return d;
         }
-
-
+        
         public override uint[] GetSpectrum(out float[] Masses)
         {
             uint[] intensities = new uint[_species.Count];
@@ -2377,7 +2375,7 @@ namespace ImagingSIMS.Data.Spectra
                 // Only know that 0 corresponds to Int16
                 if (pixelType == 0) integerSize = 2;
 
-                float[] values = new float[imageSize * imageSize * _species.Count];
+                float[] values = new float[imageSize * imageSize * _species.Count * numCyclesForFile[i]];
                 for (int j = 0; j < values.Length; j++)
                 {
                     //Int16
@@ -2418,6 +2416,7 @@ namespace ImagingSIMS.Data.Spectra
                                 layerSpecies[x, y] = tempValues[s, z, y, x];
                             }
                         }
+                        layer[s] = layerSpecies;
                     }
                     _matrix.Add(layer);
                 }
