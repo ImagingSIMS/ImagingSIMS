@@ -65,7 +65,7 @@
                             <!--<Grid>
                                 <CheckBox IsChecked="{Binding ListBoxItem.IsSelected}"/>
                             </Grid>-->
-                            <b:Data2DDisplay DisplayItem="{Binding}" AnalyzeData="analyzePixels_Click" RemoveItemClick="removeItem_Click"
+                            <b:Data3DDisplay DisplayItem="{Binding}" AnalyzeData="analyzePixels_Click" RemoveItemClick="removeItem_Click"
                                              ImageWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Registry.DataDisplayWidth}"
                                              ImageHeight="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Registry.DataDisplayWidth}"/>
                         </StackPanel>

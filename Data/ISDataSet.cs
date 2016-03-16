@@ -2027,6 +2027,34 @@ namespace ImagingSIMS.Data
             return new Data3D(d);
         }
 
+        public Data2D FromLayers(int startLayer, int endLayer)
+        {
+            Data2D d = new Data2D(Width, Height);
+
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    for (int z = startLayer; z <= endLayer ; z++)
+                    {
+                        d[x, y] += this[x, y, z];
+                    }
+                }
+            }
+
+            return d;
+        }
+
+        public Data3D ExpandIntensity(int windowSize = 5)
+        {
+            Data2D[] layers = new Data2D[Depth];
+            for (int z = 0; z < Depth; z++)
+            {
+                layers[z] = this.Layers[z].ExpandIntensity(windowSize);
+            }
+            return new Data3D(layers);
+        }
+
         public static explicit operator Color[,](Data3D d)
         {
             Color[,] c = new Color[d.Width, d.Height];

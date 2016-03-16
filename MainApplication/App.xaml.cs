@@ -15,6 +15,7 @@ using ImagingSIMS.Common.Registry;
 using ImagingSIMS.Data;
 using ImagingSIMS.MainApplication;
 using ImagingSIMS.Controls;
+using System.Reflection;
 
 namespace ImagingSIMS
 {

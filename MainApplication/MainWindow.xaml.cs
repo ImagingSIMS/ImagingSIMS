@@ -3440,12 +3440,12 @@ namespace ImagingSIMS.MainApplication
                     }
                     else
                     {
-                        SpectrumTab st = new SpectrumTab();
-                        st.SetData(s.Name, s);
+                    SpectrumTab st = new SpectrumTab();
+                    st.SetData(s.Name, s);
 
-                        ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Spectrum, s.Name, true);
-                        tabMain.Items.Add(cti);
-                        tabMain.SelectedItem = cti;
+                    ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Spectrum, s.Name, true);
+                    tabMain.Items.Add(cti);
+                    tabMain.SelectedItem = cti;
                     }
 
                    
@@ -4262,7 +4262,16 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            throw new ArgumentException();
+            List<Data2D> data = GetSelectedTables();
+            Data3D d = new Data3D(data);
+
+            Data2DDisplayTab dt = new Data2DDisplayTab(ColorScaleTypes.ThermalWarm);
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.Data2DDisplay, "Test", true);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+
+            await dt.AddDataSourceAsync(d);
+
         }
 #pragma warning restore 1998
 

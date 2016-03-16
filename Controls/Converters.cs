@@ -298,6 +298,29 @@ namespace ImagingSIMS.Controls.Converters
             return false;
         }
     }
+    public class Data3DToSizeStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return null;
+
+            try
+            {
+                Data3D d = (Data3D)value;
+                if (d == null) return null;
+
+                return string.Format("{0} x {1} x {2}", d.Width, d.Height, d.Depth);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        {
+            return false;
+        }
+    }
     public class Data2DToMinMaxStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
@@ -321,7 +344,7 @@ namespace ImagingSIMS.Controls.Converters
             return false;
         }
     }
-    public class Data3DToSizeStringConverter : IValueConverter
+    public class Data3DToMinMaxStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
         {
@@ -332,7 +355,7 @@ namespace ImagingSIMS.Controls.Converters
                 Data3D d = (Data3D)value;
                 if (d == null) return null;
 
-                return string.Format("{0} x {1}", d.Width, d.Height);
+                return string.Format("Maximum: {0}", d.SingluarMaximum);
             }
             catch (Exception)
             {
@@ -741,4 +764,37 @@ namespace ImagingSIMS.Controls.Converters
             return null;
         }
     }
+    public class Data3DToRangeSliderMinMaxConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Data3D d = value as Data3D;
+            if (d == null) return 0;
+
+            try
+            {
+                string s = (string)parameter;
+                if (s.ToLower() == "min" || s.ToLower() == "minimum")
+                {
+                    if (d.Layers.Length == 0) return 0;
+                    return 1;
+                }
+                else if (s.ToLower() == "max" || s.ToLower() == "maximum")
+                {
+                    return d.Layers.Length;
+                }
+                else return 0;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }
