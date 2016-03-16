@@ -3431,7 +3431,8 @@ namespace ImagingSIMS.MainApplication
 
                         foreach(CamecaSpecies species in cSpec.Species)
                         {
-                            Data2D d = await cSpec.FromSpeciesAsync(species);
+                            //Data2D d = await cSpec.FromSpeciesAsync(species);
+                            Data3D d = await cSpec.FromSpeciesAsync(species, cSpec.Name + " - " + species.Mass.ToString("0.00"));
                             await dt.AddDataSourceAsync(d);
                         }
 

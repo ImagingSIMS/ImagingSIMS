@@ -2150,6 +2150,15 @@ namespace ImagingSIMS.Data.Spectra
         {
             return await Task.Run(() => FromSpecies(species, layer, tableBaseName, omitNumbering, null));
         }
+        public Data3D FromSpecies(CamecaSpecies species, string tableName, BackgroundWorker bw = null)
+        {
+            return FromMassRange(new MassRangePair(species.Mass - 0.1d, species.Mass + 0.1d), tableName, bw);
+        }
+        public async Task<Data3D> FromSpeciesAsync(CamecaSpecies species, string tableName)
+        {
+            return await Task.Run(() => FromSpecies(species, tableName, null));
+        }
+
         public override Data2D FromMassRange(MassRangePair MassRange, out float Max, BackgroundWorker bw = null)
         {
             Data2D dt = new Data2D(_sizeX, _sizeY);
@@ -2243,6 +2252,12 @@ namespace ImagingSIMS.Data.Spectra
                 d.DataName = string.Format("{0} {1}-{2}", TableBaseName, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"));
 
             
+            return d;
+        }
+        public Data3D FromMassRange(MassRangePair MassRange, string TableName, BackgroundWorker bw = null)
+        {
+            Data3D d = new Data3D(FromMassRange(MassRange, "temp", true, bw));
+            d.DataName = TableName;
             return d;
         }
         
