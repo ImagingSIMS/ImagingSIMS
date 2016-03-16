@@ -286,7 +286,7 @@ namespace ImagingSIMS.Controls.ViewModels
             int newLowerLayer = LayerStart + 1;
             int newUpperLayer = LayerEnd + 1;
 
-            if(newUpperLayer < DataSource.Width)
+            if(newUpperLayer < DataSource.Depth)
             {
                 LayerStart = newLowerLayer;
                 LayerEnd = newUpperLayer;
