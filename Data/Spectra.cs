@@ -2560,10 +2560,6 @@ namespace ImagingSIMS.Data.Spectra
         }
     }
 
-
-
-
-
     public class FlightTimeArray
     {
         int[] _flightTimes;
