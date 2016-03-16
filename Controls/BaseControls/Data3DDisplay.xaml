@@ -1,0 +1,203 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.BaseControls.Data3DDisplay"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImagingSIMS.Controls.BaseControls"
+             xmlns:converters="clr-namespace:ImagingSIMS.Controls.Converters"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:data="clr-namespace:ImagingSIMS.Data.Imaging;assembly=Data"
+             xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Themes\Generic.xaml"/>
+                <ResourceDictionary>
+                    <Style TargetType="{x:Type ToolTip}">
+                        <Setter Property="Background" Value="{StaticResource ToolTipBackground}"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource ToolTipBorderBrush}"/>
+                        <Setter Property="Margin" Value="4"/>
+                    </Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Margin" Value="4"/>
+                        <Setter Property="Width" Value="75"/>
+                        <Setter Property="Height" Value=" 23"/>
+                    </Style>
+                    <Style x:Key="extendedStyle" BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                    </Style>
+                    <converters:Data3DToSizeStringConverter x:Key="data3DToSizeStringConverter"/>
+                    <converters:Data3DToMinMaxStringConverter x:Key="data3DToMinMaxStringConverter"/>
+                    <converters:ColorScaleToBoolConverter x:Key="colorScaleToBoolConverter"/>
+                    <converters:ColorScaleToBitmapSourceConverter x:Key="colorScaleToBitmapSourceConverter"/>
+                    <converters:Data3DToRangeSliderMinMaxConverter x:Key="data3DToRangeSliderMinMaxConverter"/>
+                    <ObjectDataProvider x:Key="colorScaleFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                        <ObjectDataProvider.MethodParameters>
+                            <x:Type TypeName="data:ColorScaleTypes"/>
+                        </ObjectDataProvider.MethodParameters>
+                    </ObjectDataProvider>
+                    <converters:EnumDescriptionConverter x:Key="enumDescriptionConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding DisplayItem.DataSource.DataName, ElementName=userControl}"/>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" x:Name="scrollViewer" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"
+                      Width="{Binding ElementName=userControl, Path=ImageWidth}" 
+                      Height="{Binding ElementName=userControl, Path=ImageHeight}"
+                      ScrollChanged="ScrollViewer_ScrollChanged"
+                      PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                      PreviewMouseLeftButtonDown="ScrollViewer_PreviewMouseLeftButtonDown"
+                      PreviewMouseRightButtonDown="ScrollViewer_PreviewMouseRightButtonDown"
+                      MouseRightButtonDown="scrollViewer_MouseRightButtonDown"
+                      MouseLeftButtonUp="ScrollViewer_MouseLeftButtonUp"
+                      MouseRightButtonUp="ScrollViewer_MouseRightButtonUp"
+                      MouseMove="ScrollViewer_MouseMove">
+            <Image Grid.Row="0" x:Name="image" 
+                   Width="{Binding DisplayItem.ImageTransformedWidth, ElementName=userControl}" 
+                   Height="{Binding DisplayItem.ImageTransformedHeight, ElementName=userControl}" 
+                   Source="{Binding DisplayItem.DisplayImageSource, ElementName=userControl}">
+                <Image.ToolTip>
+                    <ToolTip DataContext="{Binding Path=PlacementTarget.Parent.Parent.Parent, RelativeSource={x:Static RelativeSource.Self}}">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding DisplayItem.DataSource.DataName}"/>
+                            <TextBlock Text="{Binding DisplayItem.DataSource, Converter={StaticResource data3DToSizeStringConverter}}"/>
+                            <TextBlock Text="{Binding DisplayItem.DataSource, Converter={StaticResource data3DToMinMaxStringConverter}}"/>
+                        </StackPanel>
+                    </ToolTip>
+                </Image.ToolTip>
+            </Image>
+        </ScrollViewer>
+        <Grid Grid.Row="2">
+            <Image x:Name="imageColorScale" Margin="4" Width="{Binding ElementName=userControl, Path=ImageWidth}" HorizontalAlignment="Center" Stretch="UniformToFill" Height="20">
+                <Image.Source>
+                    <MultiBinding Converter="{StaticResource colorScaleToBitmapSourceConverter}">
+                        <Binding Path="DisplayItem.ColorScale" ElementName="userControl"/>
+                        <Binding Path="DisplayItem.SolidColorScale" ElementName="userControl"/>
+                        <Binding Path="DisplayItem.DataSource.SingluarMaximum" ElementName="userControl"/>
+                        <Binding Path="DisplayItem.Saturation" ElementName="userControl"/>
+                    </MultiBinding>
+                </Image.Source>
+            </Image>
+            <Grid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy Image" Click="cmCopyImage_Click"/>
+                    <MenuItem Header="Copy Scale" Click="cmCopyScale_Click"/>
+                </ContextMenu>
+            </Grid.ContextMenu>
+        </Grid>
+        <StackPanel Grid.Row="3" Orientation="Vertical">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0">Layers:</TextBlock>
+                <xctk:RangeSlider Grid.Column="1" Margin="4" HorizontalAlignment="Stretch"
+                                  Step="1"
+                                  LowerValue="{Binding ElementName=userControl, Path=DisplayItem.LayerStart}"
+                                  HigherValue="{Binding ElementName=userControl, Path=DisplayItem.LayerEnd}"
+                                  Minimum="{Binding ElementName=userControl, Path=DisplayItem.DataSource, Converter={StaticResource data3DToRangeSliderMinMaxConverter}, ConverterParameter=Minimum}"
+                                  Maximum="{Binding ElementName=userControl, Path=DisplayItem.DataSource, Converter={StaticResource data3DToRangeSliderMinMaxConverter}, ConverterParameter=Maximum}"      
+                                    />
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button x:Name="buttonLayersBack" Width="20" Height="20" Click="layersChange_Click">
+                        <Image Source="..\Images\Backward.ico"/>
+                    </Button>
+                    <xctk:IntegerUpDown Grid.Column="2" Margin="4" Width="50" 
+                                    Minimum="{Binding ElementName=userControl, Path=DisplayItem.DataSource, Converter={StaticResource data3DToRangeSliderMinMaxConverter}, ConverterParameter=Minimum}"
+                                    Maximum="{Binding ElementName=userControl, Path=DisplayItem.LayerEnd}"
+                                    Value="{Binding ElementName=userControl, Path=DisplayItem.LayerStart}"/>
+                    <TextBlock Grid.Column="3">-</TextBlock>
+                    <xctk:IntegerUpDown Grid.Column="4" Margin="4" Width="50" 
+                                    Minimum="{Binding ElementName=userControl, Path=DisplayItem.LayerStart}"
+                                    Maximum="{Binding ElementName=userControl, Path=DisplayItem.DataSource, Converter={StaticResource data3DToRangeSliderMinMaxConverter}, ConverterParameter=Maximum}"
+                                    Value="{Binding ElementName=userControl, Path=DisplayItem.LayerEnd}"/>
+                    <Button x:Name="buttonLayersForward" Width="20" Height="20" Click="layersChange_Click">
+                        <Image Source="..\Images\Forward.ico"/>
+                    </Button>
+                </StackPanel>                
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0">Saturation:</TextBlock>
+                <Slider x:Name="sliderSaturation" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch"
+                        SmallChange="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Small}"
+                        LargeChange="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Large}"
+                        Minimum="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Minimum}"
+                        Maximum="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Maximum}"
+                        Value="{Binding DisplayItem.Saturation, Mode=TwoWay, ElementName=userControl}"/>
+                <TextBlock Grid.Column="2" Text="{Binding DisplayItem.Saturation, StringFormat=0.0, ElementName=userControl}"/>
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0">Color Scale:</TextBlock>
+                <ComboBox Grid.Column="1" Margin="4" Width="Auto" Height="20" IsEditable="False" 
+                                      ItemsSource="{Binding Source={StaticResource colorScaleFromEnum}}"
+                                      SelectedItem="{Binding DisplayItem.ColorScale, ElementName=userControl}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button x:Name="buttonShowColor" Grid.Column="2" Width="20" Height="20" Margin="4" 
+                        IsEnabled="{Binding DisplayItem.ColorScale, Converter={StaticResource colorScaleToBoolConverter}, ElementName=userControl}"
+                        MouseEnter="buttonShowColor_MouseEnter">
+                    <Image Source="..\Images\PaintPalette.ico"/>
+                </Button>
+                <Popup x:Name="popupSolidColorScale" IsOpen="False" PlacementTarget="{Binding ElementName=buttonShowColor}" StaysOpen="False">
+                    <Grid Background="{StaticResource MenuBackground}">
+                        <cc:ColorSelector SelectedColor="{Binding DisplayItem.SolidColorScale, Mode=TwoWay, ElementName=userControl}" IsAlphaEnabled="False"/>
+                    </Grid>
+                </Popup>
+            </Grid>
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Width="20" Height="20" Click="contentButtonRemove_Click" Margin="4" ToolTip="Delete">
+                    <Image Source="..\Images\Remove24.png"/>
+                </Button>
+                <Button Width="20" Height="20" Click="contentButtonSave_Click" Margin="4" ToolTip="Save">
+                    <Image Source="..\Images\saveHS.png"/>
+                </Button>
+                <Button Width="20" Height="20" Click="contentButtonCopy_Click" Margin="4" ToolTip="Copy">
+                    <Image Source="..\Images\copy.ico"/>
+                </Button>
+                <Button Width="20" Height="20" Click="contentButtonStats_Click" Margin="4" ToolTip="Analyze">
+                    <Image Source="..\Images\ChartWizard.png"/>
+                </Button>
+                <Button Width="20" Height="20" Click="contentButtonResetSaturation_Click" Margin="4" ToolTip="Reset Saturation">
+                    <Image Source="..\Images\Reverse.png"/>
+                </Button>
+            </StackPanel>
+            <!-- Removed because no longer necessary. These functions are handled in the Cluster Identification tab -->
+            <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Click="buttonPixelStats_Click">Pixel Stats</Button>
+            </StackPanel>-->
+
+        </StackPanel>
+    </Grid>
+</UserControl>

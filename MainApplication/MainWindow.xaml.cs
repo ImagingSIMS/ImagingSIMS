@@ -4153,14 +4153,16 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            //OxySpectrumTab ost = new OxySpectrumTab();
-            //ClosableTabItem cti = ClosableTabItem.Create(ost, TabType.Spectrum);
-            //tabMain.Items.Add(cti);
-            //tabMain.SelectedItem = cti;
-            for (int i = 0; i < 15; i++)
-            {
-                DialogBox.Show("Test", "Test", "Test", (DialogIcon)i);
-            }
+            List<Data2D> data = GetSelectedTables();
+            Data3D d = new Data3D(data);
+
+            Data2DDisplayTab dt = new Data2DDisplayTab(ColorScaleTypes.ThermalWarm);
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.Data2DDisplay, "Test", true);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+
+            await dt.AddDataSourceAsync(d);
+
         }
 #pragma warning restore 1998
 

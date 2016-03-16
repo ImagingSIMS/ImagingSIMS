@@ -9,10 +9,14 @@ using ImagingSIMS.Data.Imaging;
 
 namespace ImagingSIMS.Controls.ViewModels
 {
-    public class Data2DDisplayBatchApplyViewModel : INotifyPropertyChanged
+    public class DataDisplayBatchApplyViewModel : INotifyPropertyChanged
     {
         ColorScaleTypes _colorScale;
         Color _solidColorScale;
+        int _layerStart;
+        int _layerEnd;
+        int _layerMinimum;
+        int _layerMaximum;
 
         public ColorScaleTypes ColorScale
         {
@@ -38,18 +42,66 @@ namespace ImagingSIMS.Controls.ViewModels
                 }
             }
         }
+        public int LayerStart
+        {
+            get { return _layerStart; }
+            set
+            {
+                if(_layerStart != value)
+                {
+                    _layerStart = value;
+                    NotifyPropertyChanged("LayerStart");
+                }
+            }
+        }
+        public int LayerEnd
+        {
+            get { return _layerEnd; }
+            set
+            {
+                if(_layerEnd != value)
+                {
+                    _layerEnd = value;
+                    NotifyPropertyChanged("LayerEnd");
+                }
+            }
+        }
+        public int LayerMinimum
+        {
+            get { return _layerMinimum; }
+            set
+            {
+                if(_layerMinimum != value)
+                {
+                    _layerMinimum = value;
+                    NotifyPropertyChanged("LayerMinimum");
+                }
+            }
+        }
+        public int LayerMaximum
+        {
+            get { return _layerMaximum; }
+            set
+            {
+                if(_layerMaximum != value)
+                {
+                    _layerMaximum = value;
+                    NotifyPropertyChanged("LayerMaximum");
+                }
+            }
+        }
 
-        public Data2DDisplayBatchApplyViewModel()
+        public DataDisplayBatchApplyViewModel()
         {
             ColorScale = ColorScaleTypes.ThermalWarm;
             SolidColorScale = Color.FromArgb(255, 255, 255, 255);
         }
-        public Data2DDisplayBatchApplyViewModel(ColorScaleTypes ColorScale)
+        public DataDisplayBatchApplyViewModel(ColorScaleTypes ColorScale)
         {
             this.ColorScale = ColorScale;
             this.SolidColorScale = Color.FromArgb(255, 255, 255, 255);
         }
-        public Data2DDisplayBatchApplyViewModel(Color SolidColorScale)
+        public DataDisplayBatchApplyViewModel(Color SolidColorScale)
         {
             this.ColorScale = ColorScaleTypes.Solid;
             this.SolidColorScale = SolidColorScale;
