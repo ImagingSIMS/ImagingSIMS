@@ -2558,6 +2558,15 @@ namespace ImagingSIMS.Data.Spectra
 
             return matrix;
         }
+
+        public override byte[] ToByteArray()
+        {
+            return base.ToByteArray();
+        }
+        public override void FromByteArray(byte[] array)
+        {
+            base.FromByteArray(array);
+        }
     }
 
     public class FlightTimeArray
