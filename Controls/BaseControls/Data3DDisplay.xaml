@@ -51,7 +51,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal">
@@ -83,26 +82,8 @@
                     </ToolTip>
                 </Image.ToolTip>
             </Image>
-        </ScrollViewer>
-        <Grid Grid.Row="2">
-            <Image x:Name="imageColorScale" Margin="4" Width="{Binding ElementName=userControl, Path=ImageWidth}" HorizontalAlignment="Center" Stretch="UniformToFill" Height="20">
-                <Image.Source>
-                    <MultiBinding Converter="{StaticResource colorScaleToBitmapSourceConverter}">
-                        <Binding Path="DisplayItem.ColorScale" ElementName="userControl"/>
-                        <Binding Path="DisplayItem.SolidColorScale" ElementName="userControl"/>
-                        <Binding Path="DisplayItem.DataSource.SingluarMaximum" ElementName="userControl"/>
-                        <Binding Path="DisplayItem.Saturation" ElementName="userControl"/>
-                    </MultiBinding>
-                </Image.Source>
-            </Image>
-            <Grid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Copy Image" Click="cmCopyImage_Click"/>
-                    <MenuItem Header="Copy Scale" Click="cmCopyScale_Click"/>
-                </ContextMenu>
-            </Grid.ContextMenu>
-        </Grid>
-        <StackPanel Grid.Row="3" Orientation="Vertical">
+        </ScrollViewer>        
+        <StackPanel Grid.Row="2" Orientation="Vertical">
             <Grid Visibility="{Binding ElementName=userControl, Path=DisplayItem.DataSource.Depth, Converter={StaticResource data3DDepthToVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -134,6 +115,24 @@
                         <Image Source="..\Images\Forward.ico"/>
                     </Button>
                 </StackPanel>                
+            </Grid>
+            <Grid>
+                <Image x:Name="imageColorScale" Margin="4" Width="{Binding ElementName=userControl, Path=ImageWidth}" HorizontalAlignment="Center" Stretch="UniformToFill" Height="20">
+                    <Image.Source>
+                        <MultiBinding Converter="{StaticResource colorScaleToBitmapSourceConverter}">
+                            <Binding Path="DisplayItem.ColorScale" ElementName="userControl"/>
+                            <Binding Path="DisplayItem.SolidColorScale" ElementName="userControl"/>
+                            <Binding Path="DisplayItem.DataSource.SingluarMaximum" ElementName="userControl"/>
+                            <Binding Path="DisplayItem.Saturation" ElementName="userControl"/>
+                        </MultiBinding>
+                    </Image.Source>
+                </Image>
+                <Grid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy Image" Click="cmCopyImage_Click"/>
+                        <MenuItem Header="Copy Scale" Click="cmCopyScale_Click"/>
+                    </ContextMenu>
+                </Grid.ContextMenu>
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>
