@@ -151,6 +151,10 @@ namespace ImagingSIMS.Controls.ViewModels
                 if (_layerStart != value)
                 {
                     _layerStart = value;
+                    if(_layerStart > _layerEnd)
+                    {
+                        LayerEnd = LayerStart;
+                    }
                     NotifyPropertyChanged("LayerStart");
                     Redraw();
                 }
@@ -164,6 +168,10 @@ namespace ImagingSIMS.Controls.ViewModels
                 if (_layerEnd != value)
                 {
                     _layerEnd = value;
+                    if(_layerEnd < _layerStart)
+                    {
+                        LayerStart = _layerEnd;
+                    }
                     NotifyPropertyChanged("LayerEnd");
                     Redraw();
                 }
@@ -286,7 +294,7 @@ namespace ImagingSIMS.Controls.ViewModels
             int newLowerLayer = LayerStart + 1;
             int newUpperLayer = LayerEnd + 1;
 
-            if(newUpperLayer < DataSource.Depth)
+            if(newUpperLayer <= DataSource.Depth)
             {
                 LayerStart = newLowerLayer;
                 LayerEnd = newUpperLayer;
@@ -297,7 +305,7 @@ namespace ImagingSIMS.Controls.ViewModels
             int newLowerLayer = LayerStart - 1;
             int newUpperLayer = LayerEnd - 1;
 
-            if(newLowerLayer >= 0)
+            if(newLowerLayer > 0)
             {
                 LayerStart = newLowerLayer;
                 LayerEnd = newUpperLayer;
@@ -313,6 +321,9 @@ namespace ImagingSIMS.Controls.ViewModels
 
             if (upperLayer >= 0 && upperLayer < DataSource.Depth)
                 LayerEnd = upperLayer;
+
+            if (lowerLayer > upperLayer)
+                upperLayer = lowerLayer;
         }
 
         int _previousStartLayer = -1;

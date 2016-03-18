@@ -103,13 +103,13 @@
                         <Image Source="..\Images\Backward.ico"/>
                     </Button>
                     <xctk:IntegerUpDown Grid.Column="2" Margin="4" Width="50" 
-                                    Minimum="{Binding ElementName=userControl, Path=DisplayItem.DataSource, Converter={StaticResource data3DToRangeSliderMinMaxConverter}, ConverterParameter=Minimum}"
-                                    Maximum="{Binding ElementName=userControl, Path=DisplayItem.LayerEnd}"
+                                    Minimum="1"
+                                    Maximum="{Binding ElementName=userControl, Path=DisplayItem.DataSource.Depth}"
                                     Value="{Binding ElementName=userControl, Path=DisplayItem.LayerStart}"/>
                     <TextBlock Grid.Column="3">-</TextBlock>
                     <xctk:IntegerUpDown Grid.Column="4" Margin="4" Width="50" 
-                                    Minimum="{Binding ElementName=userControl, Path=DisplayItem.LayerStart}"
-                                    Maximum="{Binding ElementName=userControl, Path=DisplayItem.DataSource, Converter={StaticResource data3DToRangeSliderMinMaxConverter}, ConverterParameter=Maximum}"
+                                    Minimum="1"
+                                    Maximum="{Binding ElementName=userControl, Path=DisplayItem.DataSource.Depth}"
                                     Value="{Binding ElementName=userControl, Path=DisplayItem.LayerEnd}"/>
                     <Button x:Name="buttonLayersForward" Width="20" Height="20" Click="layersChange_Click">
                         <Image Source="..\Images\Forward.ico"/>
