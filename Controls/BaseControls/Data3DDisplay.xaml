@@ -35,6 +35,7 @@
                     <converters:ColorScaleToBoolConverter x:Key="colorScaleToBoolConverter"/>
                     <converters:ColorScaleToBitmapSourceConverter x:Key="colorScaleToBitmapSourceConverter"/>
                     <converters:Data3DToRangeSliderMinMaxConverter x:Key="data3DToRangeSliderMinMaxConverter"/>
+                    <converters:Data3DDepthToVisibilityConverter x:Key="data3DDepthToVisibilityConverter"/>
                     <ObjectDataProvider x:Key="colorScaleFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
                         <ObjectDataProvider.MethodParameters>
                             <x:Type TypeName="data:ColorScaleTypes"/>
@@ -102,7 +103,7 @@
             </Grid.ContextMenu>
         </Grid>
         <StackPanel Grid.Row="3" Orientation="Vertical">
-            <Grid>
+            <Grid Visibility="{Binding ElementName=userControl, Path=DisplayItem.DataSource.Depth, Converter={StaticResource data3DDepthToVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>

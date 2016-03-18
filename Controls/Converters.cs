@@ -778,5 +778,26 @@ namespace ImagingSIMS.Controls.Converters
             throw new NotImplementedException();
         }
     }
+    public class Data3DDepthToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                int i = (int)value;
+                if (i > 1) return Visibility.Visible;
+                else return Visibility.Collapsed;
+            }
+            catch(Exception)
+            {
+                return Visibility.Collapsed;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 }
