@@ -2559,13 +2559,107 @@ namespace ImagingSIMS.Data.Spectra
             return matrix;
         }
 
+        // Layout
+        // (int)                    SpectrumType
+        // (string)                 Name
+        // (int)                    SizeX
+        // (int)                    SizeY
+        // (int)                    SizeZ
+        // (int)                    Number species
+        // (List<CamecaSpecies>)    Species
+        // (List<Data2D[]>)         Matrix ([SizeZ][NumberLayers])
         public override byte[] ToByteArray()
         {
-            return base.ToByteArray();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                BinaryWriter bw = new BinaryWriter(ms);
+
+                // Offset start of writing to later go back and 
+                // prefix the stream with the size of the stream written
+                bw.Seek(sizeof(int), SeekOrigin.Begin);
+
+                // Write contents of object
+                bw.Write((int)SpectrumType);
+                bw.Write(Name);
+
+                bw.Write(SizeX);
+                bw.Write(SizeY);
+                bw.Write(SizeZ);
+
+                bw.Write(NumberSpecies);
+                for (int i = 0; i < NumberSpecies; i++)
+                {
+                    bw.Write(Species[i].ToByteArray());
+                }
+
+                for (int i = 0; i < SizeZ; i++)
+                {
+                    Data2D[] layer = _matrix[i];
+
+                    for (int j = 0; j < NumberSpecies; j++)
+                    {
+                        bw.Write(layer[j].ToByteArray());
+                    }
+                }
+
+                // Return to beginning of writer and write the length
+                bw.Seek(0, SeekOrigin.Begin);
+                bw.Write((int)bw.BaseStream.Length - sizeof(int));
+
+                // Return to start of memory stream and 
+                // return byte array of the stream
+                ms.Seek(0, SeekOrigin.Begin);
+                return ms.ToArray();
+            }
         }
+
+        // Layout
+        // (int)                    SpectrumType
+        // (string)                 Name
+        // (int)                    SizeX
+        // (int)                    SizeY
+        // (int)                    SizeZ
+        // (int)                    Number species
+        // (List<CamecaSpecies>)    Species
+        // (List<Data2D[]>)         Matrix ([SizeZ][NumberLayers])
         public override void FromByteArray(byte[] array)
         {
-            base.FromByteArray(array);
+            using (MemoryStream ms = new MemoryStream(array))
+            {
+                BinaryReader br = new BinaryReader(ms);
+
+                _specType = (SpectrumType)br.ReadInt32();
+                Name = br.ReadString();
+
+                _sizeX = br.ReadInt32();
+                _sizeY = br.ReadInt32();
+                _sizeZ = br.ReadInt32();
+
+                int numSpecies = br.ReadInt32();
+
+                for (int i = 0; i < numSpecies; i++)
+                {
+                    int size = br.ReadInt32();
+                    CamecaSpecies species = new CamecaSpecies();
+                    species.FromByteArray(br.ReadBytes(size));
+                    Species.Add(species);
+                }
+
+                for (int i = 0; i < SizeZ; i++)
+                {
+                    Data2D[] layer = new Data2D[numSpecies];
+
+                    for (int j = 0; j < numSpecies; j++)
+                    {
+                        int size = br.ReadInt32();
+                        Data2D d = new Data2D();
+                        d.FromByteArray(br.ReadBytes(size));
+                        layer[j] = d;
+                    }
+
+                    _matrix.Add(layer);
+                }
+            }
         }
     }
 
@@ -4507,7 +4601,7 @@ namespace ImagingSIMS.Data.Spectra
         }
     }
 
-    public struct CamecaSpecies
+    public struct CamecaSpecies : ISavable
     {
         public int Cycles;
         public int SizeInBytes;
@@ -4552,6 +4646,76 @@ namespace ImagingSIMS.Data.Spectra
 
             return species;
         }
+
+        // Layout:
+        // (int)    Cycles
+        // (int)    SizeInBytes
+        // (int)    PixelEncoding
+        // (double) Mass
+        // (string) Label
+        // (double) WaitTime
+        // (double) CountTime
+        // (double) WellTime
+        // (double) ExtraTime
+
+        public byte[] ToByteArray()
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                BinaryWriter bw = new BinaryWriter(ms);
+
+                // Offset start of writing to later go back and 
+                // prefix the stream with the size of the stream written
+                bw.Seek(sizeof(int), SeekOrigin.Begin);
+
+                // Write contents of object
+                bw.Write(Cycles);
+                bw.Write(SizeInBytes);
+                bw.Write(PixelEncoding);
+                bw.Write(Mass);
+                bw.Write(Label);
+                bw.Write(WaitTime);
+                bw.Write(CountTime);
+                bw.Write(WellTime);
+                bw.Write(ExtraTime);
+
+                // Return to beginning of writer and write the length
+                bw.Seek(0, SeekOrigin.Begin);
+                bw.Write((int)bw.BaseStream.Length - sizeof(int));
+
+                // Return to start of memory stream and 
+                // return byte array of the stream
+                ms.Seek(0, SeekOrigin.Begin);
+                return ms.ToArray();
+            }
+        }
+
+        // Layout:
+        // (int)    Cycles
+        // (int)    SizeInBytes
+        // (int)    PixelEncoding
+        // (double) Mass
+        // (string) Label
+        // (double) WaitTime
+        // (double) CountTime
+        // (double) WellTime
+        // (double) ExtraTime
+        public void FromByteArray(byte[] array)
+        {
+            using (MemoryStream ms = new MemoryStream(array))
+            {
+                BinaryReader br = new BinaryReader(ms);
+
+                Cycles = br.ReadInt32();
+                SizeInBytes = br.ReadInt32();
+                PixelEncoding = br.ReadInt32();
+                Mass = br.ReadDouble();
+                Label = br.ReadString();
+                WaitTime = br.ReadDouble();
+                CountTime = br.ReadDouble();
+                WellTime = br.ReadDouble();
+                ExtraTime = br.ReadDouble();
+            }
     }
 
     internal class CamecaSpeciesIdentityComparer : IEqualityComparer<CamecaSpecies>
