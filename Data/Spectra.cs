@@ -4716,8 +4716,8 @@ namespace ImagingSIMS.Data.Spectra
                 WellTime = br.ReadDouble();
                 ExtraTime = br.ReadDouble();
             }
+        }
     }
-
     internal class CamecaSpeciesIdentityComparer : IEqualityComparer<CamecaSpecies>
     {
         public bool Equals(CamecaSpecies x, CamecaSpecies y)
