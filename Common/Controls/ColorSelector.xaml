@@ -27,7 +27,7 @@
         <BooleanToVisibilityConverter x:Key="boolVisConverter"/>
     </UserControl.Resources>
 
-    <Grid x:Name="LayoutRoot" Background="#FF333333">
+    <Grid x:Name="LayoutRoot" Background="#FF333333" Grid.IsSharedSizeScope="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -35,9 +35,9 @@
         <StackPanel Grid.Row="1">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="TextBoxes"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Content="R" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,4,0" IsTabStop="False"/>
                 <Slider Grid.Column="1" x:Name="slideR" Value="{Binding ElementName=userControl, Path=R, Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
@@ -47,9 +47,9 @@
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="TextBoxes"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Content="G" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,4,0" IsTabStop="False"/>
                 <Slider Grid.Column="1" x:Name="slideG" Value="{Binding ElementName=userControl, Path=G, Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
@@ -59,9 +59,9 @@
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="TextBoxes"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Content="B" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,4,0" IsTabStop="False"/>
                 <Slider Grid.Column="1" x:Name="slideB" Value="{Binding ElementName=userControl, Path=B, Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
@@ -71,9 +71,9 @@
             </Grid>
             <Grid Visibility="{Binding ElementName=userControl, Path=IsAlphaEnabled, Converter={StaticResource boolVisConverter}}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="TextBoxes"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Content="A" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,4,0" IsTabStop="False"/>
                 <Slider Grid.Column="1" x:Name="slideA" Value="{Binding ElementName=userControl, Path=A, Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center" 

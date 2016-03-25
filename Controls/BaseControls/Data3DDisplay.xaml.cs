@@ -104,6 +104,11 @@ namespace ImagingSIMS.Controls.BaseControls
             }
         }
 
+        private void contentButtonZeroRows_Click(object sender, RoutedEventArgs e)
+        {
+            DisplayItem.ZeroSelectedRows();   
+        }
+
         #region ScrollViewer
         Point? lastMousePositionOnTarget;
         Point? lastDragPoint;
@@ -299,5 +304,6 @@ namespace ImagingSIMS.Controls.BaseControls
         {
             DisplayItem.Saturation = DisplayItem.InitialSaturation;
         }
+
     }
 }
