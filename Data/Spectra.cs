@@ -228,14 +228,8 @@ namespace ImagingSIMS.Data.Spectra
         /// <param name="binSize">Number of bins to sum together.</param>
         public abstract void SaveText(string filePath, int binSize);
 
-        public virtual byte[] ToByteArray()
-        {
-            throw new ArgumentException("Cannot save abstract Spectrum.");
-        }
-        public virtual void FromByteArray(byte[] array)
-        {
-            throw new ArgumentException("Cannot laod abstract Spectrum,");
-        }
+        public abstract byte[] ToByteArray();
+        public abstract void FromByteArray(byte[] array);
     }
 
     public class J105Spectrum : Spectrum

@@ -217,7 +217,7 @@ namespace ImagingSIMS.Common.Registry
                 StartWithTrace = BoolInt.Convert((int)keyOptions.GetValue("StartWithTrace", 0));
                 SuppressRegistrationWarnings = BoolInt.Convert((int)keyOptions.GetValue("SuppressRegistrationWarnings", 0));
                 DataDisplayWidth = double.Parse((string)keyOptions.GetValue("DataDisplayWidth", 225d));
-                VersionLastReported = Version.Parse((string)keyUpdate.GetValue("LastReported", new Version(3, 6, 2, 0)));
+                VersionLastReported = Version.Parse((string)keyUpdate.GetValue("LastReported", "3.6.2.0"));
 
                 HasCrashed = BoolInt.Convert((int)keyCrash.GetValue("HasCrashed", 0));
                 if (HasCrashed)
