@@ -54,7 +54,8 @@ namespace ImagingSIMS.MainApplication
 
         public static void CheckAndShow(Version currentVersion, string changeLogPath)
         {
-            if (currentVersion <= SettingsManager.RegSettings.VersionLastReported)
+            Version lastReported = SettingsManager.RegSettings.VersionLastReported;
+            if (currentVersion <= lastReported)
                 return;
 
             string versionInfo = string.Empty;
@@ -69,7 +70,7 @@ namespace ImagingSIMS.MainApplication
                 VersionItem[] versionItems = JsonConvert.DeserializeObject<VersionItem[]>(versionInfo);                
                 foreach(VersionItem vi in versionItems)
                 {
-                    if(vi.Version <= currentVersion)
+                    if(vi.Version <= currentVersion && vi.Version > lastReported)
                     {
                         toShow.Add(vi);
                     }

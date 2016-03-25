@@ -145,7 +145,7 @@ namespace ImagingSIMS.MainApplication
             bool testVersionCheck = true;
             if (IsDebug && testVersionCheck)
             {
-                Version testVersion = new Version(3, 6, 2, 3);
+                Version testVersion = new Version(3, 6, 2, 5);
                 ChangeWindow.CheckAndShow(testVersion, "ChangeLog.json");
             }
 
