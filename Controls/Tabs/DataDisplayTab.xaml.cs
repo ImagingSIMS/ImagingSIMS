@@ -374,10 +374,10 @@ namespace ImagingSIMS.Controls.Tabs
 
     //    }
     //}
-    public partial class Data2DDisplayTab : UserControl
+    public partial class DataDisplayTab : UserControl
     {
         public static readonly DependencyProperty BatchApplyProperty = DependencyProperty.Register("BatchApply",
-            typeof(DataDisplayBatchApplyViewModel), typeof(Data2DDisplayTab));
+            typeof(DataDisplayBatchApplyViewModel), typeof(DataDisplayTab));
         public DataDisplayBatchApplyViewModel BatchApply
         {
             get { return (DataDisplayBatchApplyViewModel)GetValue(BatchApplyProperty); }
@@ -391,14 +391,14 @@ namespace ImagingSIMS.Controls.Tabs
             set { _displayItems = value; }
         }
 
-        public Data2DDisplayTab()
+        public DataDisplayTab()
         {
             DisplayItems = new ObservableCollection<Data3DDisplayViewModel>();
             BatchApply = new DataDisplayBatchApplyViewModel();
 
             InitializeComponent();
         }
-        public Data2DDisplayTab(ColorScaleTypes ColorScale)
+        public DataDisplayTab(ColorScaleTypes ColorScale)
         {
             DisplayItems = new ObservableCollection<Data3DDisplayViewModel>();
 
@@ -496,7 +496,7 @@ namespace ImagingSIMS.Controls.Tabs
             {
                 foreach (object o in itemsControl.Items)
                 {
-                    Data2DDisplayViewModel d = o as Data2DDisplayViewModel;
+                    Data3DDisplayViewModel d = o as Data3DDisplayViewModel;
                     if (d == null) return;
 
                     d.Saturation = d.InitialSaturation;
@@ -615,7 +615,7 @@ namespace ImagingSIMS.Controls.Tabs
         }
 
         public static readonly DependencyProperty AnalysisOutputTextProperty = DependencyProperty.Register("AnalysisOutputText",
-            typeof(string), typeof(Data2DDisplayTab));
+            typeof(string), typeof(DataDisplayTab));
         public string AnalysisOutputText
         {
             get { return (string)GetValue(AnalysisOutputTextProperty); }
@@ -664,7 +664,7 @@ namespace ImagingSIMS.Controls.Tabs
             BitmapSource[] toOverlay = new BitmapSource[imgCount];
 
             int i = 0;
-            foreach (Data2DDisplayViewModel displayItem in itemsControl.SelectedItems)
+            foreach (Data3DDisplayViewModel displayItem in itemsControl.SelectedItems)
             {
                 toOverlay[i] = displayItem.DisplayImageSource as BitmapSource;
                 i++;
