@@ -30,7 +30,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://raw.githubusercontent.com/jay5026/ImagingSIMS/master/deploy/pub/</InstallUrl>
+    <InstallUrl>https://raw.githubusercontent.com/ImagingSIMS/ImagingSIMS/master/deploy/pub/</InstallUrl>
     <UpdateUrl>https://raw.githubusercontent.com/ImagingSIMS/ImagingSIMS/master/deploy/pub/</UpdateUrl>
     <SupportUrl>https://github.com/jay5026/ImagingSIMS/wiki</SupportUrl>
     <ErrorReportUrl>https://github.com/jay5026/ImagingSIMS/wiki</ErrorReportUrl>
@@ -40,7 +40,7 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>5</ApplicationRevision>
+    <ApplicationRevision>6</ApplicationRevision>
     <ApplicationVersion>3.6.2.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

@@ -52,7 +52,18 @@
       "Revision": 4
     },
     "Updates": [
-      "Moved the repository from personal account to organizational account.",
+      "Moved the repository from personal account to organizational account."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 5
+    },
+    "Updates": [
+      "Finalized the update server change."
     ]
   }
 ]
