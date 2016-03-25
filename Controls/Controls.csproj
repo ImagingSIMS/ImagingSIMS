@@ -118,8 +118,8 @@
     <Compile Include="BaseControls\Data2DDisplay.xaml.cs">
       <DependentUpon>Data2DDisplay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tabs\Data2DDisplayTab.xaml.cs">
-      <DependentUpon>Data2DDisplayTab.xaml</DependentUpon>
+    <Compile Include="Tabs\DataDisplayTab.xaml.cs">
+      <DependentUpon>DataDisplayTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tabs\DataCorrectionTab.xaml.cs">
       <DependentUpon>DataCorrectionTab.xaml</DependentUpon>
@@ -380,7 +380,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tabs\Data2DDisplayTab.xaml">
+    <Page Include="Tabs\DataDisplayTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

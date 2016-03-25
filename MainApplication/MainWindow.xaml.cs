@@ -145,7 +145,7 @@ namespace ImagingSIMS.MainApplication
             bool testVersionCheck = true;
             if (IsDebug && testVersionCheck)
             {
-                Version testVersion = new Version(3, 6, 2, 3);
+                Version testVersion = new Version(3, 6, 2, 5);
                 ChangeWindow.CheckAndShow(testVersion, "ChangeLog.json");
             }
 
@@ -1021,7 +1021,7 @@ namespace ImagingSIMS.MainApplication
                     if (ft != null) ft.CallEvent(eventType);
                     break;
                 case TabType.Data2DDisplay:
-                    Data2DDisplayTab dt = (Data2DDisplayTab)cti.Content;
+                    DataDisplayTab dt = (DataDisplayTab)cti.Content;
                     if (dt != null) dt.SaveImageSeries();
                     break;
                 default:
@@ -1825,7 +1825,7 @@ namespace ImagingSIMS.MainApplication
             }
             else if (cti.TabType == TabType.Data2DDisplay)
             {
-                Data2DDisplayTab d2dt = cti.Content as Data2DDisplayTab;
+                DataDisplayTab d2dt = cti.Content as DataDisplayTab;
                 if (d2dt == null)
                 {
                     DialogBox.Show("Selected tab not an image document which supports overlaying.",
@@ -1863,7 +1863,7 @@ namespace ImagingSIMS.MainApplication
             ClosableTabItem cti = tabMain.SelectedItem as ClosableTabItem;
             if (cti == null) return;
 
-            Data2DDisplayTab d2dt = cti.Content as Data2DDisplayTab;
+            DataDisplayTab d2dt = cti.Content as DataDisplayTab;
             if (d2dt == null) return;
 
             int windowSize = 0;
@@ -3303,7 +3303,7 @@ namespace ImagingSIMS.MainApplication
             string title = TitleBuilder.Create(titles.ToArray<string>(), '-', 40);
 
             //Data2DDisplayTab it = new Data2DDisplayTab(data, type);
-            Data2DDisplayTab it = new Data2DDisplayTab(type);
+            DataDisplayTab it = new DataDisplayTab(type);
 
             ClosableTabItem cti = ClosableTabItem.Create(it, TabType.Data2DDisplay, title, true);
             tabMain.Items.Add(cti);
@@ -3421,7 +3421,7 @@ namespace ImagingSIMS.MainApplication
                     {
                         Cameca1280Spectrum cSpec = (Cameca1280Spectrum)s;
 
-                        Data2DDisplayTab dt = new Data2DDisplayTab();
+                        DataDisplayTab dt = new DataDisplayTab();
                         ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.Data2DDisplay, cSpec.Name, true);
                         tabMain.Items.Add(cti);
                         tabMain.SelectedItem = cti;
@@ -4266,12 +4266,15 @@ namespace ImagingSIMS.MainApplication
             List<Data2D> data = GetSelectedTables();
             Data3D d = new Data3D(data);
 
-            Data2DDisplayTab dt = new Data2DDisplayTab(ColorScaleTypes.ThermalWarm);
+            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalWarm);
             ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.Data2DDisplay, "Test", true);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
-            await dt.AddDataSourceAsync(d);
+            for (int i = 0; i < 3; i++)
+            {
+                await dt.AddDataSourceAsync(d);
+            }           
 
         }
 #pragma warning restore 1998

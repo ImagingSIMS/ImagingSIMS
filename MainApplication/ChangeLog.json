@@ -29,7 +29,9 @@
       "ImagingSIMS is now covered under the Mozilla Public License 2.0.",
       "Fixed issue converting some images to data tables.",
       "Version in About window now reflects the version number of the deployment.",
-      "Include missing files for 3D renderings."
+      "Include missing files for 3D renderings.",
+      "Change window now shows changes for all updates since previous update.",
+      "Fixed an issue with the spectrum crop tab."
     ]
   },
   {
@@ -37,11 +39,32 @@
       "Major": 3,
       "Minor": 6,
       "Build": 2,
-      "Revision": 3
+      "Revision": 4
     },
     "Updates": [
-      "Change window now shows changes for all updates since previous update.",
-      "Fixed an issue with the spectrum crop tab."
+      "Moved the repository from personal account to organizational account."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 5
+    },
+    "Updates": [
+      "Finalized the update server change."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 6
+    },
+    "Updates": [
+      "Fixed issue with change window showing all updates, not just most recent."
     ]
   }
 ]

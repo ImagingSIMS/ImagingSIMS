@@ -42,7 +42,7 @@
         </ResourceDictionary>        
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
+        <!--<Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -157,11 +157,11 @@
                     <Image Source="..\Images\Reverse.png"/>
                 </Button>
             </StackPanel>
-            <!-- Removed because no longer necessary. These functions are handled in the Cluster Identification tab -->
+            --><!-- Removed because no longer necessary. These functions are handled in the Cluster Identification tab -->
             <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Click="buttonPixelStats_Click">Pixel Stats</Button>
-            </StackPanel>-->
+            </StackPanel>--><!--
             
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 </UserControl>

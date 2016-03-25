@@ -167,7 +167,7 @@ namespace ImagingSIMS.Controls.Tabs
 
             if (_tabType == TabType.Data2DDisplay)
             {
-                Data2DDisplayTab d2dt = this.Content as Data2DDisplayTab;
+                DataDisplayTab d2dt = this.Content as DataDisplayTab;
                 if (d2dt == null) return;
 
                 else if (e.Data.GetDataPresent("Data2D"))
