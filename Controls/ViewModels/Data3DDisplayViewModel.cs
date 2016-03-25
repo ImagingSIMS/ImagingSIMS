@@ -40,7 +40,7 @@ namespace ImagingSIMS.Controls.ViewModels
                 {
                     _dataSource = value;
                     NotifyPropertyChanged("DataSource");
-                    Redraw();
+                    redraw();
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace ImagingSIMS.Controls.ViewModels
                 {
                     _saturation = value;
                     NotifyPropertyChanged("Saturation");
-                    Redraw();
+                    redraw();
                 }
             }
         }
@@ -102,7 +102,7 @@ namespace ImagingSIMS.Controls.ViewModels
                 {
                     _colorScale = value;
                     NotifyPropertyChanged("ColorScale");
-                    Redraw();
+                    redraw();
                 }
             }
         }
@@ -115,7 +115,7 @@ namespace ImagingSIMS.Controls.ViewModels
                 {
                     _solidColorScale = value;
                     NotifyPropertyChanged("SolidColorScale");
-                    Redraw();
+                    redraw();
                 }
             }
         }
@@ -156,7 +156,7 @@ namespace ImagingSIMS.Controls.ViewModels
                         LayerEnd = LayerStart;
                     }
                     NotifyPropertyChanged("LayerStart");
-                    Redraw();
+                    redraw();
                 }
             }
         }
@@ -173,7 +173,7 @@ namespace ImagingSIMS.Controls.ViewModels
                         LayerStart = _layerEnd;
                     }
                     NotifyPropertyChanged("LayerEnd");
-                    Redraw();
+                    redraw();
                 }
             }
         }
@@ -225,8 +225,6 @@ namespace ImagingSIMS.Controls.ViewModels
 
             DataSource = dataSource;
             ColorScale = colorScale;
-            Saturation = (int)DataSource.SingluarMaximum;
-            InitialSaturation = Saturation;
 
             Scale = 1;
         }
@@ -239,8 +237,6 @@ namespace ImagingSIMS.Controls.ViewModels
 
             DataSource = dataSource;
             ColorScale = ColorScaleTypes.Solid;
-            Saturation = (int)DataSource.SingluarMaximum;
-            InitialSaturation = Saturation;
 
             Scale = 1;
         }
@@ -263,8 +259,6 @@ namespace ImagingSIMS.Controls.ViewModels
 
             DataSource = dataSource;
             ColorScale = colorScale;
-            Saturation = (int)DataSource.SingluarMaximum;
-            InitialSaturation = Saturation;
 
             LayerStart = 1;
             LayerEnd = 1;
@@ -280,8 +274,6 @@ namespace ImagingSIMS.Controls.ViewModels
 
             DataSource = dataSource;
             ColorScale = ColorScaleTypes.Solid;
-            Saturation = (int)DataSource.SingluarMaximum;
-            InitialSaturation = Saturation;
 
             LayerStart = 1;
             LayerEnd = 1;
@@ -328,7 +320,7 @@ namespace ImagingSIMS.Controls.ViewModels
 
         int _previousStartLayer = -1;
         int _previousEndLayer = -1;
-        private void Redraw()
+        private void redraw()
         {
             if (DataSource == null) return;
 
@@ -349,9 +341,47 @@ namespace ImagingSIMS.Controls.ViewModels
                 Saturation = ViewableDataSource.Maximum;
                 InitialSaturation = Saturation;
             }
-            
 
-            if(ColorScale == ColorScaleTypes.Solid)
+            if (ColorScale == ColorScaleTypes.Solid)
+            {
+                BitmapSource bs = ImageHelper.CreateSolidColorImage(ViewableDataSource, SolidColorScale, (float)Saturation);
+                bs.Freeze();
+                DisplayImageSource = bs;
+            }
+            else
+            {
+                BitmapSource bs = ImageHelper.CreateColorScaleImage(ViewableDataSource, ColorScale, (float)Saturation);
+                bs.Freeze();
+                DisplayImageSource = bs;
+            }
+        }
+        
+        public void ZeroSelectedRows()
+        {
+            if (DataSource == null) return;
+
+            int startLayer = LayerStart - 1;
+            int endLayer = LayerEnd - 1;
+
+            if (startLayer < 0) return;
+            if (endLayer >= DataSource.Depth) return;
+
+            for (int z = startLayer; z <= endLayer; z++)
+            {
+                for (int x = 0; x < DataSource.Width; x++)
+                {
+                    for (int y = 0; y < DataSource.Height; y++)
+                    {
+                        DataSource[x, y, z] = 0;
+                    }
+                }
+            }
+
+            ViewableDataSource = DataSource.FromLayers(startLayer, endLayer);
+            Saturation = ViewableDataSource.Maximum;
+            InitialSaturation = Saturation;
+
+            if (ColorScale == ColorScaleTypes.Solid)
             {
                 BitmapSource bs = ImageHelper.CreateSolidColorImage(ViewableDataSource, SolidColorScale, (float)Saturation);
                 bs.Freeze();

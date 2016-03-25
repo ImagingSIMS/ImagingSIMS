@@ -192,6 +192,10 @@
                 <Button Width="20" Height="20" Click="contentButtonResetSaturation_Click" Margin="4" ToolTip="Reset Saturation">
                     <Image Source="..\Images\Reverse.png"/>
                 </Button>
+                <Button Width="20" Height="20" Click="contentButtonZeroRows_Click" Margin="4" ToolTip="Reset Saturation"
+                        Visibility="{Binding ElementName=userControl, Path=DisplayItem.DataSource.Depth, Converter={StaticResource data3DDepthToVisibilityConverter}}">
+                    <Image Source="..\Images\AddRemoveColumns.png"/>
+                </Button>
             </StackPanel>
             <!-- Removed because no longer necessary. These functions are handled in the Cluster Identification tab -->
             <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

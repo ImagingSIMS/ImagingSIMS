@@ -133,8 +133,6 @@ namespace ImagingSIMS.MainApplication
                 ColorScaleMenuItems.Add(mi);
             }
 
-            Trace.WriteLine("Window load complete.");
-
             Trace.WriteLine("Checking ClickOnce version information.");
             bool isClickOnce = ApplicationDeployment.IsNetworkDeployed;
             Trace.WriteLine("ClickOnce deployment: " + isClickOnce);

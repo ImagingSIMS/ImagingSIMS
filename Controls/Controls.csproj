@@ -550,6 +550,7 @@
     <Resource Include="Images\ChartWizard.png" />
     <Resource Include="Images\Backward.ico" />
     <Resource Include="Images\Forward.ico" />
+    <Resource Include="Images\AddRemoveColumns.png" />
     <Content Include="Images\StartupTabContent.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
