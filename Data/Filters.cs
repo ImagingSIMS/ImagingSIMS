@@ -870,13 +870,13 @@ namespace ImagingSIMS.Data.Imaging
             {
                 for (int y = 0; y < sizeY; y++)
                 {
-                    int startX = x - 3;
-                    int startY = y - 3;
+                    int startX = x - (kernel.Width / 2);
+                    int startY = y - (kernel.Height / 2);
 
                     float val = 0;
-                    for (int a = 0; a < 5; a++)
+                    for (int a = 0; a < kernel.Width; a++)
                     {
-                        for (int b = 0; b < 5; b++)
+                        for (int b = 0; b < kernel.Height; b++)
                         {
                             int locX = startX + a;
                             int locY = startY + b;
@@ -914,13 +914,13 @@ namespace ImagingSIMS.Data.Imaging
             {
                 for (int y = 0; y < sizeY; y++)
                 {
-                    int startX = x - 3;
-                    int startY = y - 3;
+                    int startX = x - (kernel.Width / 2);
+                    int startY = y - (kernel.Height / 2);
 
                     float val = 0;
-                    for (int a = 0; a < 5; a++)
+                    for (int a = 0; a < kernel.Width; a++)
                     {
-                        for (int b = 0; b < 5; b++)
+                        for (int b = 0; b < kernel.Height; b++)
                         {
                             int locX = startX + a;
                             int locY = startY + b;
@@ -958,13 +958,13 @@ namespace ImagingSIMS.Data.Imaging
             {
                 for (int y = 0; y < sizeY; y++)
                 {
-                    int startX = x - 3;
-                    int startY = y - 3;
+                    int startX = x - (kernel.Width / 2);
+                    int startY = y - (kernel.Height / 2);
 
                     float val = 0;
-                    for (int a = 0; a < 5; a++)
+                    for (int a = 0; a < kernel.Width; a++)
                     {
-                        for (int b = 0; b < 5; b++)
+                        for (int b = 0; b < kernel.Height; b++)
                         {
                             int locX = startX + a;
                             int locY = startY + b;
