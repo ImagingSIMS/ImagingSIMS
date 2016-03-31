@@ -799,7 +799,7 @@ namespace ImagingSIMS.Data.Fusion
             double[,] matrixP2 = new double[_highResSizeX, _highResSizeY];
             double[,] matrixPS2 = new double[_highResSizeX, _highResSizeY];
 
-            double[,] smoothed = Filter.MeanSmooth(_gray);
+            double[,] smoothed = (double[,])Filter.DoFilter((Data2D)_gray, FilterType.MeanSmooth);
 
             for (int x = 0; x < _highResSizeX; x++)
             {
@@ -911,9 +911,9 @@ namespace ImagingSIMS.Data.Fusion
             {1f, 2f, 1f}
         };
 
-        public static Data2D Detect(Data2D Original, float Sigma = 1.0f)
+        public static Data2D Detect(Data2D Original)
         {
-            Data2D filtered = Filter.GaussianFilter(Original, Sigma);
+            Data2D filtered = Filter.DoFilter(Original, FilterType.Gauissian);
 
             int width = filtered.Width;
             int height = filtered.Height;
