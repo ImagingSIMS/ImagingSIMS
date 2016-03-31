@@ -916,7 +916,32 @@ namespace ImagingSIMS.Data.Fusion
         
         public override Data3D DoFusion()
         {
+            // 1. The resampled multi-spectral image is transformed with PCA
+
             
+
+            // 2. The panchromatic image is smoothed by a Gaussian filter. 
+
+            _gray = Filter.DoFilter(_gray, FilterType.HighPass);
+
+            // 3.  The high spatial detail of panchromatic image is extracted
+            //      as the difference between the original panchromatic
+            //      image and the smoothed one. 
+
+            // 4. A linear combination of the extracted high spatial detail
+            //      of the panchromatic image into the first principal
+            //      component using a gain parameter as the ratio of standard
+            //      deviation of pc1 to standard deviation of panchromatic
+            //      image.
+
+            // 5. The new first principle component and other principle
+            //      component are transformed with the inverse PCA to
+            //      obtain the pan sharpened multi - spectral image.
+
+
+
+
+
         }
 
         public async override Task<Data3D> DoFusionAsync()
