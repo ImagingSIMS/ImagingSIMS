@@ -11,6 +11,8 @@ using ImagingSIMS.Data.Imaging;
 
 using Matrix = DotNumerics.LinearAlgebra.Matrix;
 
+using Accord.Statistics.Analysis;
+
 namespace ImagingSIMS.Data.Fusion
 {
     public abstract class Fusion
@@ -918,15 +920,42 @@ namespace ImagingSIMS.Data.Fusion
         {
             // 1. The resampled multi-spectral image is transformed with PCA
 
-            
+            double[,] msLinearData = new double[_highResSizeX * _highResSizeY, 3];
+
+            for (int x = 0; x < _highResSizeX; x++)
+            {
+                for (int y = 0; y < _highResSizeY; y++)
+                {
+                    int index = y * _highResSizeX + x;
+
+                    msLinearData[index, 0] = _color.Layers[2][x, y];
+                    msLinearData[index, 1] = _color.Layers[1][x, y];
+                    msLinearData[index, 2] = _color.Layers[0][x, y];
+
+                }
+            }
+
+            PrincipalComponentAnalysis pca = new PrincipalComponentAnalysis(msLinearData, AnalysisMethod.Center);
+            pca.Compute();
 
             // 2. The panchromatic image is smoothed by a Gaussian filter. 
 
-            _gray = Filter.DoFilter(_gray, FilterType.HighPass);
+            Data2D smoothed = Filter.DoFilter(_gray, FilterType.HighPass);
 
             // 3.  The high spatial detail of panchromatic image is extracted
             //      as the difference between the original panchromatic
             //      image and the smoothed one. 
+
+            double[] highSpatialDetail = new double[_highResSizeX * _highResSizeY];
+            for (int x = 0; x < _highResSizeX; x++)
+            {
+                for (int y = 0; y < _highResSizeY; y++)
+                {
+                    int index = y * _highResSizeX + x;
+
+                    highSpatialDetail[index] = _gray[x, y] - smoothed[x, y];
+                }
+            }
 
             // 4. A linear combination of the extracted high spatial detail
             //      of the panchromatic image into the first principal
@@ -934,13 +963,22 @@ namespace ImagingSIMS.Data.Fusion
             //      deviation of pc1 to standard deviation of panchromatic
             //      image.
 
+            PrincipalComponent pc1 = pca.Components[0];
+
+            double stdDevGray = _gray.StdDev;
+            double avgPc1 = 0;
+            for (int i = 0; i < pc1.Eigenvector.Length; i++)
+            {
+
+            }
+
             // 5. The new first principle component and other principle
             //      component are transformed with the inverse PCA to
             //      obtain the pan sharpened multi - spectral image.
 
 
 
-
+            return new Data3D();
 
         }
 

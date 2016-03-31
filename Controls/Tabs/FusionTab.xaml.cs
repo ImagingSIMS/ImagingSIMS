@@ -561,6 +561,9 @@ namespace ImagingSIMS.Controls.Tabs
                     fusion = new HSLShiftFusion(highRes, lowRes);
                     ((HSLShiftFusion)fusion).WindowSize = ShiftWindowSize;
                     break;
+                case FusionType.PCA:
+                    fusion = new PCAFusion(highRes, lowRes);
+                    break;
                 default:
                     Mouse.OverrideCursor = Cursors.Arrow;
                     return;
