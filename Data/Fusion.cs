@@ -896,6 +896,35 @@ namespace ImagingSIMS.Data.Fusion
         }
     }
 
+    public class PCAFusion : Pansharpening
+    {
+        public PCAFusion(BitmapSource highRes, BitmapSource lowRes)
+            : base(highRes, lowRes)
+        {
+
+        }
+        public PCAFusion(float[,] highRes, float[,] lowRes, Color lowResBaseColor)
+            :base(highRes, lowRes, lowResBaseColor)
+        {
+
+        }
+        public PCAFusion(Data2D highRes, Data3D lowRes)
+            :base(highRes, lowRes)
+        {
+
+        }
+        
+        public override Data3D DoFusion()
+        {
+            
+        }
+
+        public async override Task<Data3D> DoFusionAsync()
+        {
+            return await Task.Run(() => DoFusion());
+        }
+    }
+
     public static class SobelEdgeDetection
     {
         static float[,] sobelX = new float[3, 3]
