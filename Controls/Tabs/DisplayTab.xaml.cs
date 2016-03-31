@@ -602,19 +602,19 @@ namespace ImagingSIMS.Controls.Tabs
             switch (a.FilterType)
             {
                 case ImageTabEvent.FilterHighPass:
-                    filtered = Filter.HighPassFilter(a.SourcesToFilter, bw);
+                    filtered = Filter.DoFilter(a.SourcesToFilter, FilterType.HighPass);
                     break;
                 case ImageTabEvent.FilterLowPass:
-                    filtered = Filter.LowPassFilter(a.SourcesToFilter, bw);
+                    filtered = Filter.DoFilter(a.SourcesToFilter, FilterType.LowPass);
                     break;
                 case ImageTabEvent.FilterMean:
-                    filtered = Filter.MeanSmooth(a.SourcesToFilter, bw);
+                    filtered = Filter.DoFilter(a.SourcesToFilter, FilterType.MeanSmooth);
                     break;
                 case ImageTabEvent.FilterMedian:
-                    filtered = Filter.MedianSmooth(a.SourcesToFilter, bw);
+                    filtered = Filter.DoFilter(a.SourcesToFilter, FilterType.MedianSmooth);
                     break;
                 case ImageTabEvent.FilterGaussian:
-                    filtered = Filter.GaussianFilter(a.SourcesToFilter, bw);
+                    filtered = Filter.DoFilter(a.SourcesToFilter, FilterType.Gauissian);
                     break;
                 default:
                     throw new ArgumentException("Invalid filter selection.");
