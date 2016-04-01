@@ -976,7 +976,7 @@ namespace ImagingSIMS.Data.Fusion
             double[,] transformed = pca.Transform(msLinearData);
             double[,] replaced = new double[linearLength, numberComponents];
 
-            HistogramMatching hist = new HistogramMatching(pc1.ToFloatArray(), highSpatialDetail.ToFloatArray());
+            HistogramMatching hist = new HistogramMatching(highSpatialDetail.ToFloatArray(), pc1.ToFloatArray());
 
             pc1 = hist.Match1D().ToDoubleArray();
 
