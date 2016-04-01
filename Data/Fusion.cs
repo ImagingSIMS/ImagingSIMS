@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ImagingSIMS.Common;
 using ImagingSIMS.Common.Math;
 using ImagingSIMS.Data.Converters;
 using ImagingSIMS.Data.Imaging;
@@ -975,8 +976,10 @@ namespace ImagingSIMS.Data.Fusion
             double[,] transformed = pca.Transform(msLinearData);
             double[,] replaced = new double[linearLength, numberComponents];
 
-            HistogramMatching hist = new HistogramMatching(pc1, highSpatialDetail);
-            
+            HistogramMatching hist = new HistogramMatching(pc1.ToFloatArray(), highSpatialDetail.ToFloatArray());
+
+            pc1 = hist.Match1D().ToDoubleArray();
+
             for (int i = 0; i < linearLength; i++)
             {
                 avgPc1 += transformed[i, 0];
