@@ -976,14 +976,17 @@ namespace ImagingSIMS.Data.Fusion
             double[,] transformed = pca.Transform(msLinearData);
             double[,] replaced = new double[linearLength, numberComponents];
 
-            HistogramMatching hist = new HistogramMatching(highSpatialDetail.ToFloatArray(), pc1.ToFloatArray());
+            for (int i = 0; i < linearLength; i++)
+            {
+                pc1[i] = transformed[i, 0];
+            }
 
+            HistogramMatching hist = new HistogramMatching(highSpatialDetail.ToFloatArray(), pc1.ToFloatArray());
             pc1 = hist.Match1D().ToDoubleArray();
 
             for (int i = 0; i < linearLength; i++)
             {
                 avgPc1 += transformed[i, 0];
-                pc1[i] = transformed[i, 0];
             }
 
             avgPc1 /= linearLength;
@@ -1024,8 +1027,8 @@ namespace ImagingSIMS.Data.Fusion
                 }
             }
 
-            return fused;
-            //return Data3D.Rescale(fused, 0, 255);
+            //return fused;
+            return Data3D.Rescale(fused, 0, 255, 0, 3);
         }
 
         public async override Task<Data3D> DoFusionAsync()
