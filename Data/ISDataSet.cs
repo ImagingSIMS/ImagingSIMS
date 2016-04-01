@@ -2104,6 +2104,64 @@ namespace ImagingSIMS.Data
 
             return r;
         }
-    }
 
+        public static Data3D Rescale(Data3D d, float minimum, float maximum, int startLayer, int endLayer)
+        {
+            if (startLayer < 0 || startLayer >= d.Layers.Length - 1)
+                throw new ArgumentException("Invalid layer specification: start layer.");
+            if (endLayer >= d.Layers.Length)
+                throw new ArgumentException("Invalid layer specification: end layer.");
+            if (startLayer >= endLayer)
+                throw new ArgumentException("Invalid layer specification: start layer is larger than end layer.");
+
+            float dataMinimum = float.MaxValue;
+            float dataMaximum = float.MinValue;
+
+            for (int z = startLayer; z < endLayer; z++)
+            {
+                Data2D layer = d.Layers[z];
+                if (layer.Minimum < dataMinimum) dataMinimum = layer.Minimum;
+                if (layer.Maximum > dataMaximum) dataMaximum = layer.Maximum;
+            }
+
+            float dataRange = dataMaximum - dataMinimum;
+            float range = maximum - minimum;
+
+            Data3D r = new Data3D(d.Width, d.Height, d.Depth);
+            for (int z = 0; z < startLayer; z++)
+            {
+                for (int x = 0; x < d.Width; x++)
+                {
+                    for (int y = 0; y < d.Height; y++)
+                    {
+                        r[x, y, z] = d[x, y, z];
+                    }
+                }
+            }
+
+            for (int z = startLayer; z < endLayer; z++)
+            {
+                for (int x = 0; x < d.Width; x++)
+                {
+                    for (int y = 0; y < d.Height; y++)
+                    {
+                        r[x, y, z] = (range * (d[x, y, z] - dataMinimum) / dataRange) + minimum;
+                    }
+                }
+            }
+
+            for (int z = endLayer; z < d.Depth; z++)
+            {
+                for (int x = 0; x < d.Width; x++)
+                {
+                    for (int y = 0; y < d.Height; y++)
+                    {
+                        r[x, y, z] = d[x, y, z];
+                    }
+                }
+            }
+
+            return r;
+        }
+    }
 }
