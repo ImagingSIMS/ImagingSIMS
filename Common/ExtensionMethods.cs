@@ -39,7 +39,7 @@ namespace ImagingSIMS.Common
 
             for (int i = 0; i < floatArray.Length; i++)
             {
-                a[i] = (float)floatArray.GetValue(i);
+                a[i] = (double)(float)floatArray.GetValue(i);
             }
 
             return a;
@@ -55,7 +55,7 @@ namespace ImagingSIMS.Common
             {
                 for (int j = 0; j < length1; j++)
                 {
-                    a[i, j] = (double)floatArray.GetValue(i, j);
+                    a[i, j] = (double)(float)floatArray.GetValue(i, j);
                 }
             }
 
@@ -67,7 +67,7 @@ namespace ImagingSIMS.Common
 
             for (int i = 0; i < doubleArray.Length; i++)
             {
-                a[i] = (float)doubleArray.GetValue(i);
+                a[i] = (float)(double)doubleArray.GetValue(i);
             }
 
             return a;
@@ -83,7 +83,7 @@ namespace ImagingSIMS.Common
             {
                 for (int j = 0; j < length1; j++)
                 {
-                    a[i, j] = (float)doubleArray.GetValue(i, j);
+                    a[i, j] = (float)(double)doubleArray.GetValue(i, j);
                 }
             }
 
