@@ -186,7 +186,7 @@ namespace ImagingSIMS.Data
         {
             get
             {
-                if(_nonSparseMatrix == null)
+                if (_nonSparseMatrix == null)
                 {
                     _nonSparseMatrix = getNonSparseMatrix();
                 }
@@ -203,7 +203,7 @@ namespace ImagingSIMS.Data
                 if (float.IsNaN(_nonSparseMean))
                 {
                     float sum = 0;
-                    foreach(float[] pixel in NonSparseMatrix)
+                    foreach (float[] pixel in NonSparseMatrix)
                     {
                         sum += pixel[2];
                     }
@@ -356,7 +356,7 @@ namespace ImagingSIMS.Data
             catch (FormatException)
             {
                 throw new IOException("The input file was an incorrect format.");
-            }  
+            }
         }
         private void LoadJ105(string LoadPath)
         {
@@ -367,7 +367,7 @@ namespace ImagingSIMS.Data
 
                 int w = dimensions[0];
                 int h = dimensions[1];
-             
+
                 _matrix = new FlatArray<float>(w, h);
 
                 using (StreamReader sr = new StreamReader(LoadPath))
@@ -395,7 +395,7 @@ namespace ImagingSIMS.Data
                         x = 0;
                     }
                 }
-                
+
                 _matrix[w - 1, h - 1] = 0;
 
                 DataName = Path.GetFileNameWithoutExtension(LoadPath);
@@ -540,7 +540,7 @@ namespace ImagingSIMS.Data
         /// <param name="OriginalMaximum">The maximum value for which all data points were normalized to.</param>
         public void Normalize(out float OriginalMaximum)
         {
-            float max = Maximum; 
+            float max = Maximum;
             OriginalMaximum = max;
 
             if (max == 0) return;
@@ -717,7 +717,7 @@ namespace ImagingSIMS.Data
                     }
                     line = line.Remove(line.Length - 1);
                     sw.WriteLine(line);
-                }                
+                }
             }
         }
         private void SaveBioToF(string Path)
@@ -833,25 +833,25 @@ namespace ImagingSIMS.Data
 
                 //try
                 //{
-                    Data2D d = new Data2D();
-                    switch (FileType)
-                    {
-                        case FileType.BioToF:
-                            d = FromBioToF(lines);
-                            break;
-                        case FileType.J105:
-                            d = FromJ105(lines);
-                            break;
-                        case FileType.QStar:
-                            throw new ArgumentException("QStar data is not supported");
-                        case FileType.CSV:
-                            d = FromCSV(lines);
-                            break;
-                    }
+                Data2D d = new Data2D();
+                switch (FileType)
+                {
+                    case FileType.BioToF:
+                        d = FromBioToF(lines);
+                        break;
+                    case FileType.J105:
+                        d = FromJ105(lines);
+                        break;
+                    case FileType.QStar:
+                        throw new ArgumentException("QStar data is not supported");
+                    case FileType.CSV:
+                        d = FromCSV(lines);
+                        break;
+                }
 
-                    //Set Data2D name
-                    d.DataName = Path.GetFileNameWithoutExtension(LoadPath);
-                    return d;
+                //Set Data2D name
+                d.DataName = Path.GetFileNameWithoutExtension(LoadPath);
+                return d;
                 //}
                 //catch (Exception ex)
                 //{
@@ -1002,7 +1002,7 @@ namespace ImagingSIMS.Data
             //Return object
             return d;
         }
-        public static explicit operator int[,](Data2D d)
+        public static explicit operator int[,] (Data2D d)
         {
             int[,] matrix = new int[d.Width, d.Height];
             for (int x = 0; x < d.Width; x++)
@@ -1014,7 +1014,7 @@ namespace ImagingSIMS.Data
             }
             return matrix;
         }
-        public static explicit operator float[,](Data2D d)
+        public static explicit operator float[,] (Data2D d)
         {
             float[,] matrix = new float[d.Width, d.Height];
             for (int x = 0; x < d.Width; x++)
@@ -1026,7 +1026,7 @@ namespace ImagingSIMS.Data
             }
             return matrix;
         }
-        public static explicit operator double[,](Data2D d)
+        public static explicit operator double[,] (Data2D d)
         {
             double[,] matrix = new double[d.Width, d.Height];
             for (int x = 0; x < d.Width; x++)
@@ -1156,6 +1156,27 @@ namespace ImagingSIMS.Data
             return new Data2D(Width, Height);
         }
 
+        public static Data2D Rescale(Data2D d, float minimum, float maximum)
+        {
+            float dataMinimum = d.Minimum;
+            float dataMaximum = d.Maximum;
+            float dataRange = d.Maximum - d.Minimum;
+
+            float range = maximum - minimum;
+
+            Data2D r = new Data2D(d.Width, d.Height);
+
+            for (int x = 0; x < d.Width; x++)
+            {
+                for (int y = 0; y < d.Height; y++)
+                {
+                    r[x, y] = (range * (d[x, y] - dataMinimum) / dataRange) + minimum;
+                }
+            }
+
+            return r;
+        }
+
         public float[] ToVector()
         {
             float[] vector = new float[Width * Height];
@@ -1167,7 +1188,7 @@ namespace ImagingSIMS.Data
                 }
             }
             return vector;
-        }        
+        }
 
         public string GenerateStatistics()
         {
@@ -1269,7 +1290,7 @@ namespace ImagingSIMS.Data
         #region Operator Overloads
         public static Data2D operator +(Data2D a, Data2D b)
         {
-            if (a.Width != b.Width || a.Height != b.Height) 
+            if (a.Width != b.Width || a.Height != b.Height)
                 throw new ArgumentException("Invalid matrix dimensions. Both matrices must be of size M x N.");
 
             Data2D d = new Data2D(a.Width, a.Height);
@@ -1281,7 +1302,7 @@ namespace ImagingSIMS.Data
                     d[x, y] = a[x, y] + b[x, y];
                 }
             }
-            
+
             return d;
         }
         public static Data2D operator +(Data2D a, float s)
@@ -1512,7 +1533,7 @@ namespace ImagingSIMS.Data
                 // Offset start of writing to later go back and 
                 // prefix the stream with the size of the stream written
                 bw.Seek(sizeof(int), SeekOrigin.Begin);
-                
+
                 // Write contents of object
                 bw.Write(UniqueID);
                 bw.Write(DataName);
@@ -1538,8 +1559,8 @@ namespace ImagingSIMS.Data
 
                 // Return to beginning of writer and write the length
                 bw.Seek(0, SeekOrigin.Begin);
-                bw.Write((int)bw.BaseStream.Length - sizeof(int));                
-                
+                bw.Write((int)bw.BaseStream.Length - sizeof(int));
+
                 // Return to start of memory stream and 
                 // return byte array of the stream
                 ms.Seek(0, SeekOrigin.Begin);
@@ -1649,7 +1670,7 @@ namespace ImagingSIMS.Data
         {
             get
             {
-                if (_layers == null || _layers.Count != 4) 
+                if (_layers == null || _layers.Count != 4)
                     throw new ArgumentException("Invalid dimension length.");
 
                 int x = (int)p.X;
@@ -1760,7 +1781,7 @@ namespace ImagingSIMS.Data
                 AddLayer(new Data2D(SizeX, SizeY));
             }
         }
-        public Data3D(float[, ,] Matrix)
+        public Data3D(float[,,] Matrix)
         {
             int sizeX = Matrix.GetLength(0);
             int sizeY = Matrix.GetLength(1);
@@ -1799,7 +1820,7 @@ namespace ImagingSIMS.Data
             {
                 _layers = new List<Data2D>();
             }
-            _layers.Add(Layer);            
+            _layers.Add(Layer);
         }
         public void AddLayers(Data2D[] Layers)
         {
@@ -1852,9 +1873,9 @@ namespace ImagingSIMS.Data
             _layers.AddRange(Layers);
         }
 
-        public int[, ,] ToIntArray()
+        public int[,,] ToIntArray()
         {
-            int[, ,] returnArray = new int[Width, Height, Depth];
+            int[,,] returnArray = new int[Width, Height, Depth];
             for (int x = 0; x < Width; x++)
             {
                 for (int y = 0; y < Height; y++)
@@ -1867,9 +1888,9 @@ namespace ImagingSIMS.Data
             }
             return returnArray;
         }
-        public int[, ,] ToIntArray(bool Normalize)
+        public int[,,] ToIntArray(bool Normalize)
         {
-            int[, ,] returnArray = new int[Width, Height, Depth];
+            int[,,] returnArray = new int[Width, Height, Depth];
             float max = SingluarMaximum;
 
             for (int x = 0; x < Width; x++)
@@ -1884,9 +1905,9 @@ namespace ImagingSIMS.Data
             }
             return returnArray;
         }
-        public int[, ,] ToIntArray(int NormalizationValue)
+        public int[,,] ToIntArray(int NormalizationValue)
         {
-            int[, ,] returnArray = new int[Width, Height, Depth];
+            int[,,] returnArray = new int[Width, Height, Depth];
             float max = SingluarMaximum;
 
             for (int x = 0; x < Width; x++)
@@ -1901,9 +1922,9 @@ namespace ImagingSIMS.Data
             }
             return returnArray;
         }
-        public float[, ,] ToFloatArray()
+        public float[,,] ToFloatArray()
         {
-            float[, ,] returnArray = new float[Width, Height, Depth];
+            float[,,] returnArray = new float[Width, Height, Depth];
             for (int x = 0; x < Width; x++)
             {
                 for (int y = 0; y < Height; y++)
@@ -1916,9 +1937,9 @@ namespace ImagingSIMS.Data
             }
             return returnArray;
         }
-        public float[, ,] ToFloatArray(bool Normalize)
+        public float[,,] ToFloatArray(bool Normalize)
         {
-            float[, ,] returnArray = new float[Width, Height, Depth];
+            float[,,] returnArray = new float[Width, Height, Depth];
             float max = SingluarMaximum;
 
             for (int x = 0; x < Width; x++)
@@ -1934,9 +1955,9 @@ namespace ImagingSIMS.Data
 
             return returnArray;
         }
-        public float[, ,] ToFloatArray(float NormalizationValue)
+        public float[,,] ToFloatArray(float NormalizationValue)
         {
-            float[, ,] returnArray = new float[Width, Height, Depth];
+            float[,,] returnArray = new float[Width, Height, Depth];
             float max = NormalizationValue;
 
             for (int x = 0; x < Width; x++)
@@ -1985,7 +2006,7 @@ namespace ImagingSIMS.Data
             {
                 for (int y = 0; y < Height; y++)
                 {
-                    for (int z = startLayer; z <= endLayer ; z++)
+                    for (int z = startLayer; z <= endLayer; z++)
                     {
                         d[x, y] += this[x, y, z];
                     }
@@ -2005,7 +2026,7 @@ namespace ImagingSIMS.Data
             return new Data3D(layers);
         }
 
-        public static explicit operator Color[,](Data3D d)
+        public static explicit operator Color[,] (Data3D d)
         {
             Color[,] c = new Color[d.Width, d.Height];
             for (int x = 0; x < d.Width; x++)
@@ -2023,7 +2044,7 @@ namespace ImagingSIMS.Data
             }
             return c;
         }
-        public static explicit operator SharpDX.Color[,](Data3D d)
+        public static explicit operator SharpDX.Color[,] (Data3D d)
         {
             SharpDX.Color[,] c = new SharpDX.Color[d.Width, d.Height];
             for (int x = 0; x < d.Width; x++)
@@ -2053,6 +2074,35 @@ namespace ImagingSIMS.Data
                 }
             }
             return d;
+        }
+        public static Data3D Rescale(Data3D d, float minimum, float maximum)
+        {
+
+            float dataMinimum = float.MaxValue;
+            float dataMaximum = float.MinValue;
+
+            foreach (var layer in d.Layers)
+            {
+                if (layer.Minimum < dataMinimum) dataMinimum = layer.Minimum;
+                if (layer.Maximum > dataMaximum) dataMaximum = layer.Maximum;
+            }
+
+            float dataRange = dataMaximum - dataMinimum;
+            float range = maximum - minimum;
+
+            Data3D r = new Data3D(d.Width, d.Height, d.Depth);
+            for (int z = 0; z < d.Layers.Length; z++)
+            {
+                for (int x = 0; x < d.Width; x++)
+                {
+                    for (int y = 0; y < d.Height; y++)
+                    {
+                        r[x, y, z] = (range * (d[x, y, z] - dataMinimum) / dataRange) + minimum;
+                    }
+                }
+            }
+
+            return r;
         }
     }
 
