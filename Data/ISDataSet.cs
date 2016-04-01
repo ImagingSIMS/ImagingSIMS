@@ -1156,27 +1156,6 @@ namespace ImagingSIMS.Data
             return new Data2D(Width, Height);
         }
 
-        public static Data2D Rescale(Data2D d, float minimum, float maximum)
-        {
-            float dataMinimum = d.Minimum;
-            float dataMaximum = d.Maximum;
-            float dataRange = d.Maximum - d.Minimum;
-
-            float range = maximum - minimum;
-
-            Data2D r = new Data2D(d.Width, d.Height);
-
-            for (int x = 0; x < d.Width; x++)
-            {
-                for (int y = 0; y < d.Height; y++)
-                {
-                    r[x, y] = (range * (d[x, y] - dataMinimum) / dataRange) + minimum;
-                }
-            }
-
-            return r;
-        }
-
         public float[] ToVector()
         {
             float[] vector = new float[Width * Height];
@@ -2074,35 +2053,6 @@ namespace ImagingSIMS.Data
                 }
             }
             return d;
-        }
-        public static Data3D Rescale(Data3D d, float minimum, float maximum)
-        {
-
-            float dataMinimum = float.MaxValue;
-            float dataMaximum = float.MinValue;
-
-            foreach (var layer in d.Layers)
-            {
-                if (layer.Minimum < dataMinimum) dataMinimum = layer.Minimum;
-                if (layer.Maximum > dataMaximum) dataMaximum = layer.Maximum;
-            }
-
-            float dataRange = dataMaximum - dataMinimum;
-            float range = maximum - minimum;
-
-            Data3D r = new Data3D(d.Width, d.Height, d.Depth);
-            for (int z = 0; z < d.Layers.Length; z++)
-            {
-                for (int x = 0; x < d.Width; x++)
-                {
-                    for (int y = 0; y < d.Height; y++)
-                    {
-                        r[x, y, z] = (range * (d[x, y, z] - dataMinimum) / dataRange) + minimum;
-                    }
-                }
-            }
-
-            return r;
         }
     }
 
