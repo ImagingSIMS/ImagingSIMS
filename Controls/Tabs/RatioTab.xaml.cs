@@ -336,9 +336,9 @@ namespace ImagingSIMS.Controls.Tabs
                         case FusionType.HSL:
                             fusionNum = new HSLFusion((float[,])highRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
                             break;
-                        //case FusionType.WeightedAverage:
-                        //    fusionNum = new WeightedAverageFusion((float[,])numHighRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
-                        //    break;
+                        case FusionType.WeightedAverage:
+                            fusionNum = new WeightedAverageFusion((float[,])highRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            break;
                         case FusionType.HSLSmooth:
                             fusionNum = new HSLSmoothFusion((float[,])highRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
                             break;
@@ -349,9 +349,12 @@ namespace ImagingSIMS.Controls.Tabs
                             fusionNum = new HSLShiftFusion((float[,])highRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
                             ((HSLShiftFusion)fusionNum).WindowSize = 11;
                             break;
+                        case FusionType.PCA:
+                            fusionNum = new PCAFusion((float[,])highRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
+                            break;
                         default:
                             fusionNum = new HSLFusion((float[,])highRes, (float[,])numeratorTables[i], Color.FromArgb(255, 0, 0, 255));
-                            return;
+                            break;
                     }
 
                     Data3D fusedNum3D = fusionNum.DoFusion();

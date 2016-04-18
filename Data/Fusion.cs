@@ -941,6 +941,7 @@ namespace ImagingSIMS.Data.Fusion
                 }
             }
 
+
             PrincipalComponentAnalysis pca = new PrincipalComponentAnalysis(msLinearData, AnalysisMethod.Center);
             pca.Compute();
 
@@ -959,7 +960,8 @@ namespace ImagingSIMS.Data.Fusion
                 {
                     int index = y * _highResSizeX + x;
 
-                    highSpatialDetail[index] = _gray[x, y] - smoothed[x, y];
+                    //highSpatialDetail[index] = _gray[x, y] - smoothed[x, y];
+                    highSpatialDetail[index] = _gray[x, y];
                 }
             }
 
@@ -969,48 +971,54 @@ namespace ImagingSIMS.Data.Fusion
             //      deviation of pc1 to standard deviation of panchromatic
             //      image.
 
-            double stdDevGray = _gray.StdDev;
-            double avgPc1 = 0;
+            //double stdDevGray = _gray.StdDev;
+            //double avgPc1 = 0;
 
-            double[] pc1 = new double[linearLength];
+            double[,] components = pca.ComponentMatrix;
             double[,] transformed = pca.Transform(msLinearData);
-            double[,] replaced = new double[linearLength, numberComponents];
-
-            for (int i = 0; i < linearLength; i++)
-            {
-                pc1[i] = transformed[i, 0];
-            }
+            
+            double[] pc1 = transformed.GetColumn(0);
 
             HistogramMatching hist = new HistogramMatching(highSpatialDetail.ToFloatArray(), pc1.ToFloatArray());
-            pc1 = hist.Match1D().ToDoubleArray();
+            //highSpatialDetail = hist.Match1D().ToDoubleArray();
 
+            //for (int i = 0; i < linearLength; i++)
+            //{
+            //    avgPc1 += pc1[i];
+            //}
+
+            //avgPc1 /= linearLength;
+
+            //double stdDevPca1 = 0;
+            //for (int i = 0; i < linearLength; i++)
+            //{
+            //    stdDevPca1 += ((pc1[i] - avgPc1) * (pc1[i] - avgPc1));
+            //}
+            //stdDevPca1 = Math.Sqrt(stdDevPca1 / linearLength);
+
+            //double a = stdDevPca1 / stdDevGray;
+
+
+            double pcMin = pc1.Min();
+            double pcMax = pc1.Max();
+            double panMin = highSpatialDetail.Min();
+            double panMax = highSpatialDetail.Max();
+
+            double[] replaced = new double[linearLength];
             for (int i = 0; i < linearLength; i++)
             {
-                avgPc1 += transformed[i, 0];
+                replaced[i] = ((highSpatialDetail[i] - panMin) / (panMax - panMin)) * (pcMax - pcMax) + pcMin;
             }
 
-            avgPc1 /= linearLength;
-
-            double stdDevPca1 = 0;
-            for (int i = 0; i < linearLength; i++)
-            {
-                stdDevPca1 += ((pc1[i] - avgPc1) * (pc1[i] - avgPc1));
-            }
-            stdDevPca1 = Math.Sqrt(stdDevPca1 / linearLength);
-
-            double a = stdDevPca1 / stdDevGray;
-
-            for (int i = 0; i < linearLength; i++)
-            {
-                replaced[i, 0] = pc1[i] + a * highSpatialDetail[i];
-            }
+            //transformed.SetColumn(0, highSpatialDetail);
+            transformed.SetColumn(0, replaced);
 
             // 5. The new first principle component and other principle
             //      component are transformed with the inverse PCA to
             //      obtain the pan sharpened multi - spectral image.
 
             Data3D fused = new Data3D(_highResSizeX, _highResSizeY, 4);
-            double[,] reverted = pca.Revert(replaced);
+            double[,] reverted = pca.Revert(transformed);
 
             for (int x = 0; x < _highResSizeX; x++)
             {
@@ -1018,17 +1026,14 @@ namespace ImagingSIMS.Data.Fusion
                 {
                     int index = y * _highResSizeX + x;
 
-                    //msLinearData[index, 0] = _color.Layers[2][x, y];
-                    //msLinearData[index, 1] = _color.Layers[1][x, y];
-                    //msLinearData[index, 2] = _color.Layers[0][x, y];
                     fused.Layers[2][x, y] = (float)reverted[index, 0];
                     fused.Layers[1][x, y] = (float)reverted[index, 1];
                     fused.Layers[0][x, y] = (float)reverted[index, 2];
                 }
             }
 
-            //return fused;
-            return Data3D.Rescale(fused, 0, 255, 0, 3);
+            return fused;
+            //return Data3D.Rescale(fused, 0, 255, 0, 3);
         }
 
         public async override Task<Data3D> DoFusionAsync()

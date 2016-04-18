@@ -575,6 +575,22 @@ namespace ImagingSIMS.Controls.Tabs
                     e.Result = ex;
                 }
             }
+            else if(toCrop.SpectrumType == SpectrumType.Cameca1280)
+            {
+                try
+                {
+                    Cameca1280Spectrum cropped;
+
+                    if (resize) cropped = ((Cameca1280Spectrum)toCrop).CropAndResize(highlightedPoints, layer, resizebuffer);
+                    else cropped = ((Cameca1280Spectrum)toCrop).Crop(highlightedPoints, layer);
+
+                    e.Result = cropped;
+                }
+                catch(Exception ex)
+                {
+                    e.Result = ex;
+                }
+            }
         }
         void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {

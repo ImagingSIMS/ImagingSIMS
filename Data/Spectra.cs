@@ -2449,6 +2449,7 @@ namespace ImagingSIMS.Data.Spectra
                     Data2D[] layer = new Data2D[_species.Count];
                     for (int s = 0; s < _species.Count; s++)
                     {
+                        CamecaSpecies species = _species[s];
                         Data2D layerSpecies = new Data2D(imageSize, imageSize);
                         for (int y = 0; y < imageSize; y++)
                         {
@@ -2471,6 +2472,9 @@ namespace ImagingSIMS.Data.Spectra
             _sizeZ = _matrix.Count;
 
             _intensities = GetSpectrum(out _masses);
+
+            _startMass = (float)_species.Min(s => s.Mass);
+            _endMass = (float)_species.Max(s => s.Mass);
         }
 
         private static int getXmlIndex(byte[] buffer)
@@ -2500,6 +2504,180 @@ namespace ImagingSIMS.Data.Spectra
                 }
             }
             return -1;
+        }
+
+        /// <summary>
+        /// Removes mass spectra from unwanted pixels.
+        /// </summary>
+        /// <param name="PixelsToKeep">Pixels in the image to keep.</param>
+        /// <returns>Cropped Bio-ToF spectrum.</returns>
+        public Cameca1280Spectrum Crop(List<Point> PixelsToKeep, int Layer)
+        {
+            Cameca1280Spectrum cropped = new Cameca1280Spectrum(_name + " - Cropped");
+
+            cropped._startMass = _startMass;
+            cropped._endMass = _endMass;
+            cropped._sizeX = _sizeX;
+            cropped._sizeY = _sizeY;
+            cropped._sizeZ = _sizeZ;
+            cropped._specType = _specType;
+
+            cropped._species = _species;
+
+            cropped._matrix = new List<Data2D[]>();
+
+            // Crop all layers
+            if (Layer == -1)
+            {
+                for (int z = 0; z < _sizeZ; z++)
+                {
+                    Data2D[] layer = new Data2D[_species.Count];
+                    for (int s = 0; s < _species.Count; s++)
+                    {
+                        layer[s] = new Data2D(_sizeX, _sizeY);
+                    }
+
+                    foreach (var pixel in PixelsToKeep)
+                    {
+                        int x = (int)pixel.X;
+                        int y = (int)pixel.Y;
+
+                        for (int s = 0; s < _species.Count; s++)
+                        {
+                            layer[s][x, y] = _matrix[z][s][x, y];
+                        }
+                    }
+
+                    cropped._matrix.Add(layer);
+                }
+            }
+            //Only crop single layer
+            else
+            {
+                cropped._sizeZ = 1;
+
+                Data2D[] layer = new Data2D[_species.Count];
+                for (int s = 0; s < _species.Count; s++)
+                {
+                    layer[s] = new Data2D(_sizeX, _sizeY);
+                }
+
+                foreach (var pixel in PixelsToKeep)
+                {
+                    int x = (int)pixel.X;
+                    int y = (int)pixel.Y;
+
+                    for (int s = 0; s < _species.Count; s++)
+                    {
+                        layer[s][x, y] = _matrix[Layer][s][x, y];
+                    }
+                }
+
+                cropped._matrix.Add(layer);
+            }
+
+            return cropped;
+        }
+        /// <summary>
+        /// Removes mass spectra from unwanted pixels.
+        /// </summary>
+        /// <param name="PixelsToKeep">Pixels in the image to keep.</param>
+        /// <param name="ResizeBuffer">Padding to add to the resized cropped image.</param>
+        /// <returns>Cropped and resized Bio-ToF spectrum</returns>
+        public Cameca1280Spectrum CropAndResize(List<Point> PixelsToKeep, int Layer, int ResizeBuffer)
+        {
+            Cameca1280Spectrum cropped = new Cameca1280Spectrum(_name + " - Cropped");
+
+            cropped._startMass = _startMass;
+            cropped._endMass = _endMass;
+            cropped._sizeX = _sizeX;
+            cropped._sizeY = _sizeY;
+            cropped._sizeZ = _sizeZ;
+            cropped._specType = _specType;
+
+            cropped._species = _species;
+
+            //Determine resize start and end points
+            int resizeStartX;
+            int resizeStartY;
+            int resizeEndX;
+            int resizeEndY;
+            int resizeWidth;
+            int resizeHeight;
+
+            List<int> pixelsX = new List<int>();
+            List<int> pixelsY = new List<int>();
+            foreach (Point p in PixelsToKeep)
+            {
+                pixelsX.Add((int)p.X);
+                pixelsY.Add((int)p.Y);
+            }
+
+            resizeStartX = Math.Max(0, (int)PixelsToKeep.Min(p => p.X) - ResizeBuffer);
+            resizeEndX = Math.Min(_sizeX, (int)PixelsToKeep.Max(p => p.X) + ResizeBuffer);
+            resizeStartY = Math.Max(0, (int)PixelsToKeep.Min(p => p.Y) - ResizeBuffer);
+            resizeEndY = Math.Min(_sizeY, (int)PixelsToKeep.Max(p => p.Y) + ResizeBuffer);
+            resizeWidth = resizeEndX - resizeStartX + 1;
+            resizeHeight = resizeEndY - resizeStartY + 1;
+
+            cropped._sizeX = resizeWidth;
+            cropped._sizeY = resizeHeight;
+
+            cropped._matrix = new List<Data2D[]>();
+
+            if (Layer == -1)
+            {
+                for (int z = 0; z < _sizeZ; z++)
+                {
+                    Data2D[] layer = new Data2D[_species.Count];
+                    for (int s = 0; s < _species.Count; s++)
+                    {
+                        layer[s] = new Data2D(_sizeX, _sizeY);
+                    }
+
+                    foreach (var pixel in PixelsToKeep)
+                    {
+                        int origX = (int)pixel.X;
+                        int origY = (int)pixel.Y;
+                        int cropX = origX - resizeStartX;
+                        int cropY = origY - resizeStartY;
+
+                        for (int s = 0; s < _species.Count; s++)
+                        {
+                            layer[s][cropX, cropY] = _matrix[z][s][origX, origY];
+                        }
+                    }
+
+                    cropped._matrix.Add(layer);
+                }
+            }
+            else
+            {
+                cropped._sizeZ = 1;
+
+                Data2D[] layer = new Data2D[_species.Count];
+                for (int s = 0; s < _species.Count; s++)
+                {
+                    layer[s] = new Data2D(_sizeX, _sizeY);
+                }
+
+                foreach (var pixel in PixelsToKeep)
+                {
+                    int origX = (int)pixel.X;
+                    int origY = (int)pixel.Y;
+                    int cropX = origX - resizeStartX;
+                    int cropY = origY - resizeStartY;
+
+                    for (int s = 0; s < _species.Count; s++)
+                    {
+                        layer[s][cropX, cropY] = _matrix[Layer][s][origX, origY];
+                    }
+                }
+
+                cropped._matrix.Add(layer);
+            }
+
+            return cropped;
         }
 
         public override void SaveText(string filePath)

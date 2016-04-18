@@ -100,8 +100,8 @@
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
                                 <Button x:Name="buttonShowColor" Width="20" Height="20" Margin="4" 
-                        IsEnabled="{Binding BatchApply.ColorScale, Converter={StaticResource colorScaleToBoolConverter}, ElementName=userControl}"
-                        MouseEnter="buttonShowColor_MouseEnter">
+                                        IsEnabled="{Binding BatchApply.ColorScale, Converter={StaticResource colorScaleToBoolConverter}, ElementName=userControl}"
+                                        MouseEnter="buttonShowColor_MouseEnter">    
                                     <Image Source="..\Images\PaintPalette.ico"/>
                                 </Button>
                                 <Popup x:Name="popupSolidColorScale" IsOpen="False" PlacementTarget="{Binding ElementName=buttonShowColor}" StaysOpen="False">
@@ -123,7 +123,28 @@
                 <Expander Margin="4" x:Name="expanderStatsOutput" Grid.Column="1" IsExpanded="False" 
                           Header="Output" Foreground="White"
                           ExpandDirection="Right" FlowDirection="LeftToRight" VerticalAlignment="Top">
-                    <TextBox Grid.Row="1" IsReadOnly="True" TextWrapping="Wrap" MaxHeight="250" Text="{Binding ElementName=userControl, Path=AnalysisOutputText}"/>
+                    <TabControl Margin="4" x:Name="tabOutput" Background="Transparent" AllowDrop="True" ItemContainerStyle="{StaticResource BlueTabItemHeader}">
+                        <TabItem x:Name="tabItemAnalysis"  Header="Analysis">
+                            <TextBox IsReadOnly="True" TextWrapping="Wrap" MaxHeight="250" Text="{Binding ElementName=userControl, Path=AnalysisOutputText}"/>
+                        </TabItem>
+                        <TabItem x:Name="tabItemRatios" Header="Ratios">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                    <Button Margin="4" Height="20" Width="75" Click="calculateRatios_Click">Calculate</Button>
+                                    <Button Margin="4" Height="20" Width="75" Click="copyRatios_Click">Copy</Button>
+                                </StackPanel>
+
+
+                                <b:RatiosDataGrid x:Name="ratioGrid" Grid.Row="1" MaxHeight="250"/>
+                            </Grid>                            
+                        </TabItem>
+                    </TabControl>
+                    
                 </Expander>
             </Grid>
             

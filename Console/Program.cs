@@ -28,19 +28,11 @@ namespace ConsoleApp
         static void Main(string[] args)
         {
 
-            string aimFile2 = @"G:\si-ta-0310rae@1.aim";
-            string impFile2 = @"G:\si-ta-0310rae@1.imp";
-            string aimFile64 = @"G:\si-ta-0308@1.aim";
-            string impFile64 = @"G:\si-ta-0308@1.imp";
+            Console.WriteLine("Press Enter to begin...");
+            Console.ReadLine();
 
-            Cameca1280Spectrum spec = new Cameca1280Spectrum();
-            spec.LoadFromFile(impFile64);
-
-            //Console.WriteLine("Press Enter to begin...");
-            //Console.ReadLine();
-
-            //Console.Write("Press Enter to exit.");
-            //Console.ReadLine();
+            Console.Write("Press Enter to exit.");
+            Console.ReadLine();
         }
 
         private static int readLine(string line, out int type)

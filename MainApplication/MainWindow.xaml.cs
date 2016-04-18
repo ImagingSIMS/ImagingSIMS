@@ -4182,24 +4182,18 @@ namespace ImagingSIMS.MainApplication
 #pragma warning disable 1998
         private async void test1_Click(object sender, RoutedEventArgs e)
         {
+            Spectrum s = listViewSpectra.SelectedItem as Spectrum;
 
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "OS/2 Retro Files (.xyt)|*.xyt";
-            if (ofd.ShowDialog() != true) return;
+            float[] masses;
+            uint[] intensities = s.GetSpectrum(out masses);
 
-            string[] fileNames = ofd.FileNames;
-
-            ofd.Filter = "Bio-ToF Header File (.hdr)|*.hdr";
-            string headerPath = null;
-            if (ofd.ShowDialog() == true)
+            using (StreamWriter sw = new StreamWriter(@"D:\spec.txt"))
             {
-                headerPath = ofd.FileName;
+                for (int i = 0; i < masses.Length; i++)
+                {
+                    sw.WriteLine($"{masses[i]},{intensities[i]},");
+                }
             }
-
-            BioToFSpectrum bts = new BioToFSpectrum(Path.GetFileNameWithoutExtension(fileNames[0]));
-            bts.LoadFromFile(fileNames, null, true, headerPath);
-            Workspace.Spectra.Add(bts);
-
         }
         private async void test2_Click(object sender, RoutedEventArgs e)
         {
@@ -4229,51 +4223,76 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test4_Click(object sender, RoutedEventArgs e)
         {
-            //bool result = ImagingSIMS.Data.PCA.PCA.VerifyPython();
-            //DialogBox.Show("Result: " + result.ToString(), "", "Python", result ? DialogBoxIcon.GreenCheck : DialogBoxIcon.Error);
-            
-            string[] criteria = new string[]
-            {
-                "234U", "236.1", "236U", "238U 1H"
-            };
+            List<string> lines = new List<string>();
 
-            int ct = 0;
-            List<Data2D> toRemove = new List<Data2D>();
-            foreach(Data2D d in Workspace.Data)
+            using (StreamReader sr = new StreamReader(@"D:\Test Output\particle2.txt"))
             {
-                foreach (string s in criteria)
+                while (!sr.EndOfStream)
                 {
-                    if (d.DataName.Contains(s))
-                        toRemove.Add(d);
-                    ct++;
-                    continue;
+                    lines.Add(sr.ReadLine());
                 }
             }
 
-            for (int i = 0; i < toRemove.Count; i++)
-            {
-                Data2D d = toRemove[i];
-                if (Workspace.Data.Contains(d))
-                    Workspace.Data.Remove(d);
-        }
+            Data2D d235 = new Data2D(256, 256);
+            d235.DataName = "235 - read in";
+            Data2D d238 = new Data2D(256, 256);
+            d238.DataName = "238 - read in";
 
-            DialogBox.Show($"Removed {ct} tables.", "", "Tables", DialogIcon.Ok);
+            foreach (string s in lines)
+            {
+                string[] parts = s.Split(',');
+
+                int x = int.Parse(parts[0]);
+                int y = int.Parse(parts[1]);
+
+                int c235 = int.Parse(parts[2]);
+                int c238 = int.Parse(parts[3]);
+
+                d235[x, y] = c235;
+                d238[x, y] = c238;
+            }
+
+            Data2D ratio = d235 / d238;
+            ratio.DataName = "235/238 - read in";
+
+            AddTables(new Data2D[] { d235, d238, ratio });
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            List<Data2D> data = GetSelectedTables();
-            Data3D d = new Data3D(data);
+            DisplayTab dt = new DisplayTab();
 
-            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalWarm);
-            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.Data2DDisplay, "Test", true);
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.Display, "Fusion Test", true);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
-            for (int i = 0; i < 3; i++)
+            string folder = @"D:\Data\";
+            string[] lowResFileNames = new string[]
             {
-                await dt.AddDataSourceAsync(d);
-            }           
+                "4b_b.bmp",
+                "4b_c.bmp",
+                "4b_g.bmp",
+                "4b_m.bmp",
+                "4b_r.bmp",
+                "4b_t.bmp",
+                "4b_w.bmp",
+                "4b_y.bmp"
+            };
+            BitmapImage imgHigRes = new BitmapImage(new Uri(Path.Combine(folder, "1a.bmp")));
 
+            BitmapImage[] imgLowRes = new BitmapImage[lowResFileNames.Length];
+            for (int i = 0; i < lowResFileNames.Length; i++)
+            {
+                imgLowRes[i] = new BitmapImage(new Uri(Path.Combine(folder, lowResFileNames[i])));
+            }
+
+            for (int i = 0; i < lowResFileNames.Length; i++)
+            {
+                Data.Fusion.PCAFusion fusion = new Data.Fusion.PCAFusion(imgHigRes, imgLowRes[i]);
+                fusion.CheckFusion();
+                Data3D result = await fusion.DoFusionAsync();
+                DisplayImage di = new DisplayImage(ImageHelper.CreateImage(result), lowResFileNames[i]);
+                dt.AddImage(di);
+            }
         }
 #pragma warning restore 1998
 

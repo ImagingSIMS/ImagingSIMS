@@ -99,6 +99,9 @@
     </Compile>
     <Compile Include="BaseControls\GridAware.cs" />
     <Compile Include="BaseControls\MoveThumb.cs" />
+    <Compile Include="BaseControls\RatiosDataGrid.xaml.cs">
+      <DependentUpon>RatiosDataGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BaseControls\ResizeThumb.cs" />
     <Compile Include="IAvailableImageSeries.cs" />
     <Compile Include="Tabs\RatioTab.xaml.cs">
@@ -353,6 +356,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="BaseControls\Data3DDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BaseControls\RatiosDataGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
