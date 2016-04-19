@@ -3420,7 +3420,7 @@ namespace ImagingSIMS.MainApplication
                         Cameca1280Spectrum cSpec = (Cameca1280Spectrum)s;
 
                         DataDisplayTab dt = new DataDisplayTab();
-                        ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.Data2DDisplay, cSpec.Name, true);
+                        ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, cSpec.Name, true);
                         tabMain.Items.Add(cti);
                         tabMain.SelectedItem = cti;
 
