@@ -1,0 +1,43 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
+
+namespace ImagingSIMS.Controls
+{
+    public static class CommonCommands
+    {
+        private static RoutedUICommand _saveImageSeries = new RoutedUICommand("Save Image Series", "SaveImageSeries", typeof(CommonCommands));
+
+        public static RoutedUICommand SaveImageSeries
+        {
+            get { return _saveImageSeries; }
+        }
+    }
+    public static class DataDisplayTabCommands
+    {
+        private static RoutedUICommand _applyColorScale = new RoutedUICommand("Apply Color Scale", "ApplyColorScale", typeof(DataDisplayTabCommands));
+        private static RoutedUICommand _saveItems = new RoutedUICommand("Save Display Items", "SaveItems", typeof(DataDisplayTabCommands));
+        private static RoutedUICommand _resetSaturations = new RoutedUICommand("Reset Saturation", "ResetSaturation", typeof(DataDisplayTabCommands));
+        private static RoutedUICommand _applyLayerRange = new RoutedUICommand("Apply Layer Range", "ApplyLayerRange", typeof(DataDisplayTabCommands));
+
+        public static RoutedUICommand ApplyColorScale
+        {
+            get { return _applyColorScale; }
+        }
+        public static RoutedUICommand SaveItems
+        {
+            get { return _saveItems; }
+        }
+        public static RoutedUICommand ResetSaturations
+        {
+            get { return _resetSaturations; }
+        }
+        public static RoutedUICommand ApplyLayerRange
+        {
+            get { return _applyLayerRange; }
+        }
+    }
+}

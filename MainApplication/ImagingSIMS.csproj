@@ -355,6 +355,15 @@
     <Resource Include="Images\Isotope.ico" />
     <Resource Include="Images\Grid.ico" />
     <Resource Include="Images\Table.ico" />
+    <Resource Include="Images\OpenFolder.ico" />
+    <Resource Include="Images\Save.ico" />
+    <Resource Include="Images\ColorWheel.ico" />
+    <Resource Include="Images\Undo_grey.ico" />
+    <Resource Include="Images\LayerDiagram.ico" />
+    <Resource Include="Images\ColorPicker.ico" />
+    <Resource Include="Images\SelectAll_32x.png" />
+    <Resource Include="Images\ClearCollection_16x.png" />
+    <Resource Include="Images\AddToCollection_16x.png" />
     <Content Include="Plugins\ITKImageRegistration.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

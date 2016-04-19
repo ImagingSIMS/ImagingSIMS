@@ -1018,7 +1018,7 @@ namespace ImagingSIMS.MainApplication
                     FusionTab ft = (FusionTab)cti.Content;
                     if (ft != null) ft.CallEvent(eventType);
                     break;
-                case TabType.Data2DDisplay:
+                case TabType.DataDisplay:
                     DataDisplayTab dt = (DataDisplayTab)cti.Content;
                     if (dt != null) dt.SaveImageSeries();
                     break;
@@ -1821,7 +1821,7 @@ namespace ImagingSIMS.MainApplication
                 }
                 dt.CallEvent(ImageTabEvent.Overlay);
             }
-            else if (cti.TabType == TabType.Data2DDisplay)
+            else if (cti.TabType == TabType.DataDisplay)
             {
                 DataDisplayTab d2dt = cti.Content as DataDisplayTab;
                 if (d2dt == null)
@@ -3303,7 +3303,7 @@ namespace ImagingSIMS.MainApplication
             //Data2DDisplayTab it = new Data2DDisplayTab(data, type);
             DataDisplayTab it = new DataDisplayTab(type);
 
-            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.Data2DDisplay, title, true);
+            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.DataDisplay, title, true);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 

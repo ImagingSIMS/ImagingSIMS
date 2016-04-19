@@ -72,7 +72,7 @@ namespace ImagingSIMS.Controls.Tabs
 
             if (TabType == TabType.Display || TabType == TabType.Fusion ||
                 TabType == TabType.HeightMap || TabType == TabType.DataRegistration ||
-                TabType == TabType.SpectrumCrop || TabType == TabType.Data2DDisplay ||
+                TabType == TabType.SpectrumCrop || TabType == TabType.DataDisplay ||
                 TabType == TabType.Cluster)
             {
                 this.AllowDrop = true;
@@ -92,7 +92,7 @@ namespace ImagingSIMS.Controls.Tabs
 
             if (TabType == TabType.Display || TabType == TabType.Fusion ||
                 TabType == TabType.HeightMap || TabType == TabType.DataRegistration ||
-                TabType == TabType.SpectrumCrop || TabType == TabType.Data2DDisplay || 
+                TabType == TabType.SpectrumCrop || TabType == TabType.DataDisplay || 
                 TabType == TabType.Cluster)
             {
                 this.AllowDrop = true;
@@ -165,7 +165,7 @@ namespace ImagingSIMS.Controls.Tabs
         {
             bool didDrop = false;
 
-            if (_tabType == TabType.Data2DDisplay)
+            if (_tabType == TabType.DataDisplay)
             {
                 DataDisplayTab d2dt = this.Content as DataDisplayTab;
                 if (d2dt == null) return;
@@ -646,7 +646,7 @@ namespace ImagingSIMS.Controls.Tabs
         TableSelector, PCA,
         Crop, SEM, RenderObject,
         Correction, ZCorrection, SpectrumCrop,
-        HeightMap, Data2DDisplay, Cluster,
+        HeightMap, DataDisplay, Cluster,
         DataRegistration, DepthProfile,
         Ratio, ImageStitch
     }

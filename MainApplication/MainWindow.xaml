@@ -12,6 +12,7 @@
         xmlns:common="clr-namespace:ImagingSIMS.Common;assembly=Common"
         xmlns:commonctrls="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
         xmlns:ec="clr-namespace:ImagingSIMS.MainApplication.ExternalCode"
+        xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Icon="Images\PaintPalette.ico" 
         Width="1200" Height="900" WindowState="Maximized" MinWidth="600" MinHeight="480" 
@@ -42,7 +43,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Ribbon x:Name="Ribbon" SelectedIndex="0" FontFamily="SegoeUI" FontSize="12">
+        <Ribbon x:Name="Ribbon" SelectedIndex="1" FontFamily="SegoeUI" FontSize="12">
             <Ribbon.QuickAccessToolBar>
                 <RibbonQuickAccessToolBar x:Name="quickBar" IsEnabled="True">
                     <RibbonButton x:Name="qaNew" KeyTip="1" SmallImageSource="Images/DocumentHS1.png" 
@@ -169,6 +170,11 @@
                                                ToolTipDescription="Closes the current window." ToolTipImageSource="Images\Close.png"/>
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
+            <Ribbon.ContextualTabGroups>
+                <RibbonContextualTabGroup Header="Data" Visibility="Visible" Background="#FF00FE55"/>
+                <RibbonContextualTabGroup Header="Spectrum" Visibility="Visible" Background="#FFBB45FF"/>
+                <RibbonContextualTabGroup Header="Fusion" Visibility="Visible" Background="#FFFCE226"/>
+            </Ribbon.ContextualTabGroups>
             <RibbonTab Header="Home" KeyTip="H">
                 <RibbonGroup>
                     <RibbonButton x:Name="showStartup"
@@ -279,6 +285,11 @@
                                   ToolTipTitle="Depth Profile" 
                                   ToolTipDescription="Opens a tab to select tables to generate a depth profile."/>
                 </RibbonGroup>
+                <RibbonGroup Header="Spectra">
+                    <RibbonButton LargeImageSource="Images\Crop.ico" Label="Crop" ToolTipTitle="Crop Spectrum"
+                                  ToolTipDescription="Opens a correction tab to crop regions of interest (ROI) from mass spectra to remove unwanted background signal."
+                                  ToolTipImageSource="Images\Crop.ico" Click="ribbonButtonSpecCrop_Click"/>
+                </RibbonGroup>
                 <RibbonGroup Header="Registration">
                     <RibbonButton x:Name="ribbonButtonOpenTransform" LargeImageSource="Images\Transform.ico" Click="ribbonOpenTransformTab_Click"
                                   Label="Transform Data" ToolTipImageSource="Images\Transform.ico"
@@ -286,7 +297,7 @@
                                   ToolTipDescription="Opens a tab to specify a transform to shift and scale data tables"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Expand Pixels" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
-                                  Converter={StaticResource TabBoolConverter}, ConverterParameter=Data2DDisplay}">
+                                  Converter={StaticResource TabBoolConverter}, ConverterParameter=DataDisplay}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -476,7 +487,7 @@
                                   ToolTipTitle="Performs an image overlay." ToolTipImageSource="Images\Overlay.ico"
                                   ToolTipDescription="Overlays a series of images in the selected tab."
                                   IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
-                                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Display|Data2DDisplay}"/>
+                                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Display|DataDisplay}"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Correction"
                              IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
@@ -782,6 +793,76 @@
                     <RibbonButton LargeImageSource="Images\LargeIcon.png" Label="Test 4" Click="test4_Click"/>
                     <RibbonButton LargeImageSource="Images\LargeIcon.png" Label="Test 5" Click="test5_Click"/>
                 </RibbonGroup>                
+            </RibbonTab>
+
+            <RibbonTab Header="Data Display" ContextualTabGroupHeader="Data"
+                Visibility="{Binding ElementName=tabMain, Path=SelectedItem, Converter={StaticResource tabVisConverter}, ConverterParameter=DataDisplay}">
+                <RibbonGroup Header="Collection">
+                    <RibbonButton Margin="4" SmallImageSource="Images\AddToCollection_16x.png"
+                                  Label="Select All"
+                                  Command="ApplicationCommands.SelectAll"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
+                    <RibbonButton Margin="4" SmallImageSource="Images\ClearCollection_16x.png"
+                                  Label="Clear Selection"
+                                  Command="ApplicationCommands.SelectAll"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"
+                                  CommandParameter="Clear"/>
+                    <RibbonButton Margin="4" LargeImageSource="Images\SaveAll.ico" SmallImageSource="Images\SaveAll.ico"
+                                  Label="Save"
+                                  Command="c:DataDisplayTabCommands.SaveItems"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Color Scale">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="4" VerticalAlignment="Center">Color scale:</TextBlock>
+                        <ComboBox Margin="4" Width="125" Height="20" IsEditable="False"
+                                  ItemsSource="{Binding Source={StaticResource colorScaleFromEnum}}"
+                                  SelectedItem="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.ColorScale}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <RibbonMenuButton Margin="4" SmallImageSource="Images\ColorPicker.ico">
+                            <RibbonGallery ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                           ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                <commonctrls:ColorSelector IsAlphaEnabled="False"
+                                                            SelectedColor="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.SolidColorScale, Mode=TwoWay}"/>
+                            </RibbonGallery>
+                        </RibbonMenuButton>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <RibbonButton Margin="4" SmallImageSource="Images\ColorWheel.ico" Label="Apply All" 
+                                      Command="c:DataDisplayTabCommands.ApplyColorScale" CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}" 
+                                      CommandParameter="All"/>
+                        <RibbonButton Margin="4" SmallImageSource="Images\ColorWheel.ico" Label="Apply Selected"  
+                                      Command="c:DataDisplayTabCommands.ApplyColorScale" CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}" 
+                                      CommandParameter="Selected"/>
+                    </StackPanel>
+                </RibbonGroup>
+                <RibbonGroup Header="Saturation">
+                    <RibbonButton Margin="4" LargeImageSource="Images\Undo_grey.ico" SmallImageSource="Images\SmallIcon.png"
+                                  Label="Reset"
+                                  Command="c:DataDisplayTabCommands.ResetSaturations"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Layers">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="4" MinWidth="20" VerticalAlignment="Center" Text="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"/>
+                        <xctk:RangeSlider Margin="4" Width="150" Step="1"
+                                      LowerValue="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"
+                                      HigherValue="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerEnd}"
+                                      Minimum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerMinimum}"
+                                      Maximum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerMaximum}"/>
+                        <TextBlock Margin="4" MinWidth="20" VerticalAlignment="Center" Text="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerEnd}"/>
+                    </StackPanel>                    
+                    <RibbonButton Margin="4" Label="Apply"
+                                  Command="c:DataDisplayTabCommands.ApplyLayerRange"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"
+                                  LargeImageSource="Images\LayerDiagram.ico"
+                                  SmallImageSource="Images\LayerDiagram.ico"/>
+                </RibbonGroup>
             </RibbonTab>
         </Ribbon>
         <Grid Grid.Row="1">

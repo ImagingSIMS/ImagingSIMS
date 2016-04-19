@@ -25,11 +25,12 @@ using ImagingSIMS.Data.Imaging;
 using System.IO;
 using ImagingSIMS.Controls.BaseControls;
 using ImagingSIMS.Controls.ViewModels;
+using System.Collections.Specialized;
 
 namespace ImagingSIMS.Controls.Tabs
 {
     /// <summary>
-    /// Interaction logic for Data2DDisplayTab.xaml
+    /// Interaction logic for DataDisplayTab.xaml
     /// </summary>
     //public partial class Data2DDisplayTab : UserControl
     //{
@@ -378,6 +379,7 @@ namespace ImagingSIMS.Controls.Tabs
     {
         public static readonly DependencyProperty BatchApplyProperty = DependencyProperty.Register("BatchApply",
             typeof(DataDisplayBatchApplyViewModel), typeof(DataDisplayTab));
+
         public DataDisplayBatchApplyViewModel BatchApply
         {
             get { return (DataDisplayBatchApplyViewModel)GetValue(BatchApplyProperty); }
@@ -396,15 +398,31 @@ namespace ImagingSIMS.Controls.Tabs
             DisplayItems = new ObservableCollection<Data3DDisplayViewModel>();
             BatchApply = new DataDisplayBatchApplyViewModel();
 
+            DisplayItems.CollectionChanged += DisplayItems_CollectionChanged;
+
             InitializeComponent();
         }
         public DataDisplayTab(ColorScaleTypes ColorScale)
         {
             DisplayItems = new ObservableCollection<Data3DDisplayViewModel>();
-
             BatchApply = new DataDisplayBatchApplyViewModel(ColorScale);
 
+            DisplayItems.CollectionChanged += DisplayItems_CollectionChanged;
+
             InitializeComponent();
+        }
+
+        private void DisplayItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            int max = 0;
+            foreach(var item in DisplayItems)
+            {
+                if (item.LayerEnd > max)
+                    max = item.LayerEnd;
+            }
+
+            BatchApply.LayerMaximum = max;
+            BatchApply.LayerMinimum = 1;
         }
 
         public void AddDataSource(Data2D dataSource)
@@ -439,68 +457,6 @@ namespace ImagingSIMS.Controls.Tabs
             foreach(Data3D dataSource in dataSources)
             {
                 await AddDataSourceAsync(dataSource);
-            }
-        }
-
-        private void buttonShowColor_MouseEnter(object sender, RoutedEventArgs e)
-        {
-            popupSolidColorScale.IsOpen = true;
-        }
-        private void buttonApply_Click(object sender, RoutedEventArgs e)
-        {
-            ColorScaleTypes scale = BatchApply.ColorScale;
-            Color solid = BatchApply.SolidColorScale;
-
-            Button button = sender as Button;
-            if (sender == null) return;
-
-            if (sender == buttonApplyAll)
-            {
-                foreach (object o in itemsControl.Items)
-                {
-                    Data3DDisplayViewModel d = o as Data3DDisplayViewModel;
-                    if (d == null) continue;
-
-                    d.ColorScale = scale;
-                    if (scale == ColorScaleTypes.Solid)
-                    {
-                        d.SolidColorScale = solid;
-                    }
-
-                    d.SetLayers(BatchApply.LayerMinimum, BatchApply.LayerMaximum);
-                }
-            }
-            else if (button == buttonApplySelected)
-            {
-                foreach (object o in itemsControl.SelectedItems)
-                {
-                    Data3DDisplayViewModel d = o as Data3DDisplayViewModel;
-                    if (d == null) continue;
-
-                    d.ColorScale = scale;
-                    if (scale == ColorScaleTypes.Solid)
-                    {
-                        d.SolidColorScale = solid;
-                    }
-
-                    d.SetLayers(BatchApply.LayerMinimum, BatchApply.LayerMaximum);
-                }
-            }
-        }
-        private void buttonReset_Click(object sender, RoutedEventArgs e)
-        {
-            Button button = sender as Button;
-            if (sender == null) return;
-
-            if (sender == buttonResetScale)
-            {
-                foreach (object o in itemsControl.Items)
-                {
-                    Data3DDisplayViewModel d = o as Data3DDisplayViewModel;
-                    if (d == null) return;
-
-                    d.Saturation = d.InitialSaturation;
-                }
             }
         }
 
@@ -712,6 +668,163 @@ namespace ImagingSIMS.Controls.Tabs
 
             return Overlay.CreateOverlay(toOverlay);
 
+        }
+
+        private void ApplyColorScale_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if(e.Parameter == null)
+            {
+                applyColorScaleAll();
+            }
+            else
+            {
+                string parameter = (string)e.Parameter;
+
+                if (!string.IsNullOrEmpty(parameter))
+                {
+                    if (parameter.ToLower() == "all") applyColorScaleAll();
+                    else if (parameter.ToLower() == "selected") applyColorScaleSelected();
+                }
+                else
+                {
+                    applyColorScaleAll();
+                }
+            }
+        }
+        private void applyColorScaleAll()
+        {
+            ColorScaleTypes scale = BatchApply.ColorScale;
+            Color solid = BatchApply.SolidColorScale;
+
+            foreach (object o in itemsControl.Items)
+            {
+                Data3DDisplayViewModel d = o as Data3DDisplayViewModel;
+                if (d == null) continue;
+
+                d.ColorScale = scale;
+                if (scale == ColorScaleTypes.Solid)
+                {
+                    d.SolidColorScale = solid;
+                }
+
+                d.SetLayers(BatchApply.LayerStart, BatchApply.LayerEnd);
+            }
+        }
+        private void applyColorScaleSelected()
+        {
+            ColorScaleTypes scale = BatchApply.ColorScale;
+            Color solid = BatchApply.SolidColorScale;
+
+            foreach (object o in itemsControl.SelectedItems)
+            {
+                Data3DDisplayViewModel d = o as Data3DDisplayViewModel;
+                if (d == null) continue;
+
+                d.ColorScale = scale;
+                if (scale == ColorScaleTypes.Solid)
+                {
+                    d.SolidColorScale = solid;
+                }
+
+                d.SetLayers(BatchApply.LayerStart, BatchApply.LayerEnd);
+            }
+        }
+
+        private void SaveItems_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Bitmap Images (.bmp)|*.bmp";
+            Nullable<bool> result = sfd.ShowDialog();
+
+            if (result != true) return;
+
+            bool multiple = DisplayItems.Count > 0;
+            int counter = 0;
+
+            Dictionary<Data3DDisplayViewModel, string> notSaved = new Dictionary<Data3DDisplayViewModel, string>();
+
+            foreach (Data3DDisplayViewModel displayItem in DisplayItems)
+            {
+                string filePath = sfd.FileName;
+                if (multiple)
+                {
+                    filePath = filePath.Insert(filePath.Length - 4,
+                        "_" + (++counter).ToString());
+                }
+
+                BitmapSource src = displayItem.DisplayImageSource as BitmapSource;
+
+                if (src == null)
+                {
+                    notSaved.Add(displayItem, "Invalid ImageSource");
+                    continue;
+                }
+
+                try
+                {
+                    saveImage((BitmapSource)displayItem.DisplayImageSource, filePath);
+                }
+                catch (Exception ex)
+                {
+                    notSaved.Add(displayItem, ex.Message);
+                }
+            }
+
+            if (notSaved.Count == 0)
+            {
+                DialogBox.Show("Image(s) saved successfully!", sfd.FileName, "Save", DialogIcon.Ok);
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Data3DDisplayViewModel item in notSaved.Keys)
+                {
+                    sb.AppendLine(item.DataSource.DataName + string.Format("({0})", notSaved[item]));
+                }
+                DialogBox.Show("One or more images were not saved successfully and are listed below. Any other images have been saved.",
+                    sb.ToString(), "Save", DialogIcon.Error);
+            }
+
+        }
+        private void ResetSaturations_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            foreach (object o in itemsControl.Items)
+            {
+                Data3DDisplayViewModel d = o as Data3DDisplayViewModel;
+                if (d == null) return;
+
+                d.Saturation = d.InitialSaturation;
+            }
+        }
+        private void ApplyLayerRange_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            int layerStart = BatchApply.LayerStart;
+            int layerEnd = BatchApply.LayerEnd;
+
+            foreach (object o in itemsControl.Items)
+            {
+                Data3DDisplayViewModel d = o as Data3DDisplayViewModel;
+                if (d == null) continue;
+
+                d.SetLayers(layerStart, layerEnd);
+            }
+        }
+
+        private void SelectAll_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if(e.Parameter == null)
+            {
+                itemsControl.SelectAll();
+                return;
+            }
+
+            string p = e.Parameter.ToString();
+            if (p.ToLower() == "clear")
+            {
+                itemsControl.UnselectAll();
+                return;
+            }
+            else itemsControl.SelectAll();
         }
     }
 }

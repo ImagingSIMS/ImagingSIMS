@@ -103,6 +103,7 @@
       <DependentUpon>RatiosDataGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="BaseControls\ResizeThumb.cs" />
+    <Compile Include="Commands.cs" />
     <Compile Include="IAvailableImageSeries.cs" />
     <Compile Include="Tabs\RatioTab.xaml.cs">
       <DependentUpon>RatioTab.xaml</DependentUpon>
