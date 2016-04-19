@@ -95,16 +95,25 @@ namespace ImagingSIMS.Controls.ViewModels
         {
             ColorScale = ColorScaleTypes.ThermalWarm;
             SolidColorScale = Color.FromArgb(255, 255, 255, 255);
+
+            LayerStart = 1;
+            LayerEnd = 1;
         }
         public DataDisplayBatchApplyViewModel(ColorScaleTypes ColorScale)
         {
             this.ColorScale = ColorScale;
             this.SolidColorScale = Color.FromArgb(255, 255, 255, 255);
+
+            LayerStart = 1;
+            LayerEnd = 1;
         }
         public DataDisplayBatchApplyViewModel(Color SolidColorScale)
         {
             this.ColorScale = ColorScaleTypes.Solid;
             this.SolidColorScale = SolidColorScale;
+
+            LayerStart = 1;
+            LayerEnd = 1;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

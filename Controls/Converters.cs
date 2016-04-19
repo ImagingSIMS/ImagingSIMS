@@ -121,6 +121,39 @@ namespace ImagingSIMS.Controls.Converters
             return false;
         }
     }
+    public class TabToVisConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                if (value == null || parameter == null) return Visibility.Collapsed;
+
+                ClosableTabItem cti = (ClosableTabItem)value;
+                TabType tab = cti.TabType;
+                string p = (string)parameter;
+
+                char delim = '|';
+                string[] parts = p.Split(delim);
+
+                foreach (string s in parts)
+                {
+                    TabType param = (TabType)Enum.Parse(typeof(TabType), s);
+                    if (param == tab) return Visibility.Visible;
+                }
+                return Visibility.Collapsed;
+            }
+            catch (InvalidCastException)
+            {
+                return Visibility.Collapsed;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class HasImageToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -397,9 +430,16 @@ namespace ImagingSIMS.Controls.Converters
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            Enum myEnum = (Enum)value;
-            string description = GetEnumDescription(myEnum);
-            return description;
+            try
+            {
+                Enum myEnum = (Enum)value;
+                string description = GetEnumDescription(myEnum);
+                return description;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -679,7 +719,14 @@ namespace ImagingSIMS.Controls.Converters
                 if (value == null) return false;
                 ColorScaleTypes c = (ColorScaleTypes)value;
 
-                return c == ColorScaleTypes.Solid;
+                if(parameter == null)
+                {
+                    return c == ColorScaleTypes.Solid;
+                }
+
+                string p = (string)parameter;
+                return p.ToLower() == c.ToString().ToLower();
+                
             }
             catch (InvalidCastException)
             {

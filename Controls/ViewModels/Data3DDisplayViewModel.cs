@@ -261,7 +261,7 @@ namespace ImagingSIMS.Controls.ViewModels
             ColorScale = colorScale;
 
             LayerStart = 1;
-            LayerEnd = 1;
+            LayerEnd = dataSource.Depth;
 
             Scale = 1;
         }
@@ -276,7 +276,7 @@ namespace ImagingSIMS.Controls.ViewModels
             ColorScale = ColorScaleTypes.Solid;
 
             LayerStart = 1;
-            LayerEnd = 1;
+            LayerEnd = dataSource.Depth;
 
             Scale = 1;
         }
@@ -305,17 +305,25 @@ namespace ImagingSIMS.Controls.ViewModels
         }
         public void SetLayers(int lower, int upper)
         {
-            int lowerLayer = lower - 1;
-            int upperLayer = upper - 1;
+            int lowerLayer = lower;
+            int upperLayer = upper;
 
-            if (lowerLayer >= 0 && lowerLayer < DataSource.Depth)
-                LayerStart = lowerLayer;
+            if(lowerLayer >= 0)
+            {
+                if (lowerLayer < DataSource.Depth)
+                    LayerStart = lowerLayer;
+                else LayerStart = DataSource.Depth;
+            }
 
-            if (upperLayer >= 0 && upperLayer < DataSource.Depth)
-                LayerEnd = upperLayer;
+            if(upperLayer >= 0)
+            {
+                if (upperLayer < DataSource.Depth)
+                    LayerEnd = upperLayer;
+                else LayerEnd = DataSource.Depth;
+            }
 
             if (lowerLayer > upperLayer)
-                upperLayer = lowerLayer;
+                LayerEnd = LayerStart;
         }
 
         int _previousStartLayer = -1;

@@ -99,6 +99,7 @@
     </Compile>
     <Compile Include="BaseControls\MoveThumb.cs" />
     <Compile Include="BaseControls\ResizeThumb.cs" />
+    <Compile Include="Commands.cs" />
     <Compile Include="IAvailableImageSeries.cs" />
     <Compile Include="Tabs\ClosableTabItem.cs" />
     <Compile Include="Tabs\ClusterTab.xaml.cs">

@@ -39,6 +39,13 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding Command="c:DataDisplayTabCommands.ApplyColorScale" Executed="ApplyColorScale_Executed"/>
+        <CommandBinding Command="c:DataDisplayTabCommands.SaveItems" Executed="SaveItems_Executed"/>
+        <CommandBinding Command="c:DataDisplayTabCommands.ResetSaturations" Executed="ResetSaturations_Executed"/>
+        <CommandBinding Command="c:DataDisplayTabCommands.ApplyLayerRange" Executed="ApplyLayerRange_Executed"/>
+        <CommandBinding Command="ApplicationCommands.SelectAll" Executed="SelectAll_Executed"/>
+    </UserControl.CommandBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -73,52 +80,16 @@
                 </ItemsControl.ItemTemplate>
                 <ListBox.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Select All" Click="cmSelectAll_Click"/>
-                        <MenuItem Header="Clear All" Click="cmClearAll_Click"/>
+                        <MenuItem Header="Select All" Command="ApplicationCommands.SelectAll"/>
+                        <MenuItem Header="Clear All" Command="ApplicationCommands.SelectAll" CommandParameter="Clear"/>
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <Grid>
-                    <GroupBox Header="Batch Apply" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock>Color scale:</TextBlock>
-                                <ComboBox Margin="4" Width="125" Height="20" IsEditable="False"
-                              ItemsSource="{Binding Source={StaticResource colorScaleFromEnum}}"
-                              SelectedItem="{Binding BatchApply.ColorScale, ElementName=userControl}">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                                <Button x:Name="buttonShowColor" Width="20" Height="20" Margin="4" 
-                        IsEnabled="{Binding BatchApply.ColorScale, Converter={StaticResource colorScaleToBoolConverter}, ElementName=userControl}"
-                        MouseEnter="buttonShowColor_MouseEnter">
-                                    <Image Source="..\Images\PaintPalette.ico"/>
-                                </Button>
-                                <Popup x:Name="popupSolidColorScale" IsOpen="False" PlacementTarget="{Binding ElementName=buttonShowColor}" StaysOpen="False">
-                                    <Grid Background="{StaticResource MenuBackground}">
-                                        <cc:ColorSelector SelectedColor="{Binding BatchApply.SolidColorScale, Mode=TwoWay, ElementName=userControl}" IsAlphaEnabled="False"/>
-                                    </Grid>
-                                </Popup>
-                                <Button x:Name="buttonApplyAll" Margin="4" Height="20" Width="75" Click="buttonApply_Click">Apply All</Button>
-                                <Button x:Name="buttonApplySelected" Margin="4" Height="20" Width="75" Click="buttonApply_Click">Selected</Button>
-                                <Button x:Name="buttonResetScale" Margin="4" Height="20" Width="75" Click="buttonReset_Click">Reset Scales</Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <!-- Place holder for second line of controls -->
-                            </StackPanel>
-                        </StackPanel>
-                    </GroupBox>
-                </Grid>
+                </Grid.ColumnDefinitions>              
 
                 <Expander Margin="4" x:Name="expanderStatsOutput" Grid.Column="1" IsExpanded="False" 
                           Header="Output" Foreground="White"
