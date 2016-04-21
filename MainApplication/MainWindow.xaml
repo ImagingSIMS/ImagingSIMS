@@ -43,7 +43,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Ribbon x:Name="Ribbon" SelectedIndex="1" FontFamily="SegoeUI" FontSize="12">
+        <Ribbon x:Name="Ribbon" SelectedIndex="0" FontFamily="SegoeUI" FontSize="12">
             <Ribbon.QuickAccessToolBar>
                 <RibbonQuickAccessToolBar x:Name="quickBar" IsEnabled="True">
                     <RibbonButton x:Name="qaNew" KeyTip="1" SmallImageSource="Images/DocumentHS1.png" 
@@ -848,14 +848,21 @@
                                   CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Layers">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="4" MinWidth="20" VerticalAlignment="Center" Text="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"/>
+                    <StackPanel Orientation="Horizontal">                       
+                        <xctk:IntegerUpDown Margin="4" Width="50"
+                                            Minimum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerMinimum}"
+                                            Maximum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerEnd}"
+                                            Value="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"/>
                         <xctk:RangeSlider Margin="4" Width="150" Step="1"
                                       LowerValue="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"
                                       HigherValue="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerEnd}"
                                       Minimum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerMinimum}"
                                       Maximum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerMaximum}"/>
-                        <TextBlock Margin="4" MinWidth="20" VerticalAlignment="Center" Text="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerEnd}"/>
+                        
+                        <xctk:IntegerUpDown Margin="4" Width="50"
+                                            Minimum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"
+                                            Maximum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerMaximum}"
+                                            Value="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerEnd}"/>
                     </StackPanel>                    
                     <RibbonButton Margin="4" Label="Apply"
                                   Command="c:DataDisplayTabCommands.ApplyLayerRange"
