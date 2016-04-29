@@ -34,6 +34,8 @@ using System.Threading.Tasks;
 using ImagingSIMS.Controls.Tabs;
 using ImagingSIMS.Controls.BaseControls;
 using ImagingSIMS.Controls.BaseControls.SpectrumView;
+using System.Collections;
+using System.Windows.Media.Animation;
 
 namespace ImagingSIMS.MainApplication
 {
@@ -4155,19 +4157,7 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            List<Data2D> data = GetSelectedTables();
-            Data3D d = new Data3D(data);
-
-            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalWarm);
-            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Test", true);
-            tabMain.Items.Add(cti);
-            tabMain.SelectedItem = cti;
-
-            for (int i = 0; i < 3; i++)
-            {
-                await dt.AddDataSourceAsync(d);
-            }           
-
+            
         }
 #pragma warning restore 1998
 

@@ -781,7 +781,10 @@
                     <RibbonButton LargeImageSource="Images\LargeIcon.png" Label="Test 3" Click="test3_Click"/>
                     <RibbonButton LargeImageSource="Images\LargeIcon.png" Label="Test 4" Click="test4_Click"/>
                     <RibbonButton LargeImageSource="Images\LargeIcon.png" Label="Test 5" Click="test5_Click"/>
-                </RibbonGroup>                
+                </RibbonGroup>
+                <RibbonGroup Header="Input">
+                    <RibbonTextBox x:Name="textBoxTestingInput" Margin="4" Height="20" Width="100"/>
+                </RibbonGroup>
             </RibbonTab>
 
             <RibbonTab Header="Data Display" ContextualTabGroupHeader="Data"
