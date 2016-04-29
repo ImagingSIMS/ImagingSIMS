@@ -34,6 +34,8 @@ using System.Threading.Tasks;
 using ImagingSIMS.Controls.Tabs;
 using ImagingSIMS.Controls.BaseControls;
 using ImagingSIMS.Controls.BaseControls.SpectrumView;
+using System.Collections;
+using System.Windows.Media.Animation;
 
 namespace ImagingSIMS.MainApplication
 {
