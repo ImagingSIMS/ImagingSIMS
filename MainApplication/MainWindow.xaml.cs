@@ -4223,39 +4223,77 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test4_Click(object sender, RoutedEventArgs e)
         {
-            List<string> lines = new List<string>();
+            string filePath = @"D:\Swap\verification.csv";
 
-            using (StreamReader sr = new StreamReader(@"D:\Test Output\particle2.txt"))
+            List<Data2D> data = new List<Data2D>();
+            int dataDimension = 0;
+
+            using (StreamReader sr = new StreamReader(filePath))
             {
+                string headerLine = sr.ReadLine();
+                string[] headers = headerLine.Split(',');
+
+                List<float[]> readIn = new List<float[]>();
                 while (!sr.EndOfStream)
                 {
-                    lines.Add(sr.ReadLine());
+                    string[] parts = sr.ReadLine().Split(',');
+                    float[] line = new float[parts.Length];
+                    for (int i = 0; i < parts.Length; i++)
+                    {
+                        float.TryParse(parts[i], out line[i]);
+                    }
+                    readIn.Add(line);
+                }
+
+                dataDimension = (int)Math.Sqrt(readIn.Count);
+
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    Data2D d = new Data2D(dataDimension, dataDimension);
+                    d.DataName = headers[i];
+
+                    int ct = 0;
+                    for (int y = 0; y < dataDimension; y++)
+                    {
+                        for (int x = 0; x < dataDimension; x++)
+                        {
+                            d[x, y] = readIn[ct++][i];
+                        }
+                    }
+
+                    data.Add(d);
                 }
             }
 
-            Data2D d235 = new Data2D(256, 256);
-            d235.DataName = "235 - read in";
-            Data2D d238 = new Data2D(256, 256);
-            d238.DataName = "238 - read in";
-
-            foreach (string s in lines)
+            List<Data2D> summedTables = new List<Data2D>();
+            for (int i = 0; i < data.Count; i++)
             {
-                string[] parts = s.Split(',');
+                Data2D summed = data[i];
+                string header = summed.DataName;
 
-                int x = int.Parse(parts[0]);
-                int y = int.Parse(parts[1]);
+                if (i + 1 < data.Count)
+                {
+                    while (data[i + 1].DataName == header)
+                    {
+                        summed += data[++i];
+                        if (i + 1 >= data.Count) break;
+                    }
+                }
 
-                int c235 = int.Parse(parts[2]);
-                int c238 = int.Parse(parts[3]);
+                summed.DataName = header;
 
-                d235[x, y] = c235;
-                d238[x, y] = c238;
+                summedTables.Add(summed);
             }
 
-            Data2D ratio = d235 / d238;
-            ratio.DataName = "235/238 - read in";
+            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalCold);
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Data", true);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
 
-            AddTables(new Data2D[] { d235, d238, ratio });
+            foreach (var d in summedTables)
+            {
+                await dt.AddDataSourceAsync(d);
+            }
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
