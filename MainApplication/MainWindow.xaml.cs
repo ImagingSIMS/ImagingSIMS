@@ -2058,6 +2058,15 @@ namespace ImagingSIMS.MainApplication
             }
         }
 
+        private void isosurfaceCreate_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void isosurfaceLoad_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private async void Render3D(object sender, RoutedEventArgs e)
         {
             int numberVolumes = listBoxRenderingVolumes.SelectedItems.Count;
@@ -4146,18 +4155,129 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test4_Click(object sender, RoutedEventArgs e)
         {
-            SampleData sd = new SampleData(256, 256, 30);
-            sd.CreateSphere(128, 128, 15, 10);
-            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalWarm);
-            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Test", true);
+            //SampleData sd = new SampleData(256, 256, 30);
+            //sd.CreateSphere(128, 128, 15, 10);
+            //DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalWarm);
+            //ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Test", true);
+            //tabMain.Items.Add(cti);
+            //tabMain.SelectedItem = cti;
+
+            //await dt.AddDataSourceAsync(sd.SphereData);
+
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Text Files (.txt)|*.txt";
+            ofd.Multiselect = true;
+
+            if (ofd.ShowDialog() != true) return;
+
+            List<Data2D> readIn = new List<Data2D>();
+
+            var filesToLoad = ofd.FileNames;
+
+            foreach (var file in filesToLoad)
+            {
+                using (StreamReader sr = new StreamReader(file))
+                {
+                    string[] parameters = sr.ReadLine().Split('\t');
+
+                    int sizeX = int.Parse(parameters[0]);
+                    int sizeY = int.Parse(parameters[1]);
+                    int fovNumber = int.Parse(parameters[2]);
+                    int stageX = int.Parse(parameters[3]);
+                    int stageY = int.Parse(parameters[4]);
+                    int fileType = int.Parse(parameters[5]);
+
+                    float[,] matrix = new float[sizeX, sizeY];
+
+                    for (int y = 0; y < sizeY; y++)
+                    {
+                        string[] parts = sr.ReadLine().Split('\t');
+                        for (int x = 0; x < sizeX; x++)
+                        {
+                            matrix[x, y] = float.Parse(parts[x]);
+                        }
+                    }
+
+                    Data2D d = new Data2D(matrix);
+                    d.DataName = Path.GetFileNameWithoutExtension(file);
+
+                    readIn.Add(d);
+                }
+            }
+
+            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalCold);
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Data", true);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
-            await dt.AddDataSourceAsync(sd.SphereData);
+            foreach (var d in readIn)
+            {
+                await dt.AddDataSourceAsync(d);
+            }
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            
+            string folder = @"D:\Swap\subset3\Output\";
+
+            var files = Directory.GetFiles(folder).ToList().Where(file => file.Contains("Training_"));
+
+            List<int> iterations = new List<int>();
+            foreach (var file in files)
+            {
+                int startIndex = file.IndexOf("-") + 1;
+                int endIndex = file.IndexOf("-Image");
+                int length = endIndex - startIndex;
+                string part = file.Substring(startIndex, length);
+                int iteration = int.Parse(part);
+                iterations.Add(iteration);
+            }
+
+            int maxIteration = iterations.Max();
+
+            var filesToLoad = files.Where(s => s.Contains($"Training_(Iteration-{maxIteration}-Image-"));
+
+            List<Data2D> readIn = new List<Data2D>();
+
+            foreach (var file in filesToLoad)
+            {
+                using (StreamReader sr = new StreamReader(file))
+                {
+                    string[] parameters = sr.ReadLine().Split('\t');
+
+                    int sizeX = int.Parse(parameters[0]);
+                    int sizeY = int.Parse(parameters[1]);
+                    int fovNumber = int.Parse(parameters[2]);
+                    int stageX = int.Parse(parameters[3]);
+                    int stageY = int.Parse(parameters[4]);
+                    int fileType = int.Parse(parameters[5]);
+
+                    float[,] matrix = new float[sizeX, sizeY];
+
+                    for (int y = 0; y < sizeY; y++)
+                    {
+                        string[] parts = sr.ReadLine().Split('\t');
+                        for (int x = 0; x < sizeX; x++)
+                        {
+                            matrix[x, y] = float.Parse(parts[x]);
+                        }
+                    }
+
+                    Data2D d = new Data2D(matrix);
+                    d.DataName = Path.GetFileNameWithoutExtension(file);
+
+                    readIn.Add(d);
+                }
+            }
+
+            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalCold);
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Data", true);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+
+            foreach (var d in readIn)
+            {
+                await dt.AddDataSourceAsync(d);
+            }
         }
 #pragma warning restore 1998
 
