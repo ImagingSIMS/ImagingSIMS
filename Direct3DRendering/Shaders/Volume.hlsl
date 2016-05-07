@@ -45,7 +45,6 @@ cbuffer VolumeParams : register(b1)
 cbuffer IsosurfaceParams : register(b2)
 {
 	float4		IsosurfaceColor[8];			//16 x 8 = 128
-	float		IsosurfaceValues[8];		// 4 x 8 =  32
 }
 
 static const uint maxVolumes = 8;
@@ -76,10 +75,14 @@ struct RAYCAST_PS_Input
 struct ISOSURFACE_VS_Input
 {
 	float4 pos : POSITION;
+	float4 nor : NORMAL;
 };
 struct ISOSURFACE_PS_Input
 {
 	float4 pos : SV_POSITION;
+	float4 col : COLOR;
+	float4 nor : NORMAL;
+	float id : SURFACEID;
 };
 
 //Functions
@@ -183,49 +186,17 @@ ISOSURFACE_PS_Input ISOSURFACE_VS(ISOSURFACE_VS_Input input)
 {
 	ISOSURFACE_PS_Input output = (ISOSURFACE_PS_Input)0;
 	output.pos = mul(WorldProjView, input.pos);
+	
+	float id = input.pos.w;
+	output.id = id;
+
+	output.col = IsosurfaceColor[(int)id];
 
 	return output;
 }
 float4 ISOSURFACE_PS(ISOSURFACE_PS_Input input) : SV_TARGET
 {
-	//Current pixel location on screen
-	float2 tex = input.pos.xy * InvWindowSize;
+	// TODO: Lighting calculation with input.nor
 
-	//Read cube front and back face positions from texture
-	float3 pos_front = txPositionFront.Sample(samplerLinear, tex).xyz;
-	float3 pos_back = txPositionBack.Sample(samplerLinear, tex).xyz;
-
-	//Direction vector
-	float3 dir = normalize(pos_back - pos_front);
-
-	//Single step
-	float3 step = stepSize * dir;
-
-	//Current position
-	float3 v = pos_front;
-
-	for (uint i = 0; i < maxIterations; i++)
-	{
-		float3 scaledVector = ScaleVector(v);
-		for (uint j = 0; j < maxVolumes; j++)
-		{
-			float intensity = 0;
-
-			if (j >= NumVolumes) break;
-
-			if (j == 0)intensity = txVolume1.Sample(samplerLinear, scaledVector).r;
-			if (j == 1)intensity = txVolume2.Sample(samplerLinear, scaledVector).r;
-			if (j == 2)intensity = txVolume3.Sample(samplerLinear, scaledVector).r;
-			if (j == 3)intensity = txVolume4.Sample(samplerLinear, scaledVector).r;
-			if (j == 4)intensity = txVolume5.Sample(samplerLinear, scaledVector).r;
-			if (j == 5)intensity = txVolume6.Sample(samplerLinear, scaledVector).r;
-			if (j == 6)intensity = txVolume7.Sample(samplerLinear, scaledVector).r;
-			if (j == 7)intensity = txVolume8.Sample(samplerLinear, scaledVector).r;
-
-			if (intensity >= IsosurfaceValues[j]) return IsosurfaceColor[j];
-		}
-		v += step;
-	}
-
-	return float4(0, 0, 0, 0);
+	return input.col * Brightness;
 }

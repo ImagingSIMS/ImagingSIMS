@@ -115,7 +115,7 @@
     <Compile Include="Disposer.cs" />
     <Compile Include="Framerate.cs" />
     <Compile Include="HeightMapRenderer.cs" />
-    <Compile Include="Isosurface.cs" />
+    <Compile Include="IsosurfaceRenderer.cs" />
     <Compile Include="ModelCamera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -133,6 +133,7 @@
     <Compile Include="RenderDetailsWindow.xaml.cs">
       <DependentUpon>RenderDetailsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RenderIsosurface.cs" />
     <Compile Include="RenderVolume.cs" />
     <Compile Include="RenderWindow.xaml.cs">
       <DependentUpon>RenderWindow.xaml</DependentUpon>

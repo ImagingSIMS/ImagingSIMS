@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
-
+using System.Text;
+using System.Threading.Tasks;
 using SharpDX;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
@@ -13,36 +15,19 @@ namespace Direct3DRendering
 {
     public class IsosurfaceRenderer : Renderer
     {
-        VertexShader _vsPosition;
         VertexShader _vsIsosurface;
-        InputLayout _ilPosition;
         InputLayout _ilIsosurface;
-        PixelShader _psPosition;
         PixelShader _psIsosurface;
 
-        Texture2D[] _texPositions;
-        ShaderResourceView[] _srvPositions;
-        RenderTargetView[] _rtvPositions;
+        Buffer _vertexBufferTriangles;
+        Buffer _indexBufferTriangles;
 
-        RasterizerState _rasterizerCullFront;
-        RasterizerState _rasterizerCullBack;
-        SamplerState _samplerLinear;
-
-        Texture3D[] _texVolumes;
-        ShaderResourceView[] _srvVolumes;
-
-        Buffer _vertexBufferCube;
-        Buffer _indexBufferCube;
-
-        VolumeParams _volumeParams;
         RenderParams _renderParams;
         IsosurfaceParams _isosurfaceParams;
-        Buffer _volumeParamBuffer;
         Buffer _renderParamBuffer;
-        Buffer _isourfaceParamBuffer;
+        Buffer _isosurfaceParamBuffer;
 
         string _isosurfaceEffectPath;
-        string _modelEffectPath;
 
         public IsosurfaceRenderer(RenderWindow Window)
             : base(Window)
@@ -54,11 +39,6 @@ namespace Direct3DRendering
         {
             get { return _renderParams; }
             set { _renderParams = value; }
-        }
-        public VolumeParams VolumeParams
-        {
-            get { return _volumeParams; }
-            set { _volumeParams = value; }
         }
         public IsosurfaceParams IsosurfaceParams
         {
@@ -85,28 +65,13 @@ namespace Direct3DRendering
                 {
 
                 }
-                Disposer.RemoveAndDispose(ref _vsPosition);
                 Disposer.RemoveAndDispose(ref _vsIsosurface);
-                Disposer.RemoveAndDispose(ref _ilPosition);
                 Disposer.RemoveAndDispose(ref _ilIsosurface);
-                Disposer.RemoveAndDispose(ref _psPosition);
                 Disposer.RemoveAndDispose(ref _psIsosurface);
 
-                Disposer.RemoveAndDispose(ref _texPositions);
-                Disposer.RemoveAndDispose(ref _srvPositions);
-                Disposer.RemoveAndDispose(ref _rtvPositions);
+                Disposer.RemoveAndDispose(ref _vertexBufferTriangles);
+                Disposer.RemoveAndDispose(ref _indexBufferTriangles);
 
-                Disposer.RemoveAndDispose(ref _rasterizerCullFront);
-                Disposer.RemoveAndDispose(ref _rasterizerCullBack);
-                Disposer.RemoveAndDispose(ref _samplerLinear);
-
-                Disposer.RemoveAndDispose(ref _texVolumes);
-                Disposer.RemoveAndDispose(ref _srvVolumes);
-
-                Disposer.RemoveAndDispose(ref _vertexBufferCube);
-                Disposer.RemoveAndDispose(ref _indexBufferCube);
-
-                Disposer.RemoveAndDispose(ref _volumeParamBuffer);
                 Disposer.RemoveAndDispose(ref _renderParamBuffer);
                 Disposer.RemoveAndDispose(ref _isourfaceParamBuffer);
 
@@ -119,7 +84,6 @@ namespace Direct3DRendering
         public override void InitializeRenderer()
         {
             _isosurfaceEffectPath = @"Shaders\Isosurface";
-            _modelEffectPath = @"Shaders\Model";
 
             base.InitializeRenderer();
 
@@ -127,137 +91,63 @@ namespace Direct3DRendering
             {
                 WorldProjView = Matrix.Identity
             };
-            _renderParamBuffer = new Buffer(_device, Marshal.SizeOf(typeof(RenderParams)),ResourceUsage.Default,
+            _renderParamBuffer = new Buffer(_device, Marshal.SizeOf(typeof(RenderParams)), ResourceUsage.Default,
                 BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
         }
         protected override void InitializeShaders()
         {
             DeviceContext context = _device.ImmediateContext;
 
-            var vsByteCode = ShaderBytecode.FromFile(_modelEffectPath + ".vso");
-            _vsPosition = new VertexShader(_device, vsByteCode);
-
-            _ilPosition = new InputLayout(_device, ShaderSignature.GetInputSignature(vsByteCode), new[]
-            {
-                new InputElement("POSITION", 0, Format.R32G32B32A32_Float, 0, 0)
-            });
-
-            var psByteCode = ShaderBytecode.FromFile(_modelEffectPath + ".pso");
-            _psPosition = new PixelShader(_device, psByteCode);
-
-            vsByteCode = ShaderBytecode.FromFile(_isosurfaceEffectPath + ".vso");
+            var vsByteCode = ShaderBytecode.FromFile(_isosurfaceEffectPath + ".vso");
             _vsIsosurface = new VertexShader(_device, vsByteCode);
 
             _ilIsosurface = new InputLayout(_device, ShaderSignature.GetInputSignature(vsByteCode), new[]
-            { 
-                new InputElement("POSITION", 0, Format.R32G32B32A32_Float, 0, 0)
+            {
+                new InputElement("POSITION", 0, Format.R32G32B32A32_Float, 0, 0),
+                new InputElement("NORMAL", 0, Format.R32G32B32A32_Float, 16, 0)
             });
 
-            psByteCode = ShaderBytecode.FromFile(_isosurfaceEffectPath + ".pso");
+            var psByteCode = ShaderBytecode.FromFile(_isosurfaceEffectPath + ".pso");
             _psIsosurface = new PixelShader(_device, psByteCode);
         }
-        protected override void InitializeStates()
-        {
-            RasterizerStateDescription descBack = new RasterizerStateDescription()
-            {
-                FillMode = FillMode.Solid,
-                CullMode = CullMode.Back,
-                IsDepthClipEnabled = true
-            };
-            _rasterizerCullBack = new RasterizerState(_device, descBack);
 
-            RasterizerStateDescription descFront = new RasterizerStateDescription()
-            {
-                FillMode = FillMode.Solid,
-                CullMode = CullMode.Front,
-                IsDepthClipEnabled = true
-            };
-            _rasterizerCullFront = new RasterizerState(_device, descFront);
-
-            SamplerStateDescription desc = new SamplerStateDescription()
-            {
-                Filter = Filter.MinMagMipLinear,
-                AddressU = TextureAddressMode.Border,
-                AddressV = TextureAddressMode.Border,
-                AddressW = TextureAddressMode.Border,
-                ComparisonFunction = Comparison.Never,
-                MinimumLod = 0,
-                MaximumLod = float.MaxValue
-            };
-            _samplerLinear = new SamplerState(_device, desc);
-
-            base.InitializeStates();
-        }
-        public void SetData(List<RenderVolume> Volumes, 
-            List<Vector4> IsosurfaceColors, List<float> IsosurfaceValues)
+        
+        public void SetData(List<RenderIsosurface> Isosurfaces)
         {
             //Create new or replace Texture3D so can be changed on fly
 
             _dataLoaded = false;
 
-            if (_texVolumes != null)
-            {
-                for (int i = 0; i < _texVolumes.Length; i++)
-                {
-                    Disposer.RemoveAndDispose(ref _texVolumes[i]);
-                }
-            }
-            if (_srvVolumes != null)
-            {
-                for (int i = 0; i < _srvVolumes.Length; i++)
-                {
-                    Disposer.RemoveAndDispose(ref _srvVolumes[i]);
-                }
-            }
-
-            Disposer.RemoveAndDispose(ref _vertexBufferCube);
-            Disposer.RemoveAndDispose(ref _indexBufferCube);
             Disposer.RemoveAndDispose(ref _boundingBox);
             Disposer.RemoveAndDispose(ref _coordinateBox);
-            Disposer.RemoveAndDispose(ref _volumeParamBuffer);
-
             int width = -1;
             int height = -1;
             int depth = -1;
-            foreach (RenderVolume volume in Volumes)
+            foreach (RenderIsosurface isosurface in Isosurfaces)
             {
                 if (width == -1)
                 {
-                    width = volume.Width;
+                    width = isosurface.Width;
                 }
                 if (height == -1)
                 {
-                    height = volume.Height;
+                    height = isosurface.Height;
                 }
                 if (depth == -1)
                 {
-                    depth = volume.Depth;
+                    depth = isosurface.Depth;
                 }
 
-                if (volume.Width != width || volume.Height != height || volume.Depth != depth)
+                if (isosurface.Width != width || isosurface.Height != height || isosurface.Depth != depth)
                 {
                     throw new ArgumentException("Not all volumes are the same dimensions.");
                 }
             }
 
-            int numVolumes = Volumes.Count;
+            int numIsosurfaces = Isosurfaces.Count;
 
-            _srvVolumes = new ShaderResourceView[numVolumes];
-            _texVolumes = new Texture3D[numVolumes];
-
-            _volumeParams = VolumeParams.Empty;
-
-            for (int i = 0; i < numVolumes; i++)
-            {
-                _texVolumes[i] = Volumes[i].CreateTexture(_device, out _srvVolumes[i]);
-
-                _isosurfaceParams.UpdateColor(i, IsosurfaceColors[i]);
-                _isosurfaceParams.UpdateValue(i, IsosurfaceValues[i]);
-            }
-
-            _volumeParams.NumVolumes = (uint)numVolumes;
-
-            _volumeParamBuffer = new Buffer(_device, Marshal.SizeOf(typeof(VolumeParams)), ResourceUsage.Default,
+            _isosurfaceParams = IsosurfaceParams.Empty;
+            _isosurfaceParamBuffer = new Buffer(_device, Marshal.SizeOf(typeof(IsosurfaceParams)), ResourceUsage.Default,
                 BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
 
             const float maxSize = 2.0f;
@@ -285,11 +175,7 @@ namespace Direct3DRendering
             float sEndY = 0.5f + ratioY;
             float sEndZ = 0.5f + ratioZ;
 
-            _volumeParams.VolumeScaleStart = new Vector4(sStartX, sStartY, sStartZ, 1.0f);
-
-            _volumeParams.VolumeScaleDenominator = new Vector4(sEndX - sStartX, sEndY - sStartY, sEndZ - sStartZ, 1.0f);
-
-            Vector4[] vertices = new Vector4[8] 
+            Vector4[] boundingVertices = new Vector4[8]
             {
                 new Vector4(startX, startY, startZ, 1.0f),
                 new Vector4(startX, startY, startZ + sizeZ, 1.0f),
@@ -301,9 +187,7 @@ namespace Direct3DRendering
                 new Vector4(startX + sizeX, startY + sizeY, startZ + sizeZ, 1.0f)
             };
 
-            _vertexBufferCube = Buffer.Create(_device, BindFlags.VertexBuffer, vertices);
-
-            short[] indices = new short[36]
+            short[] boundingIndices = new short[36]
             {
                 0, 1, 2,
                 2, 1, 3,
@@ -324,10 +208,32 @@ namespace Direct3DRendering
                 7, 4, 6,
             };
 
-            _indexBufferCube = Buffer.Create(_device, BindFlags.IndexBuffer, indices);
+            int numTriangles = 0;
+            foreach (RenderIsosurface iso in Isosurfaces)
+            {
+                numTriangles += iso.Triangles.Length;
+            }
 
-            _boundingBox = new BoundingBox(_device, vertices);
-            _coordinateBox = new CoordinateBox(_device, vertices);
+            _boundingBox = new BoundingBox(_device, boundingVertices);
+            _coordinateBox = new CoordinateBox(_device, boundingVertices);
+
+            // Number triangles * 3 points per triangle * 2 vectors for each point (location and normal)
+            Vector4[] isosurfaceVertices = new Vector4[numTriangles * 3 * 2];
+
+            int pos = 0;
+            foreach (RenderIsosurface iso in Isosurfaces)
+            {
+                foreach (TriangleSurface tri in iso.Triangles)
+                {
+                    foreach (Vector4 point in tri.Points)
+                    {
+                        isosurfaceVertices[pos++] = point;
+                        isosurfaceVertices[pos++] = tri.Normal;
+                    }                    
+                }                
+            }
+
+            _vertexBufferTriangles = Buffer.Create(_device, BindFlags.VertexBuffer, isosurfaceVertices);
 
             _dataLoaded = true;
         }
@@ -463,6 +369,6 @@ namespace Direct3DRendering
             }
 
             CompleteDraw();
-        }
+        }        
     }
 }

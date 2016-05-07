@@ -42,10 +42,8 @@ namespace Direct3DRendering
 
         VolumeParams _volumeParams;
         RenderParams _renderParams;
-        IsosurfaceParams _isosurfaceParams;
         Buffer _volumeParamBuffer;
         Buffer _renderParamBuffer;
-        Buffer _isosurfaceParamBuffer;
 
         string _raycastEffectPath;
         string _modelEffectPath;
@@ -116,7 +114,6 @@ namespace Direct3DRendering
 
                 Disposer.RemoveAndDispose(ref _volumeParamBuffer);
                 Disposer.RemoveAndDispose(ref _renderParamBuffer);
-                Disposer.RemoveAndDispose(ref _isosurfaceParamBuffer);
 
                 _disposed = true;
             }
@@ -279,17 +276,6 @@ namespace Direct3DRendering
             _volumeParams.NumVolumes = (uint)numVolumes;
 
             _volumeParamBuffer = new Buffer(_device, Marshal.SizeOf(typeof(VolumeParams)), ResourceUsage.Default,
-                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
-
-            _isosurfaceParams = IsosurfaceParams.Empty;
-
-            for (int i = 0; i < numVolumes; i++)
-            {
-                _isosurfaceParams.UpdateColor(i, Volumes[i].Color);
-                _isosurfaceParams.UpdateValue(i, 1.0f);
-            }
-
-            _isosurfaceParamBuffer = new Buffer(_device, Marshal.SizeOf(typeof(IsosurfaceParams)), ResourceUsage.Default,
                 BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
 
             const float maxSize = 2.0f;
@@ -508,15 +494,6 @@ namespace Direct3DRendering
                 }
                 context.UpdateSubresource(ref _volumeParams, _volumeParamBuffer);
 
-                for (int i = 0; i < _volumeParams.NumVolumes; i++)
-                {
-                    Vector4 current = _isosurfaceParams.GetColor(i);
-                    _isosurfaceParams.UpdateColor(i,
-                        new Vector4(current.X, current.Y, current.Z, _dataContextRenderWindow.RenderWindowView.VolumeAlphas[i]));
-                    _isosurfaceParams.UpdateValue(i, _dataContextRenderWindow.RenderWindowView.IsosurfaceValues[i]);
-                }
-                context.UpdateSubresource(ref _isosurfaceParams, _isosurfaceParamBuffer);
-
                 context.InputAssembler.InputLayout = _ilPosition;
                 context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(_vertexBufferCube, Marshal.SizeOf(typeof(Vector4)), 0));
                 context.InputAssembler.SetIndexBuffer(_indexBufferCube, Format.R16_UInt, 0);
@@ -559,10 +536,6 @@ namespace Direct3DRendering
                 context.VertexShader.SetConstantBuffer(0, _renderParamBuffer);
                 context.PixelShader.SetConstantBuffer(0, _renderParamBuffer);
                 context.PixelShader.SetConstantBuffer(1, _volumeParamBuffer);
-
-                //Include isosurface paramters if doing isosurface rendering
-                if (_dataContextRenderWindow.RenderWindowView.RenderIsosurfaces)
-                    context.PixelShader.SetConstantBuffer(2, _isosurfaceParamBuffer);
 
                 context.OutputMerger.SetRenderTargets(_depthView, _renderView);
 

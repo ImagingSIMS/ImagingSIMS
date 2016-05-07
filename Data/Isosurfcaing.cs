@@ -7,16 +7,17 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 
 using ImagingSIMS.Common;
+using ImagingSIMS.Data.Rendering;
 
 namespace ImagingSIMS.Data.Isosurfacing
 {
-    //Starting with version 3.6 of ImagingSIMS this class is no longer needed
-    //since all 3D rendering was changed to volume rendering. However, removing
-    //the Isosurface class completely would require removing all references from
-    //the Workspace class and thus previous .wks files would not be guaranteed
-    //to be compatible. Thus, what remains is enough to satisfy those references.
-    //A copy of the original Isosurfacing.cs file was places in the Backup folder
-    //in case this class needs to be revived someday. -11/5/2013
+    // Starting with version 3.6 of ImagingSIMS this class is no longer needed
+    // since all 3D rendering was changed to volume rendering. However, removing
+    // the Isosurface class completely would require removing all references from
+    // the Workspace class and thus previous .wks files would not be guaranteed
+    // to be compatible. Thus, what remains is enough to satisfy those references.
+    // A copy of the original Isosurfacing.cs file was places in the Backup folder
+    // in case this class needs to be revived someday. -11/5/2013
     public class Isosurface : Data
     {
         int _sizeX;
@@ -333,7 +334,7 @@ namespace ImagingSIMS.Data.Isosurfacing
         }
     }
 
-    internal class TriangleSurface
+    public class TriangleSurface
     {
         Vector3[] indicies;
         Vector3 center;

@@ -42,7 +42,7 @@ namespace ImagingSIMS.MainApplication
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : RibbonWindow, IAvailableTables, IAvailableImageSeries
+    public partial class MainWindow : RibbonWindow, IAvailableTables, IAvailableImageSeries, IAvailableVolumes
     {
         #region Properties
         public static readonly DependencyProperty WorkspaceProperty = DependencyProperty.Register("Workspace",
@@ -2058,15 +2058,6 @@ namespace ImagingSIMS.MainApplication
             }
         }
 
-        private void isosurfaceCreate_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void isosurfaceLoad_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private async void Render3D(object sender, RoutedEventArgs e)
         {
             int numberVolumes = listBoxRenderingVolumes.SelectedItems.Count;
@@ -2159,6 +2150,10 @@ namespace ImagingSIMS.MainApplication
 
                 return;
             }
+        }
+        private async void Render3DIso(object sender, RoutedEventArgs e)
+        {
+
         }
         private async void RenderHeightMap(object sender, RoutedEventArgs e)
         {
@@ -4567,6 +4562,185 @@ namespace ImagingSIMS.MainApplication
         public List<DisplaySeries> GetAvailableImageSeries()
         {
             return Workspace.ImageSeries.ToList();
+        }
+        #endregion
+
+        #region IAvailableVolumes
+        public List<Volume> GetSelectedVolumes()
+        {
+            List<Volume> volumes = new List<Volume>();
+            foreach (object obj in listViewVolumes.SelectedItems)
+            {
+                Volume v = obj as Volume;
+                if (v != null)
+                    volumes.Add(v);
+            }
+            return volumes;
+        }
+        public List<Volume> GetAvailablevolumes()
+        {
+            return Workspace.Volumes.ToList();
+        }
+        public void Removevolumes(List<Volume> volumesToRemove)
+        {
+            List<Volume> notRemoved = new List<Volume>();
+
+            foreach (Volume v in volumesToRemove)
+            {
+                if (Workspace.Volumes.Contains(v))
+                {
+                    try
+                    {
+                        Workspace.Volumes.Remove(v);
+                    }
+                    catch (Exception)
+                    {
+                        notRemoved.Add(v);
+                    }
+                }
+                else notRemoved.Add(v);
+            }
+
+            if (notRemoved.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Volume v in notRemoved)
+                {
+                    sb.AppendLine(v.VolumeName);
+                }
+
+                DialogBox.Show("The following volumes could not be removed from the workspace:",
+                    sb.ToString(), "Remove", DialogIcon.Alert);
+            }
+        }
+        public void Removevolumes(Volume[] volumesToRemove)
+        {
+            List<Volume> notRemoved = new List<Volume>();
+
+            foreach (Volume v in volumesToRemove)
+            {
+                if (Workspace.Volumes.Contains(v))
+                {
+                    try
+                    {
+                        Workspace.Volumes.Remove(v);
+                    }
+                    catch (Exception)
+                    {
+                        notRemoved.Add(v);
+                    }
+                }
+                else notRemoved.Add(v);
+            }
+
+            if (notRemoved.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Volume v in notRemoved)
+                {
+                    sb.AppendLine(v.VolumeName);
+                }
+
+                DialogBox.Show("The following volumes could not be removed from the workspace:",
+                    sb.ToString(), "Remove", DialogIcon.Alert);
+            }
+        }
+        public void Addvolumes(List<Volume> volumesToAdd)
+        {
+            List<Volume> notAdded = new List<Volume>();
+
+            foreach (Volume v in volumesToAdd)
+            {
+                try
+                {
+                    Workspace.Volumes.Add(v);
+                }
+                catch (Exception)
+                {
+                    notAdded.Add(v);
+                }
+            }
+
+            if(notAdded.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Volume v in notAdded)
+                {
+                    sb.AppendLine(v.VolumeName);
+                }
+
+                DialogBox.Show("The following volumes could not be added to the workspace:",
+                    sb.ToString(), "Add", DialogIcon.Alert);
+            }
+        }
+        public void Addvolumes(Volume[] volumesToAdd)
+        {
+            List<Volume> notAdded = new List<Volume>();
+
+            foreach (Volume v in volumesToAdd)
+            {
+                try
+                {
+                    Workspace.Volumes.Add(v);
+                }
+                catch (Exception)
+                {
+                    notAdded.Add(v);
+                }
+            }
+
+            if (notAdded.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Volume v in notAdded)
+                {
+                    sb.AppendLine(v.VolumeName);
+                }
+
+                DialogBox.Show("The following volumes could not be added to the workspace:",
+                    sb.ToString(), "Add", DialogIcon.Alert);
+            }
+        }
+        public void Replacevolume(Volume toReplace, Volume newvolume)
+        {
+            bool isSelected = false;
+
+            try
+            {
+                if (Workspace.Volumes.Contains(newvolume))
+                {
+                    foreach (Volume v in GetSelectedVolumes())
+                    {
+                        if (v == newvolume)
+                            isSelected = true;
+                        break;
+                    }
+
+                    int index = Workspace.Volumes.IndexOf(toReplace);
+                    Workspace.Volumes.Remove(toReplace);
+                    Workspace.Volumes.Insert(index, newvolume);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogBox.Show("Could not add the new volume to the collection.", ex.Message,
+                         "Replace", DialogIcon.Error);
+                return;
+            }
+
+            if (isSelected)
+            {
+                try
+                {
+                    listViewVolumes.SelectedItems.Add(newvolume);
+                }
+                catch (Exception ex)
+                {
+                    DialogBox.Show("Could not restore the state of the list. Don't worry though, the table replacement did function properly.",
+                        ex.Message, "Replace", DialogIcon.Alert);
+                    return;
+                }
+            }
         }
         #endregion
 

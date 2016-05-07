@@ -10,9 +10,9 @@ namespace Direct3DEffectCompiler
 {
     internal static class FilePaths
     {
-        internal static string executablePath = @"C:\Program Files (x86)\Windows Kits\8.1\bin\x64\fxc.exe";
-        internal static string sourceFolder = @"C:\Users\jayt\Source\ImagingSIMS3\ImagingSIMS3\Direct3DRendering\Shaders\";
-        internal static string outputFolder = @"C:\Users\jayt\Source\ImagingSIMS3\ImagingSIMS3\Direct3DRendering\Shaders\";
+        internal static string executablePath = @"C:\Program Files (x86)\Windows Kits\10\bin\x64\fxc.exe";
+        internal static string sourceFolder = @"C:\Users\jay50\Source\Repos\jay5026\ImagingSIMS3\ImagingSIMS\Direct3DRendering\Shaders\";
+        internal static string outputFolder = @"C:\Users\jay50\Source\Repos\jay5026\ImagingSIMS3\ImagingSIMS\Direct3DRendering\Shaders\";
         //internal static _outputFolder = @"C:\Users\jayt\Desktop\test\";
     }
     class Program

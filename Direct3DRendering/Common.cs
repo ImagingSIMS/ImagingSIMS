@@ -358,7 +358,7 @@ namespace Direct3DRendering
         }
     }
 
-    [StructLayout(LayoutKind.Explicit, Size = 256)]
+    [StructLayout(LayoutKind.Explicit, Size = 128)]
     public struct IsosurfaceParams
     {
         [FieldOffset(0)]
@@ -385,29 +385,29 @@ namespace Direct3DRendering
         [FieldOffset(112)]
         private Vector4 IsosurfaceColor7;
 
-        [FieldOffset(128)]
-        private float IsosurfaceValue0;
+        //[FieldOffset(128)]
+        //private float IsosurfaceValue0;
 
-        [FieldOffset(144)]
-        private float IsosurfaceValue1;
+        //[FieldOffset(144)]
+        //private float IsosurfaceValue1;
 
-        [FieldOffset(160)]
-        private float IsosurfaceValue2;
+        //[FieldOffset(160)]
+        //private float IsosurfaceValue2;
 
-        [FieldOffset(176)]
-        private float IsosurfaceValue3;
+        //[FieldOffset(176)]
+        //private float IsosurfaceValue3;
 
-        [FieldOffset(192)]
-        private float IsosurfaceValue4;
+        //[FieldOffset(192)]
+        //private float IsosurfaceValue4;
 
-        [FieldOffset(208)]
-        private float IsosurfaceValue5;
+        //[FieldOffset(208)]
+        //private float IsosurfaceValue5;
 
-        [FieldOffset(224)]
-        private float IsosurfaceValue6;
+        //[FieldOffset(224)]
+        //private float IsosurfaceValue6;
 
-        [FieldOffset(240)]
-        private float IsosurfaceValue7;
+        //[FieldOffset(240)]
+        //private float IsosurfaceValue7;
 
         public static IsosurfaceParams Empty
         {
@@ -424,14 +424,14 @@ namespace Direct3DRendering
                     IsosurfaceColor6 = new Vector4(0),
                     IsosurfaceColor7 = new Vector4(0),
 
-                    IsosurfaceValue0 = 0,
-                    IsosurfaceValue1 = 0,
-                    IsosurfaceValue2 = 0,
-                    IsosurfaceValue3 = 0,
-                    IsosurfaceValue4 = 0,
-                    IsosurfaceValue5 = 0,
-                    IsosurfaceValue6 = 0,
-                    IsosurfaceValue7 = 0,
+                    //IsosurfaceValue0 = 0,
+                    //IsosurfaceValue1 = 0,
+                    //IsosurfaceValue2 = 0,
+                    //IsosurfaceValue3 = 0,
+                    //IsosurfaceValue4 = 0,
+                    //IsosurfaceValue5 = 0,
+                    //IsosurfaceValue6 = 0,
+                    //IsosurfaceValue7 = 0,
                 };
             }
         }
@@ -489,59 +489,59 @@ namespace Direct3DRendering
             }
             return new Vector4(0);
         }
-        public void UpdateValue(int IsosurfaceNumber, float Value)
-        {
-            switch (IsosurfaceNumber)
-            {
-                case 0:
-                    IsosurfaceValue0 = Value;
-                    break;
-                case 1:
-                    IsosurfaceValue1 = Value;
-                    break;
-                case 2:
-                    IsosurfaceValue2 = Value;
-                    break;
-                case 3:
-                    IsosurfaceValue3 = Value;
-                    break;
-                case 4:
-                    IsosurfaceValue4 = Value;
-                    break;
-                case 5:
-                    IsosurfaceValue5 = Value;
-                    break;
-                case 6:
-                    IsosurfaceValue6 = Value;
-                    break;
-                case 7:
-                    IsosurfaceValue7 = Value;
-                    break;
-            }
-        }
-        public float GetValue(int IsosurfaceNumber)
-        {
-            switch (IsosurfaceNumber)
-            {
-                case 0:
-                    return IsosurfaceValue0;
-                case 1:
-                    return IsosurfaceValue1;
-                case 2:
-                    return IsosurfaceValue2;
-                case 3:
-                    return IsosurfaceValue3;
-                case 4:
-                    return IsosurfaceValue4;
-                case 5:
-                    return IsosurfaceValue5;
-                case 6:
-                    return IsosurfaceValue6;
-                case 7:
-                    return IsosurfaceValue7;
-            }
-            return 0f;
-        }
+        //public void UpdateValue(int IsosurfaceNumber, float Value)
+        //{
+        //    switch (IsosurfaceNumber)
+        //    {
+        //        case 0:
+        //            IsosurfaceValue0 = Value;
+        //            break;
+        //        case 1:
+        //            IsosurfaceValue1 = Value;
+        //            break;
+        //        case 2:
+        //            IsosurfaceValue2 = Value;
+        //            break;
+        //        case 3:
+        //            IsosurfaceValue3 = Value;
+        //            break;
+        //        case 4:
+        //            IsosurfaceValue4 = Value;
+        //            break;
+        //        case 5:
+        //            IsosurfaceValue5 = Value;
+        //            break;
+        //        case 6:
+        //            IsosurfaceValue6 = Value;
+        //            break;
+        //        case 7:
+        //            IsosurfaceValue7 = Value;
+        //            break;
+        //    }
+        //}
+        //public float GetValue(int IsosurfaceNumber)
+        //{
+        //    switch (IsosurfaceNumber)
+        //    {
+        //        case 0:
+        //            return IsosurfaceValue0;
+        //        case 1:
+        //            return IsosurfaceValue1;
+        //        case 2:
+        //            return IsosurfaceValue2;
+        //        case 3:
+        //            return IsosurfaceValue3;
+        //        case 4:
+        //            return IsosurfaceValue4;
+        //        case 5:
+        //            return IsosurfaceValue5;
+        //        case 6:
+        //            return IsosurfaceValue6;
+        //        case 7:
+        //            return IsosurfaceValue7;
+        //    }
+        //    return 0f;
+        //}
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 16)]
