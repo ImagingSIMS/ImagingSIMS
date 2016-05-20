@@ -2112,6 +2112,15 @@ namespace ImagingSIMS.MainApplication
             }
         }
 
+        private void isosurfaceCreate_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void isosurfaceLoad_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private async void Render3D(object sender, RoutedEventArgs e)
         {
             int numberVolumes = listBoxRenderingVolumes.SelectedItems.Count;
@@ -4292,10 +4301,9 @@ namespace ImagingSIMS.MainApplication
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
-            foreach (var d in summedTables)
-            {
-                await dt.AddDataSourceAsync(d);
-            }
+            await dt.AddDataSourceAsync(sd.SphereData);
+
+
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
