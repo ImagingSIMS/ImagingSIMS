@@ -103,6 +103,7 @@ namespace ImagingSIMS.MainApplication
 
             AddHandler(ClosableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
             AddHandler(ClosableTabItem.StatusUpdatedEvent, new StatusUpdatedRoutedEventHandler(StatusUpdated));
+            AddHandler(ClosableTabItem.CloseMultipleTabsEvent, new CloseMultipleTabsEventHandler(CloseMultipleTabs));
             AddHandler(ComponentTab.ComponentCreatedEvent, new RoutedEventHandler(ComponentCreated));
             AddHandler(ComponentTab.ComponentUpdatedEvent, new RoutedEventHandler(ComponentUpdated));
             AddHandler(SpecChart.RangeUpdatedEvent, new RangeUpdatedRoutedEventHandler(SpecRangeUpdated));
@@ -252,53 +253,62 @@ namespace ImagingSIMS.MainApplication
         #region Close
         private void CloseTab(object sender, RoutedEventArgs e)
         {
-            TabItem ti = e.Source as TabItem;
-            if (ti != null)
+            ClosableTabItem cti = e.Source as ClosableTabItem;
+            doCloseTab(cti);
+        }
+
+        private void CloseMultipleTabs(object sender, CloseMultipleTabsRoutedEventArgs e)
+        {
+            ClosableTabItem source = e.Source as ClosableTabItem;
+            if (source == null) return;
+
+            TabControl parent = source.Parent as TabControl;
+            if (parent == null) return;
+
+            var itemsToRemove = new List<ClosableTabItem>();
+
+            foreach (var item in parent.Items)
             {
-                ClosableTabItem cti = ti as ClosableTabItem;
-                if (cti != null)
-                {
-                    ComponentTab cc = cti.Content as ComponentTab;
-                    if (cc != null)
-                    {
-                        goto finish;
-                    }
-                    StartupTab su = cti.Content as StartupTab;
-                    if (su != null)
-                    {
-                        goto finish;
-                    }
-                    SpectrumTab sd = cti.Content as SpectrumTab;
-                    if (sd != null)
-                    {
-                        sd.ClearResources();
-                        goto finish;
-                    }
-                    SettingsTab st = cti.Content as SettingsTab;
-                    if (st != null)
-                    {
-                        st.OnCancel();
-                        goto finish;
-                    }
-                    FusionTab ft = cti.Content as FusionTab;
-                    if (ft != null)
-                    {
-                        ft.Dispose();
-                        goto finish;
-                    }
-                }
-                finish:
-                {
-                    cti.CloseTab -= CloseTab;
-                    TabControl tc = ti.Parent as TabControl;
-                    if (tc != null)
-                    {
-                        tc.Items.Remove(ti);
-                    }
-                    cti.Dispose();
-                    GC.Collect();
-                }
+                ClosableTabItem cti = item as ClosableTabItem;
+                if (cti == null) continue;
+
+                if (e.CloseAllButThis && cti == source)
+                    continue;
+
+                itemsToRemove.Add(cti);
             }
+
+            foreach (var item in itemsToRemove)
+            {
+                doCloseTab(item);
+            }
+        }
+
+        private void doCloseTab(ClosableTabItem cti)
+        {
+            if (cti == null) return;
+
+            object content = cti.Content;
+            if (content is SpectrumTab)
+            {
+                ((SpectrumTab)content).ClearResources();
+            }
+            else if (content is SettingsTab)
+            {
+                ((SettingsTab)content).OnCancel();
+            }
+            else if(content is FusionTab)
+            {
+                ((FusionTab)content).Dispose();
+            }
+
+            cti.CloseTab -= CloseTab;
+            TabControl tc = cti.Parent as TabControl;
+            if (tc != null)
+            {
+                tc.Items.Remove(cti);
+            }
+            cti.Dispose();
         }
         #endregion
 

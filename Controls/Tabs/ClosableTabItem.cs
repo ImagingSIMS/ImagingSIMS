@@ -97,10 +97,28 @@ namespace ImagingSIMS.Controls.Tabs
         {
             base.OnApplyTemplate();
 
-            Button closeButton = base.GetTemplateChild("ButtonClose") as Button;
+            Button closeButton = GetTemplateChild("ButtonClose") as Button;
             if (closeButton != null)
             {
                 closeButton.Click += new RoutedEventHandler(closeButton_Click);
+            }
+
+            MenuItem miCloseTab = GetTemplateChild("menuItemCloseTab") as MenuItem;
+            if(miCloseTab != null)
+            {
+                miCloseTab.Click += new RoutedEventHandler(closeButton_Click);
+            }
+
+            MenuItem miCloseAllTabs = GetTemplateChild("menuItemCloseAllTabs") as MenuItem;
+            if (miCloseTab != null)
+            {
+                miCloseAllTabs.Click += new RoutedEventHandler(closeAllTabs_Click);
+            }
+
+            MenuItem miCloseAllButThisTab = GetTemplateChild("menuItemCloseAllButThisTab") as MenuItem;
+            if (miCloseTab != null)
+            {
+                miCloseAllButThisTab.Click += new RoutedEventHandler(closeAllButThisTab_Click);
             }
         }
 
@@ -111,8 +129,16 @@ namespace ImagingSIMS.Controls.Tabs
         }
         protected void closeButton_Click(object sender, RoutedEventArgs e)
         {
-            this.RaiseEvent(new RoutedEventArgs(CloseTabEvent, this));
+            RaiseEvent(new RoutedEventArgs(CloseTabEvent, this));
             Dispose();
+        }
+        protected void closeAllTabs_Click(object sender, RoutedEventArgs e)
+        {
+            RaiseEvent(new CloseMultipleTabsRoutedEventArgs(false, CloseMultipleTabsEvent, this));
+        }
+        protected void closeAllButThisTab_Click(object sender, RoutedEventArgs e)
+        {
+            RaiseEvent(new CloseMultipleTabsRoutedEventArgs(true, CloseMultipleTabsEvent, this));
         }
 
         public void Dispose()
@@ -135,6 +161,8 @@ namespace ImagingSIMS.Controls.Tabs
             typeof(RoutedEventHandler), typeof(ClosableTabItem));
         public static readonly RoutedEvent StatusUpdatedEvent = EventManager.RegisterRoutedEvent("StatusUpdated", RoutingStrategy.Bubble,
             typeof(StatusUpdatedRoutedEventHandler), typeof(ClosableTabItem));
+        public static readonly RoutedEvent CloseMultipleTabsEvent = EventManager.RegisterRoutedEvent("CloseMultipleTabs", RoutingStrategy.Bubble,
+            typeof(CloseMultipleTabsEventHandler), typeof(ClosableTabItem));
 
         public event RoutedEventHandler CloseTab
         {
@@ -145,6 +173,11 @@ namespace ImagingSIMS.Controls.Tabs
         {
             add { AddHandler(StatusUpdatedEvent, value); }
             remove { RemoveHandler(StatusUpdatedEvent, value); }
+        }
+        public event CloseMultipleTabsEventHandler CloseMultipleTabs
+        {
+            add { AddHandler(CloseMultipleTabsEvent, value); }
+            remove { RemoveHandler(CloseMultipleTabsEvent, value); }
         }
 
         void ClosableTabItem_Drop(object sender, DragEventArgs e)
@@ -539,7 +572,6 @@ namespace ImagingSIMS.Controls.Tabs
             throw new ArgumentException("Could not find a ClosableTabItem in the given VisualTree");
         }
 
-
         public static bool IsClosableTabItemHosted(DependencyObject initial)
         {
             try
@@ -662,6 +694,33 @@ namespace ImagingSIMS.Controls.Tabs
             : base(routedEvent, source)
         {
             _message = Message;
+        }
+    }
+
+    public delegate void CloseMultipleTabsEventHandler(object sender, CloseMultipleTabsRoutedEventArgs e);
+    public class CloseMultipleTabsRoutedEventArgs : RoutedEventArgs
+    {
+        bool _closeAllButThis;
+
+        public bool CloseAllButThis
+        {
+            get { return _closeAllButThis; }
+        }
+
+        public CloseMultipleTabsRoutedEventArgs(bool closeAllButThis)
+            : base()
+        {
+            _closeAllButThis = closeAllButThis;
+        }
+        public CloseMultipleTabsRoutedEventArgs(bool closeAllButThis, RoutedEvent routedEvent)
+            : base(routedEvent)
+        {
+            _closeAllButThis = closeAllButThis;
+        }
+        public CloseMultipleTabsRoutedEventArgs(bool closeAllButThis, RoutedEvent routedEvent, object source)
+            : base(routedEvent, source)
+        {
+            _closeAllButThis = closeAllButThis;
         }
     }
 }
