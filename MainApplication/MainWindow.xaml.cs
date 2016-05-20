@@ -4234,66 +4234,45 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test4_Click(object sender, RoutedEventArgs e)
         {
-            string filePath = @"D:\Swap\verification.csv";
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Text Files (.txt)|*.txt";
+            ofd.Multiselect = true;
 
-            List<Data2D> data = new List<Data2D>();
-            int dataDimension = 0;
+            if (ofd.ShowDialog() != true) return;
 
-            using (StreamReader sr = new StreamReader(filePath))
+            List<Data2D> readIn = new List<Data2D>();
+
+            var filesToLoad = ofd.FileNames;
+
+            foreach (var file in filesToLoad)
             {
-                string headerLine = sr.ReadLine();
-                string[] headers = headerLine.Split(',');
-
-                List<float[]> readIn = new List<float[]>();
-                while (!sr.EndOfStream)
+                using (StreamReader sr = new StreamReader(file))
                 {
-                    string[] parts = sr.ReadLine().Split(',');
-                    float[] line = new float[parts.Length];
-                    for (int i = 0; i < parts.Length; i++)
+                    string[] parameters = sr.ReadLine().Split('\t');
+
+                    int sizeX = int.Parse(parameters[0]);
+                    int sizeY = int.Parse(parameters[1]);
+                    int fovNumber = int.Parse(parameters[2]);
+                    int stageX = int.Parse(parameters[3]);
+                    int stageY = int.Parse(parameters[4]);
+                    int fileType = int.Parse(parameters[5]);
+
+                    float[,] matrix = new float[sizeX, sizeY];
+
+                    for (int y = 0; y < sizeY; y++)
                     {
-                        float.TryParse(parts[i], out line[i]);
-                    }
-                    readIn.Add(line);
-                }
-
-                dataDimension = (int)Math.Sqrt(readIn.Count);
-
-                for (int i = 0; i < headers.Length; i++)
-                {
-                    Data2D d = new Data2D(dataDimension, dataDimension);
-                    d.DataName = headers[i];
-
-                    int ct = 0;
-                    for (int y = 0; y < dataDimension; y++)
-                    {
-                        for (int x = 0; x < dataDimension; x++)
+                        string[] parts = sr.ReadLine().Split('\t');
+                        for (int x = 0; x < sizeX; x++)
                         {
-                            d[x, y] = readIn[ct++][i];
+                            matrix[x, y] = float.Parse(parts[x]);
                         }
                     }
 
-                    data.Add(d);
+                    Data2D d = new Data2D(matrix);
+                    d.DataName = Path.GetFileNameWithoutExtension(file);
+
+                    readIn.Add(d);
                 }
-            }
-
-            List<Data2D> summedTables = new List<Data2D>();
-            for (int i = 0; i < data.Count; i++)
-            {
-                Data2D summed = data[i];
-                string header = summed.DataName;
-
-                if (i + 1 < data.Count)
-                {
-                    while (data[i + 1].DataName == header)
-                    {
-                        summed += data[++i];
-                        if (i + 1 >= data.Count) break;
-                    }
-                }
-
-                summed.DataName = header;
-
-                summedTables.Add(summed);
             }
 
             DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalCold);
@@ -4301,45 +4280,76 @@ namespace ImagingSIMS.MainApplication
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
-            await dt.AddDataSourceAsync(sd.SphereData);
-
+            foreach (var d in readIn)
+            {
+                await dt.AddDataSourceAsync(d);
+            }
 
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            DisplayTab dt = new DisplayTab();
+            string folder = @"D:\Swap\PS-02-17-2016\FirstHalf\Output\";
+            //string folder = @"D:\Swap\subset3\Output\";
 
-            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.Display, "Fusion Test", true);
+            var files = Directory.GetFiles(folder).ToList().Where(file => file.Contains("Training_"));
+
+            List<int> iterations = new List<int>();
+            foreach (var file in files)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                int startIndex = fileName.IndexOf("-") + 1;
+                int endIndex = fileName.IndexOf("-Image");
+                int length = endIndex - startIndex;
+                string part = fileName.Substring(startIndex, length);
+                int iteration = int.Parse(part);
+                iterations.Add(iteration);
+            }
+
+            int maxIteration = iterations.Max();
+
+            var filesToLoad = files.Where(s => s.Contains($"Training_(Iteration-{maxIteration}-Image-"));
+
+            List<Data2D> readIn = new List<Data2D>();
+
+            foreach (var file in filesToLoad)
+            {
+                using (StreamReader sr = new StreamReader(file))
+                {
+                    string[] parameters = sr.ReadLine().Split('\t');
+
+                    int sizeX = int.Parse(parameters[0]);
+                    int sizeY = int.Parse(parameters[1]);
+                    int fovNumber = int.Parse(parameters[2]);
+                    int stageX = int.Parse(parameters[3]);
+                    int stageY = int.Parse(parameters[4]);
+                    int fileType = int.Parse(parameters[5]);
+
+                    float[,] matrix = new float[sizeX, sizeY];
+
+                    for (int y = 0; y < sizeY; y++)
+                    {
+                        string[] parts = sr.ReadLine().Split('\t');
+                        for (int x = 0; x < sizeX; x++)
+                        {
+                            matrix[x, y] = float.Parse(parts[x]);
+                        }
+                    }
+
+                    Data2D d = new Data2D(matrix);
+                    d.DataName = Path.GetFileNameWithoutExtension(file);
+
+                    readIn.Add(d);
+                }
+            }
+
+            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalCold);
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Data", true);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
-            string folder = @"D:\Data\";
-            string[] lowResFileNames = new string[]
+            foreach (var d in readIn)
             {
-                "4b_b.bmp",
-                "4b_c.bmp",
-                "4b_g.bmp",
-                "4b_m.bmp",
-                "4b_r.bmp",
-                "4b_t.bmp",
-                "4b_w.bmp",
-                "4b_y.bmp"
-            };
-            BitmapImage imgHigRes = new BitmapImage(new Uri(Path.Combine(folder, "1a.bmp")));
-
-            BitmapImage[] imgLowRes = new BitmapImage[lowResFileNames.Length];
-            for (int i = 0; i < lowResFileNames.Length; i++)
-            {
-                imgLowRes[i] = new BitmapImage(new Uri(Path.Combine(folder, lowResFileNames[i])));
-            }
-
-            for (int i = 0; i < lowResFileNames.Length; i++)
-            {
-                Data.Fusion.PCAFusion fusion = new Data.Fusion.PCAFusion(imgHigRes, imgLowRes[i]);
-                fusion.CheckFusion();
-                Data3D result = await fusion.DoFusionAsync();
-                DisplayImage di = new DisplayImage(ImageHelper.CreateImage(result), lowResFileNames[i]);
-                dt.AddImage(di);
+                await dt.AddDataSourceAsync(d);
             }
         }
 #pragma warning restore 1998
