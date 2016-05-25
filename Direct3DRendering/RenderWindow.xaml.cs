@@ -42,145 +42,6 @@ namespace Direct3DRendering
             get { return _renderer; }
         }
 
-        //public static readonly DependencyProperty IsRenderLoadedProperty = DependencyProperty.Register("IsRenderLoaded",
-        //    typeof(bool), typeof(RenderWindow));
-
-        //public static readonly DependencyProperty RenderIsosurfaceProperty = DependencyProperty.Register("RenderIsosurfaces",
-        //    typeof(bool), typeof(RenderWindow));
-        //public static readonly DependencyProperty ShowAxesProperty = DependencyProperty.Register("ShowAxes",
-        //    typeof(bool), typeof(RenderWindow));
-        //public static readonly DependencyProperty ShowBoundingBoxProperty = DependencyProperty.Register("ShowBoundingBox",
-        //    typeof(bool), typeof(RenderWindow));
-        //public static readonly DependencyProperty ShowCoordinateBoxProperty = DependencyProperty.Register("ShowCoordinateBox",
-        //    typeof(bool), typeof(RenderWindow));
-        //public static readonly DependencyProperty CoordinateBoxTransparencyProperty = DependencyProperty.Register("CoordinateBoxTransparency",
-        //    typeof(float), typeof(RenderWindow));
-        //public static readonly DependencyProperty IsRecordingProperty = DependencyProperty.Register("IsRecording",
-        //    typeof(bool), typeof(RenderWindow));
-        //public static readonly DependencyProperty GetSnapshotProperty = DependencyProperty.Register("GetSnapshot",
-        //    typeof(bool), typeof(RenderWindow));
-        //public static readonly DependencyProperty BackColorProperty = DependencyProperty.Register("BackColor",
-        //    typeof(Color), typeof(RenderWindow), new FrameworkPropertyMetadata(new Color(0, 0, 0, 255)));
-        //public static readonly DependencyProperty BrightnessProperty = DependencyProperty.Register("Brightness",
-        //    typeof(float), typeof(RenderWindow));
-        //public static readonly DependencyProperty VolumeAlphasProperty = DependencyProperty.Register("VolumeAlphas",
-        //    typeof(float[]), typeof(RenderWindow));
-        //public static readonly DependencyProperty IsosurfaceValuesProperty = DependencyProperty.Register("IsosurfaceValues",
-        //    typeof(float[]), typeof(RenderWindow));
-        //public static readonly DependencyProperty TargetYAxisOrbitingProperty = DependencyProperty.Register("TargetYAxisOrbiting",
-        //    typeof(bool), typeof(RenderWindow));
-        //public static readonly DependencyProperty HeightMapHeightProperty = DependencyProperty.Register("HeightMapHeight",
-        //    typeof(float), typeof(RenderWindow));
-        //public static readonly DependencyProperty RenderTypeProperty = DependencyProperty.Register("RenderType",
-        //    typeof(RenderType), typeof(RenderWindow));
-
-        //public static readonly DependencyProperty CameraDirectionProperty = DependencyProperty.Register("CameraDirection",
-        //    typeof(Vector3), typeof(RenderWindow));
-        //public static readonly DependencyProperty CameraPositionProperty = DependencyProperty.Register("CameraPosition",
-        //    typeof(Vector3), typeof(RenderWindow));
-        //public static readonly DependencyProperty CameraUpProperty = DependencyProperty.Register("CameraUp",
-        //    typeof(Vector3), typeof(RenderWindow));
-        //public static readonly DependencyProperty FPSProperty = DependencyProperty.Register("FPS",
-        //    typeof(double), typeof(RenderWindow));
-
-        //public bool IsRenderLoaded
-        //{
-        //    get { return (bool)GetValue(IsRenderLoadedProperty); }
-        //    set { SetValue(IsRenderLoadedProperty, value); }
-        //}
-
-        //public bool RenderIsosurfaces
-        //{
-        //    get { return (bool)GetValue(RenderIsosurfaceProperty); }
-        //    set { SetValue(RenderIsosurfaceProperty, value); }
-        //}
-        //public bool ShowAxes
-        //{
-        //    get { return (bool)GetValue(ShowAxesProperty); }
-        //    set { SetValue(ShowAxesProperty, value); }
-        //}
-        //public bool ShowBoundingBox
-        //{
-        //    get { return (bool)GetValue(ShowBoundingBoxProperty); }
-        //    set { SetValue(ShowBoundingBoxProperty, value); }
-        //}
-        //public bool ShowCoordinateBox
-        //{
-        //    get { return (bool)GetValue(ShowCoordinateBoxProperty); }
-        //    set { SetValue(ShowCoordinateBoxProperty, value); }
-        //}
-        //public float CoordinateBoxTransparency
-        //{
-        //    get { return (float)GetValue(CoordinateBoxTransparencyProperty); }
-        //    set { SetValue(CoordinateBoxTransparencyProperty, value); }
-        //}
-        //public bool IsRecording
-        //{
-        //    get { return (bool)GetValue(IsRecordingProperty); }
-        //    set { SetValue(IsRecordingProperty, value); }
-        //}
-        //public bool GetSnapshot
-        //{
-        //    get { return (bool)GetValue(GetSnapshotProperty); }
-        //    set { SetValue(GetSnapshotProperty, value); }
-        //}
-        //public Color BackColor
-        //{
-        //    get { return (Color)GetValue(BackColorProperty); }
-        //    set { SetValue(BackColorProperty, value); }
-        //}
-        //public float Brightness
-        //{
-        //    get { return (float)GetValue(BrightnessProperty); }
-        //    set { SetValue(BrightnessProperty, value); }
-        //}
-        //public float[] VolumeAlphas
-        //{
-        //    get { return (float[])GetValue(VolumeAlphasProperty); }
-        //    set { SetValue(VolumeAlphasProperty, value); }
-        //}
-        //public float[] IsosurfaceValues
-        //{
-        //    get { return (float[])GetValue(IsosurfaceValuesProperty); }
-        //    set { SetValue(IsosurfaceValuesProperty, value); }
-        //}
-        //public bool TargetYAxisOrbiting
-        //{
-        //    get { return (bool)GetValue(TargetYAxisOrbitingProperty); }
-        //    set { SetValue(TargetYAxisOrbitingProperty, value); }
-        //}
-        //public float HeightMapHeight
-        //{
-        //    get { return (float)GetValue(HeightMapHeightProperty); }
-        //    set { SetValue(HeightMapHeightProperty, value); }
-        //}
-        //public RenderType RenderType
-        //{
-        //    get { return (RenderType)GetValue(RenderTypeProperty); }
-        //    set { SetValue(RenderTypeProperty, value); }
-        //}
-
-        //public Vector3 CameraDirection
-        //{
-        //    get { return (Vector3)GetValue(CameraDirectionProperty); }
-        //    set { SetValue(CameraDirectionProperty, value); }
-        //}
-        //public Vector3 CameraPosition
-        //{
-        //    get { return (Vector3)GetValue(CameraPositionProperty); }
-        //    set { SetValue(CameraPositionProperty, value); }
-        //}
-        //public Vector3 CameraUp
-        //{
-        //    get { return (Vector3)GetValue(CameraUpProperty); }
-        //    set { SetValue(CameraUpProperty, value); }
-        //}
-        //public double FPS
-        //{
-        //    get { return (double)GetValue(FPSProperty); }
-        //    set { SetValue(FPSProperty, value); }
-        //}
-
         public static readonly DependencyProperty RenderWindowViewProperty = DependencyProperty.Register("RenderWindowView",
             typeof(RenderWindowViewModel), typeof(RenderWindow));
         public RenderWindowViewModel RenderWindowView
@@ -283,6 +144,16 @@ namespace Direct3DRendering
             ((VolumeRenderer)_renderer).SetData(new List<RenderVolume>(Volumes));
             
         }
+        private void setData(List<RenderIsosurface> Isosurfaces)
+        {
+            if (Isosurfaces.Count > 8) throw new ArgumentException("Rendering is only suppoerted for a maximum of 8 volumes.");
+
+            _renderer = new IsosurfaceRenderer(this);
+
+            initializeRenderer();
+
+            ((IsosurfaceRenderer)_renderer).SetData(Isosurfaces);
+        }
 
         public Task SetDataAsync(float[,] HeightData, Color[,] ColorData)
         {
@@ -295,6 +166,10 @@ namespace Direct3DRendering
         public Task SetDataAsync(List<RenderVolume> Volumes)
         {
             return Task.Run(() => setData(Volumes));
+        }
+        public Task SetDataAsync(List<RenderIsosurface> Isosurfaces)
+        {
+            return Task.Run(() => setData(Isosurfaces));
         }
 
         private void initializeRenderer()

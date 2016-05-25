@@ -101,6 +101,7 @@
     <Compile Include="BaseControls\ResizeThumb.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="IAvailableImageSeries.cs" />
+    <Compile Include="IAvailableVolumes.cs" />
     <Compile Include="Tabs\ClosableTabItem.cs" />
     <Compile Include="Tabs\ClusterTab.xaml.cs">
       <DependentUpon>ClusterTab.xaml</DependentUpon>
@@ -140,6 +141,9 @@
     <Compile Include="BaseControls\Hyperlink.cs" />
     <Compile Include="IAvailableTables.cs" />
     <Compile Include="BaseControls\MaskedTextBox.cs" />
+    <Compile Include="Tabs\IsosurfaceTab.xaml.cs">
+      <DependentUpon>IsosurfaceTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tabs\PCATab.xaml.cs">
       <DependentUpon>PCATab.xaml</DependentUpon>
     </Compile>
@@ -238,6 +242,7 @@
     <Compile Include="ViewModels\Data2DDisplayViewModel.cs" />
     <Compile Include="ViewModels\Data3DDisplayViewModel.cs" />
     <Compile Include="ViewModels\FusionImageViewModel.cs" />
+    <Compile Include="ViewModels\IsosurfaceTabViewModel.cs" />
     <Compile Include="ViewModels\PeakPreviewViewModel.cs" />
     <Compile Include="ViewModels\RegistrationParametersViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -389,6 +394,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="BaseControls\HighlightableImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\IsosurfaceTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
