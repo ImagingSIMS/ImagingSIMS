@@ -2163,7 +2163,82 @@ namespace ImagingSIMS.MainApplication
         }
         private async void Render3DIso(object sender, RoutedEventArgs e)
         {
+            List<Volume> selectedVolumes = new List<Volume>();
 
+            foreach (object obj in listBoxRenderingIsosurfaces.SelectedItems)
+            {
+                Volume v = obj as Volume;
+                if (v != null)
+                {
+                    selectedVolumes.Add(v);
+                }
+            }
+
+            if (selectedVolumes.Count == 0)
+            {
+                DialogBox.Show("No volumes selected.",
+                    "Select one or more volumes to generate isosurfaces.", "Isosurface", DialogIcon.Error);
+                return;
+            }
+           
+            int width = 0;
+            int height = 0;
+            int depth = 0;
+
+            if (!selectedVolumes.EnsureDimensions(out width, out height, out depth))
+            {
+                DialogBox.Show("Invalid volume dimensions.",
+                        "The dimensions of one or more volumes does not match across all selected volumes.", "Isosurface", DialogIcon.Error);
+                return;
+            }
+
+            pw = new ProgressWindow("Generating isosurfaces. Please wait...", "Isosurfacing", true);
+            pw.Show();
+
+            List<RenderIsosurface> isosurfaces = new List<RenderIsosurface>();
+            try
+            {               
+                int ct = 0;
+
+                foreach (var volume in selectedVolumes)
+                {
+                    isosurfaces.Add(await RenderIsosurface.CreateSurfaceAsync(
+                        volume.Data.ToFloatArray(), volume.IsoValue, volume.DataColor.ToSharpDXColor(), ct++));
+                }
+            }
+            catch(Exception ex)
+            {
+                DialogBox.Show("The isosurfaces could not be generated.",
+                    ex.Message, "Isosurfacing", DialogIcon.Error);
+                return;
+            }
+            finally
+            {
+                pw.Close();
+                pw = null;
+            }
+
+            RenderWindow window = new RenderWindow();
+            try
+            {
+                window.Show();
+
+                await window.SetDataAsync(isosurfaces);
+                window.BeginRendering();
+            }
+            catch (Exception ex)
+            {
+                DialogBox db = new DialogBox("There was an error creating the 3D rendering.", ex.Message, "Direct3D", DialogIcon.Error);
+                db.ShowDialog();
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
         }
         private async void RenderHeightMap(object sender, RoutedEventArgs e)
         {

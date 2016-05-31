@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
-
+using ImagingSIMS.Common.Controls;
 using SharpDX;
 
 namespace Direct3DRendering
 {
     public class Vector3ToStringConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
-               System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -46,16 +43,14 @@ namespace Direct3DRendering
                 return "";
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
         }
     }
     public class FPSToStringConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
-               System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -69,16 +64,34 @@ namespace Direct3DRendering
                 return null;
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
         }
     }
+    public class TrainglesToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                int v = (int)value;
+
+                return $"Number Triangles: {v}";
+            }
+            catch (Exception)
+            {
+                return "Number Triangles: {?}";
+            }
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class VolumeToEnabledConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
-               System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -100,16 +113,14 @@ namespace Direct3DRendering
                 return false;
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
         }
     }
     public class VolumeToColorConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
-               System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             System.Windows.Media.Color c = System.Windows.Media.Color.FromArgb(255, 128, 128, 128);
             try
@@ -130,7 +141,7 @@ namespace Direct3DRendering
                 c = System.Windows.Media.Color.FromArgb((byte)(color.W * 255f),
                     (byte)(color.X * 255f), (byte)(color.Y * 255f), (byte)(color.Z * 255f));
 
-                 return new System.Windows.Media.SolidColorBrush(c);
+                return new System.Windows.Media.SolidColorBrush(c);
 
             }
             catch (InvalidCastException)
@@ -138,16 +149,96 @@ namespace Direct3DRendering
                 return new System.Windows.Media.SolidColorBrush(c);
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
         }
     }
+    public class RenderObjectToVisiblityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                Renderer renderer = value as Renderer;
+                if (renderer == null) return false;
+
+                int index = int.Parse((string)parameter);
+
+                if (renderer.RenderType == RenderType.Isosurface)
+                {
+                    IsosurfaceRenderer isoRenderer = (IsosurfaceRenderer)renderer;
+                    int numVolumes = (int)isoRenderer.IsosurfaceParams.NumberIsosurfaces;
+
+                    if (index + 1 <= numVolumes)
+                        return Visibility.Visible;
+
+                    else return Visibility.Collapsed;
+                }
+
+                else if (renderer.RenderType == RenderType.Volume)
+                {
+                    VolumeRenderer volumeRenderer = (VolumeRenderer)renderer;
+                    int numVolumes = (int)volumeRenderer.VolumeParams.NumVolumes;
+
+                    if (index + 1 <= numVolumes)
+                        return Visibility.Visible;
+
+                    else return Visibility.Collapsed;
+                }
+
+                else return Visibility.Collapsed;
+
+            }
+            catch (InvalidCastException)
+            {
+                return Visibility.Collapsed;
+            }
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class IsosurfaceToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            System.Windows.Media.Color c = System.Windows.Media.Color.FromArgb(255, 128, 128, 128);
+            try
+            {
+                if (value == null) return new System.Windows.Media.SolidColorBrush(c);
+
+                Renderer renderer = value as Renderer;
+                if (renderer == null) return new System.Windows.Media.SolidColorBrush(c);
+
+                if (renderer.RenderType != RenderType.Isosurface) return new System.Windows.Media.SolidColorBrush(c);
+
+                int index = int.Parse((string)parameter);
+
+                IsosurfaceRenderer isoRenderer = (IsosurfaceRenderer)renderer;
+
+                Vector4 color = isoRenderer.IsosurfaceParams.GetColor(index);
+
+                c = System.Windows.Media.Color.FromArgb((byte)(color.W * 255f),
+                    (byte)(color.X * 255f), (byte)(color.Y * 255f), (byte)(color.Z * 255f));
+
+                return new System.Windows.Media.SolidColorBrush(c);
+
+            }
+            catch (InvalidCastException)
+            {
+                return new System.Windows.Media.SolidColorBrush(c);
+            }
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class SharpDXColorToMediaColorConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
-               System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -160,8 +251,7 @@ namespace Direct3DRendering
                 return System.Windows.Media.Color.FromArgb(255, 0, 0, 0);
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -175,6 +265,69 @@ namespace Direct3DRendering
             }
         }
     }
+    public class SharpDXColorToNotifiableColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                Color c = (Color)value;
+
+                return ImagingSIMS.Common.Controls.NotifiableColor.FromArgb(c.A, c.R, c.G, c.B);
+            }
+            catch (Exception)
+            {
+                return ImagingSIMS.Common.Controls.NotifiableColor.FromArgb(255, 0, 0, 0);
+            }
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                ImagingSIMS.Common.Controls.NotifiableColor c =
+                    (ImagingSIMS.Common.Controls.NotifiableColor)value;
+
+                return new Color(c.R, c.G, c.B, c.A);
+            }
+            catch (Exception)
+            {
+                return new Color(0, 0, 0, 255);
+            }
+        }
+    }
+    public class NotifiableColorToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                NotifiableColor c = (NotifiableColor)value;
+
+                return new System.Windows.Media.SolidColorBrush(
+                    System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B));
+            }
+            catch (Exception)
+            {
+                return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 0, 0, 0));
+            }
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                System.Windows.Media.SolidColorBrush scb =
+                    (System.Windows.Media.SolidColorBrush)value;
+
+                return NotifiableColor.FromArgb(scb.Color.A, scb.Color.R, scb.Color.G, scb.Color.B);
+            }
+
+            catch (Exception)
+            {
+                return NotifiableColor.FromArgb(0, 0, 0, 0);
+            }
+        }
+    }
+
 
     public enum RenderType
     {
@@ -305,7 +458,7 @@ namespace Direct3DRendering
 
         public void UpdateColor(int VolumeNumber, Vector4 Color)
         {
-            switch(VolumeNumber)
+            switch (VolumeNumber)
             {
                 case 0:
                     VolumeColor0 = Color;
@@ -358,7 +511,7 @@ namespace Direct3DRendering
         }
     }
 
-    [StructLayout(LayoutKind.Explicit, Size = 128)]
+    [StructLayout(LayoutKind.Explicit, Size = 144)]
     public struct IsosurfaceParams
     {
         [FieldOffset(0)]
@@ -385,29 +538,17 @@ namespace Direct3DRendering
         [FieldOffset(112)]
         private Vector4 IsosurfaceColor7;
 
-        //[FieldOffset(128)]
-        //private float IsosurfaceValue0;
+        [FieldOffset(128)]
+        public float NumberIsosurfaces;
 
-        //[FieldOffset(144)]
-        //private float IsosurfaceValue1;
+        [FieldOffset(132)]
+        private float padding0;
 
-        //[FieldOffset(160)]
-        //private float IsosurfaceValue2;
+        [FieldOffset(136)]
+        private float padding1;
 
-        //[FieldOffset(176)]
-        //private float IsosurfaceValue3;
-
-        //[FieldOffset(192)]
-        //private float IsosurfaceValue4;
-
-        //[FieldOffset(208)]
-        //private float IsosurfaceValue5;
-
-        //[FieldOffset(224)]
-        //private float IsosurfaceValue6;
-
-        //[FieldOffset(240)]
-        //private float IsosurfaceValue7;
+        [FieldOffset(140)]
+        private float padding2;
 
         public static IsosurfaceParams Empty
         {
@@ -423,15 +564,6 @@ namespace Direct3DRendering
                     IsosurfaceColor5 = new Vector4(0),
                     IsosurfaceColor6 = new Vector4(0),
                     IsosurfaceColor7 = new Vector4(0),
-
-                    //IsosurfaceValue0 = 0,
-                    //IsosurfaceValue1 = 0,
-                    //IsosurfaceValue2 = 0,
-                    //IsosurfaceValue3 = 0,
-                    //IsosurfaceValue4 = 0,
-                    //IsosurfaceValue5 = 0,
-                    //IsosurfaceValue6 = 0,
-                    //IsosurfaceValue7 = 0,
                 };
             }
         }
@@ -649,6 +781,27 @@ namespace Direct3DRendering
         public static Vector4 ToVector4(this Plane plane)
         {
             return new Vector4(plane.ToArray());
+        }
+        public static Vector4 ToVector4(this NotifiableColor c)
+        {
+            return new Vector4(c.R / 255f, c.G / 255f, c.B / 255f, c.A / 255f);
+        }
+        public static NotifiableColor ToNotifiableColor(this Color c)
+        {
+            return NotifiableColor.FromArgb(c.A, c.R, c.G, c.B);
+        }
+        public static Color ToSharpDXColor(this NotifiableColor c)
+        {
+            return new Color(c.R, c.G, c.B, c.A);
+        }
+
+        public static Color ToSharpDXColor(this System.Windows.Media.Color c)
+        {
+            return new Color(c.R, c.G, c.B, c.A);
+        }
+        public static System.Windows.Media.Color ToMediaColor(this Color c)
+        {
+            return System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B);
         }
     }
 }

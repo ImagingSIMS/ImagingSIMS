@@ -282,6 +282,8 @@ namespace Direct3DRendering
                 context.OutputMerger.SetRenderTargets(_depthView, _renderView);
 
                 context.Draw(_vertexCount, 0);
+
+                _dataContextRenderWindow.RenderWindowView.NumTrianglesDrawn = _vertexCount / 3;
             }
 
             CompleteDraw();

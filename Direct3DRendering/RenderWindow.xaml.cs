@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
+using ImagingSIMS.Common.Controls;
 using SharpDX;
 using SharpDX.Windows;
 
@@ -142,7 +142,28 @@ namespace Direct3DRendering
             initializeRenderer();
 
             ((VolumeRenderer)_renderer).SetData(new List<RenderVolume>(Volumes));
-            
+
+            // Set initial colors based on volume data
+
+            // Check to see if this call is running on async thread
+            if (Application.Current != null && Application.Current.Dispatcher != null)
+            {
+                for (int i = 0; i < Volumes.Count; i++)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        RenderWindowView.VolumeColors[i] = Volumes[i].Color.ToNotifiableColor();
+                    });
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Volumes.Count; i++)
+                {
+                    RenderWindowView.VolumeColors[i] = Volumes[i].Color.ToNotifiableColor();
+                }
+            }
+        
         }
         private void setData(List<RenderIsosurface> Isosurfaces)
         {
@@ -153,6 +174,27 @@ namespace Direct3DRendering
             initializeRenderer();
 
             ((IsosurfaceRenderer)_renderer).SetData(Isosurfaces);
+
+            // Set initial colors
+
+            // Check to see if this call is running on an async thread
+            if (Application.Current != null && Application.Current.Dispatcher != null)
+            {
+                for (int i = 0; i < Isosurfaces.Count; i++)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        RenderWindowView.VolumeColors[i] = Isosurfaces[i].InitialColor.ToNotifiableColor();
+                    });
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Isosurfaces.Count; i++)
+                {
+                    RenderWindowView.VolumeColors[i] = Isosurfaces[i].InitialColor.ToNotifiableColor();
+                }
+            }
         }
 
         public Task SetDataAsync(float[,] HeightData, Color[,] ColorData)
@@ -295,8 +337,7 @@ namespace Direct3DRendering
         bool _getSnapshot;
         Color _backColor;
         float _brightness;
-        float[] _volumeAlphas;
-        float[] _isosurfaceValues;
+        NotifiableColor[] _volumeColors;
         bool _targetYAxisOrbiting;
         float _heightMapHeight;
         RenderType _renderType;
@@ -304,6 +345,7 @@ namespace Direct3DRendering
         Vector3 _cameraPosition;
         Vector3 _cameraUp;
         double _fps;
+        int _numTrianglesDrawn;
 
         public bool IsRenderLoaded
         {
@@ -425,27 +467,15 @@ namespace Direct3DRendering
                 }
             }
         }
-        public float[] VolumeAlphas
+        public NotifiableColor[] VolumeColors
         {
-            get { return _volumeAlphas; }
+            get { return _volumeColors; }
             set
             {
-                if (_volumeAlphas != value)
+                if(_volumeColors != value)
                 {
-                    _volumeAlphas = value;
-                    NotifyPropertyChanged("VolumeAlphas");
-                }
-            }
-        }
-        public float[] IsosurfaceValues
-        {
-            get { return _isosurfaceValues; }
-            set
-            {
-                if (_isosurfaceValues != value)
-                {
-                    _isosurfaceValues = value;
-                    NotifyPropertyChanged("IsosurfaceValues");
+                    _volumeColors = value;
+                    NotifyPropertyChanged("VolumeColors");
                 }
             }
         }
@@ -533,6 +563,18 @@ namespace Direct3DRendering
                 }
             }
         }
+        public int NumTrianglesDrawn
+        {
+            get { return _numTrianglesDrawn; }
+            set
+            {
+                if(_numTrianglesDrawn != value)
+                {
+                    _numTrianglesDrawn = value;
+                    NotifyPropertyChanged("NumTrianglesDrawn");
+                }
+            }
+        }
 
         public RenderWindowViewModel()
         {
@@ -542,17 +584,16 @@ namespace Direct3DRendering
 
             ShowCoordinateBox = false;
             CoordinateBoxTransparency = 1.0f;
-            VolumeAlphas = new float[8] 
+            VolumeColors = new NotifiableColor[8]
             {
-                1.0f, 1.0f, 1.0f, 
-                1.0f, 1.0f, 1.0f, 
-                1.0f, 1.0f 
-            };
-            IsosurfaceValues = new float[8]
-            {
-                0.01f, 0.01f, 0.01f,
-                0.01f, 0.01f, 0.01f,
-                0.01f, 0.01f
+                NotifiableColor.Black,
+                NotifiableColor.Black,
+                NotifiableColor.Black,
+                NotifiableColor.Black,
+                NotifiableColor.Black,
+                NotifiableColor.Black,
+                NotifiableColor.Black,
+                NotifiableColor.Black
             };
 
             HeightMapHeight = 1.0f;
@@ -611,8 +652,15 @@ namespace Direct3DRendering
                 RenderType r = (RenderType)value;
 
                 string p = (string)parameter;
+                string[] parameters = p.Split('|');
 
-                return r.ToString() == p;
+                foreach (var renderType in parameters)
+                {
+                    if (r.ToString() == renderType)
+                        return true;
+                }
+
+                return false;
             }
             catch (InvalidCastException)
             {

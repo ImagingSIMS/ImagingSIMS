@@ -46,7 +46,18 @@
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_with_Device|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug_with_Device\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="ReachFramework" />
     <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -141,9 +152,6 @@
     <Compile Include="BaseControls\Hyperlink.cs" />
     <Compile Include="IAvailableTables.cs" />
     <Compile Include="BaseControls\MaskedTextBox.cs" />
-    <Compile Include="Tabs\IsosurfaceTab.xaml.cs">
-      <DependentUpon>IsosurfaceTab.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Tabs\PCATab.xaml.cs">
       <DependentUpon>PCATab.xaml</DependentUpon>
     </Compile>
@@ -242,7 +250,6 @@
     <Compile Include="ViewModels\Data2DDisplayViewModel.cs" />
     <Compile Include="ViewModels\Data3DDisplayViewModel.cs" />
     <Compile Include="ViewModels\FusionImageViewModel.cs" />
-    <Compile Include="ViewModels\IsosurfaceTabViewModel.cs" />
     <Compile Include="ViewModels\PeakPreviewViewModel.cs" />
     <Compile Include="ViewModels\RegistrationParametersViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -394,10 +401,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="BaseControls\HighlightableImage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Tabs\IsosurfaceTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

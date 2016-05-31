@@ -45,6 +45,10 @@ cbuffer VolumeParams : register(b1)
 cbuffer IsosurfaceParams : register(b2)
 {
 	float4		IsosurfaceColor[8];			//16 x 8 = 128
+	float		NumIsosurfaces;				// 4 x 1 =   4
+	float		i_padding0;					// 4 x 1 =   4
+	float		i_padding1;					// 4 x 1 =   4
+	float		i_padding2;					// 4 x 1 =   4
 }
 
 static const uint maxVolumes = 8;
@@ -185,18 +189,35 @@ float4 RAYCAST_PS(RAYCAST_PS_Input input) : SV_TARGET
 ISOSURFACE_PS_Input ISOSURFACE_VS(ISOSURFACE_VS_Input input)
 {
 	ISOSURFACE_PS_Input output = (ISOSURFACE_PS_Input)0;
-	output.pos = mul(WorldProjView, input.pos);
-	
-	float id = input.pos.w;
-	output.id = id;
+	output.pos = mul(WorldProjView, input.pos);	
 
-	output.col = IsosurfaceColor[(int)id];
+	output.id = input.nor.w;
+
+	output.col = IsosurfaceColor[(int)output.id];
+
+	output.nor = input.nor;
 
 	return output;
 }
 float4 ISOSURFACE_PS(ISOSURFACE_PS_Input input) : SV_TARGET
 {
 	// TODO: Lighting calculation with input.nor
-
-	return input.col * Brightness;
+	
+	return float4(input.col.rgb * Brightness, input.col.a);
+	//return float4(input.col.rgb, 1.0f);
+	/*if (input.id == 0.0f)
+	{
+		return float4(1.0f, 0.0f, 0.0f, 1.0f);
+	}
+	else if (input.id == 1.0f) {
+		return float4(0.0f, 1.0f, 0.0f, 1.0f);
+	}
+	else if (input.id == 2.0f) {
+		return float4(0.0f, 0.0f, 1.0f, 1.0f);
+	}
+	else if (input.id == 3.0f) {
+		return float4(1.0f, 0.0f, 1.0f, 1.0f);
+	}
+	else return float4(1.0f, 1.0f, 1.0f, 1.0f);*/
+	//return float4(0.25f, 0.5f, 0.75f, 1.0f);
 }

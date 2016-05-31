@@ -15,7 +15,7 @@ namespace Direct3DRendering
     public class RenderVolume
     {
         float[, ,] _data;
-        Vector4 _color;
+        Color _color;
 
         public int Width
         {
@@ -39,7 +39,7 @@ namespace Direct3DRendering
         {
             get { return _data; }
         }
-        public Vector4 Color
+        public Color Color
         {
             get { return _color; }
         }
@@ -47,12 +47,12 @@ namespace Direct3DRendering
         public RenderVolume(float[, ,] VolumeData, System.Windows.Media.Color VolumeColor)
         {
             _data = VolumeData;
-            _color = new Vector4(VolumeColor.R / 255f, VolumeColor.G / 255f, VolumeColor.B / 255f, VolumeColor.A / 255f);
+            _color = VolumeColor.ToSharpDXColor();
         }
         public RenderVolume(float[, ,] VolumeData, Color VolumeColor)
         {
             _data = VolumeData;
-            _color = new Vector4(VolumeColor.R / 255f, VolumeColor.G / 255f, VolumeColor.B / 255f, VolumeColor.A / 255f);
+            _color = VolumeColor;
         }
 
         public Texture3D CreateTexture(Device Device)

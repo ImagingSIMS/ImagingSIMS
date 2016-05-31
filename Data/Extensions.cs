@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 using ImagingSIMS.Data.Imaging;
+using ImagingSIMS.Data.Rendering;
 
 namespace ImagingSIMS.Data
 {
@@ -71,6 +72,130 @@ namespace ImagingSIMS.Data
         public static float[] ToFloatArray(this Color c)
         {
             return new float[4] { c.B, c.G, c.R, c.A };
+        }
+
+        public static bool EnsureDimensions(this IEnumerable<Data2D> collection)
+        {
+            int width = 0;
+            int height = 0;
+
+            foreach (var d in collection)
+            {
+                if (width == 0)
+                    width = d.Width;
+                if (height == 0)
+                    height = d.Height;
+
+                if (width != d.Width || height != d.Height)
+                    return false;
+            }
+
+            return true;
+        }
+        public static bool EnsureDimensions(this IEnumerable<Data2D> collection, 
+            out int width, out int height)
+        {
+            width = 0;
+            height = 0;
+
+            foreach (var d in collection)
+            {
+                if (width == 0)
+                    width = d.Width;
+                if (height == 0)
+                    height = d.Height;
+
+                if (width != d.Width || height != d.Height)
+                    return false;
+            }
+
+            return true;
+        }
+        public static bool EnsureDimensions(this IEnumerable<Data3D> collection)
+        {
+            int width = 0;
+            int height = 0;
+            int depth = 0;
+
+            foreach (var d in collection)
+            {
+                if (width == 0)
+                    width = d.Width;
+                if (height == 0)
+                    height = d.Height;
+                if (depth == 0)
+                    depth = d.Depth;
+
+                if (width != d.Width || height != d.Height ||  depth != d.Depth)
+                    return false;
+            }
+
+            return true;
+        }
+        public static bool EnsureDimensions(this IEnumerable<Data3D> collection, 
+            out int width, out int height, out int depth)
+        {
+            width = 0;
+            height = 0;
+            depth = 0;
+
+            foreach (var d in collection)
+            {
+                if (width == 0)
+                    width = d.Width;
+                if (height == 0)
+                    height = d.Height;
+                if (depth == 0)
+                    depth = d.Depth;
+
+                if (width != d.Width || height != d.Height || depth != d.Depth)
+                    return false;
+            }
+
+            return true;
+        }
+        public static bool EnsureDimensions(this IEnumerable<Volume> collection)
+        {
+            int width = 0;
+            int height = 0;
+            int depth = 0;
+
+            foreach (var v in collection)
+            {
+                if (width == 0)
+                    width = v.Width;
+                if (height == 0)
+                    height = v.Height;
+                if (depth == 0)
+                    depth = v.Depth;
+
+                if (width != v.Width || height != v.Height || depth != v.Depth)
+                    return false;
+            }
+
+            return true;
+        }
+        public static bool EnsureDimensions(this IEnumerable<Volume> collection,
+            out int width, out int height, out int depth)
+        {
+            width = 0;
+            height = 0;
+            depth = 0;
+
+            foreach (var v in collection)
+            {
+                if (width == 0)
+                    width = v.Width;
+                if (height == 0)
+                    height = v.Height;
+                if (depth == 0)
+                    depth = v.Depth;
+
+                if (width != v.Width || height != v.Height || depth != v.Depth)
+                    return false;
+            }
+
+            return true;
         }
     }
 }

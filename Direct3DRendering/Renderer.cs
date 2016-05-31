@@ -237,14 +237,16 @@ namespace Direct3DRendering
         {
             BlendStateDescription descBlend = new BlendStateDescription();
             descBlend = BlendStateDescription.Default();
+
             descBlend.RenderTarget[0].IsBlendEnabled = true;
             descBlend.RenderTarget[0].SourceBlend = BlendOption.SourceAlpha;
             descBlend.RenderTarget[0].DestinationBlend = BlendOption.InverseSourceAlpha;
             descBlend.RenderTarget[0].BlendOperation = BlendOperation.Add;
-            descBlend.RenderTarget[0].SourceAlphaBlend = BlendOption.Zero;
+            descBlend.RenderTarget[0].SourceAlphaBlend = BlendOption.One;
             descBlend.RenderTarget[0].DestinationAlphaBlend = BlendOption.Zero;
             descBlend.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
             descBlend.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
+
 
             BlendState state = new BlendState(_device, descBlend);
             _device.ImmediateContext.OutputMerger.SetBlendState(state);
@@ -323,6 +325,7 @@ namespace Direct3DRendering
 
             var context = _device.ImmediateContext;
 
+            // Reset render targets to inlcude depth and render
             context.OutputMerger.SetRenderTargets(_depthView, _renderView);
             context.ClearDepthStencilView(_depthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, _clipDistance, 0);
             context.ClearRenderTargetView(_renderView, BackColor);

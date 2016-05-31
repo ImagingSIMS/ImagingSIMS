@@ -10,7 +10,13 @@
         Activated="renderWindow_Activated" Deactivated="renderWindow_Deactivated">
     <Window.Resources>
         <ResourceDictionary>
-            <l:BoolVisInvertedConverter x:Key="boolVisInvertedConverter"/>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources\Generic.xaml"/>
+                <ResourceDictionary>
+                    <l:BoolVisInvertedConverter x:Key="boolVisInvertedConverter"/>
+                    <BooleanToVisibilityConverter x:Key="boolVisConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
     <Grid x:Name="gridMain">
@@ -19,8 +25,9 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Menu Grid.Row="0" Background="#FF2C2C2C">
-            <MenuItem Header="Show Render Controls" Click="menuItemShowRenderControls_Click" Foreground="White"/>
+        <Menu Grid.Row="0" Style="{StaticResource MenuBarStyle}"
+              Visibility="{Binding ElementName=userControl, Path=RenderWindowView.IsRenderLoaded, Converter={StaticResource boolVisConverter}}">
+            <MenuItem Header="Show Render Controls" Click="menuItemShowRenderControls_Click"/>
         </Menu>
         <Grid x:Name="gridFormsHost" Grid.Row="1" >
             <WindowsFormsHost x:Name="formsHost" Margin="4"/>

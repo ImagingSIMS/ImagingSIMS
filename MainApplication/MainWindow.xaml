@@ -43,7 +43,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Ribbon x:Name="Ribbon" SelectedIndex="4" FontFamily="SegoeUI" FontSize="12">
+        <Ribbon x:Name="Ribbon" SelectedIndex="0" FontFamily="SegoeUI" FontSize="12">
             <Ribbon.QuickAccessToolBar>
                 <RibbonQuickAccessToolBar x:Name="quickBar" IsEnabled="True">
                     <RibbonButton x:Name="qaNew" KeyTip="1" SmallImageSource="Images/DocumentHS1.png" 
@@ -659,13 +659,14 @@
                         <!-- Possible .NET bug? This line in 4.6.2 does not allow for items in the ListBox to be selected -->
                         <!-- IsEnabled="{Binding ElementName=listBoxRenderingVolumes, Path=HasItems}" -->
                         <RibbonGallery BorderBrush="#FF211C1C" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                            <ListBox x:Name="listBoxRenderingVolumes" Width="Auto" ItemsSource="{Binding Workspace.Volumes}" SelectionMode="Multiple" Background="Transparent">
+                            <ListBox x:Name="listBoxRenderingVolumes" Width="Auto" ItemsSource="{Binding Workspace.Volumes}" SelectionMode="Multiple" Background="Transparent"
+                                     Grid.IsSharedSizeScope="True">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="VolumeName"/>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Depth"/>
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Grid.Column="0" Text="{Binding Path=VolumeName}" Margin="4,0,4,0" FontSize="14">
                                                 <TextBlock.Foreground>
@@ -724,14 +725,15 @@
                         <!-- Possible .NET bug? This line in 4.6.2 does not allow for items in the ListBox to be selected -->
                         <!-- IsEnabled="{Binding ElementName=listBoxRenderingVolumes, Path=HasItems}" -->
                         <RibbonGallery BorderBrush="#FF211C1C" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                            <ListBox x:Name="listBoxRenderingIsosurfaces" Width="Auto" ItemsSource="{Binding Workspace.Volumes}" SelectionMode="Multiple" Background="Transparent">
+                            <ListBox x:Name="listBoxRenderingIsosurfaces" Width="Auto" ItemsSource="{Binding Workspace.Volumes}" SelectionMode="Multiple" Background="Transparent"
+                                     Grid.IsSharedSizeScope="True">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="VolumeName"/>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Depth"/>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="IsoValue"/>
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Grid.Column="0" Text="{Binding Path=VolumeName}" Margin="4,0,4,0" FontSize="14">
                                                 <TextBlock.Foreground>

@@ -15,13 +15,10 @@ namespace Direct3DRendering
     {
         VertexShader _vsPosition;
         VertexShader _vsRaycast;
-        VertexShader _vsIsosurface;
         InputLayout _ilPosition;
         InputLayout _ilRaycast;
-        InputLayout _ilIsosurface;
         PixelShader _psPosition;
         PixelShader _psRaycast;
-        PixelShader _psIsosurface;
 
         Texture2D[] _texPositions;
         ShaderResourceView[] _srvPositions;
@@ -47,7 +44,6 @@ namespace Direct3DRendering
 
         string _raycastEffectPath;
         string _modelEffectPath;
-        string _isosurfaceEffectPath;
 
         public VolumeRenderer(RenderWindow Window)
             : base(Window)
@@ -87,13 +83,10 @@ namespace Direct3DRendering
                 }
                 Disposer.RemoveAndDispose(ref _vsPosition);
                 Disposer.RemoveAndDispose(ref _vsRaycast);
-                Disposer.RemoveAndDispose(ref _vsIsosurface);
                 Disposer.RemoveAndDispose(ref _ilPosition);
                 Disposer.RemoveAndDispose(ref _ilRaycast);
-                Disposer.RemoveAndDispose(ref _ilIsosurface);
                 Disposer.RemoveAndDispose(ref _psPosition);
                 Disposer.RemoveAndDispose(ref _psRaycast);
-                Disposer.RemoveAndDispose(ref _psIsosurface);
 
                 Disposer.RemoveAndDispose(ref _texPositions);
                 Disposer.RemoveAndDispose(ref _srvPositions);
@@ -125,7 +118,6 @@ namespace Direct3DRendering
         {
             _raycastEffectPath = @"Shaders\Raycast";
             _modelEffectPath = @"Shaders\Model";
-            _isosurfaceEffectPath = @"Shaders\Isosurface";
 
             base.InitializeRenderer();
 
@@ -152,18 +144,7 @@ namespace Direct3DRendering
             });
 
             var psByteCode = ShaderBytecode.FromFile(_modelEffectPath + ".pso");
-            _psPosition = new PixelShader(_device, psByteCode);
-
-            vsByteCode = ShaderBytecode.FromFile(_isosurfaceEffectPath + ".vso");
-            _vsIsosurface = new VertexShader(_device, vsByteCode);
-
-            _ilIsosurface = new InputLayout(_device, ShaderSignature.GetInputSignature(vsByteCode), new[]
-            {
-                new InputElement("POSITION", 0, Format.R32G32B32A32_Float, 0, 0)
-            });
-
-            psByteCode = ShaderBytecode.FromFile(_isosurfaceEffectPath + ".pso");
-            _psIsosurface = new PixelShader(_device, psByteCode);
+            _psPosition = new PixelShader(_device, psByteCode);           
 
             vsByteCode = ShaderBytecode.FromFile(_raycastEffectPath + ".vso");
             _vsRaycast = new VertexShader(_device, vsByteCode);
@@ -270,7 +251,7 @@ namespace Direct3DRendering
             for (int i = 0; i < numVolumes; i++)
             {
                 _texVolumes[i] = Volumes[i].CreateTexture(_device, out _srvVolumes[i]);
-                _volumeParams.UpdateColor(i, Volumes[i].Color);
+                _volumeParams.UpdateColor(i, Volumes[i].Color.ToVector4());
             }
 
             _volumeParams.NumVolumes = (uint)numVolumes;
@@ -352,7 +333,7 @@ namespace Direct3DRendering
             if (width % 3 != 0) lSizeX += 1;
             int lSizeY = height / 3;
             if (height % 3 != 0) lSizeY += 1;
-            int lSizeZ = width / 3;
+            int lSizeZ = depth / 3;
             if (depth % 3 != 0) lSizeZ += 1;
 
             bool[, ,] isActive = new bool[lSizeX, lSizeY, lSizeZ];
@@ -489,8 +470,7 @@ namespace Direct3DRendering
                 for (int i = 0; i < _volumeParams.NumVolumes; i++)
                 {
                     Vector4 current = _volumeParams.GetColor(i);
-                    _volumeParams.UpdateColor(i,
-                        new Vector4(current.X, current.Y, current.Z, _dataContextRenderWindow.RenderWindowView.VolumeAlphas[i]));
+                    _volumeParams.UpdateColor(i, _dataContextRenderWindow.RenderWindowView.VolumeColors[i].ToVector4());
                 }
                 context.UpdateSubresource(ref _volumeParams, _volumeParamBuffer);
 
@@ -518,20 +498,9 @@ namespace Direct3DRendering
                 context.ClearRenderTargetView(_rtvPositions[0], Color.Black);
                 context.DrawIndexed(36, 0, 0);
 
-                //Set shaders for isosurface rendering
-                if (_dataContextRenderWindow.RenderWindowView.RenderIsosurfaces)
-                {
-                    context.VertexShader.Set(_vsIsosurface);
-                    context.PixelShader.Set(_psIsosurface);
-                    context.InputAssembler.InputLayout = _ilIsosurface;
-                }
-                //Otherwise set shaders for raycast rendering
-                else
-                {
-                    context.VertexShader.Set(_vsRaycast);
-                    context.PixelShader.Set(_psRaycast);
-                    context.InputAssembler.InputLayout = _ilRaycast;
-                }
+                context.VertexShader.Set(_vsRaycast);
+                context.PixelShader.Set(_psRaycast);
+                context.InputAssembler.InputLayout = _ilRaycast;                
 
                 context.VertexShader.SetConstantBuffer(0, _renderParamBuffer);
                 context.PixelShader.SetConstantBuffer(0, _renderParamBuffer);
@@ -552,6 +521,9 @@ namespace Direct3DRendering
                 context.PixelShader.SetSamplers(0, 1, _samplerLinear);
 
                 context.DrawIndexed(36, 0, 0);
+
+                // Constant value for box
+                _dataContextRenderWindow.RenderWindowView.NumTrianglesDrawn = 12;
 
                 ShaderResourceView[] nullRV = new ShaderResourceView[3] { null, null, null };
                 context.PixelShader.SetShaderResources(0, 3, nullRV);
