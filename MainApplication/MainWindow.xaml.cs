@@ -42,7 +42,7 @@ namespace ImagingSIMS.MainApplication
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : RibbonWindow, IAvailableTables, IAvailableImageSeries
+    public partial class MainWindow : RibbonWindow, IAvailableTables, IAvailableImageSeries, IAvailableVolumes
     {
         #region Properties
         public static readonly DependencyProperty WorkspaceProperty = DependencyProperty.Register("Workspace",
@@ -103,6 +103,7 @@ namespace ImagingSIMS.MainApplication
 
             AddHandler(ClosableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
             AddHandler(ClosableTabItem.StatusUpdatedEvent, new StatusUpdatedRoutedEventHandler(StatusUpdated));
+            AddHandler(ClosableTabItem.CloseMultipleTabsEvent, new CloseMultipleTabsEventHandler(CloseMultipleTabs));
             AddHandler(ComponentTab.ComponentCreatedEvent, new RoutedEventHandler(ComponentCreated));
             AddHandler(ComponentTab.ComponentUpdatedEvent, new RoutedEventHandler(ComponentUpdated));
             AddHandler(SpecChart.RangeUpdatedEvent, new RangeUpdatedRoutedEventHandler(SpecRangeUpdated));
@@ -252,53 +253,62 @@ namespace ImagingSIMS.MainApplication
         #region Close
         private void CloseTab(object sender, RoutedEventArgs e)
         {
-            TabItem ti = e.Source as TabItem;
-            if (ti != null)
+            ClosableTabItem cti = e.Source as ClosableTabItem;
+            doCloseTab(cti);
+        }
+
+        private void CloseMultipleTabs(object sender, CloseMultipleTabsRoutedEventArgs e)
+        {
+            ClosableTabItem source = e.Source as ClosableTabItem;
+            if (source == null) return;
+
+            TabControl parent = source.Parent as TabControl;
+            if (parent == null) return;
+
+            var itemsToRemove = new List<ClosableTabItem>();
+
+            foreach (var item in parent.Items)
             {
-                ClosableTabItem cti = ti as ClosableTabItem;
-                if (cti != null)
-                {
-                    ComponentTab cc = cti.Content as ComponentTab;
-                    if (cc != null)
-                    {
-                        goto finish;
-                    }
-                    StartupTab su = cti.Content as StartupTab;
-                    if (su != null)
-                    {
-                        goto finish;
-                    }
-                    SpectrumTab sd = cti.Content as SpectrumTab;
-                    if (sd != null)
-                    {
-                        sd.ClearResources();
-                        goto finish;
-                    }
-                    SettingsTab st = cti.Content as SettingsTab;
-                    if (st != null)
-                    {
-                        st.OnCancel();
-                        goto finish;
-                    }
-                    FusionTab ft = cti.Content as FusionTab;
-                    if (ft != null)
-                    {
-                        ft.Dispose();
-                        goto finish;
-                    }
-                }
-                finish:
-                {
-                    cti.CloseTab -= CloseTab;
-                    TabControl tc = ti.Parent as TabControl;
-                    if (tc != null)
-                    {
-                        tc.Items.Remove(ti);
-                    }
-                    cti.Dispose();
-                    GC.Collect();
-                }
+                ClosableTabItem cti = item as ClosableTabItem;
+                if (cti == null) continue;
+
+                if (e.CloseAllButThis && cti == source)
+                    continue;
+
+                itemsToRemove.Add(cti);
             }
+
+            foreach (var item in itemsToRemove)
+            {
+                doCloseTab(item);
+            }
+        }
+
+        private void doCloseTab(ClosableTabItem cti)
+        {
+            if (cti == null) return;
+
+            object content = cti.Content;
+            if (content is SpectrumTab)
+            {
+                ((SpectrumTab)content).ClearResources();
+            }
+            else if (content is SettingsTab)
+            {
+                ((SettingsTab)content).OnCancel();
+            }
+            else if(content is FusionTab)
+            {
+                ((FusionTab)content).Dispose();
+            }
+
+            cti.CloseTab -= CloseTab;
+            TabControl tc = cti.Parent as TabControl;
+            if (tc != null)
+            {
+                tc.Items.Remove(cti);
+            }
+            cti.Dispose();
         }
         #endregion
 
@@ -2112,15 +2122,6 @@ namespace ImagingSIMS.MainApplication
             }
         }
 
-        private void isosurfaceCreate_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void isosurfaceLoad_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private async void Render3D(object sender, RoutedEventArgs e)
         {
             int numberVolumes = listBoxRenderingVolumes.SelectedItems.Count;
@@ -2198,6 +2199,85 @@ namespace ImagingSIMS.MainApplication
                 window.Show();
 
                 await window.SetDataAsync(renderVolumes);
+                window.BeginRendering();
+            }
+            catch (Exception ex)
+            {
+                DialogBox db = new DialogBox("There was an error creating the 3D rendering.", ex.Message, "Direct3D", DialogIcon.Error);
+                db.ShowDialog();
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
+        }
+        private async void Render3DIso(object sender, RoutedEventArgs e)
+        {
+            List<Volume> selectedVolumes = new List<Volume>();
+
+            foreach (object obj in listBoxRenderingIsosurfaces.SelectedItems)
+            {
+                Volume v = obj as Volume;
+                if (v != null)
+                {
+                    selectedVolumes.Add(v);
+                }
+            }
+
+            if (selectedVolumes.Count == 0)
+            {
+                DialogBox.Show("No volumes selected.",
+                    "Select one or more volumes to generate isosurfaces.", "Isosurface", DialogIcon.Error);
+                return;
+            }
+           
+            int width = 0;
+            int height = 0;
+            int depth = 0;
+
+            if (!selectedVolumes.EnsureDimensions(out width, out height, out depth))
+            {
+                DialogBox.Show("Invalid volume dimensions.",
+                        "The dimensions of one or more volumes does not match across all selected volumes.", "Isosurface", DialogIcon.Error);
+                return;
+            }
+
+            pw = new ProgressWindow("Generating isosurfaces. Please wait...", "Isosurfacing", true);
+            pw.Show();
+
+            List<RenderIsosurface> isosurfaces = new List<RenderIsosurface>();
+            try
+            {               
+                int ct = 0;
+
+                foreach (var volume in selectedVolumes)
+                {
+                    isosurfaces.Add(await RenderIsosurface.CreateSurfaceAsync(
+                        volume.Data.ToFloatArray(), volume.IsoValue, volume.DataColor.ToSharpDXColor(), ct++));
+                }
+            }
+            catch(Exception ex)
+            {
+                DialogBox.Show("The isosurfaces could not be generated.",
+                    ex.Message, "Isosurfacing", DialogIcon.Error);
+                return;
+            }
+            finally
+            {
+                pw.Close();
+                pw = null;
+            }
+
+            RenderWindow window = new RenderWindow();
+            try
+            {
+                window.Show();
+
+                await window.SetDataAsync(isosurfaces);
                 window.BeginRendering();
             }
             catch (Exception ex)
@@ -4640,6 +4720,185 @@ namespace ImagingSIMS.MainApplication
         public List<DisplaySeries> GetAvailableImageSeries()
         {
             return Workspace.ImageSeries.ToList();
+        }
+        #endregion
+
+        #region IAvailableVolumes
+        public List<Volume> GetSelectedVolumes()
+        {
+            List<Volume> volumes = new List<Volume>();
+            foreach (object obj in listViewVolumes.SelectedItems)
+            {
+                Volume v = obj as Volume;
+                if (v != null)
+                    volumes.Add(v);
+            }
+            return volumes;
+        }
+        public List<Volume> GetAvailablevolumes()
+        {
+            return Workspace.Volumes.ToList();
+        }
+        public void Removevolumes(List<Volume> volumesToRemove)
+        {
+            List<Volume> notRemoved = new List<Volume>();
+
+            foreach (Volume v in volumesToRemove)
+            {
+                if (Workspace.Volumes.Contains(v))
+                {
+                    try
+                    {
+                        Workspace.Volumes.Remove(v);
+                    }
+                    catch (Exception)
+                    {
+                        notRemoved.Add(v);
+                    }
+                }
+                else notRemoved.Add(v);
+            }
+
+            if (notRemoved.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Volume v in notRemoved)
+                {
+                    sb.AppendLine(v.VolumeName);
+                }
+
+                DialogBox.Show("The following volumes could not be removed from the workspace:",
+                    sb.ToString(), "Remove", DialogIcon.Alert);
+            }
+        }
+        public void Removevolumes(Volume[] volumesToRemove)
+        {
+            List<Volume> notRemoved = new List<Volume>();
+
+            foreach (Volume v in volumesToRemove)
+            {
+                if (Workspace.Volumes.Contains(v))
+                {
+                    try
+                    {
+                        Workspace.Volumes.Remove(v);
+                    }
+                    catch (Exception)
+                    {
+                        notRemoved.Add(v);
+                    }
+                }
+                else notRemoved.Add(v);
+            }
+
+            if (notRemoved.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Volume v in notRemoved)
+                {
+                    sb.AppendLine(v.VolumeName);
+                }
+
+                DialogBox.Show("The following volumes could not be removed from the workspace:",
+                    sb.ToString(), "Remove", DialogIcon.Alert);
+            }
+        }
+        public void Addvolumes(List<Volume> volumesToAdd)
+        {
+            List<Volume> notAdded = new List<Volume>();
+
+            foreach (Volume v in volumesToAdd)
+            {
+                try
+                {
+                    Workspace.Volumes.Add(v);
+                }
+                catch (Exception)
+                {
+                    notAdded.Add(v);
+                }
+            }
+
+            if(notAdded.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Volume v in notAdded)
+                {
+                    sb.AppendLine(v.VolumeName);
+                }
+
+                DialogBox.Show("The following volumes could not be added to the workspace:",
+                    sb.ToString(), "Add", DialogIcon.Alert);
+            }
+        }
+        public void Addvolumes(Volume[] volumesToAdd)
+        {
+            List<Volume> notAdded = new List<Volume>();
+
+            foreach (Volume v in volumesToAdd)
+            {
+                try
+                {
+                    Workspace.Volumes.Add(v);
+                }
+                catch (Exception)
+                {
+                    notAdded.Add(v);
+                }
+            }
+
+            if (notAdded.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Volume v in notAdded)
+                {
+                    sb.AppendLine(v.VolumeName);
+                }
+
+                DialogBox.Show("The following volumes could not be added to the workspace:",
+                    sb.ToString(), "Add", DialogIcon.Alert);
+            }
+        }
+        public void Replacevolume(Volume toReplace, Volume newvolume)
+        {
+            bool isSelected = false;
+
+            try
+            {
+                if (Workspace.Volumes.Contains(newvolume))
+                {
+                    foreach (Volume v in GetSelectedVolumes())
+                    {
+                        if (v == newvolume)
+                            isSelected = true;
+                        break;
+                    }
+
+                    int index = Workspace.Volumes.IndexOf(toReplace);
+                    Workspace.Volumes.Remove(toReplace);
+                    Workspace.Volumes.Insert(index, newvolume);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogBox.Show("Could not add the new volume to the collection.", ex.Message,
+                         "Replace", DialogIcon.Error);
+                return;
+            }
+
+            if (isSelected)
+            {
+                try
+                {
+                    listViewVolumes.SelectedItems.Add(newvolume);
+                }
+                catch (Exception ex)
+                {
+                    DialogBox.Show("Could not restore the state of the list. Don't worry though, the table replacement did function properly.",
+                        ex.Message, "Replace", DialogIcon.Alert);
+                    return;
+                }
+            }
         }
         #endregion
 

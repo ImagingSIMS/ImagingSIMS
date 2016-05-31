@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ImagingSIMS.Controls.BaseControls"
+             xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
              mc:Ignorable="d" 
              d:DesignWidth="700" d:DesignHeight="600" Width="Auto" Height="Auto" xmlns:my="clr-namespace:ImagingSIMS.Controls">
     <UserControl.Resources>

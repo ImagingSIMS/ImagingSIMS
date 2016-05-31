@@ -17,6 +17,7 @@ namespace ImagingSIMS.Data.Rendering
         float _pixelDepth;
         float _pixelSize;
         float _zSpacing;
+        int _isoValue;
 
         public float this[int x, int y, int z]
         {
@@ -100,6 +101,18 @@ namespace ImagingSIMS.Data.Rendering
                 {
                     _zSpacing = value;
                     NotifyPropertyChanged("ZSpacing");
+                }
+            }
+        }
+        public int IsoValue
+        {
+            get { return _isoValue; }
+            set
+            {
+                if(_isoValue != value)
+                {
+                    _isoValue = value;
+                    NotifyPropertyChanged("IsoValue");
                 }
             }
         }
@@ -286,6 +299,7 @@ namespace ImagingSIMS.Data.Rendering
                 bw.Write(DataColor.R);
                 bw.Write(DataColor.G);
                 bw.Write(DataColor.B);
+                bw.Write(IsoValue);
 
                 for (int z = 0; z < Depth; z++)
                 {
@@ -329,9 +343,11 @@ namespace ImagingSIMS.Data.Rendering
                 byte colorR = br.ReadByte();
                 byte colorG = br.ReadByte();
                 byte colorB = br.ReadByte();
+                int isoValue = br.ReadInt32();
 
                 this.VolumeName = volumeName;
                 this.DataColor = Color.FromArgb(colorA, colorR, colorG, colorB);
+                this.IsoValue = isoValue;
 
                 this._data = new Data3D(width, height, depth);
                 for (int z = 0; z < depth; z++)

@@ -61,7 +61,18 @@
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_with_Device|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug_with_Device\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DEBUG_DEVICE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
@@ -115,7 +126,7 @@
     <Compile Include="Disposer.cs" />
     <Compile Include="Framerate.cs" />
     <Compile Include="HeightMapRenderer.cs" />
-    <Compile Include="Isosurface.cs" />
+    <Compile Include="IsosurfaceRenderer.cs" />
     <Compile Include="ModelCamera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -133,6 +144,7 @@
     <Compile Include="RenderDetailsWindow.xaml.cs">
       <DependentUpon>RenderDetailsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RenderIsosurface.cs" />
     <Compile Include="RenderVolume.cs" />
     <Compile Include="RenderWindow.xaml.cs">
       <DependentUpon>RenderWindow.xaml</DependentUpon>
@@ -297,6 +309,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ScreenCaptureDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -310,9 +326,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{3366d52f-103d-4930-ae32-8dccc3e85a83}</Project>

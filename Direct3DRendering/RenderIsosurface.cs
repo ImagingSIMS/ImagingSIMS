@@ -1,498 +1,221 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
+using SharpDX;
 
-using ImagingSIMS.Common;
-using ImagingSIMS.Data.Rendering;
-
-namespace ImagingSIMS.Data.Isosurfacing
+namespace Direct3DRendering
 {
-    // Starting with version 3.6 of ImagingSIMS this class is no longer needed
-    // since all 3D rendering was changed to volume rendering. However, removing
-    // the Isosurface class completely would require removing all references from
-    // the Workspace class and thus previous .wks files would not be guaranteed
-    // to be compatible. Thus, what remains is enough to satisfy those references.
-    // A copy of the original Isosurfacing.cs file was places in the Backup folder
-    // in case this class needs to be revived someday. -11/5/2013
-    public class Isosurface : Data
+    public class RenderIsosurface
     {
-        int _sizeX;
-        int _sizeY;
-        int _sizeZ;
+        private static LookupTable _lookup = new LookupTable();
 
-        Data3D _data;
-        Color _surfaceColor;
+        public TriangleSurface[] Triangles { get; set; }
+        public Color InitialColor { get; set; }
 
-        int _isoValue;
-        int _threshold;
+        public int Width { get; private set; }
+        public int Height { get; private set; }
+        public int Depth { get; private set; }
+        public float IsoValue { get; private set; }
 
-        bool _isSelected;
-
-        public float this[int x, int y, int z]
+        private void calculateSurface(float[,,] volumeData, float isoValue, int surfaceId)
         {
-            get
-            {
-                if (_data == null) return 0;
-                if (x >= _data.Width || y >= _data.Height || z >= _data.Depth)
-                    throw new ArgumentException("Invalid index.");
-                return _data[x, y, z];
-            }
-        }
+            IsoValue = isoValue;
 
-        public string IsosurfaceName
-        {
-            get { return _name; }
-            set
+            List<TriangleSurface> foundTriangles = new List<TriangleSurface>();
+
+            // Adapted from http://paulbourke.net/geometry/polygonise/
+
+            for (int x = 0; x < Width - 1; x++)
             {
-                if (_name != value)
+                for (int y = 0; y < Height - 1; y++)
                 {
-                    _name = value;
-                    NotifyPropertyChanged("IsosurfaceName");
-                }
-            }
-        }
-        public int IsoValue
-        {
-            get { return _isoValue; }
-            set
-            {
-                if (_isoValue != value)
-                {
-                    _isoValue = value;
-                    NotifyPropertyChanged("IsoValue");
-                }
-            }
-        }
-        public int Threshold
-        {
-            get { return _threshold; }
-            set
-            {
-                if (_threshold != value)
-                {
-                    _threshold = value;
-                    NotifyPropertyChanged("Threshold");
-                }
-            }
-        }
-        public Color SurfaceColor
-        {
-            get { return _surfaceColor; }
-            set
-            {
-                if (_surfaceColor != value)
-                {
-                    _surfaceColor = value;
-                    NotifyPropertyChanged("SurfaceColor");
-                }
-            }
-        }
-
-        public Size RenderArea
-        {
-            get { return new Size(_sizeX, _sizeY, _sizeZ); }
-        }
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set
-            {
-                if (_isSelected != value)
-                {
-                    _isSelected = value;
-                    NotifyPropertyChanged("IsSelected");
-                }
-            }
-        }
-
-        public Isosurface(string FilePath)
-        {
-            try
-            {
-                Load(FilePath);
-            }
-            catch (FileFormatException)
-            {
-                Isosurface[] surfaces = IsosurfaceCompatibility.Load(FilePath);
-                if (surfaces.Length > 0)
-                {
-                    _sizeX = surfaces[0]._sizeX;
-                    _sizeY = surfaces[0]._sizeY;
-                    _sizeZ = surfaces[0]._sizeZ;
-
-                    _name = surfaces[0]._name;
-                    _surfaceColor = surfaces[0]._surfaceColor;
-
-                    _threshold = surfaces[0]._threshold;
-                    _isoValue = surfaces[0]._isoValue;
-
-                    _data = surfaces[0]._data;
-                }
-            }
-        }
-        public Isosurface(string Name, Color SurfaceColor, Data3D Data, int Isovalue, int Threshold)
-        {
-            _sizeX = Data.Width;
-            _sizeY = Data.Height;
-            _sizeZ = Data.Depth;
-
-            _data = AddBlankLayers(Data);
-            _surfaceColor = SurfaceColor;
-            _name = Name;
-
-            _threshold = Threshold;
-            _isoValue = Isovalue;
-        }
-
-        private Data3D AddBlankLayers(Data3D OriginalData)
-        {
-            int sizeX = OriginalData.Width;
-            int sizeY = OriginalData.Height;
-            int sizeZ = OriginalData.Depth;
-
-            Data3D newData = new Data3D();
-            newData.AddLayer(new Data2D(sizeX, sizeY));
-            newData.AddLayers(OriginalData.Layers);
-            newData.AddLayer(new Data2D(sizeX, sizeY));
-
-            return newData;
-        }
-
-        private Vector3 VertexInterpolation(float IsoLevel, Vector3 Point1, Vector3 Point2,
-            float ValPoint1, float ValPoint2)
-        {
-            float mu;
-
-            if (Math.Abs(IsoLevel - ValPoint1) < 0.00001)
-            {
-                return Point1;
-            }
-            if (Math.Abs(IsoLevel - ValPoint2) < 0.00001)
-            {
-                return Point2;
-            }
-            if (Math.Abs(ValPoint1 - ValPoint2) < 0.00001)
-            {
-                return Point1;
-            }
-
-            mu = (IsoLevel - ValPoint1) / (ValPoint2 - ValPoint1);
-            float x = Point1.X + mu * (Point2.X - Point1.X);
-            float y = Point1.Y + mu * (Point2.Y - Point1.Y);
-            float z = Point1.Z + mu * (Point2.Z - Point1.Z);
-
-            return new Vector3(x, y, z);
-        }
-
-        public void Save(string FilePath)
-        {
-            using (Stream stream = File.OpenWrite(FilePath))
-            {
-                BinaryWriter bw = new BinaryWriter(stream);
-
-                bw.Write(-1);
-
-                bw.Write(_sizeX);
-                bw.Write(_sizeY);
-                bw.Write(_sizeZ);
-
-                bw.Write(_name);
-                bw.Write(_surfaceColor.A);
-                bw.Write(_surfaceColor.R);
-                bw.Write(_surfaceColor.G);
-                bw.Write(_surfaceColor.B);
-
-                bw.Write(_threshold);
-                bw.Write(_isoValue);
-
-                for (int x = 0; x < _sizeX; x++)
-                {
-                    for (int y = 0; y < _sizeY; y++)
+                    for (int z = 0; z < Depth - 1; z++)
                     {
-                        for (int z = 0; z < _sizeZ; z++)
+                        GridCell cell = GridCell.Create(volumeData, x, y, z);
+
+                        int cubeIndex = 0;
+                        if (cell.v[0] <= isoValue) cubeIndex |= 1;
+                        if (cell.v[1] <= isoValue) cubeIndex |= 2;
+                        if (cell.v[2] <= isoValue) cubeIndex |= 4;
+                        if (cell.v[3] <= isoValue) cubeIndex |= 8;
+                        if (cell.v[4] <= isoValue) cubeIndex |= 16;
+                        if (cell.v[5] <= isoValue) cubeIndex |= 32;
+                        if (cell.v[6] <= isoValue) cubeIndex |= 64;
+                        if (cell.v[7] <= isoValue) cubeIndex |= 128;
+
+                        // Determine the index into the edge table which 
+                        // tells us which vertices are inside of the surface
+                        int edgeValue = _lookup.EdgeTable(cubeIndex);
+
+                        // Cube is entirely inside or outside of the surface
+                        if (edgeValue == 0)
+                            continue;
+
+                        Vector3[] vertextList = new Vector3[12];
+
+                        // Find the vertices where the surface intersects the cube
+                        if ((edgeValue & 1) != 0)
+                            vertextList[0] = VertexInterpolation(cell.p[0], cell.p[1], cell.v[0], cell.v[1]);
+                        if ((edgeValue & 2) != 0)
+                            vertextList[1] = VertexInterpolation(cell.p[1], cell.p[2], cell.v[1], cell.v[2]);
+                        if ((edgeValue & 4) != 0)
+                            vertextList[2] = VertexInterpolation(cell.p[2], cell.p[3], cell.v[2], cell.v[3]);
+                        if ((edgeValue & 8) != 0)
+                            vertextList[3] = VertexInterpolation(cell.p[3], cell.p[0], cell.v[3], cell.v[0]);
+                        if ((edgeValue & 16) != 0)
+                            vertextList[4] = VertexInterpolation(cell.p[4], cell.p[5], cell.v[4], cell.v[5]);
+                        if ((edgeValue & 32) != 0)
+                            vertextList[5] = VertexInterpolation(cell.p[5], cell.p[6], cell.v[5], cell.v[6]);
+                        if ((edgeValue & 64) != 0)
+                            vertextList[6] = VertexInterpolation(cell.p[6], cell.p[7], cell.v[6], cell.v[7]);
+                        if ((edgeValue & 128) != 0)
+                            vertextList[7] = VertexInterpolation(cell.p[7], cell.p[4], cell.v[7], cell.v[4]);
+                        if ((edgeValue & 256) != 0)
+                            vertextList[8] = VertexInterpolation(cell.p[0], cell.p[4], cell.v[0], cell.v[4]);
+                        if ((edgeValue & 512) != 0)
+                            vertextList[9] = VertexInterpolation(cell.p[1], cell.p[5], cell.v[1], cell.v[5]);
+                        if ((edgeValue & 1024) != 0)
+                            vertextList[10] = VertexInterpolation(cell.p[2], cell.p[6], cell.v[2], cell.v[6]);
+                        if ((edgeValue & 2048) != 0)
+                            vertextList[11] = VertexInterpolation(cell.p[3], cell.p[7], cell.v[3], cell.v[7]);
+
+                        for (int i = 0; _lookup.TriTable(cubeIndex, i) != -1; i += 3)
                         {
-                            float value = _data[x, y, z];
-                            if (value == 0) bw.Write(false);
-                            else
-                            {
-                                bw.Write(true);
-                                bw.Write(value);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        public void Load(string FilePath)
-        {
-            using (Stream stream = File.OpenRead(FilePath))
-            {
-                BinaryReader br = new BinaryReader(stream);
-
-                int identifier = br.ReadInt32();
-                if (identifier != -1) throw new FileFormatException("File format is a previous version. Use Compatibility operations to load.");
-                _sizeX = br.ReadInt32();
-                _sizeY = br.ReadInt32();
-                _sizeZ = br.ReadInt32();
-
-                _name = br.ReadString();
-                _surfaceColor = Color.FromArgb(br.ReadByte(),
-                    br.ReadByte(), br.ReadByte(), br.ReadByte());
-
-                _threshold = br.ReadInt32();
-                _isoValue = br.ReadInt32();
-
-                Data2D[] data = new Data2D[_sizeZ];
-                for (int i = 0; i < _sizeZ; i++)
-                {
-                    data[i] = new Data2D(_sizeX, _sizeY);
-                }
-                for (int x = 0; x < _sizeX; x++)
-                {
-                    for (int y = 0; y < _sizeY; y++)
-                    {
-                        for (int z = 0; z < _sizeZ; z++)
-                        {
-                            if (br.ReadBoolean())
-                            {
-                                data[z][x, y] = br.ReadSingle();
-                            }
-                        }
-                    }
-                }
-                _data = new Data3D(data);
-            }
-        }
-
-        private static SharpDX.Color ConvertColor(System.Windows.Media.Color c)
-        {
-            return new SharpDX.Color(c.R, c.G, c.B, c.A);
-        }
-    }
-
-    public static class IsosurfaceCompatibility
-    {
-        public static Isosurface[] Load(string FilePath)
-        {
-            Isosurface[] surfaces;
-
-            using (Stream stream = File.OpenRead(FilePath))
-            {
-                BinaryReader br = new BinaryReader(stream);
-
-                int isoCount = br.ReadInt32();
-                if (isoCount == -1) throw new FileFormatException("Cannot load new file format through Compatibility operations.");
-                surfaces = new Isosurface[isoCount];
-
-                for (int k = 0; k < isoCount; k++)
-                {
-                    int sizeX = br.ReadInt32();
-                    int sizeY = br.ReadInt32();
-                    int sizeZ = br.ReadInt32();
-                    int countsThreshold = br.ReadInt32();
-                    int isoValue = br.ReadInt32();
-
-                    int nameLength = br.ReadInt32();
-                    char[] name = new char[nameLength];
-                    name = br.ReadChars(nameLength);
-
-                    byte r = br.ReadByte();
-                    byte g = br.ReadByte();
-                    byte b = br.ReadByte();
-                    byte a = br.ReadByte();
-
-                    Color surfaceColor = Color.FromArgb(a, r, g, b);
-
-                    Data2D[] data = new Data2D[sizeZ];
-                    for (int i = 0; i < sizeZ; i++)
-                    {
-                        data[i] = new Data2D(sizeX, sizeY);
-                    }
-                    for (int x = 0; x < sizeX; x++)
-                    {
-                        for (int y = 0; y < sizeY; y++)
-                        {
-                            for (int z = 0; z < sizeZ; z++)
-                            {
-                                bool active = br.ReadBoolean();
-                                if (active)
+                            foundTriangles.Add(new TriangleSurface(
+                                new Vector3[]
                                 {
-                                    data[z][x, y] = br.ReadSingle();
-                                }
-                            }
+                                    vertextList[_lookup.TriTable(cubeIndex, i + 0)],
+                                    vertextList[_lookup.TriTable(cubeIndex, i + 1)],
+                                    vertextList[_lookup.TriTable(cubeIndex, i + 2)],
+                                }, surfaceId));
                         }
                     }
-
-                    surfaces[k] = new Isosurface(new string(name), surfaceColor, new Data3D(data), isoValue, countsThreshold);
                 }
             }
-            return surfaces;
+
+            Triangles = foundTriangles.ToArray();
+        }
+        
+        private Vector3 VertexInterpolation(Vector3 p1, Vector3 p2, float valP1, float valP2)
+        {
+
+            if (Math.Abs(IsoValue - valP1) < 0.00001)
+                return p1;
+            if (Math.Abs(IsoValue - valP2) < 0.00001)
+                return p2;
+
+            if (Math.Abs(valP1 - valP2) < 0.00001)
+                return p1;
+
+            float mu = (IsoValue - valP1) / (valP2 - valP1);
+
+            return new Vector3()
+            {
+                X = p1.X + mu * (p2.X - p1.X),
+                Y = p1.Y + mu * (p2.Y - p1.Y),
+                Z = p1.Z + mu * (p2.Z - p1.Z)
+            };
+        }
+
+        public static RenderIsosurface CreateSurface(float[,,] volumeData, float isoValue, Color initialColor, int surfaceId)
+        {
+            RenderIsosurface isosurface = new RenderIsosurface()
+            {
+                Width = volumeData.GetLength(0),
+                Height = volumeData.GetLength(1),
+                Depth = volumeData.GetLength(2),
+                InitialColor = initialColor
+            };
+
+            isosurface.calculateSurface(volumeData, isoValue, surfaceId);
+
+            return isosurface;
+        }
+
+        public static async Task<RenderIsosurface> CreateSurfaceAsync(float[,,] volumeData, float isoValue, Color initialColor, int surfaceId)
+        {
+            return await Task.Run(() => CreateSurface(volumeData, isoValue, initialColor, surfaceId));
         }
     }
 
     public class TriangleSurface
     {
-        Vector3[] indicies;
-        Vector3 center;
-        Vector3 normal;
-        Color[] indexColors;
-
-        public Vector3[] Indicies { get { return indicies; } }
-        public Vector3 SurfaceNormal { get { return normal; } }
-        public TriangleSurface(Vector3[] Indicies)
+        public float SurfaceId { get; set; }
+        public Vector4[] Vertices { get; set; }
+        public Vector3 Normal
         {
-            indicies = Indicies;
-            normal = GetNormal(indicies[0], indicies[1], indicies[2]);
-        }
-
-        public void SetCenter(Vector3 Center)
-        {
-            center = Center;
-        }
-        public void SetNormal(Vector3 Normal)
-        {
-            normal = Normal;
-        }
-        public void SetColors(Color[] IndexColors)
-        {
-            indexColors = IndexColors;
-        }
-        public void Reposition(float[] Mins)
-        {
-            for (int j = 0; j < 3; j++)
+            get
             {
-                float x = indicies[j].X + Mins[0];
-                float y = indicies[j].Y + Mins[1];
-                float z = indicies[j].Z + Mins[2];
-                indicies[j] = new Vector3(x, y, z);
+                Vector3 a = new Vector3(Vertices[0].X, Vertices[0].Y, Vertices[0].Z);
+                Vector3 b = new Vector3(Vertices[1].X, Vertices[1].Y, Vertices[1].Z);
+                Vector3 c = new Vector3(Vertices[2].X, Vertices[1].Y, Vertices[2].Z);
+                Vector3 ab = b - a;
+                Vector3 ac = c - a;
+                Vector3 norm = Vector3.Cross(ab, ac);
+                norm.Normalize();
+                return norm;
             }
         }
 
-        private Vector3 GetNormal(Vector3 PointA, Vector3 PointB, Vector3 PointC)
+        public TriangleSurface(Vector3[] points, float surfaceId)
         {
-            Vector3 vectorA = new Vector3(PointB.X - PointA.X, PointB.Y - PointA.Y, PointB.Z - PointA.Z);
-            Vector3 vectorB = new Vector3(PointC.X - PointA.X, PointC.Y - PointA.Y, PointC.Z - PointA.Z);
-
-            float i = (vectorA.Y * vectorB.Y) - (vectorA.Z * vectorB.Z);
-            float j = (vectorA.X * vectorB.X) - (vectorA.Z * vectorB.Z);
-            float k = (vectorA.X * vectorB.X) - (vectorA.Y * vectorB.Y);
-
-            Vector3 vector = new Vector3(i, j, k);
-            if (vector.Z < 0) vector.Z = -vector.Z;
-            vector.Normalize();
-            return vector;
+            createSurface(points, surfaceId);
         }
-        private static SharpDX.Color ConvertColor(System.Windows.Media.Color c)
+        private void createSurface(Vector3[] points, float surfaceId)
         {
-            return new SharpDX.Color(c.R, c.G, c.B, c.A);
+            if (points.Length != 3)
+                throw new ArgumentException("Triangle surface must contain three points.");
+
+            SurfaceId = surfaceId;
+
+            Vertices = new Vector4[3];
+            for (int i = 0; i < 3; i++)
+            {
+                Vertices[i] = new Vector4(points[i], 1.0f);
+            }            
         }
     }
-    public struct Vector3
+
+    internal class GridCell
     {
-        public float X;
-        public float Y;
-        public float Z;
+        internal float[] v;
+        internal Vector3[] p;
 
-        public static implicit operator SharpDX.Vector3(Vector3 v)
+        internal GridCell()
         {
-            return new SharpDX.Vector3(v.X, v.Y, v.Z);
+            v = new float[8];
+            p = new Vector3[8];
         }
 
-        public Vector3(float X, float Y, float Z)
+        internal static GridCell Create(float[,,] volumeData, int x, int y, int z)
         {
-            this.X = X;
-            this.Y = Y;
-            this.Z = Z;
-        }
+            GridCell g = new GridCell();
 
-        public void Normalize()
-        {
-            float length = (float)Math.Sqrt((X * X) + (Y * Y) + (Z * Z));
+            g.v[0] = volumeData[x, y, z];
+            g.p[0] = new Vector3(x, y, z);
+            g.v[1] = volumeData[x + 1, y, z];
+            g.p[1] = new Vector3(x + 1, y, z);
+            g.v[2] = volumeData[x + 1, y + 1, z];
+            g.p[2] = new Vector3(x + 1, y + 1, z);
+            g.v[3] = volumeData[x, y + 1, z];
+            g.p[3] = new Vector3(x, y + 1, z);
 
-            float x = X;
-            float y = Y;
-            float z = Z;
+            g.v[4] = volumeData[x, y, z + 1];
+            g.p[4] = new Vector3(x, y, z + 1);
+            g.v[5] = volumeData[x + 1, y, z + 1];
+            g.p[5] = new Vector3(x + 1, y, z + 1);
+            g.v[6] = volumeData[x + 1, y + 1, z + 1];
+            g.p[6] = new Vector3(x + 1, y + 1, z + 1);
+            g.v[7] = volumeData[x, y + 1, z + 1];
+            g.p[7] = new Vector3(x, y + 1, z + 1);
 
-            X = x / length;
-            Y = y / length;
-            Z = z / length;
-        }
-
-        public float Length()
-        {
-            return (float)Math.Sqrt((X * X) + (Y * Y) + (Z * Z));
-        }
-        public float LengthSq()
-        {
-            return (X * X) + (Y * Y) + (Z * Z);
+            return g;
         }
     }
 
-    public class VectorCollection
-    {
-        float[] x;
-        float[] y;
-        float[] z;
-
-        public VectorCollection()
-        {
-        }
-
-        public void Add(Vector3 Vector)
-        {
-            if (x == null)
-            {
-                x = new float[1] { Vector.X };
-                y = new float[1] { Vector.Y };
-                z = new float[1] { Vector.Z };
-            }
-
-            else
-            {
-                float[] tX = x;
-                float[] tY = y;
-                float[] tZ = z;
-
-                x = new float[tX.Length + 1];
-                y = new float[tY.Length + 1];
-                z = new float[tZ.Length + 1];
-
-                int count = tX.Length;
-                for (int i = 0; i < count - 1; i++)
-                {
-                    x[i] = tX[i];
-                    y[i] = tY[i];
-                    z[i] = tZ[i];
-                }
-
-                x[count] = Vector.X;
-                y[count] = Vector.Y;
-                z[count] = Vector.Z;
-            }
-        }
-
-        public Vector3 GetValue()
-        {
-            int count = x.Length;
-            float cX = 0;
-            float cY = 0;
-            float cZ = 0;
-
-            for (int i = 0; i < count; i++)
-            {
-                cX += x[i];
-                cY += y[i];
-                cZ += z[i];
-            }
-
-            return new Vector3(cX / (float)count, cY / (float)count, cZ / (float)count);
-        }
-    }
-
+    // Edge and triangle table from http://paulbourke.net/geometry/polygonise/
     internal class LookupTable
     {
         public LookupTable()
@@ -541,7 +264,7 @@ namespace ImagingSIMS.Data.Isosurfacing
             0xe90, 0xf99, 0xc93, 0xd9a, 0xa96, 0xb9f, 0x895, 0x99c,
             0x69c, 0x795, 0x49f, 0x596, 0x29a, 0x393, 0x99 , 0x190,
             0xf00, 0xe09, 0xd03, 0xc0a, 0xb06, 0xa0f, 0x905, 0x80c,
-            0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0   
+            0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0
         };
         int[,] triTable = new int[256, 16]
         {
@@ -802,19 +525,5 @@ namespace ImagingSIMS.Data.Isosurfacing
             {0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
             {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
         };
-    }
-
-    public struct Size
-    {
-        int x;
-        int y;
-        int z;
-
-        public Size(int width, int height, int depth)
-        {
-            x = width;
-            y = height;
-            z = depth;
-        }
     }
 }

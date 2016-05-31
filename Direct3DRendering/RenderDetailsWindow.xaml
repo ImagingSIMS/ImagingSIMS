@@ -5,7 +5,7 @@
         xmlns:d3d="clr-namespace:Direct3DRendering"
         xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
         DataContext="{Binding RelativeSource={RelativeSource Self}, Path=RenderWindowView}"
-        Title="Render Details" Height="750" Width="1000" Background="#FF2C2C2C"
+        Title="Render Details" Height="750" Width="1200" Background="#FF2C2C2C"
         Loaded="Window_Loaded">
     <Window.Resources>
         <ResourceDictionary>
@@ -32,6 +32,9 @@
             <d3d:VolumeToColorConverter x:Key="volumeToColorConverter"/>
             <d3d:SharpDXColorToMediaColorConverter x:Key="sharpDXColorToMediaColorConverter"/>
             <d3d:RenderTypeToEnabledConverter x:Key="renderTypeToEnabledConverter"/>
+            <d3d:RenderObjectToVisiblityConverter x:Key="renderObjectToEnabledConverter"/>
+            <d3d:NotifiableColorToBrushConverter x:Key="notifiableColorToBrushConverter"/>
+            <d3d:TrainglesToStringConverter x:Key="trainglesToStringConverter"/>
             <BooleanToVisibilityConverter x:Key="boolVisConverter"/>
         </ResourceDictionary>
     </Window.Resources>
@@ -58,7 +61,6 @@
                     <CheckBox Content="Target Y-Axis Orbiting" IsChecked="{Binding TargetYAxisOrbiting}"/>
                     <CheckBox Content="Render Bounding Box" IsChecked="{Binding ShowBoundingBox}"/>
                     <CheckBox Content="Render Axes" IsChecked="{Binding ShowAxes}"/>
-                    <CheckBox Content="Render Isosurfaces" IsChecked="{Binding RenderIsosurfaces}" x:Name="cbIsosurfaces"/>
                     <StackPanel Orientation="Horizontal" Margin="4">
                         <TextBlock Margin="4,0,4,0" Foreground="Red">X-Axis</TextBlock>
                         <TextBlock Margin="4,0,4,0" Foreground="Green">Y-Axis</TextBlock>
@@ -143,14 +145,16 @@
             </Grid.RowDefinitions>
             <GroupBox Grid.Row="0" Grid.ColumnSpan="2" Margin="4" Foreground="White"  Header="Render Status" HorizontalAlignment="Stretch">
                 <StackPanel Orientation="Vertical">
-                    <Label Content="{Binding CameraPosition, 
+                    <Label Margin="4,0" Content="{Binding CameraPosition, 
                         Converter={StaticResource position3ToStringConverter}, ConverterParameter=Position}"/>
-                    <Label Content="{Binding CameraDirection, 
+                    <Label Margin="4,0" Content="{Binding CameraDirection, 
                         Converter={StaticResource position3ToStringConverter}, ConverterParameter=Direction}"/>
-                    <Label Content="{Binding CameraUp, 
+                    <Label Margin="4,0" Content="{Binding CameraUp, 
                         Converter={StaticResource position3ToStringConverter}, ConverterParameter=Up}"/>
-                    <Label Content="{Binding FPS,
+                    <Label Margin="4,0" Content="{Binding FPS,
                         Converter={StaticResource fpsToStringConverter}}"/>
+                    <Label Margin="4,0" Content="{Binding NumTrianglesDrawn, 
+                        Converter={StaticResource trainglesToStringConverter}}"/>
                 </StackPanel>
             </GroupBox>
             <GroupBox Grid.Row="1" Header="Volume Parameters">
@@ -174,144 +178,68 @@
                     </Style>
                 </GroupBox.Resources>
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Orientation="Vertical">
-                        <TextBlock Margin="4">Opacity:</TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=0}">1:</Label>
-                            <Slider x:Name="sliderVolumeAlpha0" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding VolumeAlphas[0]}" Width="100" 
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=0}" />
-                            <TextBlock Text="{Binding ElementName=sliderVolumeAlpha0, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=0}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=1}">2:</Label>
-                            <Slider x:Name="sliderVolumeAlpha1" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding VolumeAlphas[1]}" Width="100"
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=1}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeAlpha1, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=1}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=2}">3:</Label>
-                            <Slider x:Name="sliderVolumeAlpha2" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding VolumeAlphas[2]}" Width="100"
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=2}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeAlpha2, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=2}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=3}">4:</Label>
-                            <Slider x:Name="sliderVolumeAlpha3" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding VolumeAlphas[3]}" Width="100"
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=3}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeAlpha3, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=3}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=4}">5:</Label>
-                            <Slider x:Name="sliderVolumeAlpha4" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding VolumeAlphas[4]}" Width="100"
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=4}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeAlpha4, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=4}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=5}">6:</Label>
-                            <Slider x:Name="sliderVolumeAlpha5" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding VolumeAlphas[5]}" Width="100"
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=5}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeAlpha5, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=5}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=6}">7:</Label>
-                            <Slider x:Name="sliderVolumeAlpha6" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding VolumeAlphas[6]}" Width="100"
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=6}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeAlpha6, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=6}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=7}">8:</Label>
-                            <Slider x:Name="sliderVolumeAlpha7" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                    Value="{Binding VolumeAlphas[7]}" Width="100"
-                                    IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=7}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeAlpha7, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=7}"/>
-                        </StackPanel>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Orientation="Vertical" IsEnabled="{Binding ElementName=cbIsosurfaces, Path=IsChecked}">
-                        <TextBlock Margin="4">Isosurface Value:</TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=0}">1:</Label>
-                            <Slider x:Name="sliderVolumeIso0" Minimum="0.01" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding IsosurfaceValues[0]}" Width="100" 
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=0}" />
-                            <TextBlock Text="{Binding ElementName=sliderVolumeIso0, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=0}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=1}">2:</Label>
-                            <Slider x:Name="sliderVolumeIso1" Minimum="0.01" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding IsosurfaceValues[1]}" Width="100"
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=1}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeIso1, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=1}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=2}">3:</Label>
-                            <Slider x:Name="sliderVolumeIso2" Minimum="0.01" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding IsosurfaceValues[2]}" Width="100"
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=2}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeIso2, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=2}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=3}">4:</Label>
-                            <Slider x:Name="sliderVolumeIso3" Minimum="0.01" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding IsosurfaceValues[3]}" Width="100"
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=3}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeIso3, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=3}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=4}">5:</Label>
-                            <Slider x:Name="sliderVolumeIso4" Minimum="0.01" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding IsosurfaceValues[4]}" Width="100"
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=4}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeIso4, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=4}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=5}">6:</Label>
-                            <Slider x:Name="sliderVolumeIso5" Minimum="0.01" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding IsosurfaceValues[5]}" Width="100"
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=5}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeIso5, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=5}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=6}">7:</Label>
-                            <Slider x:Name="sliderVolumeIso6" Minimum="0.01" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                Value="{Binding IsosurfaceValues[6]}" Width="100"
-                                IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=6}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeIso6, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=6}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=7}">8:</Label>
-                            <Slider x:Name="sliderVolumeIso7" Minimum="0.01" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
-                                    Value="{Binding IsosurfaceValues[7]}" Width="100"
-                                    IsEnabled="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToEnabledConverter}, ConverterParameter=7}"/>
-                            <TextBlock Text="{Binding ElementName=sliderVolumeIso7, Path=Value, StringFormat=0.00}"
-                                       Foreground="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource volumeToColorConverter}, ConverterParameter=7}"/>
-                        </StackPanel>
-                    </StackPanel>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Margin="4">Volume Color:</TextBlock>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanContentScroll="True">
+                        <Grid IsEnabled="{Binding Path=RenderType, Converter={StaticResource renderTypeToEnabledConverter}, ConverterParameter=Isosurface|Volume}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=0}">
+                                <Label Foreground="{Binding VolumeColors[0], Converter={StaticResource notifiableColorToBrushConverter}}">1:</Label>
+                                <cc:CollapsedColorSelector 
+                                    SelectedColor="{Binding VolumeColors[0], Mode=TwoWay}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=1}">
+                                <Label Foreground="{Binding VolumeColors[1], Converter={StaticResource notifiableColorToBrushConverter}}">2:</Label>
+                                <cc:CollapsedColorSelector 
+                                    SelectedColor="{Binding VolumeColors[1], Mode=TwoWay}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=2}">
+                                <Label Foreground="{Binding VolumeColors[2], Converter={StaticResource notifiableColorToBrushConverter}}">3:</Label>
+                                <cc:CollapsedColorSelector 
+                                    SelectedColor="{Binding VolumeColors[2], Mode=TwoWay}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="0" Grid.Row="3" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=3}">
+                                <Label Foreground="{Binding VolumeColors[3], Converter={StaticResource notifiableColorToBrushConverter}}">4:</Label>
+                                <cc:CollapsedColorSelector 
+                                    SelectedColor="{Binding VolumeColors[3], Mode=TwoWay}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=4}">
+                                <Label Foreground="{Binding VolumeColors[4], Converter={StaticResource notifiableColorToBrushConverter}}">5:</Label>
+                                <cc:CollapsedColorSelector 
+                                    SelectedColor="{Binding VolumeColors[4], Mode=TwoWay}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=5}">
+                                <Label Foreground="{Binding VolumeColors[5], Converter={StaticResource notifiableColorToBrushConverter}}">6:</Label>
+                                <cc:CollapsedColorSelector 
+                                    SelectedColor="{Binding VolumeColors[5], Mode=TwoWay}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=6}">
+                                <Label Foreground="{Binding VolumeColors[6], Converter={StaticResource notifiableColorToBrushConverter}}">7:</Label>
+                                <cc:CollapsedColorSelector 
+                                    SelectedColor="{Binding VolumeColors[6], Mode=TwoWay}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=7}">
+                                <Label Foreground="{Binding VolumeColors[7], Converter={StaticResource notifiableColorToBrushConverter}}">8:</Label>
+                                <cc:CollapsedColorSelector 
+                                    SelectedColor="{Binding VolumeColors[7], Mode=TwoWay}" />
+                            </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
                 </Grid>
             </GroupBox>
         </Grid>

@@ -670,13 +670,14 @@
                         <!-- Possible .NET bug? This line in 4.6.2 does not allow for items in the ListBox to be selected -->
                         <!-- IsEnabled="{Binding ElementName=listBoxRenderingVolumes, Path=HasItems}" -->
                         <RibbonGallery BorderBrush="#FF211C1C" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                            <ListBox x:Name="listBoxRenderingVolumes" Width="Auto" ItemsSource="{Binding Workspace.Volumes}" SelectionMode="Multiple" Background="Transparent">
+                            <ListBox x:Name="listBoxRenderingVolumes" Width="Auto" ItemsSource="{Binding Workspace.Volumes}" SelectionMode="Multiple" Background="Transparent"
+                                     Grid.IsSharedSizeScope="True">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="VolumeName"/>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Depth"/>
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Grid.Column="0" Text="{Binding Path=VolumeName}" Margin="4,0,4,0" FontSize="14">
                                                 <TextBlock.Foreground>
@@ -727,18 +728,51 @@
                                    Click="Render3D" ToolTipTitle="Render"
                                    ToolTipDescription="Creates a 3D rendering of the selected image series with the specified render parameters."/>
                 </RibbonGroup>
-                <RibbonGroup Header="Isosurface Data">
-                    <RibbonButton   Label="Create"  Click="isosurfaceCreate_Click"
-                                    LargeImageSource="Images\NewIso.ico" ToolTipTitle="New Isosurface"
-                                    ToolTipDescription="Create a new isosurface representation."
-                                    ToolTipImageSource="Images\NewIso.ico"/>
-                    <RibbonButton   Label="Load" Click="isosurfaceLoad_Click"
-                                    LargeImageSource="Images\OpenIso.ico" ToolTipTitle="Load Isosurface"
-                                    ToolTipDescription="Opens a saved isosurface file or a series of isosurface files."
-                                    ToolTipImageSource="Images\OpenIso.ico"/>
-                </RibbonGroup>
                 <RibbonGroup Header="Isosurface Rendering">
-                    
+                    <RibbonMenuButton x:Name="renderingIsosurfacesMenu" Label="Select"  LargeImageSource="Images\Iso.ico"
+                                          SmallImageSource="Images\eraser.ico"
+                                          ToolTipTitle="Select Volumes" ToolTipImageSource="Images\Volume.png"
+                                          ToolTipDescription="Choose one or more volume data sets to render.">
+                        <!-- Possible .NET bug? This line in 4.6.2 does not allow for items in the ListBox to be selected -->
+                        <!-- IsEnabled="{Binding ElementName=listBoxRenderingVolumes, Path=HasItems}" -->
+                        <RibbonGallery BorderBrush="#FF211C1C" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                            <ListBox x:Name="listBoxRenderingIsosurfaces" Width="Auto" ItemsSource="{Binding Workspace.Volumes}" SelectionMode="Multiple" Background="Transparent"
+                                     Grid.IsSharedSizeScope="True">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="VolumeName"/>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Depth"/>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="IsoValue"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding Path=VolumeName}" Margin="4,0,4,0" FontSize="14">
+                                                <TextBlock.Foreground>
+                                                    <SolidColorBrush Color="{Binding Path=DataColor}"/>
+                                                </TextBlock.Foreground>
+                                            </TextBlock>
+                                            <TextBlock Grid.Column="1" Text="{Binding Path=Depth}" Margin="4,0,4,0" FontSize="14"/>
+                                            <TextBox Grid.Column="2" Text="{Binding Path=IsoValue}" Margin="4,0,4,0"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListBoxItem}">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter Property="Background" Value="Orange"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
+                        </RibbonGallery>
+                    </RibbonMenuButton>
+                    <RibbonButton  Label="Render" LargeImageSource="Images\CD.ico"
+                                   SmallImageSource="Images\CD.ico"
+                                   Click="Render3DIso" ToolTipTitle="Render"
+                                   ToolTipDescription="Creates a 3D rendering of the selected image series with the specified render parameters."/>
                 </RibbonGroup>
                 <RibbonGroup Header="Depth Rendering">
                     <RibbonButton Label="Create Depth Render" LargeImageSource="Images\HeightMap.ico"

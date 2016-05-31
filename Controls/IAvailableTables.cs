@@ -79,5 +79,7 @@ namespace ImagingSIMS.Controls
         public static IAvailableTables AvailableTablesSource { get; set; }
 
         public static IAvailableImageSeries AvailableImageSeriesSource { get; set; }
+
+        public static IAvailableVolumes AvailableVolumesSource { get; set; }
     }
 }
