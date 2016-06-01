@@ -374,6 +374,8 @@
     <Resource Include="Images\SelectAll_32x.png" />
     <Resource Include="Images\ClearCollection_16x.png" />
     <Resource Include="Images\AddToCollection_16x.png" />
+    <Resource Include="Images\NewCube.ico" />
+    <Resource Include="Images\NewCubeSlice.ico" />
     <Content Include="Plugins\ITKImageRegistration.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

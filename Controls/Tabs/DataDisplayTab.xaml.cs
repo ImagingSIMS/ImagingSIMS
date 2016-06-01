@@ -570,7 +570,7 @@ namespace ImagingSIMS.Controls.Tabs
 
                 bool? result = DialogBox.Show("The following displays do not have solid color scales set:" + list,
                     "Click OK to proceed, which will result in those volumes having a color scale set to white, or click Cancel to adjust the settings.",
-                    "Volume", DialogIcon.Information);
+                    "Volume", DialogIcon.Information, true);
                 if (result != true)
                     return;
             }

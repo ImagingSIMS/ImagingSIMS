@@ -163,7 +163,7 @@ namespace Direct3DRendering
             const float maxSize = 2.0f;
             float sizeX = maxSize;
             float sizeY = maxSize;
-            float sizeZ = (depth / width) * maxSize;
+            float sizeZ = ((float)depth / (float)width) * maxSize;
             //sizeZ = sizeX;
 
             float startX = -sizeX / 2f;
