@@ -837,24 +837,24 @@
             <RibbonTab Header="Data Display" ContextualTabGroupHeader="Data"
                 Visibility="{Binding ElementName=tabMain, Path=SelectedItem, Converter={StaticResource tabVisConverter}, ConverterParameter=DataDisplay}">
                 <RibbonGroup Header="Collection">
-                    <RibbonButton Margin="4" SmallImageSource="Images\AddToCollection_16x.png"
+                    <RibbonButton SmallImageSource="Images\AddToCollection_16x.png"
                                   Label="Select All"
                                   Command="ApplicationCommands.SelectAll"
                                   CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
-                    <RibbonButton Margin="4" SmallImageSource="Images\ClearCollection_16x.png"
+                    <RibbonButton SmallImageSource="Images\ClearCollection_16x.png"
                                   Label="Clear Selection"
                                   Command="ApplicationCommands.SelectAll"
                                   CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"
                                   CommandParameter="Clear"/>
-                    <RibbonButton Margin="4" LargeImageSource="Images\SaveAll.ico" SmallImageSource="Images\SaveAll.ico"
+                    <RibbonButton LargeImageSource="Images\SaveAll.ico" SmallImageSource="Images\SaveAll.ico"
                                   Label="Save"
                                   Command="c:DataDisplayTabCommands.SaveItems"
                                   CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Color Scale">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="4" VerticalAlignment="Center">Color scale:</TextBlock>
-                        <ComboBox Margin="4" Width="125" Height="20" IsEditable="False"
+                        <TextBlock VerticalAlignment="Center">Color scale:</TextBlock>
+                        <ComboBox Width="125" Height="20" IsEditable="False"
                                   ItemsSource="{Binding Source={StaticResource colorScaleFromEnum}}"
                                   SelectedItem="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.ColorScale}">
                             <ComboBox.ItemTemplate>
@@ -863,7 +863,7 @@
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
-                        <RibbonMenuButton Margin="4" SmallImageSource="Images\ColorPicker.ico">
+                        <RibbonMenuButton SmallImageSource="Images\ColorPicker.ico">
                             <RibbonGallery ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                            ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                 <commonctrls:ColorSelector IsAlphaEnabled="False"
@@ -872,39 +872,39 @@
                         </RibbonMenuButton>
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
-                        <RibbonButton Margin="4" SmallImageSource="Images\ColorWheel.ico" Label="Apply All" 
+                        <RibbonButton SmallImageSource="Images\ColorWheel.ico" Label="Apply All" 
                                       Command="c:DataDisplayTabCommands.ApplyColorScale" CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}" 
                                       CommandParameter="All"/>
-                        <RibbonButton Margin="4" SmallImageSource="Images\ColorWheel.ico" Label="Apply Selected"  
+                        <RibbonButton SmallImageSource="Images\ColorWheel.ico" Label="Apply Selected"  
                                       Command="c:DataDisplayTabCommands.ApplyColorScale" CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}" 
                                       CommandParameter="Selected"/>
                     </StackPanel>
                 </RibbonGroup>
                 <RibbonGroup Header="Saturation">
-                    <RibbonButton Margin="4" LargeImageSource="Images\Undo_grey.ico" SmallImageSource="Images\SmallIcon.png"
+                    <RibbonButton LargeImageSource="Images\Undo_grey.ico" SmallImageSource="Images\SmallIcon.png"
                                   Label="Reset"
                                   Command="c:DataDisplayTabCommands.ResetSaturations"
                                   CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Layers">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="4" MinWidth="20" VerticalAlignment="Center" Text="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"/>
-                        <xctk:RangeSlider Margin="4" Width="150" Step="1"
+                        <TextBlock Margin="4" MinWidth="20" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"/>
+                        <xctk:RangeSlider Margin="4"  Width="150" Step="1"
                                       LowerValue="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"
                                       HigherValue="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerEnd}"
                                       Minimum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerMinimum}"
                                       Maximum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerMaximum}"/>
                         <TextBlock Margin="4" MinWidth="20" VerticalAlignment="Center" Text="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerEnd}"/>
                     </StackPanel>                    
-                    <RibbonButton Margin="4" Label="Apply"
+                    <RibbonButton Label="Apply"
                                   Command="c:DataDisplayTabCommands.ApplyLayerRange"
                                   CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"
                                   LargeImageSource="Images\LayerDiagram.ico"
                                   SmallImageSource="Images\LayerDiagram.ico"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Convert">
-                    <RibbonButton Margin="4" Label="Sum Layers"
-                                  LargeImageSource="Images\LayerDiagram.ico" SmallImageSource="Images\LayerDiagram.ico"
+                    <RibbonButton Label="Sum Layers"
+                                  LargeImageSource="Images\NewCubeSlice.ico" SmallImageSource="Images\NewCubeSlice.ico"
                                   Command="c:DataDisplayTabCommands.GetSummedLayers"
                                   CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
                     <StackPanel Orientation="Horizontal">
@@ -913,8 +913,8 @@
                                             Minimum="1" Maximum="100"
                                             Value="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerBinSize}"/>
                     </StackPanel>
-                    <RibbonButton Margin="4" Label="Get Volumes"
-                                  LargeImageSource="Images\LayerDiagram.ico" SmallImageSource="Images\LayerDiagram.ico"
+                    <RibbonButton Label="Get Volumes"
+                                  LargeImageSource="Images\NewCube.ico" SmallImageSource="Images\NewCube.ico"
                                   Command="c:DataDisplayTabCommands.GetSelectedVolumes"
                                   CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
                 </RibbonGroup>
@@ -957,7 +957,7 @@
                                   Drop="listViewData_Drop" AllowDrop="True">
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding DataName}" Width="225"/>
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding DataName}" Width="250"/>
                                 </GridView>
                             </ListView.View>
                             <ListView.ContextMenu>
@@ -1006,7 +1006,7 @@
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="150"/>
-                                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding SpectrumType}" Width="75"/>
+                                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding SpectrumType}" Width="100"/>
                                 </GridView>
                             </ListView.View>
                             <ListView.ContextMenu>
@@ -1045,7 +1045,7 @@
                                   Margin="4" Background="Transparent" ItemsSource="{Binding Workspace.Components}" BorderBrush="Transparent" >
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ComponentName}" Width="150"/>
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ComponentName}" Width="175"/>
                                     <GridViewColumn Header="Tables" DisplayMemberBinding="{Binding NumberTables}" Width="75"/>
                                 </GridView>
                             </ListView.View>
@@ -1100,7 +1100,7 @@
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn Header="Dimensions" DisplayMemberBinding="{Binding Dimensions}" Width="75"/>
+                                    <GridViewColumn Header="Dimensions" DisplayMemberBinding="{Binding Dimensions}" Width="100"/>
                                 </GridView>
                             </ListView.View>
                             <ListView.ContextMenu>
@@ -1149,7 +1149,7 @@
                                   Margin="4" Background="Transparent" ItemsSource="{Binding Workspace.ImageSeries}" BorderBrush="Transparent" >
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding SeriesName}" Width="150"/>
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding SeriesName}" Width="175"/>
                                     <GridViewColumn Header="# Images" DisplayMemberBinding="{Binding NumberImages}" Width="75"/>
                                 </GridView>
                             </ListView.View>
@@ -1169,7 +1169,7 @@
                                   Margin="4" Background="Transparent" ItemsSource="{Binding Workspace.SEMs}" BorderBrush="Transparent" >
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding SEMName}" Width="225"/>
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding SEMName}" Width="250"/>
                                 </GridView>
                             </ListView.View>
                             <ListView.ContextMenu>
