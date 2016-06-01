@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ImagingSIMS.Data;
 using ImagingSIMS.Data.Imaging;
+using ImagingSIMS.Data.Rendering;
 
 namespace ImagingSIMS.Controls.ViewModels
 {
@@ -401,6 +402,41 @@ namespace ImagingSIMS.Controls.ViewModels
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
+        }
+
+        public Volume GetSelectedVolume(int layerBinSize = 1)
+        {
+            Color c;
+            if (ColorScale == ColorScaleTypes.Solid)
+                c = SolidColorScale;
+            else c = ColorScales.FromScale(1, 1, ColorScale);
+
+            // Convert back to zero-based
+            Data3D d = DataSource.Slice(LayerStart - 1, LayerEnd - 1, layerBinSize);
+
+            return new Volume(d, c, d.DataName);
+        }
+        public async Task<Volume> GetSelectedVolumeAsync(int layerBinSize = 1)
+        {
+            Color c;
+            if (ColorScale == ColorScaleTypes.Solid)
+                c = SolidColorScale;
+            else c = ColorScales.FromScale(1, 1, ColorScale);
+
+            // Convert back to zero-based
+            Data3D d = await DataSource.SliceAsync(LayerStart - 1, LayerEnd - 1, layerBinSize);
+
+            return new Volume(d, c, d.DataName);
+        }
+        public Data2D SumSelectedLayers()
+        {
+            // Convert back to zero-based
+            return DataSource.FromLayers(LayerStart - 1, LayerEnd - 1);
+        }
+        public async Task<Data2D> SumSelectedLayersAsync()
+        {
+            // Convert back to zero-based
+            return await DataSource.FromLayersAsync(LayerStart - 1, LayerEnd - 1);
         }
 
         public static Data3DDisplayViewModel Empty

@@ -163,18 +163,24 @@ namespace ImagingSIMS.Data.Rendering
             this.Data = Data;
             this.DataColor = DataColor;
             this.VolumeName = VolumeName;
+
+            if (string.IsNullOrEmpty(Data.DataName))
+                Data.DataName = VolumeName;
         }
         public Volume(Data2D[] Data, Color DataColor)
         {
             this.Data = new Data3D(Data);
             this.DataColor = DataColor;
-            VolumeName = "";
+            this.VolumeName = "New Volume";
+            this.Data.DataName = this.VolumeName;
+
         }
         public Volume(Data2D[] Data, Color DataColor, string VolumeName)
         {
             this.Data = new Data3D(Data);
             this.DataColor = DataColor;
             this.VolumeName = VolumeName;
+            this.Data.DataName = this.VolumeName;
         }
         public Volume(string FilePath)
         {

@@ -45,6 +45,8 @@
         <CommandBinding Command="c:DataDisplayTabCommands.ResetSaturations" Executed="ResetSaturations_Executed"/>
         <CommandBinding Command="c:DataDisplayTabCommands.ApplyLayerRange" Executed="ApplyLayerRange_Executed"/>
         <CommandBinding Command="ApplicationCommands.SelectAll" Executed="SelectAll_Executed"/>
+        <CommandBinding Command="c:DataDisplayTabCommands.GetSelectedVolumes" Executed="GetSelectedVolumes_Executed"/>
+        <CommandBinding Command="c:DataDisplayTabCommands.GetSummedLayers" Executed="GetSummedLayers_Executed"/>
     </UserControl.CommandBindings>
     <Grid>
         <Grid.ColumnDefinitions>

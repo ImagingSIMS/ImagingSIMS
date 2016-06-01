@@ -17,6 +17,7 @@ namespace ImagingSIMS.Controls.ViewModels
         int _layerEnd;
         int _layerMinimum;
         int _layerMaximum;
+        int _layerBinSize;
 
         public ColorScaleTypes ColorScale
         {
@@ -90,6 +91,19 @@ namespace ImagingSIMS.Controls.ViewModels
                 }
             }
         }
+        public int LayerBinSize
+        {
+            get { return _layerBinSize; }
+            set
+            {
+                if(_layerBinSize != value)
+                {
+                    _layerBinSize = value;
+                    NotifyPropertyChanged("LayerBinSize");
+                }
+            }
+        }
+
 
         public DataDisplayBatchApplyViewModel()
         {
@@ -98,6 +112,8 @@ namespace ImagingSIMS.Controls.ViewModels
 
             LayerStart = 1;
             LayerEnd = 1;
+
+            LayerBinSize = 1;
         }
         public DataDisplayBatchApplyViewModel(ColorScaleTypes ColorScale)
         {
@@ -106,6 +122,8 @@ namespace ImagingSIMS.Controls.ViewModels
 
             LayerStart = 1;
             LayerEnd = 1;
+
+            LayerBinSize = 1;
         }
         public DataDisplayBatchApplyViewModel(Color SolidColorScale)
         {
@@ -114,6 +132,8 @@ namespace ImagingSIMS.Controls.ViewModels
 
             LayerStart = 1;
             LayerEnd = 1;
+
+            LayerBinSize = 1;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

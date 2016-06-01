@@ -22,6 +22,8 @@ namespace ImagingSIMS.Controls
         private static RoutedUICommand _saveItems = new RoutedUICommand("Save Display Items", "SaveItems", typeof(DataDisplayTabCommands));
         private static RoutedUICommand _resetSaturations = new RoutedUICommand("Reset Saturation", "ResetSaturation", typeof(DataDisplayTabCommands));
         private static RoutedUICommand _applyLayerRange = new RoutedUICommand("Apply Layer Range", "ApplyLayerRange", typeof(DataDisplayTabCommands));
+        private static RoutedUICommand _getSelectedVolumes = new RoutedUICommand("Get Selected Volumes", "GetSelectedVolume", typeof(DataDisplayTabCommands));
+        private static RoutedUICommand _getSummedLayers = new RoutedUICommand("Get Summed Layers", "GetSummedLayers", typeof(DataDisplayTabCommands));
 
         public static RoutedUICommand ApplyColorScale
         {
@@ -38,6 +40,14 @@ namespace ImagingSIMS.Controls
         public static RoutedUICommand ApplyLayerRange
         {
             get { return _applyLayerRange; }
+        }
+        public static RoutedUICommand GetSelectedVolumes
+        {
+            get { return _getSelectedVolumes; }
+        }
+        public static RoutedUICommand GetSummedLayers
+        {
+            get { return _getSummedLayers; }
         }
     }
 }
