@@ -2048,6 +2048,45 @@ namespace ImagingSIMS.Data
             return new Data3D(d);
         }
 
+        public Data3D Slice(int layerStart, int layerEnd, int binSize = 1)
+        {
+            int depth = (layerEnd - layerStart + 1) / binSize;
+            if ((layerEnd - layerStart + 1) % binSize != 0)
+                depth += 1;
+
+            if (depth == 0)
+                throw new ArgumentException("Invalid depth dimension");
+
+            Data3D d = new Data3D(_width, _height, depth);
+
+            d.DataName = $"{DataName}: ({layerStart + 1}-{layerEnd + 1})";
+
+            for (int x = 0; x < _width; x++)
+            {
+                for (int y = 0; y < _height; y++)
+                {
+                    for (int z = 0; z < depth; z++)
+                    {
+                        float sum = 0;
+                        for (int i = 0; i < binSize; i++)
+                        {
+                            int pos = layerStart + (z * binSize + i);
+                            if (pos >= Depth) break;
+
+                            sum += this[x, y, pos];
+                        }
+                        d[x, y, z] = sum;
+                    }
+                }
+            }
+
+            return d;
+        }
+        public async Task<Data3D> SliceAsync(int layerStart, int layerEnd, int binSize = 1)
+        {
+            return await Task.Run(() => Slice(layerStart, layerEnd, binSize));
+        }
+
         public Data2D FromLayers(int startLayer, int endLayer)
         {
             Data2D d = new Data2D(Width, Height);
@@ -2063,7 +2102,13 @@ namespace ImagingSIMS.Data
                 }
             }
 
+            d.DataName = $"{DataName}: ({startLayer + 1}-{endLayer + 1})";
+
             return d;
+        }
+        public async Task<Data2D> FromLayersAsync(int startLayer, int endLayer)
+        {
+            return await Task.Run(() => FromLayers(startLayer, endLayer));
         }
 
         public Data3D ExpandIntensity(int windowSize = 5)
@@ -2074,6 +2119,10 @@ namespace ImagingSIMS.Data
                 layers[z] = this.Layers[z].ExpandIntensity(windowSize);
             }
             return new Data3D(layers);
+        }
+        public async Task<Data3D> ExpandIntensityAsync(int windowSize = 5)
+        {
+            return await Task.Run(() => ExpandIntensity(windowSize));
         }
 
         public static explicit operator Color[,] (Data3D d)

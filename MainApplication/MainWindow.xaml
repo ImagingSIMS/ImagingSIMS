@@ -920,6 +920,22 @@
                                   LargeImageSource="Images\LayerDiagram.ico"
                                   SmallImageSource="Images\LayerDiagram.ico"/>
                 </RibbonGroup>
+                <RibbonGroup Header="Convert">
+                    <RibbonButton Margin="4" Label="Sum Layers"
+                                  LargeImageSource="Images\LayerDiagram.ico" SmallImageSource="Images\LayerDiagram.ico"
+                                  Command="c:DataDisplayTabCommands.GetSummedLayers"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="4" MinWidth="20" VerticalAlignment="Center">Bin Size:</TextBlock>
+                        <xctk:IntegerUpDown Margin="4" Width="75" 
+                                            Minimum="1" Maximum="100"
+                                            Value="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerBinSize}"/>
+                    </StackPanel>
+                    <RibbonButton Margin="4" Label="Get Volumes"
+                                  LargeImageSource="Images\LayerDiagram.ico" SmallImageSource="Images\LayerDiagram.ico"
+                                  Command="c:DataDisplayTabCommands.GetSelectedVolumes"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
+                </RibbonGroup>
             </RibbonTab>
         </Ribbon>
         <Grid Grid.Row="1">
@@ -1107,6 +1123,7 @@
                             </ListView.View>
                             <ListView.ContextMenu>
                                 <ContextMenu>
+                                    <MenuItem Header="View Data" Click="CMVolumeViewData"/>
                                     <MenuItem Header="Delete" Click="CMVolumeDelete"/>
                                     <Separator/>
                                     <MenuItem Header="Load" Click="LoadVolume"/>

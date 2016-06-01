@@ -245,6 +245,7 @@ namespace ImagingSIMS.MainApplication
 
             AvailableHost.AvailableTablesSource = this;
             AvailableHost.AvailableImageSeriesSource = this;
+            AvailableHost.AvailableVolumesSource = this;
 
             Trace.WriteLine("Window load complete.");
         }
@@ -3859,6 +3860,20 @@ namespace ImagingSIMS.MainApplication
                 c.ComponentName = te.EnteredText;
             }
         }
+        private async void CMVolumeViewData(object sender, RoutedEventArgs e)
+        {
+            var selected = GetSelectedVolumes();
+
+            DataDisplayTab dt = new DataDisplayTab();
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Volume Preview", true);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+
+            foreach (var item in selected)
+            {
+                await dt.AddDataSourceAsync(item.Data, item.DataColor);
+            }
+        }
         private void CMVolumeDelete(object sender, RoutedEventArgs e)
         {
             if (listViewVolumes.SelectedItems.Count == 0) return;
@@ -4735,11 +4750,11 @@ namespace ImagingSIMS.MainApplication
             }
             return volumes;
         }
-        public List<Volume> GetAvailablevolumes()
+        public List<Volume> GetAvailableVolumes()
         {
             return Workspace.Volumes.ToList();
         }
-        public void Removevolumes(List<Volume> volumesToRemove)
+        public void RemoveVolumes(List<Volume> volumesToRemove)
         {
             List<Volume> notRemoved = new List<Volume>();
 
@@ -4771,7 +4786,7 @@ namespace ImagingSIMS.MainApplication
                     sb.ToString(), "Remove", DialogIcon.Alert);
             }
         }
-        public void Removevolumes(Volume[] volumesToRemove)
+        public void RemoveVolumes(Volume[] volumesToRemove)
         {
             List<Volume> notRemoved = new List<Volume>();
 
@@ -4803,7 +4818,7 @@ namespace ImagingSIMS.MainApplication
                     sb.ToString(), "Remove", DialogIcon.Alert);
             }
         }
-        public void Addvolumes(List<Volume> volumesToAdd)
+        public void AddVolumes(List<Volume> volumesToAdd)
         {
             List<Volume> notAdded = new List<Volume>();
 
@@ -4831,7 +4846,7 @@ namespace ImagingSIMS.MainApplication
                     sb.ToString(), "Add", DialogIcon.Alert);
             }
         }
-        public void Addvolumes(Volume[] volumesToAdd)
+        public void AddVolumes(Volume[] volumesToAdd)
         {
             List<Volume> notAdded = new List<Volume>();
 
@@ -4859,7 +4874,7 @@ namespace ImagingSIMS.MainApplication
                     sb.ToString(), "Add", DialogIcon.Alert);
             }
         }
-        public void Replacevolume(Volume toReplace, Volume newvolume)
+        public void ReplaceVolume(Volume toReplace, Volume newvolume)
         {
             bool isSelected = false;
 
