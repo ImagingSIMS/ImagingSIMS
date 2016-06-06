@@ -63,6 +63,7 @@
             </Setter>
         </Style>
         <local:ColorToComponentScaleConverter x:Key="colorToComponentScaleConverter"/>
+        <local:BooleanToVisibilityInverseConverter x:Key="boolToVisInvertedConverter"/>
         <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
         <SolidColorBrush x:Key="backgroundBrush" Color="#FF333333"/>
     </UserControl.Resources>
@@ -84,7 +85,7 @@
                   IsChecked="{Binding ElementName=userControl, Path=ColorSlidersVisible}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
             <!-- A -->
-            <Grid Grid.Row="0">
+            <Grid Grid.Row="0" Visibility="{Binding ElementName=userControl, Path=IsAlphaEnabled, Converter={StaticResource boolToVisConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
                     <ColumnDefinition Width="*"/>
@@ -94,6 +95,21 @@
                 <Label Grid.Column="0">A</Label>
                 <Slider Grid.Column="1" Value="{Binding A, Mode=TwoWay}" Background="{Binding Color, Converter={StaticResource colorToComponentScaleConverter}, ConverterParameter=A}"/>
                 <TextBox Grid.Column="2" Text="{Binding A}"/>
+            </Grid>
+            <Grid Grid.Row="0" Visibility="{Binding ElementName=userControl, Path=IsAlphaEnabled, Converter={StaticResource boolToVisInvertedConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="TextBoxes"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" Grid.ColumnSpan="3" Margin="8,2">
+                    <Image Grid.Column="1" Source="TransparentBackground.png" Height="20" Stretch="Fill"/>
+                    <Border BorderThickness="0">
+                        <Border.Background>
+                            <SolidColorBrush Color="{Binding Color}"/>
+                        </Border.Background>
+                    </Border>
+                </Grid>                    
             </Grid>
 
             <!-- R -->

@@ -16,21 +16,36 @@ SamplerState		samplerLinear : register(s0);
 
 cbuffer RenderParams : register(b0)
 {
-	float4x4	WorldProjView;				//64 x 1 = 64
-	float2		InvWindowSize;				// 8 x 1 =  8
-	float		Brightness;					// 4 x 1 =  4
-	float		ClipDistance;				// 4 x 1 =  4
-	float3		CameraPosition;				//12 x 1 = 12
-	float		r_padding0;					// 4 x 1 =  4
-	float3		CameraDirection;			//12 x 1 = 12
-	float		r_padding1;					// 4 x 1 =  4
-	float3		CameraUp;					//12 x 1 = 12
-	float		r_padding2;					// 4 x 1 =  4
-	float4		NearClipPlane;				//16 x 1 = 16
-	float4		FarClipPlane;				//16 x 1 = 16
+	float4x4	WorldProjView;				//64 x 1 =  64
+	float2		InvWindowSize;				// 8 x 1 =   8
+	float		Brightness;					// 4 x 1 =   4
+	float		ClipDistance;				// 4 x 1 =   4
+	float3		CameraPosition;				//12 x 1 =  12
+	float		r_padding0;					// 4 x 1 =   4
+	float3		CameraDirection;			//12 x 1 =  12
+	float		r_padding1;					// 4 x 1 =   4
+	float3		CameraUp;					//12 x 1 =  12
+	float		r_padding2;					// 4 x 1 =   4
+	float4		NearClipPlane;				//16 x 1 =  16
+	float4		FarClipPlane;				//16 x 1 =  16
+	float4		MinClipCoords;				//16 x 1 =  16
+	float4		MaxClipCoords;				//16 x 1 =  16
 }
 
-cbuffer VolumeParams : register(b1)
+cbuffer LightingParams : register(b1)
+{
+	float4		AmbientLightColor;			//16 x 1 =  16
+	float		AmbientLightIntensity;		// 4 x 1 =   4
+	float		EnableAmbientLighting;		// 4 x 1 =   4
+	float		EnableDirectionalLighting;	// 4 x 1 =   4
+	float		EnableSpecularLighting;		// 4 x 1 =   4
+	float4		DirectionalEnabled[8];		//16 x 8 = 128
+	float4		DirectionalDirection[8];	//16 x 8 = 128
+	float4		DirectionalColor[8];		//16 x 8 = 128	
+	float4		DirectionalIntensity[8];	//16 x 8 = 128
+}
+
+cbuffer VolumeParams : register(b2)
 {
 	float4		VolumeScaleStart;			//16 x 1 =   4
 	float4		VolumeColor[8];				//16 x 8 = 128
@@ -42,7 +57,7 @@ cbuffer VolumeParams : register(b1)
 	float		v_padding2;					// 4 x 1 =   4
 }
 
-cbuffer IsosurfaceParams : register(b2)
+cbuffer IsosurfaceParams : register(b3)
 {
 	float4		IsosurfaceColor[8];			//16 x 8 = 128
 	float		NumIsosurfaces;				// 4 x 1 =   4
@@ -54,39 +69,46 @@ cbuffer IsosurfaceParams : register(b2)
 static const uint maxVolumes = 8;
 static const uint maxIterations = 256;
 static const float stepSize = sqrt(3.f) / maxIterations;
+static const uint numDirectionalLights = 8;
+static const float matAmbient = 0.5f;
+static const float matDiffuse = 0.5f;
 
 //Struct definitions
 
 struct MODEL_VS_Input
 {
-	float4 pos : POSITION;
+	float4	pos : POSITION;
 };
 struct MODEL_PS_Input
 {
-	float4 pos : SV_POSITION;
-	float4 tex : TEXCOORD0;
+	float4	pos : SV_POSITION;
+	float4	tex : TEXCOORD0;
 };
 
 struct RAYCAST_VS_Input
 {
-	float4 pos : POSITION;
+	float4	pos : POSITION;
 };
 struct RAYCAST_PS_Input
 {
-	float4 pos : SV_POSITION;
+	float4	pos : SV_POSITION;
 };
 
 struct ISOSURFACE_VS_Input
 {
-	float4 pos : POSITION;
-	float4 nor : NORMAL;
+	float4	pos : POSITION;
+	float4	nor : NORMAL;
 };
-struct ISOSURFACE_PS_Input
+struct ISOSURFACE_VS_Output
 {
-	float4 pos : SV_POSITION;
-	float4 col : COLOR;
-	float4 nor : NORMAL;
-	float id : SURFACEID;
+	float4	pos : SV_POSITION;
+	float4	org : ORIG_POSITION;
+	float4	col : COLOR;
+	float4	nor : NORMAL;
+	int		id : SURFACEID;
+	float	pd0 : PADDING0;
+	float	pd1 : PADDING1;
+	float	pd2 : PADDING2;
 };
 
 //Functions
@@ -164,7 +186,7 @@ float4 RAYCAST_PS(RAYCAST_PS_Input input) : SV_TARGET
 			if (j == 6)intensity = txVolume7.Sample(samplerLinear, scaledVector).r;
 			if (j == 7)intensity = txVolume8.Sample(samplerLinear, scaledVector).r;
 
-			intensity *= Brightness;
+			//intensity *= Brightness;
 			intensity *= VolumeColor[j].a;
 
 			float4 sampledColor = float4(VolumeColor[j].rgb * intensity, intensity);
@@ -186,38 +208,99 @@ float4 RAYCAST_PS(RAYCAST_PS_Input input) : SV_TARGET
 }
 
 //ISOSURFACE
-ISOSURFACE_PS_Input ISOSURFACE_VS(ISOSURFACE_VS_Input input)
+ISOSURFACE_VS_Output ISOSURFACE_VS(ISOSURFACE_VS_Input input)
 {
-	ISOSURFACE_PS_Input output = (ISOSURFACE_PS_Input)0;
+	ISOSURFACE_VS_Output output = (ISOSURFACE_VS_Output)0;
+	output.org = input.pos;
 	output.pos = mul(WorldProjView, input.pos);	
+	
+	output.id = (int)input.nor.w;
 
-	output.id = input.nor.w;
+	output.nor = mul(WorldProjView, float4(input.nor.xyz, 1.0f));
 
-	output.col = IsosurfaceColor[(int)output.id];
+	normalize(output.nor);
 
-	output.nor = input.nor;
+	// http://www.3dgep.com/texturing-lighting-directx-11/
+	// Color = emissive + ambient + sum(ambienti + diffusei + speculari)
+	// No emissive
+	// Settings for ambient (1) and diffused (8)
+
+	float4 accumulatedColor = float4(IsosurfaceColor[output.id].rgb, 1.0f);
+	float initialAlpha = IsosurfaceColor[output.id].a;
+
+	//if (EnableSpecularLighting == 1.0f) {
+
+	//}
+
+	float4 sumDiffuseColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	if (EnableDirectionalLighting == 1.0f)
+	{
+		for (uint i = 0; i < numDirectionalLights; i++)
+		{
+			if (DirectionalEnabled[i].x == 1.0f) {
+
+				//float intensity = dot(output.nor, DirectionalDirection[i]);
+				//accumulatedColor = saturate(accumulatedColor + DirectionalColor[i] * DirectionalIntensity[i] * intensity);
+
+				sumDiffuseColor += max(0, dot(DirectionalDirection[i], output.nor) * DirectionalColor[i] * DirectionalIntensity[i].x * matDiffuse);
+			}
+		}
+	}
+
+	// Ambient color
+	float4 ambientColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	if (EnableAmbientLighting == 1.0f) {
+		ambientColor = matAmbient * AmbientLightIntensity * AmbientLightColor;
+	}
+
+	//output.col = float4(accumulatedColor.rgb, initialAlpha);
+	output.col = ambientColor + sumDiffuseColor;
 
 	return output;
 }
-float4 ISOSURFACE_PS(ISOSURFACE_PS_Input input) : SV_TARGET
-{
-	// TODO: Lighting calculation with input.nor
-	
-	return float4(input.col.rgb * Brightness, input.col.a);
-	//return float4(input.col.rgb, 1.0f);
-	/*if (input.id == 0.0f)
+[maxvertexcount(3)]
+void ISOSURFACE_GS(triangle ISOSURFACE_VS_Output input[3], inout TriangleStream<ISOSURFACE_VS_Output> stream) {
+		
+	for (int i = 0; i < 3; i++)
 	{
-		return float4(1.0f, 0.0f, 0.0f, 1.0f);
+		// If any of the triangle vertices fall outside of a clipping plane,
+		// return and do not add any vertices to stream
+		float4 coord = input[i].org;
+		
+		if (coord.x < MinClipCoords.x || coord.x > MaxClipCoords.x ||
+			coord.y < MinClipCoords.y || coord.y > MaxClipCoords.y ||
+			coord.z < MinClipCoords.z || coord.z > MaxClipCoords.z)
+		{
+			return;
+		}
 	}
-	else if (input.id == 1.0f) {
-		return float4(0.0f, 1.0f, 0.0f, 1.0f);
+
+	// All three vertices passed the clipping plane test so add
+	// to stream
+	for (int i = 0; i < 3; i++)
+	{
+		stream.Append(input[i]);
 	}
-	else if (input.id == 2.0f) {
-		return float4(0.0f, 0.0f, 1.0f, 1.0f);
+}
+
+const static float mag = 0.4f;
+
+[maxvertexcount(6)]
+void ISOSURFACE_GS_x(triangle ISOSURFACE_VS_Output input[3], inout LineStream<ISOSURFACE_VS_Output> stream) {
+	for (int i = 0; i < 3; i++)
+	{
+		ISOSURFACE_VS_Output normVector = (ISOSURFACE_VS_Output)0;
+		normVector.pos = input[i].pos + float4(input[i].nor.xyz, 0.0f) * mag;
+		normVector.col = input[i].col;
+		normVector.org = input[i].org;
+		normVector.id = input[i].id;
+
+		stream.Append(input[i]);
+		stream.Append(normVector);
 	}
-	else if (input.id == 3.0f) {
-		return float4(1.0f, 0.0f, 1.0f, 1.0f);
-	}
-	else return float4(1.0f, 1.0f, 1.0f, 1.0f);*/
-	//return float4(0.25f, 0.5f, 0.75f, 1.0f);
+}
+
+float4 ISOSURFACE_PS(ISOSURFACE_VS_Output input) : SV_TARGET
+{
+	return input.col;
 }

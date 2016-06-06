@@ -8,327 +8,6 @@ using SharpDX;
 
 namespace Direct3DRendering
 {
-    public class Vector3ToStringConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                if (value == null) return "";
-
-                Vector3 v = (Vector3)value;
-
-                string p = (string)parameter;
-
-                if (p == null || p == "Position")
-                {
-                    return string.Format("Camera Position: ({0}, {1}, {2})",
-                        v.X.ToString("0.000"), v.Y.ToString("0.000"), v.Z.ToString("0.000"));
-                }
-                else if (p == "Direction")
-                {
-                    return string.Format("Camera Direction: ({0}, {1}, {2})",
-                           v.X.ToString("0.000"), v.Y.ToString("0.000"), v.Z.ToString("0.000"));
-                }
-                else if (p == "Up")
-                {
-                    return string.Format("Camera Up: ({0}, {1}, {2})",
-                           v.X.ToString("0.000"), v.Y.ToString("0.000"), v.Z.ToString("0.000"));
-                }
-                return null;
-
-            }
-            catch (InvalidCastException)
-            {
-                return "";
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-    public class FPSToStringConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                double d = (double)value;
-
-                return string.Format("FPS: {0}", d.ToString("0"));
-
-            }
-            catch (InvalidCastException)
-            {
-                return null;
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-    public class TrainglesToStringConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                int v = (int)value;
-
-                return $"Number Triangles: {v}";
-            }
-            catch (Exception)
-            {
-                return "Number Triangles: {?}";
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-    public class VolumeToEnabledConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                Renderer renderer = value as Renderer;
-                if (renderer == null) return false;
-
-                if (renderer.RenderType != RenderType.Volume) return false;
-
-                int index = int.Parse((string)parameter);
-
-                VolumeRenderer volumeRenderer = (VolumeRenderer)renderer;
-                int numVolumes = (int)volumeRenderer.VolumeParams.NumVolumes;
-
-                return (index + 1) <= numVolumes;
-
-            }
-            catch (InvalidCastException)
-            {
-                return false;
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-    public class VolumeToColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            System.Windows.Media.Color c = System.Windows.Media.Color.FromArgb(255, 128, 128, 128);
-            try
-            {
-                if (value == null) return new System.Windows.Media.SolidColorBrush(c);
-
-                Renderer renderer = value as Renderer;
-                if (renderer == null) return new System.Windows.Media.SolidColorBrush(c);
-
-                if (renderer.RenderType != RenderType.Volume) return new System.Windows.Media.SolidColorBrush(c);
-
-                int index = int.Parse((string)parameter);
-
-                VolumeRenderer volumeRenderer = (VolumeRenderer)renderer;
-
-                SharpDX.Vector4 color = volumeRenderer.VolumeParams.GetColor(index);
-
-                c = System.Windows.Media.Color.FromArgb((byte)(color.W * 255f),
-                    (byte)(color.X * 255f), (byte)(color.Y * 255f), (byte)(color.Z * 255f));
-
-                return new System.Windows.Media.SolidColorBrush(c);
-
-            }
-            catch (InvalidCastException)
-            {
-                return new System.Windows.Media.SolidColorBrush(c);
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-    public class RenderObjectToVisiblityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                Renderer renderer = value as Renderer;
-                if (renderer == null) return false;
-
-                int index = int.Parse((string)parameter);
-
-                if (renderer.RenderType == RenderType.Isosurface)
-                {
-                    IsosurfaceRenderer isoRenderer = (IsosurfaceRenderer)renderer;
-                    int numVolumes = (int)isoRenderer.IsosurfaceParams.NumberIsosurfaces;
-
-                    if (index + 1 <= numVolumes)
-                        return Visibility.Visible;
-
-                    else return Visibility.Collapsed;
-                }
-
-                else if (renderer.RenderType == RenderType.Volume)
-                {
-                    VolumeRenderer volumeRenderer = (VolumeRenderer)renderer;
-                    int numVolumes = (int)volumeRenderer.VolumeParams.NumVolumes;
-
-                    if (index + 1 <= numVolumes)
-                        return Visibility.Visible;
-
-                    else return Visibility.Collapsed;
-                }
-
-                else return Visibility.Collapsed;
-
-            }
-            catch (InvalidCastException)
-            {
-                return Visibility.Collapsed;
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-    public class IsosurfaceToColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            System.Windows.Media.Color c = System.Windows.Media.Color.FromArgb(255, 128, 128, 128);
-            try
-            {
-                if (value == null) return new System.Windows.Media.SolidColorBrush(c);
-
-                Renderer renderer = value as Renderer;
-                if (renderer == null) return new System.Windows.Media.SolidColorBrush(c);
-
-                if (renderer.RenderType != RenderType.Isosurface) return new System.Windows.Media.SolidColorBrush(c);
-
-                int index = int.Parse((string)parameter);
-
-                IsosurfaceRenderer isoRenderer = (IsosurfaceRenderer)renderer;
-
-                Vector4 color = isoRenderer.IsosurfaceParams.GetColor(index);
-
-                c = System.Windows.Media.Color.FromArgb((byte)(color.W * 255f),
-                    (byte)(color.X * 255f), (byte)(color.Y * 255f), (byte)(color.Z * 255f));
-
-                return new System.Windows.Media.SolidColorBrush(c);
-
-            }
-            catch (InvalidCastException)
-            {
-                return new System.Windows.Media.SolidColorBrush(c);
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-    public class SharpDXColorToMediaColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                SharpDX.Color sharpdx = (SharpDX.Color)value;
-                System.Windows.Media.Color media = System.Windows.Media.Color.FromArgb(sharpdx.A, sharpdx.R, sharpdx.G, sharpdx.B);
-                return media;
-            }
-            catch (InvalidCastException)
-            {
-                return System.Windows.Media.Color.FromArgb(255, 0, 0, 0);
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                System.Windows.Media.Color media = (System.Windows.Media.Color)value;
-                SharpDX.Color sharpdx = new SharpDX.Color(media.R, media.G, media.B, media.A);
-                return sharpdx;
-            }
-            catch (InvalidCastException)
-            {
-                return new SharpDX.Color(0, 0, 0, 255);
-            }
-        }
-    }
-    public class SharpDXColorToNotifiableColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                Color c = (Color)value;
-
-                return ImagingSIMS.Common.Controls.NotifiableColor.FromArgb(c.A, c.R, c.G, c.B);
-            }
-            catch (Exception)
-            {
-                return ImagingSIMS.Common.Controls.NotifiableColor.FromArgb(255, 0, 0, 0);
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                ImagingSIMS.Common.Controls.NotifiableColor c =
-                    (ImagingSIMS.Common.Controls.NotifiableColor)value;
-
-                return new Color(c.R, c.G, c.B, c.A);
-            }
-            catch (Exception)
-            {
-                return new Color(0, 0, 0, 255);
-            }
-        }
-    }
-    public class NotifiableColorToBrushConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                NotifiableColor c = (NotifiableColor)value;
-
-                return new System.Windows.Media.SolidColorBrush(
-                    System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B));
-            }
-            catch (Exception)
-            {
-                return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 0, 0, 0));
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                System.Windows.Media.SolidColorBrush scb =
-                    (System.Windows.Media.SolidColorBrush)value;
-
-                return NotifiableColor.FromArgb(scb.Color.A, scb.Color.R, scb.Color.G, scb.Color.B);
-            }
-
-            catch (Exception)
-            {
-                return NotifiableColor.FromArgb(0, 0, 0, 0);
-            }
-        }
-    }
-
-
     public enum RenderType
     {
         Volume, HeightMap, Isosurface, NotSpecified
@@ -342,7 +21,7 @@ namespace Direct3DRendering
         Right, Left, Up, Down, Reverse, Clockwise, CounterClockwise, None
     }
 
-    [StructLayout(LayoutKind.Explicit, Size = 160)]
+    [StructLayout(LayoutKind.Explicit, Size = 192)]
     public struct RenderParams
     {
         [FieldOffset(0)]
@@ -380,6 +59,12 @@ namespace Direct3DRendering
 
         [FieldOffset(144)]
         public Vector4 FarClipPlane;
+
+        [FieldOffset(160)]
+        public Vector4 MinClipCoords;
+
+        [FieldOffset(176)]
+        public Vector4 MaxClipCoords;
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 192)]
@@ -690,6 +375,315 @@ namespace Direct3DRendering
 
         [FieldOffset(12)]
         private float padding3;
+    }
+
+    [StructLayout(LayoutKind.Explicit, Size = 544)]
+    public struct LightingParams
+    {
+        [FieldOffset(0)]
+        public Vector4 AmbientLightColor;
+
+        [FieldOffset(16)]
+        public float AmbientLightIntensity;
+
+        [FieldOffset(20)]
+        public float EnableAmbientLighting;
+
+        [FieldOffset(24)]
+        public float EnableDirectionalLighting;
+
+        [FieldOffset(28)]
+        public float EnableSpecularLighting;
+
+        // These are really padded in cbuffer
+        [FieldOffset(32)]
+        private float directionalEnabled0;
+        
+        [FieldOffset(48)]
+        private float directionalEnabled1;
+
+        [FieldOffset(64)]
+        private float directionalEnabled2;
+
+        [FieldOffset(80)]
+        private float directionalEnabled3;
+
+        [FieldOffset(96)]
+        private float directionalEnabled4;
+
+        [FieldOffset(112)]
+        private float directionalEnabled5;
+
+        [FieldOffset(128)]
+        private float directionalEnabled6;
+
+        [FieldOffset(144)]
+        private float directionalEnabled7;
+
+        [FieldOffset(160)]
+        private Vector4 directionalDirection0;
+
+        [FieldOffset(176)]
+        private Vector4 directionalDirection1;
+
+        [FieldOffset(192)]
+        private Vector4 directionalDirection2;
+
+        [FieldOffset(208)]
+        private Vector4 directionalDirection3;
+
+        [FieldOffset(224)]
+        private Vector4 directionalDirection4;
+
+        [FieldOffset(240)]
+        private Vector4 directionalDirection5;
+
+        [FieldOffset(256)]
+        private Vector4 directionalDirection6;
+
+        [FieldOffset(272)]
+        private Vector4 directionalDirection7;
+
+        [FieldOffset(288)]
+        private Vector4 directionalColor0;
+
+        [FieldOffset(304)]
+        private Vector4 directionalColor1;
+
+        [FieldOffset(320)]
+        private Vector4 directionalColor2;
+
+        [FieldOffset(336)]
+        private Vector4 directionalColor3;
+
+        [FieldOffset(352)]
+        private Vector4 directionalColor4;
+
+        [FieldOffset(368)]
+        private Vector4 directionalColor5;
+
+        [FieldOffset(384)]
+        private Vector4 directionalColor6;
+
+        [FieldOffset(400)]
+        private Vector4 directionalColor7;
+
+        // These are actually float4 in cbuffer
+        [FieldOffset(416)]
+        private float directionalIntensity0;
+
+        [FieldOffset(432)]
+        private float directionalIntensity1;
+
+        [FieldOffset(448)]
+        private float directionalIntensity2;
+
+        [FieldOffset(464)]
+        private float directionalIntensity3;
+
+        [FieldOffset(480)]
+        private float directionalIntensity4;
+
+        [FieldOffset(496)]
+        private float directionalIntensity5;
+
+        [FieldOffset(512)]
+        private float directionalIntensity6;
+
+        [FieldOffset(528)]
+        private float directionalIntensity7;
+
+        public static LightingParams Empty
+        {
+            get
+            {
+                return new LightingParams()
+                {
+                    directionalDirection0 = new Vector4(0),
+                    directionalDirection1 = new Vector4(0),
+                    directionalDirection2 = new Vector4(0),
+                    directionalDirection3 = new Vector4(0),
+                    directionalDirection4 = new Vector4(0),
+                    directionalDirection5 = new Vector4(0),
+                    directionalDirection6 = new Vector4(0),
+                    directionalDirection7 = new Vector4(0),
+
+                    directionalColor0 = new Vector4(0.0f),
+                    directionalColor1 = new Vector4(0.0f),
+                    directionalColor2 = new Vector4(0.0f),
+                    directionalColor3 = new Vector4(0.0f),
+                    directionalColor4 = new Vector4(0.0f),
+                    directionalColor5 = new Vector4(0.0f),
+                    directionalColor6 = new Vector4(0.0f),
+                    directionalColor7 = new Vector4(0.0f)
+                };
+            }
+        }
+
+        public void UpdateDirectionalLight(int index, bool isEnabled)
+        {
+            switch (index)
+            {
+                case 0:
+                    directionalEnabled0 = isEnabled ? 1.0f : 0.0f;
+                    break;
+                case 1:
+                    directionalEnabled1 = isEnabled ? 1.0f : 0.0f;
+                    break;
+                case 2:
+                    directionalEnabled2 = isEnabled ? 1.0f : 0.0f;
+                    break;
+                case 3:
+                    directionalEnabled3 = isEnabled ? 1.0f : 0.0f;
+                    break;
+                case 4:
+                    directionalEnabled4 = isEnabled ? 1.0f : 0.0f;
+                    break;
+                case 5:
+                    directionalEnabled5 = isEnabled ? 1.0f : 0.0f;
+                    break;
+                case 6:
+                    directionalEnabled6 = isEnabled ? 1.0f : 0.0f;
+                    break;
+                case 7:
+                    directionalEnabled7 = isEnabled ? 1.0f : 0.0f;
+                    break;
+            }
+        }
+        public void UpdateDirectionalLight(int index, Vector4 direction)
+        {
+            switch (index)
+            {
+                case 0:
+                    directionalDirection0 = direction;
+                    break;
+                case 1:
+                    directionalDirection1 = direction;
+                    break;
+                case 2:
+                    directionalDirection2 = direction;
+                    break;
+                case 3:
+                    directionalDirection3 = direction;
+                    break;
+                case 4:
+                    directionalDirection4 = direction;
+                    break;
+                case 5:
+                    directionalDirection5 = direction;
+                    break;
+                case 6:
+                    directionalDirection6 = direction;
+                    break;
+                case 7:
+                    directionalDirection7 = direction;
+                    break;
+            }
+        }
+        public void UpdateDirectionalLight(int index, NotifiableColor color)
+        {
+            switch (index)
+            {
+                case 0:
+                    directionalColor0 = color.ToVector4();
+                    break;
+                case 1:
+                    directionalColor1 = color.ToVector4();
+                    break;
+                case 2:
+                    directionalColor2 = color.ToVector4();
+                    break;
+                case 3:
+                    directionalColor3 = color.ToVector4();
+                    break;
+                case 4:
+                    directionalColor4 = color.ToVector4();
+                    break;
+                case 5:
+                    directionalColor5 = color.ToVector4();
+                    break;
+                case 6:
+                    directionalColor6 = color.ToVector4();
+                    break;
+                case 7:
+                    directionalColor7 = color.ToVector4();
+                    break;
+            }
+        }
+        public void UpdateDirectionalLight(int index, Color color)
+        {
+            switch (index)
+            {
+                case 0:
+                    directionalColor0 = color.ToVector4();
+                    break;
+                case 1:
+                    directionalColor1 = color.ToVector4();
+                    break;
+                case 2:
+                    directionalColor2 = color.ToVector4();
+                    break;
+                case 3:
+                    directionalColor3 = color.ToVector4();
+                    break;
+                case 4:
+                    directionalColor4 = color.ToVector4();
+                    break;
+                case 5:
+                    directionalColor5 = color.ToVector4();
+                    break;
+                case 6:
+                    directionalColor6 = color.ToVector4();
+                    break;
+                case 7:
+                    directionalColor7 = color.ToVector4();
+                    break;
+            }
+        }
+        public void UpdateDirectionalLight(int index, float intensity)
+        {
+            switch (index)
+            {
+                case 0:
+                    directionalIntensity0 = intensity;
+                    break;
+                case 1:
+                    directionalIntensity1 = intensity;
+                    break;
+                case 2:
+                    directionalIntensity2 = intensity;
+                    break;
+                case 3:
+                    directionalIntensity3 = intensity;
+                    break;
+                case 4:
+                    directionalIntensity4 = intensity;
+                    break;
+                case 5:
+                    directionalIntensity5 = intensity;
+                    break;
+                case 6:
+                    directionalIntensity6 = intensity;
+                    break;
+                case 7:
+                    directionalIntensity7 = intensity;
+                    break;
+            }
+        }
+        public void UpdateDirectionalLight(int index, bool isEnabled, Vector4 direction, NotifiableColor color, float intensity)
+        {
+            UpdateDirectionalLight(index, isEnabled);
+            UpdateDirectionalLight(index, direction);
+            UpdateDirectionalLight(index, color);
+            UpdateDirectionalLight(index, intensity);
+        }
+        public void UpdateDirectionalLight(int index, bool isEnabled, Vector4 direction, Color color, float intensity)
+        {
+            UpdateDirectionalLight(index, isEnabled);
+            UpdateDirectionalLight(index, direction);
+            UpdateDirectionalLight(index, color);
+            UpdateDirectionalLight(index, intensity);
+        }
     }
 
     public static class FeatureLevelHelper

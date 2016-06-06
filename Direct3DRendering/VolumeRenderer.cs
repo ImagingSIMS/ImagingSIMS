@@ -7,7 +7,9 @@ using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
+
 using Buffer = SharpDX.Direct3D11.Buffer;
+using Device = SharpDX.Direct3D11.Device;
 
 namespace Direct3DRendering
 {
@@ -38,9 +40,7 @@ namespace Direct3DRendering
         Buffer _indexBufferCube;
 
         VolumeParams _volumeParams;
-        RenderParams _renderParams;
         Buffer _volumeParamBuffer;
-        Buffer _renderParamBuffer;
 
         string _raycastEffectPath;
         string _modelEffectPath;
@@ -51,11 +51,6 @@ namespace Direct3DRendering
             _renderType = RenderType.Volume;
         }
 
-        public RenderParams RenderParams
-        {
-            get { return _renderParams; }
-            set { _renderParams = value; }
-        }
         public VolumeParams VolumeParams
         {
             get { return _volumeParams; }
@@ -106,7 +101,6 @@ namespace Direct3DRendering
                 Disposer.RemoveAndDispose(ref _indexBufferCube);
 
                 Disposer.RemoveAndDispose(ref _volumeParamBuffer);
-                Disposer.RemoveAndDispose(ref _renderParamBuffer);
 
                 _disposed = true;
             }
@@ -120,16 +114,6 @@ namespace Direct3DRendering
             _modelEffectPath = @"Shaders\Model";
 
             base.InitializeRenderer();
-
-            _renderParams = new RenderParams()
-            {
-                WorldProjView = Matrix.Identity,
-                CameraDirection = _orbitCamera.Direction,
-                CameraPositon = _orbitCamera.Position,
-                CameraUp = _orbitCamera.Up,
-            };
-            _renderParamBuffer = new Buffer(_device, Marshal.SizeOf(typeof(RenderParams)), ResourceUsage.Default,
-                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
         }
         protected override void InitializeShaders()
         {
@@ -385,6 +369,7 @@ namespace Direct3DRendering
             };
             DataStream stream = DataStream.Create<float>(activeVolume, true, true);
             _texActiveVoxels = new Texture3D(_device, desc, new[] { new DataBox(stream.DataPointer, lSizeX * sizeof(float), lSizeX * lSizeY * sizeof(float)) });
+
             _srvActiveVoxels = new ShaderResourceView(_device, _texActiveVoxels);
 
             _dataLoaded = true;
@@ -441,6 +426,12 @@ namespace Direct3DRendering
             }
         }
 
+        public override void Update(bool targetYAxisOrbiting)
+        {
+
+            base.Update(targetYAxisOrbiting);
+        }
+
         public override void Draw()
         {
             base.Draw();
@@ -449,23 +440,8 @@ namespace Direct3DRendering
 
             var context = _device.ImmediateContext;
 
-            Matrix worldProjView = _orbitCamera.WorldProjView;
-            worldProjView.Transpose();
-
             if (_dataLoaded)
             {
-                _renderParams.InvWindowSize = new Vector2(1f / _parent.ClientSize.Width, 1f / _parent.ClientSize.Height);
-                _renderParams.WorldProjView = worldProjView;
-                _renderParams.Brightness = Brightness;
-                _renderParams.CameraDirection = _orbitCamera.Direction;
-                _renderParams.CameraPositon = _orbitCamera.Position;
-                _renderParams.CameraUp = _orbitCamera.Up;
-                _renderParams.ClipDistance = _clipDistance;
-                _renderParams.NearClipPlane = _nearClippingPlane.ToVector4();
-                _renderParams.FarClipPlane = _farClippingPlane.ToVector4();
-
-                context.UpdateSubresource(ref _renderParams, _renderParamBuffer);
-
                 _volumeParams.VolumeScale = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
                 for (int i = 0; i < _volumeParams.NumVolumes; i++)
                 {
@@ -480,8 +456,8 @@ namespace Direct3DRendering
                 context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
 
                 context.VertexShader.Set(_vsPosition);
-                context.VertexShader.SetConstantBuffer(0, _renderParamBuffer);
-                context.VertexShader.SetConstantBuffer(1, _volumeParamBuffer);
+                context.VertexShader.SetConstantBuffer(0, _bufferRenderParams);
+                context.VertexShader.SetConstantBuffer(2, _volumeParamBuffer);
                 context.PixelShader.Set(_psPosition);
 
                 // Set active voxel lookup volume for both the VS and PS
@@ -502,9 +478,10 @@ namespace Direct3DRendering
                 context.PixelShader.Set(_psRaycast);
                 context.InputAssembler.InputLayout = _ilRaycast;                
 
-                context.VertexShader.SetConstantBuffer(0, _renderParamBuffer);
-                context.PixelShader.SetConstantBuffer(0, _renderParamBuffer);
-                context.PixelShader.SetConstantBuffer(1, _volumeParamBuffer);
+                context.VertexShader.SetConstantBuffer(0, _bufferRenderParams);
+                context.PixelShader.SetConstantBuffer(0, _bufferRenderParams);
+                context.PixelShader.SetConstantBuffer(1, _bufferLightingParams);
+                context.PixelShader.SetConstantBuffer(2, _volumeParamBuffer);
 
                 context.OutputMerger.SetRenderTargets(_depthView, _renderView);
 

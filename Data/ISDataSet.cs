@@ -1979,6 +1979,77 @@ namespace ImagingSIMS.Data
             return _layers;
         }
 
+        public Data3D Smooth(int windowSize)
+        {
+            Data3D d = new Data3D(Width, Height, Depth);
+
+            int startOffset = windowSize / 2;
+            int endOffset = windowSize - startOffset;
+
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    for (int z = 0; z < Depth; z++)
+                    {
+                        int sX = Math.Max(0, x - startOffset);
+                        int sY = Math.Max(0, y - startOffset);
+                        int sZ = Math.Max(0, z - startOffset);
+
+                        int eX = Math.Min(x + endOffset, Width);
+                        int eY = Math.Min(y + endOffset, Height);
+                        int eZ = Math.Min(z + endOffset, Depth);
+
+                        List<float> values = new List<float>();
+                        for (int a = sX; a < eX; a++)
+                        {
+                            for (int b = sY; b < eY; b++)
+                            {
+                                for (int c = sZ; c < eZ; c++)
+                                {
+                                    values.Add(this[a, b, c]);
+                                }
+
+                            }
+                        }
+
+                        d[x, y, z] = values.Average();
+                        //float sum = 0;
+                        //int count = 0;
+
+                        //for (int a = 0; a < windowSize; a++)
+                        //{
+                        //    for (int b = 0; b < windowSize; b++)
+                        //    {
+                        //        for (int c = 0; c < windowSize; c++)
+                        //        {
+                        //            int xx = x - (windowSize / 2) + a;
+                        //            int yy = y - (windowSize / 2) + b;
+                        //            int zz = z - (windowSize / 2) + c;
+
+                        //            if (xx < 0 || xx >= Width ||
+                        //                yy < 0 || yy >= Height ||
+                        //                zz < 0 || zz >= Depth)
+                        //                continue;
+
+                        //            sum += this[xx, yy, zz];
+                        //            count++;
+                        //        }
+                        //    }
+                        //}
+
+                        //d[x, y, z] = sum / count;
+                    }
+                }
+            }
+
+            return d;
+        }
+        public async Task<Data3D> SmoothAsync(int windowSize)
+        {
+            return await Task.Run(() => Smooth(windowSize));
+        }
+
         public Data3D Crop(int StartX, int StartY, int LengthX = -1, int LengthY = -1)
         {
             Data2D[] d = new Data2D[this.Depth];

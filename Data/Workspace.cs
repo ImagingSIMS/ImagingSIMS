@@ -58,12 +58,14 @@ namespace ImagingSIMS.Data
         int _volumePixelThreshold;
         int _isosurfaceThreshold;
         int _isosurfaceIsoValue;
+        int _isosurfaceSmoothWindowSize;
 
         bool _sampleDoMultiple;
         bool _imagingTotalIon;
         bool _imagingSqrtEnhance;
         bool _renderingShowAxes;
         bool _omitDataNumbering;
+        bool _isosurfaceDoSmooth;
 
         Color _renderingBackColor;
 
@@ -452,6 +454,18 @@ namespace ImagingSIMS.Data
                 }
             }
         }
+        public int IsosurfaceSmoothWindowSize
+        {
+            get { return _isosurfaceSmoothWindowSize; }
+            set
+            {
+                if(_isosurfaceSmoothWindowSize != value)
+                {
+                    _isosurfaceSmoothWindowSize = value;
+                    NotifyPropertyChanged("IsosurfaceSmoothWindowSize");
+                }
+            }
+        }
 
         public bool SampleDoMultiple
         {
@@ -510,6 +524,18 @@ namespace ImagingSIMS.Data
                 {
                     _omitDataNumbering = value;
                     NotifyPropertyChanged("OmitDataNumbering");
+                }
+            }
+        }
+        public bool IsosurfaceDoSmooth
+        {
+            get { return _isosurfaceDoSmooth; }
+            set
+            {
+                if(_isosurfaceDoSmooth != value)
+                {
+                    _isosurfaceDoSmooth = value;
+                    NotifyPropertyChanged("IsosurfaceDoSmooth");
                 }
             }
         }
@@ -607,6 +633,8 @@ namespace ImagingSIMS.Data
             SampleRadius1 = 16;
             SampleRadius2 = 16;
             OmitDataNumbering = false;
+            IsosurfaceDoSmooth = true;
+            IsosurfaceSmoothWindowSize = 3;
         }
 
         public void Load(string FilePath)

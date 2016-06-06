@@ -67,17 +67,27 @@ namespace Direct3DEffectCompiler
             int errorCount = 0;
             for (int i = 0; i < numShaders; i++)
             {
-                Shader ps = new Shader(shaders[i, 0], shaders[i, 1], true);
+                Shader ps = new Shader(shaders[i, 0], shaders[i, 1], ShaderType.Pixel);
                 if (!ps.Compile(true)) 
                     errorCount++;
                 if (!ps.Compile(false))
                     errorCount++;
 
-                Shader vs = new Shader(shaders[i, 0], shaders[i, 1], false);
+                Shader vs = new Shader(shaders[i, 0], shaders[i, 1], ShaderType.Vertex);
                 if (!vs.Compile(true)) 
                     errorCount++;
                 if (!vs.Compile(false))
                     errorCount++;
+
+                if(shaders[i,0] == "Isosurface")
+                {
+                    Shader gs = new Shader(shaders[i, 0], shaders[i, 1], ShaderType.Geometry);
+                    if (!gs.Compile(true))
+                        errorCount++;
+                    if (!gs.Compile(false))
+                        errorCount++;
+                }
+                
             }
 
             if (errorCount > 0)
@@ -91,15 +101,13 @@ namespace Direct3DEffectCompiler
     internal class Shader
     {
         string _shaderName;
-        bool _isPixelShader;
-        bool _isVertexShader;
+        ShaderType _shaderType;
         string _hlslName;
 
-        public Shader(string shaderName, string hlslName, bool isPixelShader)
+        public Shader(string shaderName, string hlslName, ShaderType shaderType)
         {
             this._shaderName = shaderName;
-            this._isPixelShader = isPixelShader;
-            this._isVertexShader = !isPixelShader;
+            this._shaderType = shaderType;
             this._hlslName = hlslName;
         }
 
@@ -123,12 +131,12 @@ namespace Direct3DEffectCompiler
             if (proc.ExitCode == 0)
             {
                 Console.WriteLine(string.Format("Shader {0} ({1}{2}) has been compiled successfully.", 
-                    _shaderName, (_isPixelShader ? "PS" : "VS"), (isDebug ? "-Debug" : "")));
+                    _shaderName, _shaderType.ToString(), (isDebug ? "-Debug" : "")));
             }
             else
             {
                 Console.WriteLine(string.Format("Could not compile shader {0} ({1}{2}):",
-                    _shaderName, (_isPixelShader ? "PS" : "VS"), (isDebug ? "-Debug" : "")));
+                    _shaderName, _shaderType.ToString(), (isDebug ? "-Debug" : "")));
                 Console.WriteLine(procResult);
             }
 
@@ -146,10 +154,18 @@ namespace Direct3DEffectCompiler
 
             sb.Append("/T ");
 
-            if (_isPixelShader)
-                sb.Append("ps_4_0 ");
-            else if (_isVertexShader)
-                sb.Append("vs_4_0 ");
+            switch (_shaderType)
+            {
+                case ShaderType.Pixel:
+                    sb.Append("ps_4_0 ");
+                    break;
+                case ShaderType.Vertex:
+                    sb.Append("vs_4_0 ");
+                    break;
+                case ShaderType.Geometry:
+                    sb.Append("gs_4_0 ");
+                    break;
+            }
 
             sb.Append("/E ");
             sb.Append(generateEntryMethod());
@@ -178,10 +194,18 @@ namespace Direct3DEffectCompiler
 
             sb.Append(_shaderName);
 
-            if (_isPixelShader)
-                sb.Append(".pso");
-            else if (_isVertexShader)
-                sb.Append(".vso");
+            switch (_shaderType)
+            {
+                case ShaderType.Pixel:
+                    sb.Append(".pso");
+                    break;
+                case ShaderType.Vertex:
+                    sb.Append(".vso");
+                    break;
+                case ShaderType.Geometry:
+                    sb.Append(".gso");
+                    break;
+            }
 
             return string.Format("\"{0}\" ", sb.ToString());
         }
@@ -192,10 +216,18 @@ namespace Direct3DEffectCompiler
 
             sb.Append(_shaderName);
 
-            if (_isPixelShader)
-                sb.Append(".pso");
-            else if (_isVertexShader)
-                sb.Append(".vso");
+            switch (_shaderType)
+            {
+                case ShaderType.Pixel:
+                    sb.Append(".pso");
+                    break;
+                case ShaderType.Vertex:
+                    sb.Append(".vso");
+                    break;
+                case ShaderType.Geometry:
+                    sb.Append(".gso");
+                    break;
+            }
 
             sb.Append(".pdb");
 
@@ -213,12 +245,27 @@ namespace Direct3DEffectCompiler
             else 
                 sb.Append(_shaderName.ToUpper());
 
-            if (_isPixelShader)
-                sb.Append("_PS ");
-            else if (_isVertexShader)
-                sb.Append("_VS ");
+            switch (_shaderType)
+            {
+                case ShaderType.Pixel:
+                    sb.Append("_PS ");
+                    break;
+                case ShaderType.Vertex:
+                    sb.Append("_VS ");
+                    break;
+                case ShaderType.Geometry:
+                    sb.Append("_GS ");
+                    break;
+            }
 
             return sb.ToString();
         }
+    }
+
+    internal enum ShaderType
+    {
+        Pixel,
+        Vertex,
+        Geometry
     }
 }

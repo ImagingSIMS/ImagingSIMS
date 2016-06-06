@@ -30,9 +30,7 @@ namespace Direct3DRendering
 
         Buffer _hmVertexBuffer;
 
-        RenderParams _renderParams;
         HeightMapParams _heightMapParams;
-        Buffer _hmRenderParamsBuffer;
         Buffer _hmHeightMapParamsBuffer;
 
         Color[,] _colorData;
@@ -67,7 +65,6 @@ namespace Direct3DRendering
                 Disposer.RemoveAndDispose(ref _hmPixelShader);
                 Disposer.RemoveAndDispose(ref _hmInputLayout);
                 Disposer.RemoveAndDispose(ref _hmVertexBuffer);
-                Disposer.RemoveAndDispose(ref _hmRenderParamsBuffer);
                 Disposer.RemoveAndDispose(ref _hmHeightMapParamsBuffer);
 
                 _disposed = true;
@@ -82,14 +79,7 @@ namespace Direct3DRendering
 
             base.InitializeRenderer();
 
-            _renderParams = new RenderParams()
-            {
-                WorldProjView = Matrix.Identity
-            };
             _heightMapParams = new HeightMapParams();
-
-            _hmRenderParamsBuffer = new Buffer(_device, Marshal.SizeOf(typeof(RenderParams)), ResourceUsage.Default,
-                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
             _hmHeightMapParamsBuffer = new Buffer(_device, Marshal.SizeOf(typeof(HeightMapParams)), ResourceUsage.Default,
                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
         }
@@ -257,16 +247,10 @@ namespace Direct3DRendering
 
             var context = _device.ImmediateContext;
 
-            Matrix worldProjView = _orbitCamera.WorldProjView;
-            worldProjView.Transpose();
-            _renderParams.WorldProjView = worldProjView;
-            _renderParams.Brightness = Brightness;
-
             if (_dataLoaded)
             {
                 updateVertices();
 
-                context.UpdateSubresource(ref _renderParams, _hmRenderParamsBuffer);
                 context.UpdateSubresource(ref _heightMapParams, _hmHeightMapParamsBuffer);
 
                 context.InputAssembler.InputLayout = _hmInputLayout;
@@ -274,10 +258,11 @@ namespace Direct3DRendering
                 context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
 
                 context.VertexShader.Set(_hmVertexShader);
-                context.VertexShader.SetConstantBuffer(0, _hmRenderParamsBuffer);
-                context.VertexShader.SetConstantBuffer(1, _hmHeightMapParamsBuffer);
+                context.VertexShader.SetConstantBuffer(0, _bufferRenderParams);
+                context.VertexShader.SetConstantBuffer(2, _hmHeightMapParamsBuffer);
                 context.PixelShader.Set(_hmPixelShader);
-                context.PixelShader.SetConstantBuffer(0, _hmRenderParamsBuffer);
+                context.PixelShader.SetConstantBuffer(0, _bufferRenderParams);
+                context.PixelShader.SetConstantBuffer(1, _bufferLightingParams);
 
                 context.OutputMerger.SetRenderTargets(_depthView, _renderView);
 
