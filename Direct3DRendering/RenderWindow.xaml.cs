@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Direct3DRendering.ViewModels;
 using ImagingSIMS.Common.Controls;
 using SharpDX;
 using SharpDX.Windows;
@@ -42,26 +43,25 @@ namespace Direct3DRendering
             get { return _renderer; }
         }
 
+        public static readonly DependencyProperty IsDebugProperty = DependencyProperty.Register("IsDebug",
+            typeof(bool), typeof(RenderWindow));
         public static readonly DependencyProperty RenderWindowViewProperty = DependencyProperty.Register("RenderWindowView",
-            typeof(RenderWindowViewModel), typeof(RenderWindow));
-        public RenderWindowViewModel RenderWindowView
-        {
-            get { return (RenderWindowViewModel)GetValue(RenderWindowViewProperty); }
-            set { SetValue(RenderWindowViewProperty, value); }
-        }
+            typeof(RenderingViewModel), typeof(RenderWindow));
 
-        bool _windowActivated;
-        private bool canControlCamera
+        public bool IsDebug
         {
-            get
-            {
-                return _windowActivated;
-            }
+            get { return (bool)GetValue(IsDebugProperty); }
+            set { SetValue(IsDebugProperty, value); }
+        }
+        public RenderingViewModel RenderWindowView
+        {
+            get { return (RenderingViewModel)GetValue(RenderWindowViewProperty); }
+            set { SetValue(RenderWindowViewProperty, value); }
         }
 
         public RenderWindow()
         {
-            RenderWindowView = new RenderWindowViewModel();
+            RenderWindowView = new RenderingViewModel();
 
             InitializeComponent();
         }
@@ -74,23 +74,13 @@ namespace Direct3DRendering
             formsHost.Focus();
 
 #if DEBUG || DEBUG_DEVICE
-            RenderWindowView.ShowAxes = true;
-            RenderWindowView.ShowBoundingBox = true;
+            IsDebug = true;
 #endif
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             StopRendering();
-        }
-
-        private void Window_LostFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void Window_GotFocus(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void menuItemShowRenderControls_Click(object sender, RoutedEventArgs e)
@@ -118,9 +108,25 @@ namespace Direct3DRendering
         {
             _renderer = new HeightMapRenderer(this);
 
+            // Set default rendering parameters
+
+            // Check to see if this call is running on an async thread
+            if (Application.Current != null && Application.Current.Dispatcher != null)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RenderWindowView = RenderingViewModel.DefaultHeightMapParameters;
+                });
+
+            }
+            else
+            {
+                RenderWindowView = RenderingViewModel.DefaultHeightMapParameters;
+            }
+
             initializeRenderer();
 
-            ((HeightMapRenderer)_renderer).SetData(ColorData, HeightData, new Vector3(2, 2, 0.50f));
+            ((HeightMapRenderer)_renderer).SetData(ColorData, HeightData, new Vector3(2, 2, 0.50f));            
         }
         private void setData(params RenderVolume[] Volumes)
         {
@@ -128,10 +134,36 @@ namespace Direct3DRendering
 
             _renderer = new VolumeRenderer(this);
 
+            // Set default rendering parameters and
+            // initial colors based on volume data
+
+            // Check to see if this call is running on an async thread
+            if (Application.Current != null && Application.Current.Dispatcher != null)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                });
+                for (int i = 0; i < Volumes.Length; i++)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        RenderWindowView.VolumeColors[i] = Volumes[i].Color.ToNotifiableColor();
+                    });
+                }
+            }
+            else
+            {
+                RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                for (int i = 0; i < Volumes.Length; i++)
+                {
+                    RenderWindowView.VolumeColors[i] = Volumes[i].Color.ToNotifiableColor();
+                }
+            }
+
             initializeRenderer();
 
-            ((VolumeRenderer)_renderer).SetData(new List<RenderVolume>(Volumes));
-            
+            ((VolumeRenderer)_renderer).SetData(new List<RenderVolume>(Volumes));   
         }
         private void setData(List<RenderVolume> Volumes)
         {
@@ -139,15 +171,16 @@ namespace Direct3DRendering
 
             _renderer = new VolumeRenderer(this);
 
-            initializeRenderer();
-
-            ((VolumeRenderer)_renderer).SetData(new List<RenderVolume>(Volumes));
-
-            // Set initial colors based on volume data
+            // Set default rendering parameters and
+            // initial colors based on volume data
 
             // Check to see if this call is running on async thread
             if (Application.Current != null && Application.Current.Dispatcher != null)
             {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                });
                 for (int i = 0; i < Volumes.Count; i++)
                 {
                     Application.Current.Dispatcher.Invoke(() =>
@@ -158,28 +191,33 @@ namespace Direct3DRendering
             }
             else
             {
+                RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
                 for (int i = 0; i < Volumes.Count; i++)
                 {
                     RenderWindowView.VolumeColors[i] = Volumes[i].Color.ToNotifiableColor();
                 }
             }
-        
-        }
-        private void setData(List<RenderIsosurface> Isosurfaces)
-        {
-            if (Isosurfaces.Count > 8) throw new ArgumentException("Rendering is only suppoerted for a maximum of 8 volumes.");
-
-            _renderer = new IsosurfaceRenderer(this);
 
             initializeRenderer();
 
-            ((IsosurfaceRenderer)_renderer).SetData(Isosurfaces);
+            ((VolumeRenderer)_renderer).SetData(new List<RenderVolume>(Volumes));
+        }
+        private void setData(List<RenderIsosurface> Isosurfaces)
+        {
+            if (Isosurfaces.Count > 8) throw new ArgumentException("Rendering is only supported for a maximum of 8 volumes.");
 
-            // Set initial colors
+            _renderer = new IsosurfaceRenderer(this);
+
+            // Set default rendering parameters and
+            // initial colors based on isosurface data
 
             // Check to see if this call is running on an async thread
             if (Application.Current != null && Application.Current.Dispatcher != null)
             {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RenderWindowView = RenderingViewModel.DefaultIsosurfaceParameters;
+                });
                 for (int i = 0; i < Isosurfaces.Count; i++)
                 {
                     Application.Current.Dispatcher.Invoke(() =>
@@ -190,11 +228,16 @@ namespace Direct3DRendering
             }
             else
             {
+                RenderWindowView = RenderingViewModel.DefaultIsosurfaceParameters;
                 for (int i = 0; i < Isosurfaces.Count; i++)
                 {
                     RenderWindowView.VolumeColors[i] = Isosurfaces[i].InitialColor.ToNotifiableColor();
                 }
             }
+
+            initializeRenderer();
+
+            ((IsosurfaceRenderer)_renderer).SetData(Isosurfaces);            
         }
 
         public Task SetDataAsync(float[,] HeightData, Color[,] ColorData)
@@ -230,6 +273,11 @@ namespace Direct3DRendering
             _framerate = new FramerateCounter();
 
             RenderWindowView.IsRenderLoaded = true;
+
+            if (IsWindowActivated)
+            {
+                _renderer.EnsureInputAcquired();
+            }
 
             RenderLoop.Run(_renderControl, () =>
                 {
@@ -315,362 +363,61 @@ namespace Direct3DRendering
             _renderer.Camera.ResetCamera();
         }
 
+        public static readonly DependencyProperty IsWindowFocusedProperty = DependencyProperty.Register("IsWindowFocused",
+            typeof(bool), typeof(RenderWindow));
+        public static readonly DependencyProperty IsWindowActivatedProperty = DependencyProperty.Register("IsWindowActivated",
+            typeof(bool), typeof(RenderWindow), new PropertyMetadata(false, onWindowActivatedChanged));
+
+        internal event WindowActivatedChangedEventHandler WindowActivatedChanged;
+
+        public bool IsWindowFocused
+        {
+            get { return (bool)GetValue(IsWindowFocusedProperty); }
+            set { SetValue(IsWindowFocusedProperty, value); }
+        }
+        public bool IsWindowActivated
+        {
+            get { return (bool)GetValue(IsWindowActivatedProperty); }
+            set { SetValue(IsWindowActivatedProperty, value); ; }
+        }
+
+        private static void onWindowActivatedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            RenderWindow r = d as RenderWindow;
+            if (d == null) return;
+
+            bool isActivated = (bool)e.NewValue;
+
+            r.WindowActivatedChanged?.Invoke(r, new WindowActivatedChangedEventArgs(isActivated));
+        }
+
         private void renderWindow_Activated(object sender, EventArgs e)
         {
-            _windowActivated = true;
+            IsWindowActivated  = true;
         }
-                private void renderWindow_Deactivated(object sender, EventArgs e)
+        private void renderWindow_Deactivated(object sender, EventArgs e)
         {
-            _windowActivated = false;
+            IsWindowActivated = false;
         }
-    }
-
-    public class RenderWindowViewModel : INotifyPropertyChanged
-    {
-        bool _isRenderLoaded;
-        bool _renderIsosurfaces;
-        bool _showAxes;
-        bool _showBoundingBox;
-        bool _showCoordinateBox;
-        float _coordinateBoxTransparency;
-        bool _isRecording;
-        bool _getSnapshot;
-        Color _backColor;
-        float _brightness;
-        NotifiableColor[] _volumeColors;
-        bool _targetYAxisOrbiting;
-        float _heightMapHeight;
-        RenderType _renderType;
-        Vector3 _cameraDirection;
-        Vector3 _cameraPosition;
-        Vector3 _cameraUp;
-        double _fps;
-        int _numTrianglesDrawn;
-
-        public bool IsRenderLoaded
+        private void Window_LostFocus(object sender, RoutedEventArgs e)
         {
-            get { return _isRenderLoaded; }
-            set
-            {
-                if (_isRenderLoaded != value)
-                {
-                    _isRenderLoaded = value;
-                    NotifyPropertyChanged("IsRenderLoaded");
-                }
-            }
+            IsWindowFocused = false;
         }
-        public bool RenderIsosurfaces
+        private void Window_GotFocus(object sender, RoutedEventArgs e)
         {
-            get { return _renderIsosurfaces; }
-            set
-            {
-                if (_renderIsosurfaces != value)
-                {
-                    _renderIsosurfaces = value;
-                    NotifyPropertyChanged("RenderIsosurfaces");
-                }
-            }
-        }
-        public bool ShowAxes
-        {
-            get { return _showAxes; }
-            set
-            {
-                if (_showAxes != value)
-                {
-                    _showAxes = value;
-                    NotifyPropertyChanged("ShowAxes");
-                }
-            }
-        }
-        public bool ShowBoundingBox
-        {
-            get { return _showBoundingBox; }
-            set
-            {
-                if (_showBoundingBox != value)
-                {
-                    _showBoundingBox = value;
-                    NotifyPropertyChanged("ShowBoundingBox");
-                }
-            }
-        }
-        public bool ShowCoordinateBox
-        {
-            get { return _showCoordinateBox; }
-            set
-            {
-                if (_showCoordinateBox != value)
-                {
-                    _showCoordinateBox = value;
-                    NotifyPropertyChanged("ShowCoordinateBox");
-                }
-            }
-        }
-        public float CoordinateBoxTransparency
-        {
-            get { return _coordinateBoxTransparency; }
-            set
-            {
-                if (_coordinateBoxTransparency != value)
-                {
-                    _coordinateBoxTransparency = value;
-                    NotifyPropertyChanged("CoordinateBoxTransparency");
-                }
-            }
-        }
-        public bool IsRecording
-        {
-            get { return _isRecording; }
-            set
-            {
-                if (_isRecording != value)
-                {
-                    _isRecording = value;
-                    NotifyPropertyChanged("IsRecording");
-                }
-            }
-        }
-        public bool GetSnapshot
-        {
-            get { return _getSnapshot; }
-            set
-            {
-                if (_getSnapshot != value)
-                {
-                    _getSnapshot = value;
-                    NotifyPropertyChanged("GetSnapshot");
-                }
-            }
-        }
-        public Color BackColor
-        {
-            get { return _backColor; }
-            set
-            {
-                if (_backColor != value)
-                {
-                    _backColor = value;
-                    NotifyPropertyChanged("BackColor");
-                }
-            }
-        }
-        public float Brightness
-        {
-            get { return _brightness; }
-            set
-            {
-                if (_brightness != value)
-                {
-                    _brightness = value;
-                    NotifyPropertyChanged("Brightness");
-                }
-            }
-        }
-        public NotifiableColor[] VolumeColors
-        {
-            get { return _volumeColors; }
-            set
-            {
-                if(_volumeColors != value)
-                {
-                    _volumeColors = value;
-                    NotifyPropertyChanged("VolumeColors");
-                }
-            }
-        }
-        public bool TargetYAxisOrbiting
-        {
-            get { return _targetYAxisOrbiting; }
-            set
-            {
-                if (_targetYAxisOrbiting != value)
-                {
-                    _targetYAxisOrbiting = value;
-                    NotifyPropertyChanged("TargetYAxisOrbiting");
-                }
-            }
-        }
-        public float HeightMapHeight
-        {
-            get { return _heightMapHeight; }
-            set 
-            {
-                if (_heightMapHeight != value)
-                {
-                    _heightMapHeight = value;
-                    NotifyPropertyChanged("HeightMapHeight");
-                }
-            }
-        }
-        public RenderType RenderType
-        {
-            get { return _renderType; }
-            set
-            {
-                if (_renderType != value)
-                {
-                    _renderType = value;
-                    NotifyPropertyChanged("RenderType");
-                }
-            }
-        }
-        public Vector3 CameraDirection
-        {
-            get { return _cameraDirection; }
-            set
-            {
-                if (_cameraDirection != value)
-                {
-                    _cameraDirection = value;
-                    NotifyPropertyChanged("CameraDirection");
-                }
-            }
-        }
-        public Vector3 CameraPosition
-        {
-            get { return _cameraPosition; }
-            set
-            {
-                if (_cameraPosition != value)
-                {
-                    _cameraPosition = value;
-                    NotifyPropertyChanged("CameraPosition");
-                }
-            }
-        }
-        public Vector3 CameraUp
-        {
-            get { return _cameraUp; }
-            set
-            {
-                if (_cameraUp != value)
-                {
-                    _cameraUp = value;
-                    NotifyPropertyChanged("CameraUp");
-                }
-            }
-        }
-        public double FPS
-        {
-            get { return _fps; }
-            set
-            {
-                if (_fps != value)
-                {
-                    _fps = value;
-                    NotifyPropertyChanged("FPS");
-                }
-            }
-        }
-        public int NumTrianglesDrawn
-        {
-            get { return _numTrianglesDrawn; }
-            set
-            {
-                if(_numTrianglesDrawn != value)
-                {
-                    _numTrianglesDrawn = value;
-                    NotifyPropertyChanged("NumTrianglesDrawn");
-                }
-            }
-        }
-
-        public RenderWindowViewModel()
-        {
-            RenderIsosurfaces = false;
-
-            Brightness = 1.0f;
-
-            ShowCoordinateBox = false;
-            CoordinateBoxTransparency = 1.0f;
-            VolumeColors = new NotifiableColor[8]
-            {
-                NotifiableColor.Black,
-                NotifiableColor.Black,
-                NotifiableColor.Black,
-                NotifiableColor.Black,
-                NotifiableColor.Black,
-                NotifiableColor.Black,
-                NotifiableColor.Black,
-                NotifiableColor.Black
-            };
-
-            HeightMapHeight = 1.0f;
-
-            BackColor = new Color(0, 0, 0, 255);
-
-            IsRenderLoaded = false;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            IsWindowFocused = true;
         }
     }
 
-    public class BoolVisInvertedConverter : IValueConverter
+    internal delegate void WindowActivatedChangedEventHandler(object sender, WindowActivatedChangedEventArgs e);
+    internal class WindowActivatedChangedEventArgs : EventArgs
     {
-        public object Convert(object value, Type targetType, object parameter,
-               System.Globalization.CultureInfo culture)
+        internal bool IsWindowActivated { get; set; }
+
+        internal WindowActivatedChangedEventArgs(bool isWindowActivated):
+            base()
         {
-            try
-            {
-                if (value == null) return false;
-
-                bool b = (bool)value;
-
-                if (b)
-                {
-                    return System.Windows.Visibility.Collapsed;
-                }
-
-                else return System.Windows.Visibility.Visible;
-            }
-            catch (InvalidCastException)
-            {
-                return System.Windows.Visibility.Collapsed;
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
-        {
-            return System.Windows.Visibility.Collapsed;
-        }
-    }
-    public class RenderTypeToEnabledConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter,
-               System.Globalization.CultureInfo culture)
-        {
-            try
-            {
-                RenderType r = (RenderType)value;
-
-                string p = (string)parameter;
-                string[] parameters = p.Split('|');
-
-                foreach (var renderType in parameters)
-                {
-                    if (r.ToString() == renderType)
-                        return true;
-                }
-
-                return false;
-            }
-            catch (InvalidCastException)
-            {
-                return false;
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
-        {
-            return null;
+            IsWindowActivated = isWindowActivated;
         }
     }
 }

@@ -31,6 +31,8 @@ namespace Direct3DRendering
 
         string _effectPath;
 
+        public static event OnSetBoundingBoxVerticesEventHandler OnSetBoundingBoxVertices;
+
         public BoundingBox(Device Device, Vector4[] Vertices)
         {
             _effectPath = @"Shaders\BoundingBox";
@@ -71,6 +73,9 @@ namespace Direct3DRendering
             };
 
             _indexBuffer = Buffer.Create(_device, BindFlags.IndexBuffer, indices);
+
+            // Pass non-translated original vertices used to create bounding box
+            OnSetBoundingBoxVertices?.Invoke(this, new SetBoundingBoxVerticesEventArgs(Vertices));
         }
 
         private Vector4 TranslateBoxVector(Vector4 Original)
@@ -158,5 +163,34 @@ namespace Direct3DRendering
             }
         }
         #endregion
+    }
+
+    public delegate void OnSetBoundingBoxVerticesEventHandler(object sender, SetBoundingBoxVerticesEventArgs e);
+    public class SetBoundingBoxVerticesEventArgs : EventArgs
+    {
+        public Vector4 Minima;
+        public Vector4 Maximia;
+
+        public SetBoundingBoxVerticesEventArgs(Vector4[] vertices)
+            : base()
+        {
+            float minX = vertices.Select(v => v.X).Min();
+            float maxX = vertices.Select(v => v.X).Max();
+
+            float minY = vertices.Select(v => v.Y).Min();
+            float maxY = vertices.Select(v => v.Y).Max();
+
+            float minZ = vertices.Select(v => v.Z).Min();
+            float maxZ = vertices.Select(v => v.Z).Max();
+
+            Minima = new Vector4(minX, minY, minZ, 1.0f);
+            Maximia = new Vector4(maxX, maxY, maxZ, 1.0f);
+        }
+        public SetBoundingBoxVerticesEventArgs(Vector4 minima, Vector4 maxima)
+            : base()
+        {
+            Minima = minima;
+            Maximia = maxima;
+        }
     }
 }

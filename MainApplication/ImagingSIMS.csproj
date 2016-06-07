@@ -57,7 +57,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Prefer32Bit>false</Prefer32Bit>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -364,6 +364,7 @@
     </Content>
     <Resource Include="Images\Isotope.ico" />
     <Resource Include="Images\Grid.ico" />
+    <Content Include="Shaders\Isosurface.gso" />
     <Resource Include="Images\Table.ico" />
     <Resource Include="Images\OpenFolder.ico" />
     <Resource Include="Images\Save.ico" />

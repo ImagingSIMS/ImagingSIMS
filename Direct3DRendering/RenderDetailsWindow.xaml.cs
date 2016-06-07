@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
+using Direct3DRendering.ViewModels;
 using SharpDX.Direct3D11;
 
 namespace Direct3DRendering
@@ -26,7 +26,7 @@ namespace Direct3DRendering
         public static readonly DependencyProperty RenderWindowProperty = DependencyProperty.Register("RenderWindow",
             typeof(RenderWindow), typeof(RenderDetailsWindow));
         public static readonly DependencyProperty RenderWindowViewProperty = DependencyProperty.Register("RenderWindowView",
-            typeof(RenderWindowViewModel), typeof(RenderDetailsWindow));
+            typeof(RenderingViewModel), typeof(RenderDetailsWindow));
 
         public Device Device
         {
@@ -38,9 +38,9 @@ namespace Direct3DRendering
             get { return (RenderWindow)GetValue(RenderWindowProperty); }
             set { SetValue(RenderWindowProperty, value); }
         }
-        public RenderWindowViewModel RenderWindowView
+        public RenderingViewModel RenderWindowView
         {
-            get { return (RenderWindowViewModel)GetValue(RenderWindowViewProperty); }
+            get { return (RenderingViewModel)GetValue(RenderWindowViewProperty); }
             set { SetValue(RenderWindowViewProperty, value); }
         }
 

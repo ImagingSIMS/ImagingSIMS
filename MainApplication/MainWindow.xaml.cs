@@ -2247,6 +2247,15 @@ namespace ImagingSIMS.MainApplication
                 return;
             }
 
+            if (Workspace.IsosurfaceDoSmooth)
+            {
+                if(Workspace.IsosurfaceSmoothWindowSize <= 0)
+                {
+                    DialogBox.Show("Invalid window size.", "Smoothing window size must be a positive integer.", "Isosurface", DialogIcon.Error);
+                    return;
+                }
+            }
+
             pw = new ProgressWindow("Generating isosurfaces. Please wait...", "Isosurfacing", true);
             pw.Show();
 
@@ -2257,8 +2266,15 @@ namespace ImagingSIMS.MainApplication
 
                 foreach (var volume in selectedVolumes)
                 {
+                    Data3D d;
+                    if (Workspace.IsosurfaceDoSmooth)
+                    {
+                        d = await volume.Data.SmoothAsync(Workspace.IsosurfaceSmoothWindowSize);
+                    }
+                    else d = volume.Data;
+
                     isosurfaces.Add(await RenderIsosurface.CreateSurfaceAsync(
-                        volume.Data.ToFloatArray(), volume.IsoValue, volume.DataColor.ToSharpDXColor(), ct++));
+                        d.ToFloatArray(), volume.IsoValue, volume.DataColor.ToSharpDXColor(), ct++));
                 }
             }
             catch(Exception ex)

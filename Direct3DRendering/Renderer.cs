@@ -14,6 +14,8 @@ using SharpDX.Windows;
 
 using Device = SharpDX.Direct3D11.Device;
 using Buffer = SharpDX.Direct3D11.Buffer;
+using System.Windows;
+using Direct3DRendering.ViewModels;
 
 namespace Direct3DRendering
 {
@@ -47,6 +49,11 @@ namespace Direct3DRendering
         protected BoundingBox _boundingBox;
         protected CoordinateBox _coordinateBox;
 
+        protected RenderParams _renderParams;
+        protected LightingParams _lightingParams;
+        protected Buffer _bufferRenderParams;
+        protected Buffer _bufferLightingParams;
+
         protected bool _needsResize;
         protected bool _dataLoaded;
         protected const float _clipDistance = 1.0f;
@@ -54,6 +61,14 @@ namespace Direct3DRendering
         protected Plane _nearClippingPlane;
         protected Plane _farClippingPlane;
 
+        protected RasterizerState _rasterizerStateCullNone;
+        protected RasterizerState _rasterizerStateCullFront;
+        protected RasterizerState _rasterizerStateCullBack;
+
+        protected RenderingViewModel RenderingViewModel
+        {
+            get { return _dataContextRenderWindow.RenderWindowView; }
+        }
         protected bool ShowAxes
         {
             get
@@ -104,21 +119,48 @@ namespace Direct3DRendering
             {
                 if (_dataContextRenderWindow != null)
                 {
-                    return _dataContextRenderWindow.RenderWindowView.BackColor;
+                    return _dataContextRenderWindow.RenderWindowView.BackColor.ToSharpDXColor();
                 }
                 return Color.Black;
             }
         }
-        protected float Brightness
+        protected Vector4 MinClipCoords
+        {
+            get
+            {
+                if(_dataContextRenderWindow != null)
+                {
+                    return new Vector4()
+                    {
+                        X = _dataContextRenderWindow.RenderWindowView.BoundingBoxLowerX,
+                        Y = _dataContextRenderWindow.RenderWindowView.BoundingBoxLowerY,
+                        Z = _dataContextRenderWindow.RenderWindowView.BoundingBoxLowerZ,
+                        W = 1.0f
+                    };
+                }
+                return Vector4.Zero;
+            }
+        }
+        protected Vector4 MaxClipCoords
         {
             get
             {
                 if (_dataContextRenderWindow != null)
                 {
-                    return _dataContextRenderWindow.RenderWindowView.Brightness;
+                    return new Vector4()
+                    {
+                        X = _dataContextRenderWindow.RenderWindowView.BoundingBoxUpperX,
+                        Y = _dataContextRenderWindow.RenderWindowView.BoundingBoxUpperY,
+                        Z = _dataContextRenderWindow.RenderWindowView.BoundingBoxUpperZ,
+                        W = 1.0f
+                    };
                 }
-                return 1.0f;
+                return Vector4.Zero;
             }
+        }
+        protected bool EnableDepthBuffering
+        {
+            get { return _dataContextRenderWindow.RenderWindowView.EnableDepthBuffering; }
         }
 
         public RenderType RenderType
@@ -180,6 +222,61 @@ namespace Direct3DRendering
         {
             _dataContextRenderWindow = Window;
             _parent = Window.RenderControl;
+
+            BoundingBox.OnSetBoundingBoxVertices += BoundingBox_OnSetBoundingBoxVertices;
+
+            _dataContextRenderWindow.WindowActivatedChanged += _dataContextRenderWindow_WindowActivatedChanged;
+        }
+
+        private void BoundingBox_OnSetBoundingBoxVertices(object sender, SetBoundingBoxVerticesEventArgs e)
+        {
+            // Check to see if this call needs the dispatcher
+
+            if (Application.Current != null && Application.Current.Dispatcher != null)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    setInitialBoundingBoxVertices(e);
+                });
+            }
+            else setInitialBoundingBoxVertices(e);
+        }
+        private void setInitialBoundingBoxVertices(SetBoundingBoxVerticesEventArgs e)
+        {
+            _dataContextRenderWindow.RenderWindowView.BoundingBoxMinX = e.Minima.X;
+            _dataContextRenderWindow.RenderWindowView.BoundingBoxMaxX = e.Maximia.X;
+            _dataContextRenderWindow.RenderWindowView.BoundingBoxLowerX = e.Minima.X;
+            _dataContextRenderWindow.RenderWindowView.BoundingBoxUpperX = e.Maximia.X;
+
+            _dataContextRenderWindow.RenderWindowView.BoundingBoxMinY = e.Minima.Y;
+            _dataContextRenderWindow.RenderWindowView.BoundingBoxMaxY = e.Maximia.Y;
+            _dataContextRenderWindow.RenderWindowView.BoundingBoxLowerY = e.Minima.Y;
+            _dataContextRenderWindow.RenderWindowView.BoundingBoxUpperY = e.Maximia.Y;
+
+            _dataContextRenderWindow.RenderWindowView.BoundingBoxMinZ = e.Minima.Z;
+            _dataContextRenderWindow.RenderWindowView.BoundingBoxMaxZ = e.Maximia.Z;
+            _dataContextRenderWindow.RenderWindowView.BoundingBoxLowerZ = e.Minima.Z;
+            _dataContextRenderWindow.RenderWindowView.BoundingBoxUpperZ = e.Maximia.Z;
+        }
+
+        private void _dataContextRenderWindow_WindowActivatedChanged(object sender, WindowActivatedChangedEventArgs e)
+        {
+            if (_orbitCamera == null)
+                return;
+
+            if (e.IsWindowActivated)
+            {
+                _orbitCamera.AcquireInput();
+            }
+            else _orbitCamera.UnacquireInput();
+        }
+        public void EnsureInputAcquired()
+        {            
+            if (_orbitCamera == null) return;
+
+            if (_orbitCamera.IsInputAcquired) return;
+
+            _orbitCamera.AcquireInput();
         }
 
         public virtual void InitializeRenderer()
@@ -218,12 +315,29 @@ namespace Direct3DRendering
             var factory = _swapChain.GetParent<Factory>();
             factory.MakeWindowAssociation(parentHandle, WindowAssociationFlags.IgnoreAll);
 
-            _featureLevel = _device.FeatureLevel;
+            _featureLevel = _device.FeatureLevel;            
 
             _orbitCamera = new OrbitCamera(_device, _parent, windowHandle);
 
             // Set camera position so that (-x, -y, -z) of the volume is the top of the rendering
             _orbitCamera.SetInitialConditions(new Vector3(0, 5f, 2.5f), new Vector3(0, 1, 0));
+
+            _renderParams = new RenderParams()
+            {
+                WorldProjView = Matrix.Identity,
+                CameraDirection = _orbitCamera.Direction,
+                CameraUp = _orbitCamera.Up,
+                CameraPositon = _orbitCamera.Position
+            };
+            _bufferRenderParams = new Buffer(_device, Marshal.SizeOf(typeof(RenderParams)), ResourceUsage.Default,
+                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
+
+            _lightingParams = new LightingParams()
+            {
+
+            };
+            _bufferLightingParams = new Buffer(_device, Marshal.SizeOf(typeof(LightingParams)), ResourceUsage.Default,
+                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
 
             _needsResize = true;
 
@@ -239,17 +353,40 @@ namespace Direct3DRendering
             descBlend = BlendStateDescription.Default();
 
             descBlend.RenderTarget[0].IsBlendEnabled = true;
+
             descBlend.RenderTarget[0].SourceBlend = BlendOption.SourceAlpha;
             descBlend.RenderTarget[0].DestinationBlend = BlendOption.InverseSourceAlpha;
             descBlend.RenderTarget[0].BlendOperation = BlendOperation.Add;
-            descBlend.RenderTarget[0].SourceAlphaBlend = BlendOption.One;
-            descBlend.RenderTarget[0].DestinationAlphaBlend = BlendOption.Zero;
-            descBlend.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
-            descBlend.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
 
+            descBlend.RenderTarget[0].SourceAlphaBlend = BlendOption.One;
+            descBlend.RenderTarget[0].DestinationAlphaBlend = BlendOption.InverseSourceAlpha;
+            descBlend.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
+
+            descBlend.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
 
             BlendState state = new BlendState(_device, descBlend);
             _device.ImmediateContext.OutputMerger.SetBlendState(state);
+
+            _rasterizerStateCullNone = new RasterizerState(_device, new RasterizerStateDescription()
+            {
+                FillMode = FillMode.Solid,
+                CullMode = CullMode.None,
+                IsDepthClipEnabled = true
+            });
+            _rasterizerStateCullBack = new RasterizerState(_device, new RasterizerStateDescription()
+            {
+                FillMode = FillMode.Solid,
+                CullMode = CullMode.Back,
+                IsDepthClipEnabled = true
+            });
+            _rasterizerStateCullFront = new RasterizerState(_device, new RasterizerStateDescription()
+            {
+                FillMode = FillMode.Solid,
+                CullMode = CullMode.Front,
+                IsDepthClipEnabled = true
+            });
+
+            _device.ImmediateContext.Rasterizer.State = _rasterizerStateCullNone;
         }
 
         protected virtual bool Resize()
@@ -286,7 +423,39 @@ namespace Direct3DRendering
                 CpuAccessFlags = CpuAccessFlags.None,
                 OptionFlags = ResourceOptionFlags.None
             });
-            _depthView = new DepthStencilView(_device, _depthBuffer);
+            DepthStencilViewDescription descDepthStencil = new DepthStencilViewDescription()
+            {
+                Format = Format.D32_Float_S8X24_UInt,
+                Dimension = DepthStencilViewDimension.Texture2DMultisampled
+            };
+            _depthView = new DepthStencilView(_device, _depthBuffer, descDepthStencil);
+
+            //DepthStencilStateDescription descDepthStencilState = DepthStencilStateDescription.Default();
+            DepthStencilStateDescription descDepthStencilState = new DepthStencilStateDescription()
+            {
+                IsDepthEnabled = true,
+                DepthWriteMask = DepthWriteMask.All,
+                DepthComparison = Comparison.Less,
+                IsStencilEnabled = true,
+                StencilReadMask = 0xff,
+                StencilWriteMask = 0xff,
+                FrontFace = new DepthStencilOperationDescription()
+                {
+                    FailOperation = StencilOperation.Keep,
+                    DepthFailOperation = StencilOperation.Increment,
+                    PassOperation = StencilOperation.Keep,
+                    Comparison = Comparison.Always
+                },
+                BackFace = new DepthStencilOperationDescription()
+                {
+                    FailOperation = StencilOperation.Keep,
+                    DepthFailOperation = StencilOperation.Increment,
+                    PassOperation = StencilOperation.Keep,
+                    Comparison = Comparison.Always
+                }
+            };
+            DepthStencilState stateDepthStencial = new DepthStencilState(_device, descDepthStencilState);
+            context.OutputMerger.SetDepthStencilState(stateDepthStencial);
 
             context.Rasterizer.SetViewport(new Viewport(0, 0, _parent.ClientSize.Width, _parent.ClientSize.Height));
             context.OutputMerger.SetTargets(_depthView, _renderView);
@@ -301,46 +470,54 @@ namespace Direct3DRendering
                 if (Resize()) _needsResize = false;
             }
 
-             _orbitCamera.UpdateCamera(targetYAxisOrbiting);
+            if (_dataContextRenderWindow.IsWindowActivated)
+            {
+                _orbitCamera.UpdateCamera(targetYAxisOrbiting);
+            }            
 
-             Matrix viewProj = _orbitCamera.WorldProjView;
+            Matrix worldVewProj = _orbitCamera.WorldProjView;
+            worldVewProj.Transpose();
 
-             _nearClippingPlane = new Plane(
-                 viewProj.M14 + viewProj.M13,
-                 viewProj.M23 + viewProj.M23,
-                 viewProj.M34 + viewProj.M33,
-                 viewProj.M44 + viewProj.M43);
-             _nearClippingPlane.Normalize();
+            // Update render params
+            _renderParams.WorldProjView = worldVewProj;
 
-             _farClippingPlane = new Plane(
-                 viewProj.M14 - viewProj.M13,
-                 viewProj.M24 - viewProj.M23,
-                 viewProj.M34 - viewProj.M33,
-                 viewProj.M44 - viewProj.M43);
-             _farClippingPlane.Normalize();            
+            _renderParams.CameraDirection = _orbitCamera.Direction;
+            _renderParams.CameraPositon = _orbitCamera.Position;
+            _renderParams.CameraUp = _orbitCamera.Up;
+
+            _renderParams.MinClipCoords = MinClipCoords;
+            _renderParams.MaxClipCoords = MaxClipCoords;
+
+            _renderParams.InvWindowSize = new Vector2(1f / _parent.ClientSize.Width, 1f / _parent.ClientSize.Height);
+
+            // Update lighting params
+            RenderingViewModel.UpdateLightingParameters(ref _lightingParams);
+
+            var context = _device.ImmediateContext;
+            context.UpdateSubresource(ref _renderParams, _bufferRenderParams);
+            context.UpdateSubresource(ref _lightingParams, _bufferLightingParams);
         }
         public virtual void Draw()
         {
             if (_device == null) return;
 
-            var context = _device.ImmediateContext;
+            var context = _device.ImmediateContext;            
 
             // Reset render targets to inlcude depth and render
             context.OutputMerger.SetRenderTargets(_depthView, _renderView);
             context.ClearDepthStencilView(_depthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, _clipDistance, 0);
             context.ClearRenderTargetView(_renderView, BackColor);
 
-            Matrix worldProjView = _orbitCamera.WorldProjView;
-            worldProjView.Transpose();
+            context.Rasterizer.State = _rasterizerStateCullNone;
 
             if (_axes != null && ShowAxes)
             {
-                _axes.Update(worldProjView);
+                _axes.Update(_renderParams.WorldProjView);
                 _axes.Draw();
             }
             if (_boundingBox != null && ShowBoundingBox)
             {
-                _boundingBox.Update(worldProjView);
+                _boundingBox.Update(_renderParams.WorldProjView);
                 _boundingBox.Draw();
             }
         }
@@ -349,10 +526,14 @@ namespace Direct3DRendering
         {
             if (_coordinateBox != null && ShowCoordinateBox)
             {
-                Matrix worldProjView = _orbitCamera.WorldProjView;
-                worldProjView.Transpose();
+                var context = _device.ImmediateContext;
 
-                _coordinateBox.Update(worldProjView, CoordinateBoxTransparency);
+                context.Rasterizer.State = _rasterizerStateCullNone;
+
+                // Reset render targets to inlcude depth and render
+                context.OutputMerger.SetRenderTargets(_depthView, _renderView);
+
+                _coordinateBox.Update(_renderParams.WorldProjView, CoordinateBoxTransparency);
                 _coordinateBox.Draw();
             }
 
@@ -388,6 +569,13 @@ namespace Direct3DRendering
                 Disposer.RemoveAndDispose(ref _device);
                 Disposer.RemoveAndDispose(ref _graphicsDevice);
                 Disposer.RemoveAndDispose(ref _swapChain);
+
+                Disposer.RemoveAndDispose(ref _bufferRenderParams);
+                Disposer.RemoveAndDispose(ref _bufferLightingParams);
+
+                Disposer.RemoveAndDispose(ref _rasterizerStateCullNone);
+                Disposer.RemoveAndDispose(ref _rasterizerStateCullBack);
+                Disposer.RemoveAndDispose(ref _rasterizerStateCullFront);
 
                 _disposed = true;
             }

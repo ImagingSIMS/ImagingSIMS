@@ -18,12 +18,11 @@ namespace Direct3DRendering
         VertexShader _vsIsosurface;
         InputLayout _ilIsosurface;
         PixelShader _psIsosurface;
+        GeometryShader _gsIsosurface;
 
         Buffer _vertexBufferTriangles;
 
-        RenderParams _renderParams;
         IsosurfaceParams _isosurfaceParams;
-        Buffer _renderParamBuffer;
         Buffer _isosurfaceParamBuffer;
 
         string _isosurfaceEffectPath;
@@ -72,7 +71,6 @@ namespace Direct3DRendering
 
                 Disposer.RemoveAndDispose(ref _vertexBufferTriangles);
 
-                Disposer.RemoveAndDispose(ref _renderParamBuffer);
                 Disposer.RemoveAndDispose(ref _isosurfaceParamBuffer);
 
                 _disposed = true;
@@ -87,14 +85,7 @@ namespace Direct3DRendering
 
             base.InitializeRenderer();
 
-            _renderParams = new RenderParams()
-            {
-                WorldProjView = Matrix.Identity
-            };
-            _isosurfaceParams = IsosurfaceParams.Empty;
-
-            _renderParamBuffer = new Buffer(_device, Marshal.SizeOf(typeof(RenderParams)), ResourceUsage.Default,
-                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);            
+            _isosurfaceParams = IsosurfaceParams.Empty;           
             _isosurfaceParamBuffer = new Buffer(_device, Marshal.SizeOf(typeof(IsosurfaceParams)), ResourceUsage.Default,
                 BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
         }
@@ -111,21 +102,13 @@ namespace Direct3DRendering
 
             var psByteCode = ShaderBytecode.FromFile(_isosurfaceEffectPath + ".pso");
             _psIsosurface = new PixelShader(_device, psByteCode);
+
+            var gsByteCode = ShaderBytecode.FromFile(_isosurfaceEffectPath + ".gso");
+            _gsIsosurface = new GeometryShader(_device, gsByteCode);
         }
         protected override void InitializeStates()
         {
-            base.InitializeStates();
-
-            RasterizerStateDescription descRasterizer = new RasterizerStateDescription()
-            {
-                FillMode = FillMode.Solid,
-                CullMode = CullMode.None,
-                IsDepthClipEnabled = true
-            };
-            RasterizerState rasterizer = new RasterizerState(_device, descRasterizer);
-
-            var context = _device.ImmediateContext;
-            context.Rasterizer.State = rasterizer;            
+            base.InitializeStates();    
         }
 
         public void SetData(List<RenderIsosurface> Isosurfaces)
@@ -161,40 +144,55 @@ namespace Direct3DRendering
             }
 
             const float maxSize = 2.0f;
-            float sizeX = maxSize;
-            float sizeY = maxSize;
-            float sizeZ = ((float)depth / (float)width) * maxSize;
-            //sizeZ = sizeX;
+            //float sizeX = maxSize;
+            //float sizeY = maxSize;
+            //float sizeZ = ((float)depth / Math.Max(width, height)) * maxSize;
 
-            float startX = -sizeX / 2f;
-            float startY = -sizeY / 2f;
-            float startZ = -sizeZ / 2f;
 
-            float maxValue = Math.Max(sizeX, sizeY);
-            maxValue = Math.Max(maxValue, sizeZ);
+            float maxDimension = 0;
+            // x dimension is largest
+            if(width >= Math.Max(height, depth))
+            {
+                maxDimension = width;
+            }
+            // y dimension is largest
+            else if(height >= depth)
+            {
+                maxDimension = height;
+            }
+            // z dimension is largest
+            else
+            {
+                maxDimension = depth;
+            }
 
-            float ratioX = sizeX / (2 * maxValue);
-            float ratioY = sizeY / (2 * maxValue);
-            float ratioZ = sizeZ / (2 * maxValue);
 
-            float sStartX = 0.5f - ratioX;
-            float sStartY = 0.5f - ratioY;
-            float sStartZ = 0.5f - ratioZ;
+            float boxSizeX = width * maxSize / maxDimension;
+            float boxSizeY = height * maxSize / maxDimension;
+            float boxSizeZ = depth * maxSize / maxDimension;
 
-            float sEndX = 0.5f + ratioX;
-            float sEndY = 0.5f + ratioY;
-            float sEndZ = 0.5f + ratioZ;
+            float boxStartX = -boxSizeX / 2f;
+            float boxStartY = -boxSizeY / 2f;
+            float boxStartZ = -boxSizeZ / 2f;
+
+            float dataSizeX = width;
+            float dataSizeY = height;
+            float dataSizeZ = depth;
+
+            float dataStartX = 0;
+            float dataStartY = 0;
+            float dataStartZ = 0;
 
             Vector4[] boundingVertices = new Vector4[8]
             {
-                new Vector4(startX, startY, startZ, 1.0f),
-                new Vector4(startX, startY, startZ + sizeZ, 1.0f),
-                new Vector4(startX, startY + sizeY, startZ, 1.0f),
-                new Vector4(startX, startY + sizeY, startZ + sizeZ, 1.0f),
-                new Vector4(startX + sizeX, startY, startZ, 1.0f),
-                new Vector4(startX + sizeX, startY, startZ + sizeZ, 1.0f),
-                new Vector4(startX + sizeX, startY + sizeY, startZ, 1.0f),
-                new Vector4(startX + sizeX, startY + sizeY, startZ + sizeZ, 1.0f)
+                new Vector4(boxStartX, boxStartY, boxStartZ, 1.0f),
+                new Vector4(boxStartX, boxStartY, boxStartZ + boxSizeZ, 1.0f),
+                new Vector4(boxStartX, boxStartY + boxSizeY, boxStartZ, 1.0f),
+                new Vector4(boxStartX, boxStartY + boxSizeY, boxStartZ + boxSizeZ, 1.0f),
+                new Vector4(boxStartX + boxSizeX, boxStartY, boxStartZ, 1.0f),
+                new Vector4(boxStartX + boxSizeX, boxStartY, boxStartZ + boxSizeZ, 1.0f),
+                new Vector4(boxStartX + boxSizeX, boxStartY + boxSizeY, boxStartZ, 1.0f),
+                new Vector4(boxStartX + boxSizeX, boxStartY + boxSizeY, boxStartZ + boxSizeZ, 1.0f)
             };
 
             short[] boundingIndices = new short[36]
@@ -229,7 +227,6 @@ namespace Direct3DRendering
 
             // Number triangles * 3 points per triangle * 2 vectors for each point (location and normal)
             Vector4[] isosurfaceVertices = new Vector4[numTriangles * 3 * 2];
-            //Vector4[] isosurfaceVertices = new Vector4[numTriangles * 3];
 
             int pos = 0;
             foreach (RenderIsosurface iso in Isosurfaces)
@@ -240,9 +237,9 @@ namespace Direct3DRendering
                     {
                         isosurfaceVertices[pos++] = new Vector4()
                         {
-                            X = (point.X * sizeX / width) + startX,
-                            Y = (point.Y * sizeY / height) + startY,
-                            Z = (point.Z * sizeZ / depth) + startZ,
+                            X = (((point.X + dataStartX) * boxSizeX) / dataSizeX) + boxStartX,
+                            Y = (((point.Y + dataStartY) * boxSizeY) / dataSizeY) + boxStartY,
+                            Z = (((point.Z + dataStartZ) * boxSizeZ) / dataSizeZ) + boxStartZ,
                             W = point.W
                         };
                         // Encode the SurfaceId as the w of the normal vector
@@ -250,26 +247,6 @@ namespace Direct3DRendering
                     }
                 }
             }
-
-            //Vector4[] isosurfaceVertices = new Vector4[4 * 3 * 2]
-            //{
-            //    // 0
-            //    new Vector4(-0.5f, -0.5f, 1, 1), new Vector4(0, 0, 0, 0),
-            //    new Vector4(0, 0.5f, 1, 1), new Vector4(0, 0, 0, 0),
-            //    new Vector4(0.5f, -0.5f, 1, 1), new Vector4(0, 0, 0 ,0),
-            //    // 1
-            //    new Vector4(-0.5f, -0.5f, 0.66f, 1), new Vector4(0, 0, 0, 1),
-            //    new Vector4(0, 0.5f, 0.66f, 1), new Vector4(0, 0, 0, 1),
-            //    new Vector4(0.5f, -0.5f, 0.66f, 1), new Vector4(0, 0, 0, 1),
-            //    // 2
-            //    new Vector4(-0.5f, -0.5f, -0.33f, 1), new Vector4(0, 0, 0, 2),
-            //    new Vector4(0, 0.5f, -0.33f, 1), new Vector4(0, 0, 0, 2),
-            //    new Vector4(0.5f, -0.5f, -0.33f, 1), new Vector4(0, 0, 0, 2),
-            //    //3
-            //    new Vector4(-0.5f, -0.5f, -1, 1), new Vector4(0, 0, 0, 3),
-            //    new Vector4(0, 0.5f, -1, 1), new Vector4(0, 0, 0, 3),
-            //    new Vector4(0.5f, -0.5f, -1, 1), new Vector4(0, 0, 0, 3)
-            //};
 
             _vertexBufferTriangles = Buffer.Create(_device, BindFlags.VertexBuffer, isosurfaceVertices);
 
@@ -302,15 +279,9 @@ namespace Direct3DRendering
 
             var context = _device.ImmediateContext;
 
-            Matrix worldProjView = _orbitCamera.WorldProjView;
-            worldProjView.Transpose();
-            _renderParams.WorldProjView = worldProjView;
-            _renderParams.Brightness = Brightness;
-
             if (_dataLoaded)
             {
-                // Update and set RenderParams and IsosurfaceParams
-                context.UpdateSubresource(ref _renderParams, _renderParamBuffer);
+                // Update and set IsosurfaceParams
 
                 for (int i = 0; i < _isosurfaceParams.NumberIsosurfaces; i++)
                 {
@@ -323,17 +294,31 @@ namespace Direct3DRendering
                 context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
 
                 context.VertexShader.Set(_vsIsosurface);
-                context.VertexShader.SetConstantBuffer(0, _renderParamBuffer);
-                context.VertexShader.SetConstantBuffer(2, _isosurfaceParamBuffer);
+                context.VertexShader.SetConstantBuffer(0, _bufferRenderParams);
+                context.VertexShader.SetConstantBuffer(1, _bufferLightingParams);
+                context.VertexShader.SetConstantBuffer(3, _isosurfaceParamBuffer);
+
+                context.GeometryShader.Set(_gsIsosurface);
+                context.GeometryShader.SetConstantBuffer(0, _bufferRenderParams);
+
                 context.PixelShader.Set(_psIsosurface);
-                context.PixelShader.SetConstantBuffer(0, _renderParamBuffer);
+                context.PixelShader.SetConstantBuffer(0, _bufferRenderParams);
+                context.PixelShader.SetConstantBuffer(1, _bufferLightingParams);
 
-                //context.OutputMerger.SetRenderTargets(_depthView, _renderView);
-                context.OutputMerger.SetRenderTargets(_renderView);
+                // TODO: Remove this
+                context.PixelShader.SetConstantBuffer(3, _isosurfaceParamBuffer);
 
+                if (EnableDepthBuffering)
+                    context.OutputMerger.SetRenderTargets(_depthView, _renderView);
+                else context.OutputMerger.SetRenderTargets(_renderView);
+
+                context.Rasterizer.State = _rasterizerStateCullNone;
                 context.Draw(_numVertices, 0);
 
-                _dataContextRenderWindow.RenderWindowView.NumTrianglesDrawn = _numVertices / 3;  
+                _dataContextRenderWindow.RenderWindowView.NumTrianglesDrawn = _numVertices / 3;
+
+                // Clear geometry shader since axes/bounding box don't use it
+                context.GeometryShader.Set(null);
             }
 
             CompleteDraw();

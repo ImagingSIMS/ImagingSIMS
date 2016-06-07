@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -28,8 +29,6 @@ namespace Direct3DRendering
         Vector3 _eye;
         Vector3 _defaultEye;
         Vector3 _defaultUp;
-
-        bool _inputAcquired;
 
         public float Radius
         {
@@ -84,54 +83,94 @@ namespace Direct3DRendering
             _up = _defaultUp = Up;
         }
 
-        private void acquireInput()
-        {
-            var directInput = new DirectInput();
-
-            _keyboard = new Keyboard(directInput);
-            _keyboard.SetCooperativeLevel(_windowHandle, CooperativeLevel.Foreground | CooperativeLevel.NonExclusive);
-            _keyboard.Acquire();
-
-            _mouse = new Mouse(directInput);
-            _mouse.SetCooperativeLevel(_windowHandle, CooperativeLevel.Foreground | CooperativeLevel.NonExclusive);
-            _mouse.Acquire();
-
-            _inputAcquired = true;
-        }
-
         const int _updateCounterLimit = 5;
         int _inputUpdateCounter;
         bool _recentlyPressed;
+
+        bool _isInputAcquired;
+        public bool IsInputAcquired
+        {
+            get { return _isInputAcquired; }
+        }
+        public void AcquireInput()
+        {
+            if (_isInputAcquired)
+                return;
+
+            acquireInput();
+        }
+        private void acquireInput()
+        {
+            try
+            {
+                var directInput = new DirectInput();
+
+                _keyboard = new Keyboard(directInput);
+                _keyboard.SetCooperativeLevel(_windowHandle, CooperativeLevel.Foreground | CooperativeLevel.NonExclusive);
+                _keyboard.Acquire();
+
+                _mouse = new Mouse(directInput);
+                _mouse.SetCooperativeLevel(_windowHandle, CooperativeLevel.Foreground | CooperativeLevel.NonExclusive);
+                _mouse.Acquire();                
+            }
+            catch(SharpDXException)
+            {
+                Trace.WriteLine($"A SharpDX exception was caught acquiring DirectInput.");
+            }
+            catch(Exception ex)
+            {
+                string message = ex.Message;
+                if (ex.InnerException != null)
+                    message += " - " + ex.InnerException.Message;
+
+                Trace.WriteLine($"Exception caught acquiring DirectInput: {message}");
+            }
+
+            _isInputAcquired = true;
+        }
+        public void UnacquireInput()
+        {
+            if (!_isInputAcquired)
+                return;
+
+            unacquireInput();
+        }
+        private void unacquireInput()
+        {
+            try
+            {
+                _mouse.Unacquire();
+                _keyboard.Unacquire();                
+            }
+            catch(SharpDXException)
+            {
+                Trace.WriteLine($"A ShaprDX exception was caught ucacquiring DirectInput.");
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                if (ex.InnerException != null)
+                    message += " - " + ex.InnerException.Message;
+
+                Trace.WriteLine($"Exception caught ucacquiring DirectInput: {message}");
+            }
+
+            _isInputAcquired = false;
+        }
 
         const double _rotateSpeed = 0.5d;
         const double _zoomSpeed = 0.01d;
 
         public void UpdateCamera(bool targetYAxisOrbiting)
         {
-            if (!_inputAcquired)
-            {
-                try
-                {
-                    acquireInput();
-                }
-                catch (Exception)
-                {
-                    return;
-                }
-            }
-
-            KeyboardState keyboardState;
-            MouseState mouseState;
-            try
-            {
-                keyboardState = _keyboard.GetCurrentState();
-                mouseState = _mouse.GetCurrentState();
-            }
-            catch (Exception)
-            {
-                _inputAcquired = false;
+            if (!_isInputAcquired)
                 return;
-            }
+
+            if (_keyboard == null || _mouse == null)
+                return;
+
+            KeyboardState keyboardState = _keyboard.GetCurrentState();
+            MouseState mouseState = _mouse.GetCurrentState();
 
             double dx = 0;
             double dy = 0;

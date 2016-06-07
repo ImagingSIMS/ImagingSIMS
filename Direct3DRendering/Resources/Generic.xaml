@@ -1,39 +1,206 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Direct3DRendering">
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="clr-namespace:Direct3DRendering"
+					xmlns:converters="clr-namespace:Direct3DRendering.Converters"
+					xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit">
 
-    <SolidColorBrush x:Key="ThemeBlueBrush" Color="#FF007ACC"/>
-    <SolidColorBrush x:Key="ThemeBlueLightBrush" Color="#33007ACC"/>
+	<SolidColorBrush x:Key="ThemeBlueBrush" Color="#FF007ACC"/>
+	<SolidColorBrush x:Key="ThemeBlueLightBrush" Color="#33007ACC"/>
 
-    <Style TargetType="{x:Type MenuItem}" x:Key="MenuBarItemStyle">
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Margin" Value="2,2,2,0"/>
-        <Setter Property="BorderThickness" Value="1"/>
+	<SolidColorBrush x:Key="TabItemHotBackground" Color="#FF1C97EA"/>
+	<SolidColorBrush x:Key="TabItemSelectedBackground" Color="#FF007ACC"/>
 
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type MenuItem}">
-                    <Border Name="border" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0" Margin="{TemplateBinding Margin}" 
-                            BorderBrush="{TemplateBinding BorderBrush}">
-                        <Grid Background="{TemplateBinding Background}">
-                            <TextBlock Margin="8,4" Text="{TemplateBinding Header}" Foreground="{TemplateBinding Foreground}"/>
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
+	<SolidColorBrush x:Key="AxisXBrush" Color="#FFFF3939"/>
+	<SolidColorBrush x:Key="AxisYBrush" Color="#FF39FF39"/>
+	<SolidColorBrush x:Key="AxisZBrush" Color="#FF3939FF"/>
 
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource ThemeBlueLightBrush}"/>
-                <Setter Property="BorderBrush" Value="{StaticResource ThemeBlueBrush}"/>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+	<converters:Vector3ToStringConverter x:Key="position3ToStringConverter"/>
+	<converters:FPSToStringConverter x:Key="fpsToStringConverter"/>
+	<converters:VolumeToEnabledConverter x:Key="volumeToEnabledConverter"/>
+	<converters:VolumeToColorConverter x:Key="volumeToColorConverter"/>
+	<converters:SharpDXColorToMediaColorConverter x:Key="sharpDXColorToMediaColorConverter"/>
+	<converters:RenderTypeToEnabledConverter x:Key="renderTypeToEnabledConverter"/>
+	<converters:RenderTypeToVisibilityConverter x:Key="renderTypeToVisbilityConverter"/>
+	<converters:RenderObjectToVisiblityConverter x:Key="renderObjectToEnabledConverter"/>
+	<converters:NotifiableColorToBrushConverter x:Key="notifiableColorToBrushConverter"/>
+	<converters:TrainglesToStringConverter x:Key="trainglesToStringConverter"/>
+	<converters:BoolVisInvertedConverter x:Key="boolVisInvertedConverter"/>
+	<converters:BooleanToBrushConverter x:Key="booleanToBrushConverter"/>
+	<BooleanToVisibilityConverter x:Key="boolVisConverter"/>
+	
+	<Style x:Key="TabItemFocusVisual">
+		<Setter Property="Control.Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Rectangle Margin="3,3,3,1" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" 
+							   StrokeThickness="1" StrokeDashArray="1 2"/>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 
-    <Style TargetType="{x:Type Menu}" x:Key="MenuBarStyle">
-        <Setter Property="Background" Value="#FF2C2C2C"/>
-        <Setter Property="ItemContainerStyle" Value="{StaticResource MenuBarItemStyle}"/>
-    </Style>
+	<Style TargetType="{x:Type Label}">
+		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="Margin" Value="4"/>
+	</Style>
+	<Style TargetType="{x:Type CheckBox}">
+		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="Margin" Value="4"/>
+	</Style>
+	<Style TargetType="{x:Type GroupBox}">
+		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="Margin" Value="0"/>
+	</Style>
+	<Style TargetType="{x:Type TextBlock}">
+		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="Margin" Value="2,4,4,4"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+	<Style TargetType="{x:Type xctk:RangeSlider}" x:Key="RangeSliderCutoffPlaneStyle">
+		<Setter Property="Margin" Value="4,0"/>
+		<Setter Property="Width" Value="150"/>
+	</Style>
+	<Style TargetType="{x:Type Slider}">
+		<Setter Property="Margin" Value="4"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+
+	<Style TargetType="{x:Type MenuItem}" x:Key="MenuBarItemStyle">
+		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="Margin" Value="2,2,2,0"/>
+		<Setter Property="BorderThickness" Value="1"/>
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type MenuItem}">
+					<Border Name="border" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0" Margin="{TemplateBinding Margin}" 
+							BorderBrush="{TemplateBinding BorderBrush}">
+						<Grid Background="{TemplateBinding Background}">
+							<TextBlock Margin="8,4" Text="{TemplateBinding Header}" Foreground="{TemplateBinding Foreground}"/>
+						</Grid>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+
+		<Style.Triggers>
+			<Trigger Property="IsMouseOver" Value="True">
+				<Setter Property="Background" Value="{StaticResource ThemeBlueLightBrush}"/>
+				<Setter Property="BorderBrush" Value="{StaticResource ThemeBlueBrush}"/>
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
+	<Style TargetType="Expander">
+		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="Margin" Value="4,2"/>
+		<Setter Property="BorderBrush" Value="{StaticResource ThemeBlueLightBrush}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+	</Style>
+
+	<Style TargetType="{x:Type Menu}" x:Key="MenuBarStyle">
+		<Setter Property="Background" Value="#FF2C2C2C"/>
+		<Setter Property="ItemContainerStyle" Value="{StaticResource MenuBarItemStyle}"/>
+	</Style>
+
+	<Style x:Key="BlueTabItemHeader" TargetType="TabItem">
+		<Setter Property="FocusVisualStyle" Value="{StaticResource TabItemFocusVisual}"/>
+		<Setter Property="MinWidth" Value="40"/>
+		<Setter Property="Width" Value="Auto"/>
+		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="Padding" Value="0,0,0,0"/>
+		<Setter Property="BorderBrush" Value="Transparent"/>
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+		<Setter Property="VerticalContentAlignment" Value="Stretch"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type TabItem}">
+					<Grid x:Name="TabGrid" SnapsToDevicePixels="true" Height="23" MinWidth="95">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="1*"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+						<Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}"
+								BorderThickness="0,0,0,0" Padding="{TemplateBinding Padding}" Grid.ColumnSpan="2" CornerRadius="0,0,0,0" MinWidth="95" Margin="0"
+								Background="Transparent"/>
+						<DockPanel x:Name="ContentPanel" Margin="8,3,4,0" Grid.Column="0" LastChildFill="False" Height="Auto" 
+								   HorizontalAlignment="Left" VerticalAlignment="Top">
+							<ContentPresenter x:Name="Content" ContentSource="Header" 
+											  HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" 
+											  RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+											  VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" 
+											  Margin="0"/>
+						</DockPanel>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="true">
+							<Setter Property="Background" TargetName="Bd" Value="{StaticResource TabItemHotBackground}"/>
+						</Trigger>
+						<Trigger Property="IsSelected" Value="true">
+							<Setter Property="Panel.ZIndex" Value="1"/>
+							<Setter Property="Background" TargetName="Bd" Value="{StaticResource TabItemSelectedBackground}"/>
+						</Trigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsSelected" Value="false"/>
+								<Condition Property="IsMouseOver" Value="false"/>
+							</MultiTrigger.Conditions>
+						</MultiTrigger>
+						<Trigger Property="TabStripPlacement" Value="Bottom">
+							<Setter Property="BorderThickness" TargetName="Bd" Value="1,0,1,1"/>
+						</Trigger>
+						<Trigger Property="TabStripPlacement" Value="Left">
+							<Setter Property="BorderThickness" TargetName="Bd" Value="1,1,0,1"/>
+						</Trigger>
+						<Trigger Property="TabStripPlacement" Value="Right">
+							<Setter Property="BorderThickness" TargetName="Bd" Value="0,1,1,1"/>
+						</Trigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsSelected" Value="true"/>
+								<Condition Property="TabStripPlacement" Value="Top"/>
+							</MultiTrigger.Conditions>
+							<Setter Property="Margin" Value="0,0,0,0"/>
+							<Setter Property="Margin" TargetName="Content" Value="0"/>
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsSelected" Value="true"/>
+								<Condition Property="TabStripPlacement" Value="Bottom"/>
+							</MultiTrigger.Conditions>
+							<Setter Property="Margin" Value="-2,-1,-2,-2"/>
+							<Setter Property="Margin" TargetName="Content" Value="0,0,0,0"/>
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsSelected" Value="true"/>
+								<Condition Property="TabStripPlacement" Value="Left"/>
+							</MultiTrigger.Conditions>
+							<Setter Property="Margin" Value="-2,-2,-1,-2"/>
+							<Setter Property="Margin" TargetName="Content" Value="0,0,1,0"/>
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsSelected" Value="true"/>
+								<Condition Property="TabStripPlacement" Value="Right"/>
+							</MultiTrigger.Conditions>
+							<Setter Property="Margin" Value="0,0,0,0"/>
+							<Setter Property="Margin" TargetName="Content" Value="0,5,5,1"/>
+						</MultiTrigger>
+						<Trigger Property="IsEnabled" Value="false">
+							<Setter Property="Background" TargetName="Bd" Value="Transparent"/>
+							<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style TargetType="TabControl" x:Key="TabControlStyle">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Margin" Value="0"/>
+		<Setter Property="TabStripPlacement" Value="Bottom"/>
+	</Style>
 </ResourceDictionary>

@@ -716,7 +716,7 @@
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
                             <Label Margin="4,0,4,0">Z-Correct:</Label>
-                            <CheckBox x:Name="checkBoxZCorrect" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <RibbonCheckBox x:Name="checkBoxZCorrect" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Margin="4,0,4,0">Threshold:</Label>
@@ -769,6 +769,14 @@
                             </ListBox>
                         </RibbonGallery>
                     </RibbonMenuButton>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Margin="4,0">Smooth Scalar Data:</Label>
+                        <RibbonCheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding Workspace.IsosurfaceDoSmooth}"/>
+                    </StackPanel>                    
+                    <StackPanel Orientation="Horizontal">
+                        <Label Margin="4,0">Window Size:</Label>
+                        <xctk:IntegerUpDown Width="50" VerticalAlignment="Center" Value="{Binding Workspace.IsosurfaceSmoothWindowSize}"/>
+                    </StackPanel>
                     <RibbonButton  Label="Render" LargeImageSource="Images\CD.ico"
                                    SmallImageSource="Images\CD.ico"
                                    Click="Render3DIso" ToolTipTitle="Render"

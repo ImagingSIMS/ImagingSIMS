@@ -123,13 +123,25 @@ namespace Direct3DRendering
         {
             RenderIsosurface isosurface = new RenderIsosurface()
             {
-                Width = volumeData.GetLength(0),
-                Height = volumeData.GetLength(1),
-                Depth = volumeData.GetLength(2),
+                Width = volumeData.GetLength(0) + 2,
+                Height = volumeData.GetLength(1) + 2,
+                Depth = volumeData.GetLength(2) + 2,
                 InitialColor = initialColor
             };
 
-            isosurface.calculateSurface(volumeData, isoValue, surfaceId);
+            float[,,] paddedData = new float[isosurface.Width, isosurface.Height, isosurface.Depth];
+            for (int x = 1; x < isosurface.Width - 1; x++)
+            {
+                for (int y = 1; y < isosurface.Height - 1; y++)
+                {
+                    for (int z = 1; z < isosurface.Depth - 1; z++)
+                    {
+                        paddedData[x, y, z] = volumeData[x - 1, y - 1, z - 1];
+                    }
+                }
+            }
+
+            isosurface.calculateSurface(paddedData, isoValue, surfaceId);
 
             return isosurface;
         }

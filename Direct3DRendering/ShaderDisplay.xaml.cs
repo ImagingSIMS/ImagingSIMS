@@ -45,7 +45,7 @@ namespace Direct3DRendering
             files.AddRange( System.IO.Directory.GetFiles("Shaders"));
 
             var results = from file in files
-                            where file.EndsWith(".pso") || file.EndsWith(".vso")
+                            where file.EndsWith(".pso") || file.EndsWith(".vso") || file.EndsWith(".gso")
                             select file;
 
             foreach (string result in results)

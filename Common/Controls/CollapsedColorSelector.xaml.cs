@@ -26,6 +26,8 @@ namespace ImagingSIMS.Common.Controls
             typeof(NotifiableColor), typeof(CollapsedColorSelector));
         public static readonly DependencyProperty ColorSlidersVisibleProperty = DependencyProperty.Register("ColorSlidersVisible",
             typeof(bool), typeof(CollapsedColorSelector));
+        public static readonly DependencyProperty IsAlphaEnabledProperty = DependencyProperty.Register("IsAlphaEnabled",
+            typeof(bool), typeof(CollapsedColorSelector));
 
         public NotifiableColor SelectedColor
         {
@@ -37,10 +39,17 @@ namespace ImagingSIMS.Common.Controls
             get { return (bool)GetValue(ColorSlidersVisibleProperty); }
             set { SetValue(ColorSlidersVisibleProperty, value); }
         }
+        public bool IsAlphaEnabled
+        {
+            get { return (bool)GetValue(IsAlphaEnabledProperty); }
+            set { SetValue(IsAlphaEnabledProperty, value); }
+        }
 
         public CollapsedColorSelector()
         {
             SelectedColor = NotifiableColor.FromArgb(255, 0, 0, 0);
+
+            IsAlphaEnabled = true;
             
             InitializeComponent();
         }
@@ -79,7 +88,29 @@ namespace ImagingSIMS.Common.Controls
                 return new LinearGradientBrush(Color.FromArgb(255, 0, 0, 0), Color.FromArgb(255, 0, 0, 0), 0);
             }
         }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class BooleanToVisibilityInverseConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                bool b = (bool)value;
 
+                if (b)
+                    return Visibility.Collapsed;
+
+                return Visibility.Visible;
+            }
+            catch (Exception)
+            {
+                return Visibility.Visible;
+            }
+        }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
@@ -191,6 +222,19 @@ namespace ImagingSIMS.Common.Controls
         public static NotifiableColor Black
         {
             get { return FromArgb(255, 0, 0, 0); }
+        }
+        public static NotifiableColor White
+        {
+            get
+            {
+                return new NotifiableColor()
+                {
+                    R = 255,
+                    G = 255,
+                    B = 255,
+                    A = 255
+                };
+            }
         }
     }
 }
