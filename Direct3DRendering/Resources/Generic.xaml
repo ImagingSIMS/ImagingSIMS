@@ -25,6 +25,7 @@
 	<converters:NotifiableColorToBrushConverter x:Key="notifiableColorToBrushConverter"/>
 	<converters:TrainglesToStringConverter x:Key="trainglesToStringConverter"/>
 	<converters:BoolVisInvertedConverter x:Key="boolVisInvertedConverter"/>
+	<converters:BooleanToBrushConverter x:Key="booleanToBrushConverter"/>
 	<BooleanToVisibilityConverter x:Key="boolVisConverter"/>
 	
 	<Style x:Key="TabItemFocusVisual">
@@ -59,10 +60,10 @@
 		<Setter Property="Margin" Value="4,0"/>
 		<Setter Property="Width" Value="150"/>
 	</Style>
-    <Style TargetType="{x:Type Slider}">
-        <Setter Property="Margin" Value="4"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-    </Style>
+	<Style TargetType="{x:Type Slider}">
+		<Setter Property="Margin" Value="4"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
 
 	<Style TargetType="{x:Type MenuItem}" x:Key="MenuBarItemStyle">
 		<Setter Property="Foreground" Value="White"/>

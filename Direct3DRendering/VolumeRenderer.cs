@@ -25,9 +25,6 @@ namespace Direct3DRendering
         Texture2D[] _texPositions;
         ShaderResourceView[] _srvPositions;
         RenderTargetView[] _rtvPositions;
-
-        RasterizerState _rasterizerCullFront;
-        RasterizerState _rasterizerCullBack;
         SamplerState _samplerLinear;
 
         Texture3D[] _texVolumes;
@@ -87,8 +84,6 @@ namespace Direct3DRendering
                 Disposer.RemoveAndDispose(ref _srvPositions);
                 Disposer.RemoveAndDispose(ref _rtvPositions);
 
-                Disposer.RemoveAndDispose(ref _rasterizerCullFront);
-                Disposer.RemoveAndDispose(ref _rasterizerCullBack);
                 Disposer.RemoveAndDispose(ref _samplerLinear);
 
                 Disposer.RemoveAndDispose(ref _texVolumes);
@@ -143,22 +138,6 @@ namespace Direct3DRendering
         }
         protected override void InitializeStates()
         {
-            RasterizerStateDescription descBack = new RasterizerStateDescription()
-            {
-                FillMode = FillMode.Solid,
-                CullMode = CullMode.Back,
-                IsDepthClipEnabled = true
-            };
-            _rasterizerCullBack = new RasterizerState(_device, descBack);
-
-            RasterizerStateDescription descFront = new RasterizerStateDescription()
-            {
-                FillMode = FillMode.Solid,
-                CullMode = CullMode.Front,
-                IsDepthClipEnabled = true
-            };
-            _rasterizerCullFront = new RasterizerState(_device, descFront);
-
             SamplerStateDescription desc = new SamplerStateDescription()
             {
                 Filter = Filter.MinMagMipLinear,
@@ -464,12 +443,12 @@ namespace Direct3DRendering
                 context.VertexShader.SetShaderResources(2, 1, _srvActiveVoxels);
                 context.PixelShader.SetShaderResources(2, 1, _srvActiveVoxels);
 
-                context.Rasterizer.State = _rasterizerCullFront;
+                context.Rasterizer.State = _rasterizerStateCullFront;
                 context.OutputMerger.SetRenderTargets(null, _rtvPositions[1]);
                 context.ClearRenderTargetView(_rtvPositions[1], Color.Black);
                 context.DrawIndexed(36, 0, 0);
 
-                context.Rasterizer.State = _rasterizerCullBack;
+                context.Rasterizer.State = _rasterizerStateCullBack;
                 context.OutputMerger.SetRenderTargets(null, _rtvPositions[0]);
                 context.ClearRenderTargetView(_rtvPositions[0], Color.Black);
                 context.DrawIndexed(36, 0, 0);

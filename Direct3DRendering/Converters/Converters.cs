@@ -6,8 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 using ImagingSIMS.Common.Controls;
 using SharpDX;
+
+using Color = SharpDX.Color;
 
 namespace Direct3DRendering.Converters
 {
@@ -434,6 +437,28 @@ namespace Direct3DRendering.Converters
             {
                 return null;
             }
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class BooleanToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                bool b = (bool)value;
+
+                if (b)
+                    return new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 33, 255, 33));
+                else return new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 255, 33, 33));
+            }
+            catch (Exception)
+            {
+                return new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 255, 255, 255));
+            }           
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

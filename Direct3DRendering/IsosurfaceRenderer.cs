@@ -108,18 +108,7 @@ namespace Direct3DRendering
         }
         protected override void InitializeStates()
         {
-            base.InitializeStates();
-
-            RasterizerStateDescription descRasterizer = new RasterizerStateDescription()
-            {
-                FillMode = FillMode.Solid,
-                CullMode = CullMode.None,
-                IsDepthClipEnabled = true
-            };
-            RasterizerState rasterizer = new RasterizerState(_device, descRasterizer);
-
-            var context = _device.ImmediateContext;
-            context.Rasterizer.State = rasterizer;            
+            base.InitializeStates();    
         }
 
         public void SetData(List<RenderIsosurface> Isosurfaces)
@@ -316,10 +305,14 @@ namespace Direct3DRendering
                 context.PixelShader.SetConstantBuffer(0, _bufferRenderParams);
                 context.PixelShader.SetConstantBuffer(1, _bufferLightingParams);
 
+                // TODO: Remove this
+                context.PixelShader.SetConstantBuffer(3, _isosurfaceParamBuffer);
+
                 if (EnableDepthBuffering)
                     context.OutputMerger.SetRenderTargets(_depthView, _renderView);
                 else context.OutputMerger.SetRenderTargets(_renderView);
 
+                context.Rasterizer.State = _rasterizerStateCullNone;
                 context.Draw(_numVertices, 0);
 
                 _dataContextRenderWindow.RenderWindowView.NumTrianglesDrawn = _numVertices / 3;

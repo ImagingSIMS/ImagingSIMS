@@ -419,14 +419,11 @@ namespace Direct3DRendering.ViewModels
 
         // Lighting
         bool _enableAmbientLighting;
-        bool _enableDirectionalLighting;
+        bool _enablePointLighting;
         bool _enableSpecularLighting;
         NotifiableColor _ambientLightColor;
         float _ambientLightIntensity;
-        bool[] _directionalEnabled;
-        Vector4[] _directionalDirection;
-        NotifiableColor[] _directionalColor;
-        float[] _directionalIntensity;
+        PointLightSource[] _pointLights;
 
         public bool EnableAmbientLighting
         {
@@ -440,15 +437,15 @@ namespace Direct3DRendering.ViewModels
                 }
             }
         }
-        public bool EnableDirectionalLighting
+        public bool EnablePointLighting
         {
-            get { return _enableDirectionalLighting; }
+            get { return _enablePointLighting; }
             set
             {
-                if (_enableDirectionalLighting != value)
+                if (_enablePointLighting != value)
                 {
-                    _enableDirectionalLighting = value;
-                    NotifyPropertyChanged("EnableDirectionalLighting");
+                    _enablePointLighting = value;
+                    NotifyPropertyChanged("EnablePointLighting");
                 }
             }
         }
@@ -488,50 +485,15 @@ namespace Direct3DRendering.ViewModels
                 }
             }
         }
-        public bool[] DirectionalEnabled
+        public PointLightSource[] PointLights
         {
-            get { return _directionalEnabled; }
+            get { return _pointLights; }
             set
             {
-                if(_directionalEnabled != value)
+                if(_pointLights != value)
                 {
-                    _directionalEnabled = value;
-                    NotifyPropertyChanged("DirectionalEnabled");
-                }
-            }
-        }
-        public Vector4[] DirectionalDirection
-        {
-            get { return _directionalDirection; }
-            set
-            {
-                if(_directionalDirection != value)
-                {
-                    _directionalDirection = value;
-                    NotifyPropertyChanged("DirectionalEnabled");
-                }
-            }
-        }
-        public NotifiableColor[] DirectionalColor
-        {
-            get { return _directionalColor; }
-            set
-            {
-                if(_directionalColor != value)
-                {
-                    _directionalColor = value;
-                    NotifyPropertyChanged("DirectionalColor");
-                }
-            }
-        }
-        public float[] DirectionalIntensity
-        {
-            get { return _directionalIntensity; }
-            set
-            {
-                if(_directionalIntensity != value)
-                {
-                    _directionalIntensity = value;
+                    _pointLights = value;
+                    NotifyPropertyChanged("PointLights");
                 }
             }
         }
@@ -556,61 +518,34 @@ namespace Direct3DRendering.ViewModels
 
             HeightMapHeight = 1.0f;
 
-            BackColor = new NotifiableColor()
-            {
-                A = 255,
-                R = 0,
-                G = 0,
-                B = 0
-            };
+            BackColor = NotifiableColor.Black;
 
             IsRenderLoaded = false;
 
             EnableAmbientLighting = true;
-            EnableDirectionalLighting = false;
+            EnablePointLighting = false;
             EnableSpecularLighting = false;
-            AmbientLightColor = new NotifiableColor()
-            {
-                A = 255,
-                R = 255,
-                G = 255,
-                B = 255
-            };
-            AmbientLightIntensity = 0.1f;
 
-            DirectionalEnabled = new bool[]
+            AmbientLightColor = NotifiableColor.White;
+            AmbientLightIntensity = 0f;
+
+            EnablePointLighting = true;
+            PointLights = new PointLightSource[8]
             {
-                //true, true, true, true,
-                false, false, false, false,
-                false, false, false, false
+                new PointLightSource(new Vector4(0f), 0f),
+                new PointLightSource(new Vector4(0f), 0f),
+                new PointLightSource(new Vector4(0f), 0f),
+                new PointLightSource(new Vector4(0f), 0f),
+                new PointLightSource(new Vector4(0f), 0f),
+                new PointLightSource(new Vector4(0f), 0f),
+                new PointLightSource(new Vector4(0f), 0f),
+                new PointLightSource(new Vector4(0f), 0f)
             };
-            DirectionalDirection = new Vector4[]
-            {
-                new Vector4(-1f, -1f, 1f, 1f),
-                new Vector4(1f, -1f, 1f, 1f),
-                new Vector4(1f, 1f, 1f, 1f),
-                new Vector4(-1f, 1f, 1f, 1f),
-                new Vector4(-1f, -1f, -1f, 1f),
-                new Vector4(1f, -1f, -1f, 1f),
-                new Vector4(1f, 1f, -1f, 1f),
-                new Vector4(-1f, 1f, -1f, 1f)
-            };
-            DirectionalColor = new NotifiableColor[]
-            {
-                NotifiableColor.White,
-                NotifiableColor.White,
-                NotifiableColor.White,
-                NotifiableColor.White,
-                NotifiableColor.White,
-                NotifiableColor.White,
-                NotifiableColor.White,
-                NotifiableColor.White
-            };
-            DirectionalIntensity = new float[]
-            {
-                0.25f, 0.25f, 0.25f, 0.25f,
-                0.25f, 0.25f, 0.25f, 0.25f
-            };
+
+#if DEBUG || DEBUG_DEVICE
+            ShowAxes = true;
+            ShowBoundingBox = true;
+#endif
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -625,7 +560,7 @@ namespace Direct3DRendering.ViewModels
         public void UpdateLightingParameters(ref LightingParams lightingParams)
         {
             lightingParams.EnableAmbientLighting = EnableAmbientLighting ? 1.0f : 0.0f;
-            lightingParams.EnableDirectionalLighting = EnableDirectionalLighting ? 1.0f : 0.0f;
+            lightingParams.EnablePointLighting = EnablePointLighting ? 1.0f : 0.0f;
             lightingParams.EnableSpecularLighting = EnableSpecularLighting ? 1.0f : 0.0f;
 
             lightingParams.AmbientLightColor = AmbientLightColor.ToVector4();
@@ -633,9 +568,71 @@ namespace Direct3DRendering.ViewModels
 
             for (int i = 0; i < 8; i++)
             {
-                lightingParams.UpdateDirectionalLight(i, 
-                    DirectionalEnabled[i], DirectionalDirection[i], 
-                    DirectionalColor[i], DirectionalIntensity[i]);
+                lightingParams.UpdatePointLight(i, PointLights[i]);
+            }
+        }
+
+        public static RenderingViewModel DefaultVolumeParameters
+        {
+            get
+            {
+                return new RenderingViewModel()
+                {
+                    EnableAmbientLighting = true,
+                    AmbientLightColor = NotifiableColor.White,
+                    AmbientLightIntensity = 1.0f,
+
+                    EnablePointLighting = false
+                };
+            }
+        }
+        public static RenderingViewModel DefaultIsosurfaceParameters
+        {
+            get
+            {
+                return new RenderingViewModel()
+                {
+                    EnableAmbientLighting = true,
+                    AmbientLightColor = NotifiableColor.White,
+                    AmbientLightIntensity = 0.5f,
+
+                    EnablePointLighting = true,
+                    PointLights = new PointLightSource[8] {
+                        new PointLightSource(new Vector4(-5f, -5f, 5f, 1f), 0.25f, true),
+                        new PointLightSource(new Vector4(5f, -5f, 5f, 5f), 0.25f, true),
+                        new PointLightSource(new Vector4(5f, 5f, 5f, 5f), 0.25f, true),
+                        new PointLightSource(new Vector4(-5f, 5f, 5f, 5f), 0.25f, true),
+                        new PointLightSource(new Vector4(-5f, -5f, -5f, 1f), 0.25f, true),
+                        new PointLightSource(new Vector4(5f, -5f, -5f, 5f), 0.25f, true),
+                        new PointLightSource(new Vector4(5f, 5f, -5f, 5f), 0.25f, true),
+                        new PointLightSource(new Vector4(-5f, 5f, -5f, 5f), 0.25f, true)
+                    },
+                    
+                };
+            }
+        }
+        public static RenderingViewModel DefaultHeightMapParameters
+        {
+            get
+            {
+                return new RenderingViewModel()
+                {
+                    EnableAmbientLighting =  true,
+                    AmbientLightColor = NotifiableColor.White,
+                    AmbientLightIntensity = 0.5f,
+
+                    EnablePointLighting = true,
+                    PointLights = new PointLightSource[8] {
+                        new PointLightSource(new Vector4(-5f, -5f, 5f, 1f), 0.25f, true),
+                        new PointLightSource(new Vector4(5f, -5f, 5f, 5f), 0.25f, true),
+                        new PointLightSource(new Vector4(5f, 5f, 5f, 5f), 0.25f, true),
+                        new PointLightSource(new Vector4(-5f, 5f, 5f, 5f), 0.25f, true),
+                        new PointLightSource(new Vector4(-5f, -5f, -5f, 1f), 0.25f, true),
+                        new PointLightSource(new Vector4(5f, -5f, -5f, 5f), 0.25f, true),
+                        new PointLightSource(new Vector4(5f, 5f, -5f, 5f), 0.25f, true),
+                        new PointLightSource(new Vector4(-5f, 5f, -5f, 5f), 0.25f, true)
+                    },
+                };
             }
         }
     } 

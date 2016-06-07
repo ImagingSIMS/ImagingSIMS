@@ -390,108 +390,108 @@ namespace Direct3DRendering
         public float EnableAmbientLighting;
 
         [FieldOffset(24)]
-        public float EnableDirectionalLighting;
+        public float EnablePointLighting;
 
         [FieldOffset(28)]
         public float EnableSpecularLighting;
 
         // These are really padded in cbuffer
         [FieldOffset(32)]
-        private float directionalEnabled0;
+        private float pointEnabled0;
         
         [FieldOffset(48)]
-        private float directionalEnabled1;
+        private float pointEnabled1;
 
         [FieldOffset(64)]
-        private float directionalEnabled2;
+        private float pointEnabled2;
 
         [FieldOffset(80)]
-        private float directionalEnabled3;
+        private float pointEnabled3;
 
         [FieldOffset(96)]
-        private float directionalEnabled4;
+        private float pointEnabled4;
 
         [FieldOffset(112)]
-        private float directionalEnabled5;
+        private float pointEnabled5;
 
         [FieldOffset(128)]
-        private float directionalEnabled6;
+        private float pointEnabled6;
 
         [FieldOffset(144)]
-        private float directionalEnabled7;
+        private float pointEnabled7;
 
         [FieldOffset(160)]
-        private Vector4 directionalDirection0;
+        private Vector4 pointLocation0;
 
         [FieldOffset(176)]
-        private Vector4 directionalDirection1;
+        private Vector4 pointLocation1;
 
         [FieldOffset(192)]
-        private Vector4 directionalDirection2;
+        private Vector4 pointLocation2;
 
         [FieldOffset(208)]
-        private Vector4 directionalDirection3;
+        private Vector4 pointLocation3;
 
         [FieldOffset(224)]
-        private Vector4 directionalDirection4;
+        private Vector4 pointLocation4;
 
         [FieldOffset(240)]
-        private Vector4 directionalDirection5;
+        private Vector4 pointLocation5;
 
         [FieldOffset(256)]
-        private Vector4 directionalDirection6;
+        private Vector4 pointLocation6;
 
         [FieldOffset(272)]
-        private Vector4 directionalDirection7;
+        private Vector4 pointLocation7;
 
         [FieldOffset(288)]
-        private Vector4 directionalColor0;
+        private Vector4 pointColor0;
 
         [FieldOffset(304)]
-        private Vector4 directionalColor1;
+        private Vector4 pointColor1;
 
         [FieldOffset(320)]
-        private Vector4 directionalColor2;
+        private Vector4 pointColor2;
 
         [FieldOffset(336)]
-        private Vector4 directionalColor3;
+        private Vector4 pointColor3;
 
         [FieldOffset(352)]
-        private Vector4 directionalColor4;
+        private Vector4 pointColor4;
 
         [FieldOffset(368)]
-        private Vector4 directionalColor5;
+        private Vector4 pointColor5;
 
         [FieldOffset(384)]
-        private Vector4 directionalColor6;
+        private Vector4 pointColor6;
 
         [FieldOffset(400)]
-        private Vector4 directionalColor7;
+        private Vector4 pointColor7;
 
         // These are actually float4 in cbuffer
         [FieldOffset(416)]
-        private float directionalIntensity0;
+        private float pointIntensity0;
 
         [FieldOffset(432)]
-        private float directionalIntensity1;
+        private float pointIntensity1;
 
         [FieldOffset(448)]
-        private float directionalIntensity2;
+        private float pointIntensity2;
 
         [FieldOffset(464)]
-        private float directionalIntensity3;
+        private float pointIntensity3;
 
         [FieldOffset(480)]
-        private float directionalIntensity4;
+        private float pointIntensity4;
 
         [FieldOffset(496)]
-        private float directionalIntensity5;
+        private float pointIntensity5;
 
         [FieldOffset(512)]
-        private float directionalIntensity6;
+        private float pointIntensity6;
 
         [FieldOffset(528)]
-        private float directionalIntensity7;
+        private float pointIntensity7;
 
         public static LightingParams Empty
         {
@@ -499,190 +499,197 @@ namespace Direct3DRendering
             {
                 return new LightingParams()
                 {
-                    directionalDirection0 = new Vector4(0),
-                    directionalDirection1 = new Vector4(0),
-                    directionalDirection2 = new Vector4(0),
-                    directionalDirection3 = new Vector4(0),
-                    directionalDirection4 = new Vector4(0),
-                    directionalDirection5 = new Vector4(0),
-                    directionalDirection6 = new Vector4(0),
-                    directionalDirection7 = new Vector4(0),
+                    pointLocation0 = new Vector4(0),
+                    pointLocation1 = new Vector4(0),
+                    pointLocation2 = new Vector4(0),
+                    pointLocation3 = new Vector4(0),
+                    pointLocation4 = new Vector4(0),
+                    pointLocation5 = new Vector4(0),
+                    pointLocation6 = new Vector4(0),
+                    pointLocation7 = new Vector4(0),
 
-                    directionalColor0 = new Vector4(0.0f),
-                    directionalColor1 = new Vector4(0.0f),
-                    directionalColor2 = new Vector4(0.0f),
-                    directionalColor3 = new Vector4(0.0f),
-                    directionalColor4 = new Vector4(0.0f),
-                    directionalColor5 = new Vector4(0.0f),
-                    directionalColor6 = new Vector4(0.0f),
-                    directionalColor7 = new Vector4(0.0f)
+                    pointColor0 = new Vector4(0.0f),
+                    pointColor1 = new Vector4(0.0f),
+                    pointColor2 = new Vector4(0.0f),
+                    pointColor3 = new Vector4(0.0f),
+                    pointColor4 = new Vector4(0.0f),
+                    pointColor5 = new Vector4(0.0f),
+                    pointColor6 = new Vector4(0.0f),
+                    pointColor7 = new Vector4(0.0f)
                 };
             }
         }
 
-        public void UpdateDirectionalLight(int index, bool isEnabled)
+        public void UpdatePointLight(int index, bool isEnabled)
         {
             switch (index)
             {
                 case 0:
-                    directionalEnabled0 = isEnabled ? 1.0f : 0.0f;
+                    pointEnabled0 = isEnabled ? 1.0f : 0.0f;
                     break;
                 case 1:
-                    directionalEnabled1 = isEnabled ? 1.0f : 0.0f;
+                    pointEnabled1 = isEnabled ? 1.0f : 0.0f;
                     break;
                 case 2:
-                    directionalEnabled2 = isEnabled ? 1.0f : 0.0f;
+                    pointEnabled2 = isEnabled ? 1.0f : 0.0f;
                     break;
                 case 3:
-                    directionalEnabled3 = isEnabled ? 1.0f : 0.0f;
+                    pointEnabled3 = isEnabled ? 1.0f : 0.0f;
                     break;
                 case 4:
-                    directionalEnabled4 = isEnabled ? 1.0f : 0.0f;
+                    pointEnabled4 = isEnabled ? 1.0f : 0.0f;
                     break;
                 case 5:
-                    directionalEnabled5 = isEnabled ? 1.0f : 0.0f;
+                    pointEnabled5 = isEnabled ? 1.0f : 0.0f;
                     break;
                 case 6:
-                    directionalEnabled6 = isEnabled ? 1.0f : 0.0f;
+                    pointEnabled6 = isEnabled ? 1.0f : 0.0f;
                     break;
                 case 7:
-                    directionalEnabled7 = isEnabled ? 1.0f : 0.0f;
+                    pointEnabled7 = isEnabled ? 1.0f : 0.0f;
                     break;
             }
         }
-        public void UpdateDirectionalLight(int index, Vector4 direction)
+        public void UpdatePointLight(int index, Vector4 direction)
         {
             switch (index)
             {
                 case 0:
-                    directionalDirection0 = direction;
+                    pointLocation0 = direction;
                     break;
                 case 1:
-                    directionalDirection1 = direction;
+                    pointLocation1 = direction;
                     break;
                 case 2:
-                    directionalDirection2 = direction;
+                    pointLocation2 = direction;
                     break;
                 case 3:
-                    directionalDirection3 = direction;
+                    pointLocation3 = direction;
                     break;
                 case 4:
-                    directionalDirection4 = direction;
+                    pointLocation4 = direction;
                     break;
                 case 5:
-                    directionalDirection5 = direction;
+                    pointLocation5 = direction;
                     break;
                 case 6:
-                    directionalDirection6 = direction;
+                    pointLocation6 = direction;
                     break;
                 case 7:
-                    directionalDirection7 = direction;
+                    pointLocation7 = direction;
                     break;
             }
         }
-        public void UpdateDirectionalLight(int index, NotifiableColor color)
+        public void UpdatePointLight(int index, NotifiableColor color)
         {
             switch (index)
             {
                 case 0:
-                    directionalColor0 = color.ToVector4();
+                    pointColor0 = color.ToVector4();
                     break;
                 case 1:
-                    directionalColor1 = color.ToVector4();
+                    pointColor1 = color.ToVector4();
                     break;
                 case 2:
-                    directionalColor2 = color.ToVector4();
+                    pointColor2 = color.ToVector4();
                     break;
                 case 3:
-                    directionalColor3 = color.ToVector4();
+                    pointColor3 = color.ToVector4();
                     break;
                 case 4:
-                    directionalColor4 = color.ToVector4();
+                    pointColor4 = color.ToVector4();
                     break;
                 case 5:
-                    directionalColor5 = color.ToVector4();
+                    pointColor5 = color.ToVector4();
                     break;
                 case 6:
-                    directionalColor6 = color.ToVector4();
+                    pointColor6 = color.ToVector4();
                     break;
                 case 7:
-                    directionalColor7 = color.ToVector4();
+                    pointColor7 = color.ToVector4();
                     break;
             }
         }
-        public void UpdateDirectionalLight(int index, Color color)
+        public void UpdatePointLight(int index, Color color)
         {
             switch (index)
             {
                 case 0:
-                    directionalColor0 = color.ToVector4();
+                    pointColor0 = color.ToVector4();
                     break;
                 case 1:
-                    directionalColor1 = color.ToVector4();
+                    pointColor1 = color.ToVector4();
                     break;
                 case 2:
-                    directionalColor2 = color.ToVector4();
+                    pointColor2 = color.ToVector4();
                     break;
                 case 3:
-                    directionalColor3 = color.ToVector4();
+                    pointColor3 = color.ToVector4();
                     break;
                 case 4:
-                    directionalColor4 = color.ToVector4();
+                    pointColor4 = color.ToVector4();
                     break;
                 case 5:
-                    directionalColor5 = color.ToVector4();
+                    pointColor5 = color.ToVector4();
                     break;
                 case 6:
-                    directionalColor6 = color.ToVector4();
+                    pointColor6 = color.ToVector4();
                     break;
                 case 7:
-                    directionalColor7 = color.ToVector4();
+                    pointColor7 = color.ToVector4();
                     break;
             }
         }
-        public void UpdateDirectionalLight(int index, float intensity)
+        public void UpdatePointLight(int index, float intensity)
         {
             switch (index)
             {
                 case 0:
-                    directionalIntensity0 = intensity;
+                    pointIntensity0 = intensity;
                     break;
                 case 1:
-                    directionalIntensity1 = intensity;
+                    pointIntensity1 = intensity;
                     break;
                 case 2:
-                    directionalIntensity2 = intensity;
+                    pointIntensity2 = intensity;
                     break;
                 case 3:
-                    directionalIntensity3 = intensity;
+                    pointIntensity3 = intensity;
                     break;
                 case 4:
-                    directionalIntensity4 = intensity;
+                    pointIntensity4 = intensity;
                     break;
                 case 5:
-                    directionalIntensity5 = intensity;
+                    pointIntensity5 = intensity;
                     break;
                 case 6:
-                    directionalIntensity6 = intensity;
+                    pointIntensity6 = intensity;
                     break;
                 case 7:
-                    directionalIntensity7 = intensity;
+                    pointIntensity7 = intensity;
                     break;
             }
         }
-        public void UpdateDirectionalLight(int index, bool isEnabled, Vector4 direction, NotifiableColor color, float intensity)
+        public void UpdatePointLight(int index, bool isEnabled, Vector4 location, NotifiableColor color, float intensity)
         {
-            UpdateDirectionalLight(index, isEnabled);
-            UpdateDirectionalLight(index, direction);
-            UpdateDirectionalLight(index, color);
-            UpdateDirectionalLight(index, intensity);
+            UpdatePointLight(index, isEnabled);
+            UpdatePointLight(index, location);
+            UpdatePointLight(index, color);
+            UpdatePointLight(index, intensity);
         }
-        public void UpdateDirectionalLight(int index, bool isEnabled, Vector4 direction, Color color, float intensity)
+        public void UpdatePointLight(int index, bool isEnabled, Vector4 location, Color color, float intensity)
         {
-            UpdateDirectionalLight(index, isEnabled);
-            UpdateDirectionalLight(index, direction);
-            UpdateDirectionalLight(index, color);
-            UpdateDirectionalLight(index, intensity);
+            UpdatePointLight(index, isEnabled);
+            UpdatePointLight(index, location);
+            UpdatePointLight(index, color);
+            UpdatePointLight(index, intensity);
+        }
+        public void UpdatePointLight(int index, PointLightSource lightSource)
+        {
+            UpdatePointLight(index, lightSource.IsEnabled);
+            UpdatePointLight(index, lightSource.Location);
+            UpdatePointLight(index, lightSource.Color);
+            UpdatePointLight(index, lightSource.Intensity);
         }
     }
 

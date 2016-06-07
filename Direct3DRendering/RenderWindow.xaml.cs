@@ -43,21 +43,20 @@ namespace Direct3DRendering
             get { return _renderer; }
         }
 
+        public static readonly DependencyProperty IsDebugProperty = DependencyProperty.Register("IsDebug",
+            typeof(bool), typeof(RenderWindow));
         public static readonly DependencyProperty RenderWindowViewProperty = DependencyProperty.Register("RenderWindowView",
             typeof(RenderingViewModel), typeof(RenderWindow));
+
+        public bool IsDebug
+        {
+            get { return (bool)GetValue(IsDebugProperty); }
+            set { SetValue(IsDebugProperty, value); }
+        }
         public RenderingViewModel RenderWindowView
         {
             get { return (RenderingViewModel)GetValue(RenderWindowViewProperty); }
             set { SetValue(RenderWindowViewProperty, value); }
-        }
-
-        bool _windowActivated;
-        private bool canControlCamera
-        {
-            get
-            {
-                return _windowActivated;
-            }
         }
 
         public RenderWindow()
@@ -75,23 +74,13 @@ namespace Direct3DRendering
             formsHost.Focus();
 
 #if DEBUG || DEBUG_DEVICE
-            RenderWindowView.ShowAxes = true;
-            RenderWindowView.ShowBoundingBox = true;
+            IsDebug = true;
 #endif
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             StopRendering();
-        }
-
-        private void Window_LostFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void Window_GotFocus(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void menuItemShowRenderControls_Click(object sender, RoutedEventArgs e)
@@ -119,9 +108,25 @@ namespace Direct3DRendering
         {
             _renderer = new HeightMapRenderer(this);
 
+            // Set default rendering parameters
+
+            // Check to see if this call is running on an async thread
+            if (Application.Current != null && Application.Current.Dispatcher != null)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RenderWindowView = RenderingViewModel.DefaultHeightMapParameters;
+                });
+
+            }
+            else
+            {
+                RenderWindowView = RenderingViewModel.DefaultHeightMapParameters;
+            }
+
             initializeRenderer();
 
-            ((HeightMapRenderer)_renderer).SetData(ColorData, HeightData, new Vector3(2, 2, 0.50f));
+            ((HeightMapRenderer)_renderer).SetData(ColorData, HeightData, new Vector3(2, 2, 0.50f));            
         }
         private void setData(params RenderVolume[] Volumes)
         {
@@ -129,10 +134,36 @@ namespace Direct3DRendering
 
             _renderer = new VolumeRenderer(this);
 
+            // Set default rendering parameters and
+            // initial colors based on volume data
+
+            // Check to see if this call is running on an async thread
+            if (Application.Current != null && Application.Current.Dispatcher != null)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                });
+                for (int i = 0; i < Volumes.Length; i++)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        RenderWindowView.VolumeColors[i] = Volumes[i].Color.ToNotifiableColor();
+                    });
+                }
+            }
+            else
+            {
+                RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                for (int i = 0; i < Volumes.Length; i++)
+                {
+                    RenderWindowView.VolumeColors[i] = Volumes[i].Color.ToNotifiableColor();
+                }
+            }
+
             initializeRenderer();
 
-            ((VolumeRenderer)_renderer).SetData(new List<RenderVolume>(Volumes));
-            
+            ((VolumeRenderer)_renderer).SetData(new List<RenderVolume>(Volumes));   
         }
         private void setData(List<RenderVolume> Volumes)
         {
@@ -140,15 +171,16 @@ namespace Direct3DRendering
 
             _renderer = new VolumeRenderer(this);
 
-            initializeRenderer();
-
-            ((VolumeRenderer)_renderer).SetData(new List<RenderVolume>(Volumes));
-
-            // Set initial colors based on volume data
+            // Set default rendering parameters and
+            // initial colors based on volume data
 
             // Check to see if this call is running on async thread
             if (Application.Current != null && Application.Current.Dispatcher != null)
             {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                });
                 for (int i = 0; i < Volumes.Count; i++)
                 {
                     Application.Current.Dispatcher.Invoke(() =>
@@ -159,28 +191,33 @@ namespace Direct3DRendering
             }
             else
             {
+                RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
                 for (int i = 0; i < Volumes.Count; i++)
                 {
                     RenderWindowView.VolumeColors[i] = Volumes[i].Color.ToNotifiableColor();
                 }
             }
-        
-        }
-        private void setData(List<RenderIsosurface> Isosurfaces)
-        {
-            if (Isosurfaces.Count > 8) throw new ArgumentException("Rendering is only suppoerted for a maximum of 8 volumes.");
-
-            _renderer = new IsosurfaceRenderer(this);
 
             initializeRenderer();
 
-            ((IsosurfaceRenderer)_renderer).SetData(Isosurfaces);
+            ((VolumeRenderer)_renderer).SetData(new List<RenderVolume>(Volumes));
+        }
+        private void setData(List<RenderIsosurface> Isosurfaces)
+        {
+            if (Isosurfaces.Count > 8) throw new ArgumentException("Rendering is only supported for a maximum of 8 volumes.");
 
-            // Set initial colors
+            _renderer = new IsosurfaceRenderer(this);
+
+            // Set default rendering parameters and
+            // initial colors based on isosurface data
 
             // Check to see if this call is running on an async thread
             if (Application.Current != null && Application.Current.Dispatcher != null)
             {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RenderWindowView = RenderingViewModel.DefaultIsosurfaceParameters;
+                });
                 for (int i = 0; i < Isosurfaces.Count; i++)
                 {
                     Application.Current.Dispatcher.Invoke(() =>
@@ -191,11 +228,16 @@ namespace Direct3DRendering
             }
             else
             {
+                RenderWindowView = RenderingViewModel.DefaultIsosurfaceParameters;
                 for (int i = 0; i < Isosurfaces.Count; i++)
                 {
                     RenderWindowView.VolumeColors[i] = Isosurfaces[i].InitialColor.ToNotifiableColor();
                 }
             }
+
+            initializeRenderer();
+
+            ((IsosurfaceRenderer)_renderer).SetData(Isosurfaces);            
         }
 
         public Task SetDataAsync(float[,] HeightData, Color[,] ColorData)
@@ -231,6 +273,11 @@ namespace Direct3DRendering
             _framerate = new FramerateCounter();
 
             RenderWindowView.IsRenderLoaded = true;
+
+            if (IsWindowActivated)
+            {
+                _renderer.EnsureInputAcquired();
+            }
 
             RenderLoop.Run(_renderControl, () =>
                 {
@@ -316,13 +363,61 @@ namespace Direct3DRendering
             _renderer.Camera.ResetCamera();
         }
 
+        public static readonly DependencyProperty IsWindowFocusedProperty = DependencyProperty.Register("IsWindowFocused",
+            typeof(bool), typeof(RenderWindow));
+        public static readonly DependencyProperty IsWindowActivatedProperty = DependencyProperty.Register("IsWindowActivated",
+            typeof(bool), typeof(RenderWindow), new PropertyMetadata(false, onWindowActivatedChanged));
+
+        internal event WindowActivatedChangedEventHandler WindowActivatedChanged;
+
+        public bool IsWindowFocused
+        {
+            get { return (bool)GetValue(IsWindowFocusedProperty); }
+            set { SetValue(IsWindowFocusedProperty, value); }
+        }
+        public bool IsWindowActivated
+        {
+            get { return (bool)GetValue(IsWindowActivatedProperty); }
+            set { SetValue(IsWindowActivatedProperty, value); ; }
+        }
+
+        private static void onWindowActivatedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            RenderWindow r = d as RenderWindow;
+            if (d == null) return;
+
+            bool isActivated = (bool)e.NewValue;
+
+            r.WindowActivatedChanged?.Invoke(r, new WindowActivatedChangedEventArgs(isActivated));
+        }
+
         private void renderWindow_Activated(object sender, EventArgs e)
         {
-            _windowActivated = true;
+            IsWindowActivated  = true;
         }
         private void renderWindow_Deactivated(object sender, EventArgs e)
         {
-            _windowActivated = false;
+            IsWindowActivated = false;
         }
-    }    
+        private void Window_LostFocus(object sender, RoutedEventArgs e)
+        {
+            IsWindowFocused = false;
+        }
+        private void Window_GotFocus(object sender, RoutedEventArgs e)
+        {
+            IsWindowFocused = true;
+        }
+    }
+
+    internal delegate void WindowActivatedChangedEventHandler(object sender, WindowActivatedChangedEventArgs e);
+    internal class WindowActivatedChangedEventArgs : EventArgs
+    {
+        internal bool IsWindowActivated { get; set; }
+
+        internal WindowActivatedChangedEventArgs(bool isWindowActivated):
+            base()
+        {
+            IsWindowActivated = isWindowActivated;
+        }
+    }
 }

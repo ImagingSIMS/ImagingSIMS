@@ -37,12 +37,12 @@ cbuffer LightingParams : register(b1)
 	float4		AmbientLightColor;			//16 x 1 =  16
 	float		AmbientLightIntensity;		// 4 x 1 =   4
 	float		EnableAmbientLighting;		// 4 x 1 =   4
-	float		EnableDirectionalLighting;	// 4 x 1 =   4
+	float		EnablePointLighting;		// 4 x 1 =   4
 	float		EnableSpecularLighting;		// 4 x 1 =   4
-	float4		DirectionalEnabled[8];		//16 x 8 = 128
-	float4		DirectionalDirection[8];	//16 x 8 = 128
-	float4		DirectionalColor[8];		//16 x 8 = 128	
-	float4		DirectionalIntensity[8];	//16 x 8 = 128
+	float4		PointEnabled[8];			//16 x 8 = 128
+	float4		PointLocation[8];			//16 x 8 = 128
+	float4		PointColor[8];				//16 x 8 = 128	
+	float4		PointIntensity[8];			//16 x 8 = 128
 }
 
 cbuffer VolumeParams : register(b2)
@@ -69,9 +69,10 @@ cbuffer IsosurfaceParams : register(b3)
 static const uint maxVolumes = 8;
 static const uint maxIterations = 256;
 static const float stepSize = sqrt(3.f) / maxIterations;
-static const uint numDirectionalLights = 8;
-static const float matAmbient = 0.5f;
-static const float matDiffuse = 0.5f;
+static const uint numPointLights = 8;
+static const float matEmissive = 0.1f;
+static const float matAmbient = 0.3f;
+static const float matDiffuse = 0.6f;
 
 //Struct definitions
 
@@ -106,7 +107,7 @@ struct ISOSURFACE_VS_Output
 	float4	col : COLOR;
 	float4	nor : NORMAL;
 	int		id : SURFACEID;
-	float	pd0 : PADDING0;
+	bool	tra : ISTRANSPARENT;
 	float	pd1 : PADDING1;
 	float	pd2 : PADDING2;
 };
@@ -186,7 +187,6 @@ float4 RAYCAST_PS(RAYCAST_PS_Input input) : SV_TARGET
 			if (j == 6)intensity = txVolume7.Sample(samplerLinear, scaledVector).r;
 			if (j == 7)intensity = txVolume8.Sample(samplerLinear, scaledVector).r;
 
-			//intensity *= Brightness;
 			intensity *= VolumeColor[j].a;
 
 			float4 sampledColor = float4(VolumeColor[j].rgb * intensity, intensity);
@@ -195,13 +195,14 @@ float4 RAYCAST_PS(RAYCAST_PS_Input input) : SV_TARGET
 			{
 				float oneMinusAlpha = 1.0 - accumulatedColor.a;
 
-				accumulatedColor.r += oneMinusAlpha * sampledColor.r;
-				accumulatedColor.g += oneMinusAlpha * sampledColor.g;
-				accumulatedColor.b += oneMinusAlpha * sampledColor.b;
-				accumulatedColor.a += oneMinusAlpha * sampledColor.a;
+				accumulatedColor += oneMinusAlpha * sampledColor;
 			}
 		}
 		v += step;
+	}
+
+	if (EnableAmbientLighting == 1.0f) {
+		accumulatedColor.rgb *= AmbientLightColor * AmbientLightIntensity;
 	}
 
 	return accumulatedColor;
@@ -218,31 +219,38 @@ ISOSURFACE_VS_Output ISOSURFACE_VS(ISOSURFACE_VS_Input input)
 
 	output.nor = mul(WorldProjView, float4(input.nor.xyz, 1.0f));
 
-	normalize(output.nor);
+	output.nor = normalize(output.nor);
+
+	float4 materialColor = IsosurfaceColor[output.id];
+
+	// If isosurface color is completely transparent, no need to calculate light
+	// just set color to material color and set ISTRANSPARENT to true so GS will
+	// skip rendering the triangle
+	if (materialColor.a == 0.0f) {
+		output.col = materialColor;
+		output.tra = true;
+		return output;
+	}
 
 	// http://www.3dgep.com/texturing-lighting-directx-11/
-	// Color = emissive + ambient + sum(ambienti + diffusei + speculari)
+	// Color = emissive + ambient + sum(ambient[i] + diffuse[i] + specular[i])
 	// No emissive
 	// Settings for ambient (1) and diffused (8)
 
-	float4 accumulatedColor = float4(IsosurfaceColor[output.id].rgb, 1.0f);
-	float initialAlpha = IsosurfaceColor[output.id].a;
-
-	//if (EnableSpecularLighting == 1.0f) {
-
-	//}
+	float4 emissiveColor = materialColor * matEmissive;
 
 	float4 sumDiffuseColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-	if (EnableDirectionalLighting == 1.0f)
+	if (EnablePointLighting == 1.0f)
 	{
-		for (uint i = 0; i < numDirectionalLights; i++)
+		for (uint i = 0; i < numPointLights; i++)
 		{
-			if (DirectionalEnabled[i].x == 1.0f) {
+			if (PointEnabled[i].x == 1.0f) {
 
-				//float intensity = dot(output.nor, DirectionalDirection[i]);
-				//accumulatedColor = saturate(accumulatedColor + DirectionalColor[i] * DirectionalIntensity[i] * intensity);
+				float4 lightLocation = mul(WorldProjView, PointLocation[i]);
 
-				sumDiffuseColor += max(0, dot(DirectionalDirection[i], output.nor) * DirectionalColor[i] * DirectionalIntensity[i].x * matDiffuse);
+				float4 l = normalize(lightLocation - output.pos);
+				float4 diffuse = max(0, dot(l, output.nor)) * PointColor[i] * PointIntensity[i].x * matDiffuse * materialColor;
+				sumDiffuseColor += diffuse;
 			}
 		}
 	}
@@ -250,17 +258,21 @@ ISOSURFACE_VS_Output ISOSURFACE_VS(ISOSURFACE_VS_Input input)
 	// Ambient color
 	float4 ambientColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
 	if (EnableAmbientLighting == 1.0f) {
-		ambientColor = matAmbient * AmbientLightIntensity * AmbientLightColor;
+		ambientColor = matAmbient * materialColor * AmbientLightIntensity * AmbientLightColor;
 	}
 
-	//output.col = float4(accumulatedColor.rgb, initialAlpha);
-	output.col = ambientColor + sumDiffuseColor;
+	output.col = float4((emissiveColor + ambientColor + sumDiffuseColor).rgb, materialColor.a);
 
 	return output;
 }
 [maxvertexcount(3)]
 void ISOSURFACE_GS(triangle ISOSURFACE_VS_Output input[3], inout TriangleStream<ISOSURFACE_VS_Output> stream) {
-		
+	// If isosurface alpha is zero, don't bother drawing triangles, 
+	// so don't add to stream and return
+	if (input[0].tra) {
+		return;
+	}
+
 	for (int i = 0; i < 3; i++)
 	{
 		// If any of the triangle vertices fall outside of a clipping plane,
@@ -283,24 +295,7 @@ void ISOSURFACE_GS(triangle ISOSURFACE_VS_Output input[3], inout TriangleStream<
 	}
 }
 
-const static float mag = 0.4f;
-
-[maxvertexcount(6)]
-void ISOSURFACE_GS_x(triangle ISOSURFACE_VS_Output input[3], inout LineStream<ISOSURFACE_VS_Output> stream) {
-	for (int i = 0; i < 3; i++)
-	{
-		ISOSURFACE_VS_Output normVector = (ISOSURFACE_VS_Output)0;
-		normVector.pos = input[i].pos + float4(input[i].nor.xyz, 0.0f) * mag;
-		normVector.col = input[i].col;
-		normVector.org = input[i].org;
-		normVector.id = input[i].id;
-
-		stream.Append(input[i]);
-		stream.Append(normVector);
-	}
-}
-
 float4 ISOSURFACE_PS(ISOSURFACE_VS_Output input) : SV_TARGET
-{
+{	
 	return input.col;
 }
