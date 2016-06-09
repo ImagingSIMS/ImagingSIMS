@@ -4382,7 +4382,23 @@ namespace ImagingSIMS.MainApplication
                     Data2D d = new Data2D(matrix);
                     d.DataName = Path.GetFileNameWithoutExtension(file);
 
+                    float mean = d.NonSparseMean;
+                    float stdDev = d.NonSparseStdDev;
+
+                    float cutoff = mean;// - 2 * stdDev;
+
+                    Data2D binary = new Data2D(d.Width, d.Height);
+                    for (int x = 0; x < d.Width; x++)
+                    {
+                        for (int y = 0; y < d.Height; y++)
+                        {
+                            binary[x, y] = d[x, y] >= cutoff ? 1.0f : 0.0f;
+                        }
+                    }
+                    binary.DataName = "Binary: " + d.DataName;
+
                     readIn.Add(d);
+                    readIn.Add(binary);
                 }
             }
 
