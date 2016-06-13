@@ -3,7 +3,7 @@
 using SharpDX;
 using SharpDX.Windows;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering.Cameras
 {
     public class D3DArcBall
     {

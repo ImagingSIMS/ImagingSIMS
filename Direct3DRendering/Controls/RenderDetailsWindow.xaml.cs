@@ -11,10 +11,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Direct3DRendering.ViewModels;
+using ImagingSIMS.Direct3DRendering.ViewModels;
 using SharpDX.Direct3D11;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering.Controls
 {
     /// <summary>
     /// Interaction logic for RenderDetailsWindow.xaml

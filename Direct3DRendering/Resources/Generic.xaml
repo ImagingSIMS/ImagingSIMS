@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:local="clr-namespace:Direct3DRendering"
-					xmlns:converters="clr-namespace:Direct3DRendering.Converters"
+					xmlns:local="clr-namespace:ImagingSIMS.Direct3DRendering"
+					xmlns:converters="clr-namespace:ImagingSIMS.Direct3DRendering.Converters"
 					xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit">
 
 	<SolidColorBrush x:Key="ThemeBlueBrush" Color="#FF007ACC"/>

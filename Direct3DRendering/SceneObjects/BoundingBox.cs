@@ -14,7 +14,7 @@ using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering.SceneObjects
 {
     public class BoundingBox : IDisposable
     {

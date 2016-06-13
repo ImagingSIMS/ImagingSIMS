@@ -12,8 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ImagingSIMS.Direct3DRendering.DrawingObjects;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering.Controls
 {
     /// <summary>
     /// Interaction logic for PointLightSourceControl.xaml

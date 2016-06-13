@@ -10,7 +10,7 @@ using SharpDX.DXGI;
 
 using Device = SharpDX.Direct3D11.Device;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering.DrawingObjects
 {
     public class RenderVolume
     {

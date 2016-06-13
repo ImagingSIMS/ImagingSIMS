@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using ImagingSIMS.Direct3DRendering.DrawingObjects;
 using ImagingSIMS.Common.Controls;
 using SharpDX;
 
-namespace Direct3DRendering.ViewModels
+namespace ImagingSIMS.Direct3DRendering.ViewModels
 {
     public class RenderingViewModel : INotifyPropertyChanged
     {

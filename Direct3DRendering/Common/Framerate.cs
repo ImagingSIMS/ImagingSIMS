@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering
 {
     public class FramerateCounter
     {

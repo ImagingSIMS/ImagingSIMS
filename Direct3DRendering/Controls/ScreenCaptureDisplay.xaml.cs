@@ -23,7 +23,7 @@ using Microsoft.Win32;
 
 using Texture2D = SharpDX.Toolkit.Graphics.Texture2D;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering.Controls
 {
     /// <summary>
     /// Interaction logic for ScreenCaptureDisplay.xaml

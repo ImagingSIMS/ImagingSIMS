@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering.Controls
 {
     /// <summary>
     /// Interaction logic for ShaderDisplayWindow.xaml

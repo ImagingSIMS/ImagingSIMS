@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using ImagingSIMS.Common.Controls;
 using SharpDX;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering.DrawingObjects
 {
     public class PointLightSource : INotifyPropertyChanged
     {

@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-
+using ImagingSIMS.Direct3DRendering.Controls;
+using ImagingSIMS.Direct3DRendering.SceneObjects;
 using SharpDX;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Buffer = SharpDX.Direct3D11.Buffer;
+using BoundingBox = ImagingSIMS.Direct3DRendering.SceneObjects.BoundingBox;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering.Renderers
 {
     public class HeightMapRenderer : Renderer
     {

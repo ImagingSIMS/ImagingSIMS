@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering.DrawingObjects
 {
     public class RenderIsosurface
     {

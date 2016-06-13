@@ -3,10 +3,11 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Data;
+using ImagingSIMS.Direct3DRendering.DrawingObjects;
 using ImagingSIMS.Common.Controls;
 using SharpDX;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering
 {
     public enum RenderType
     {

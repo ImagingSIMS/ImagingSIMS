@@ -12,7 +12,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Direct3DRendering.ViewModels;
+using ImagingSIMS.Direct3DRendering.DrawingObjects;
+using ImagingSIMS.Direct3DRendering.Renderers;
+using ImagingSIMS.Direct3DRendering.ViewModels;
 using ImagingSIMS.Common.Controls;
 using SharpDX;
 using SharpDX.Windows;
@@ -21,7 +23,7 @@ using Color = SharpDX.Color;
 using Point = SharpDX.Point;
 using Texture2D = SharpDX.Toolkit.Graphics.Texture2D;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering.Controls
 {
     /// <summary>
     /// Interaction logic for RenderWindow.xaml

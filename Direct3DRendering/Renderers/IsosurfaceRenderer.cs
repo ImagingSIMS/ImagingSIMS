@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using ImagingSIMS.Direct3DRendering.Controls;
+using ImagingSIMS.Direct3DRendering.DrawingObjects;
 using SharpDX;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Buffer = SharpDX.Direct3D11.Buffer;
+using BoundingBox = ImagingSIMS.Direct3DRendering.SceneObjects.BoundingBox;
+using ImagingSIMS.Direct3DRendering.SceneObjects;
 
-namespace Direct3DRendering
+namespace ImagingSIMS.Direct3DRendering.Renderers
 {
     public class IsosurfaceRenderer : Renderer
     {
