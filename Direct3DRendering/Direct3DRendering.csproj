@@ -255,7 +255,6 @@
     <Content Include="Shaders\Isosurface.gso.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Shaders\Isosurface.hlsl" />
     <Content Include="Shaders\Isosurface.pso.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
