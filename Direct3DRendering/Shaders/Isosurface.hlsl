@@ -2,7 +2,12 @@
 
 static const uint maxNumVolumes = 8;
 
-Texture3D<float>		txVolumes[maxNumVolumes];
+Texture2D<float>		txPositionFront				: register(t0);
+Texture2D<float>		txPositionBack				: register(t1);
+Texture3D<float>		txActiveVoxels				: register(t2);
+Texture3D<float>		txVolumes[maxNumVolumes]	: register(t3);
+
+SamplerState			samplerLinear				: register(s0);
 
 cbuffer RenderParams : register(b0)
 {
