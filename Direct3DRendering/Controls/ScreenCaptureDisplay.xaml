@@ -22,7 +22,8 @@
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Image Height="200" Width="200" HorizontalAlignment="Center" Source="{Binding}" Stretch="Uniform"/>               
+                    <Image Margin="0,4" MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}" 
+                           HorizontalAlignment="Center" Source="{Binding}" Stretch="UniformToFill"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
             <ListBox.ContextMenu>

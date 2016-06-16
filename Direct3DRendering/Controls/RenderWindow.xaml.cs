@@ -20,8 +20,6 @@ using SharpDX;
 using SharpDX.Windows;
 
 using Color = SharpDX.Color;
-using Point = SharpDX.Point;
-using Texture2D = SharpDX.Toolkit.Graphics.Texture2D;
 
 namespace ImagingSIMS.Direct3DRendering.Controls
 {

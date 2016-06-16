@@ -326,7 +326,7 @@ namespace ImagingSIMS.Direct3DRendering.Cameras
         private Matrix GetProjectionMatrix()
         {
             if (_device == null) return Matrix.Identity;
-            ViewportF viewport = _device.ImmediateContext.Rasterizer.GetViewports()[0];
+            ViewportF viewport = _device.ImmediateContext.Rasterizer.GetViewports<ViewportF>()[0];
             return Matrix.PerspectiveFovLH((float)(Math.PI / 4f), viewport.Width / viewport.Height, 0.5f, 500.0f);
         }
         private Matrix GetViewMatrix()

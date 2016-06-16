@@ -21,8 +21,6 @@ using SharpDX.Direct3D11;
 
 using Microsoft.Win32;
 
-using Texture2D = SharpDX.Toolkit.Graphics.Texture2D;
-
 namespace ImagingSIMS.Direct3DRendering.Controls
 {
     /// <summary>

@@ -270,23 +270,23 @@
                                                 <GroupBox Header="Recording Controls" Margin="0,0,2,0">
                                                     <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="4" HorizontalAlignment="Center">
                                                         <Button Margin="4" x:Name="buttonRecord" Height="20" Width="20" Click="Record_Click" ToolTip="Record">
-                                                            <Image Source="Images\RecordHS.png"/>
+                                                            <Image Source="..\Images\RecordHS.png"/>
                                                         </Button>
                                                         <Button Margin="4" x:Name="buttonStop" Height="20" Width="20" Click="Record_Click" ToolTip="Stop Recording">
-                                                            <Image Source="Images\StopHS.png"/>
+                                                            <Image Source="..\Images\StopHS.png"/>
                                                         </Button>
                                                         <Button Margin="4" x:Name="buttonSnap" Height="20" Width="20" Click="Record_Click" ToolTip="Snapshot">
-                                                            <Image Source="Images\Camera.ico"/>
+                                                            <Image Source="..\Images\Camera.ico"/>
                                                         </Button>
                                                     </StackPanel>
                                                 </GroupBox>
                                                 <GroupBox Grid.Column="1" Header="Camera Controls" Margin="2,0,0,0">
                                                     <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="4" HorizontalAlignment="Center">
                                                         <Button Margin="4" Height="20" Width="20" Click="CameraReverse_Click" ToolTip="Reverse Camera (B)">
-                                                            <Image Source="Images\RotateArrowDown.png"/>
+                                                            <Image Source="..\Images\RotateArrowDown.png"/>
                                                         </Button>
                                                         <Button Margin="4" Height="20" Width="20" Click="CameraReset_Click" ToolTip="Reset Camera (Space)">
-                                                            <Image Source="Images\MoveCenter.png"/>
+                                                            <Image Source="..\Images\MoveCenter.png"/>
                                                         </Button>
                                                     </StackPanel>
                                                 </GroupBox>
@@ -421,7 +421,7 @@
 
         <!-- Screen Captur Control -->
         <GroupBox Grid.Row="0" Grid.Column="1" Header="Screen Captures" Margin="0,5">
-            <d3d:ScreenCaptureDisplay x:Name="screenCaptureDisplay" Margin="4" Width="235" VerticalAlignment="Stretch"/>
+            <d3d:ScreenCaptureDisplay x:Name="screenCaptureDisplay" Margin="4" Width="250" VerticalAlignment="Stretch"/>
         </GroupBox>
 
     </Grid>

@@ -15,6 +15,7 @@ using BoundingBox = ImagingSIMS.Direct3DRendering.SceneObjects.BoundingBox;
 using ImagingSIMS.Direct3DRendering.Controls;
 using ImagingSIMS.Direct3DRendering.Cameras;
 using ImagingSIMS.Direct3DRendering.SceneObjects;
+using System.Windows.Media.Imaging;
 
 namespace ImagingSIMS.Direct3DRendering.Renderers
 {
@@ -34,8 +35,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
         protected Device _device;
 
         protected SwapChain _swapChain;
-
-        protected SharpDX.Toolkit.Graphics.GraphicsDevice _graphicsDevice;
 
         protected OrbitCamera _orbitCamera;
 
@@ -190,13 +189,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
         {
             get { return _backBuffer; }
         }
-        public SharpDX.Toolkit.Graphics.Texture2D BackBufferTK
-        {
-            get
-            {
-                return SharpDX.Toolkit.Graphics.Texture2D.New(_graphicsDevice, BackBuffer);
-            }
-        }
         public byte[] GetCurrentCapture(out int Width, out int Height)
         {
             Width = 0;
@@ -204,17 +196,51 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
             if (NeedsResize) return null;
 
-            SharpDX.Toolkit.Graphics.Texture2D tex = SharpDX.Toolkit.Graphics.Texture2D.New(_graphicsDevice,
-                Texture2D.FromSwapChain<Texture2D>(_swapChain, 0));
-            byte[] buffer = new byte[tex.Width * tex.Height * 4];
-            tex.GetData(buffer);
+            var texCopy = new Texture2D(_device, new Texture2DDescription()
+            {
+                Usage = ResourceUsage.Staging,
+                BindFlags = BindFlags.None,
+                CpuAccessFlags = CpuAccessFlags.Read,
+                Format = _backBuffer.Description.Format,
+                OptionFlags = ResourceOptionFlags.None,
+                ArraySize = _backBuffer.Description.ArraySize,
+                Height = _backBuffer.Description.Height,
+                Width = _backBuffer.Description.Width,
+                MipLevels = 1,
+                SampleDescription = _backBuffer.Description.SampleDescription
+            });
+            _device.ImmediateContext.CopyResource(_backBuffer, texCopy);
 
-            Width = tex.Width;
-            Height = tex.Height;
+            try
+            {         
+                var mapSource = _device.ImmediateContext.MapSubresource(texCopy, 0, MapMode.Read, SharpDX.Direct3D11.MapFlags.None);
 
-            tex.Dispose();
+                int rowPitch = mapSource.RowPitch;
+                int slicePitch = mapSource.SlicePitch;
 
-            return buffer;
+                Width = rowPitch / 4;
+                Height = slicePitch / rowPitch;
+
+                int bufferSize = Width * Height * 4;
+
+                byte[] buffer = new byte[bufferSize];
+                Marshal.Copy(mapSource.DataPointer, buffer, 0, bufferSize);                          
+
+                return buffer;
+            }
+            catch(SharpDXException SDXex)
+            {
+                throw SDXex;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                _device.ImmediateContext.UnmapSubresource(texCopy, 0);
+                Disposer.RemoveAndDispose(ref texCopy);
+            }
         }
 
         public Renderer(RenderWindow Window)
@@ -307,8 +333,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 #endif
             Device.CreateWithSwapChain(DriverType.Hardware, dcFlags,
                 desc, out _device, out _swapChain);
-
-            _graphicsDevice = SharpDX.Toolkit.Graphics.GraphicsDevice.New(_device);
 
             var context = _device.ImmediateContext;
             var factory = _swapChain.GetParent<Factory>();
@@ -566,7 +590,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 Disposer.RemoveAndDispose(ref _depthView);
 
                 Disposer.RemoveAndDispose(ref _device);
-                Disposer.RemoveAndDispose(ref _graphicsDevice);
                 Disposer.RemoveAndDispose(ref _swapChain);
 
                 Disposer.RemoveAndDispose(ref _bufferRenderParams);
