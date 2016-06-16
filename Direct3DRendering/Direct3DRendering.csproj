@@ -7,7 +7,7 @@
     <ProjectGuid>{02D83723-3D19-4C12-BA5E-80330F6248C4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Direct3DRendering</RootNamespace>
+    <RootNamespace>ImagingSIMS.Direct3DRendering</RootNamespace>
     <AssemblyName>Direct3DRendering</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -73,30 +73,33 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework.Aero" />
-    <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
+    <Reference Include="SharpDX, Version=3.0.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.3.0.2\lib\net45\SharpDX.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SharpDX.D3DCompiler, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL" />
-    <Reference Include="SharpDX.Direct3D11, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.dll</HintPath>
+    <Reference Include="SharpDX.D3DCompiler, Version=3.0.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.D3DCompiler.3.0.2\lib\net45\SharpDX.D3DCompiler.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SharpDX.DirectInput, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.DirectInput.dll</HintPath>
+    <Reference Include="SharpDX.Desktop, Version=3.0.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Desktop.3.0.2\lib\net45\SharpDX.Desktop.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SharpDX.DXGI, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.DXGI.dll</HintPath>
+    <Reference Include="SharpDX.Direct3D11, Version=3.0.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D11.3.0.2\lib\net45\SharpDX.Direct3D11.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SharpDX.Toolkit, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.dll</HintPath>
+    <Reference Include="SharpDX.DirectInput, Version=3.0.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DirectInput.3.0.2\lib\net45\SharpDX.DirectInput.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SharpDX.Toolkit.Graphics, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Graphics.dll</HintPath>
+    <Reference Include="SharpDX.DXGI, Version=3.0.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DXGI.3.0.2\lib\net45\SharpDX.DXGI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SharpDX.Mathematics, Version=3.0.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Mathematics.3.0.2\lib\net45\SharpDX.Mathematics.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -141,20 +144,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Axes.cs" />
-    <Compile Include="BoundingBox.cs" />
-    <Compile Include="Camera.cs" />
-    <Compile Include="Camera_Old.cs" />
-    <Compile Include="Common.cs" />
+    <Compile Include="SceneObjects\Axes.cs" />
+    <Compile Include="SceneObjects\BoundingBox.cs" />
+    <Compile Include="DrawingObjects\Camera.cs" />
+    <Compile Include="DrawingObjects\Camera_Old.cs" />
+    <Compile Include="Common\Common.cs" />
     <Compile Include="Converters\Converters.cs" />
-    <Compile Include="CoordinateBox.cs" />
-    <Compile Include="Disposer.cs" />
-    <Compile Include="Framerate.cs" />
-    <Compile Include="HeightMapRenderer.cs" />
-    <Compile Include="IsosurfaceRenderer.cs" />
-    <Compile Include="Lighting.cs" />
-    <Compile Include="ModelCamera.cs" />
-    <Compile Include="PointLightSourceControl.xaml.cs">
+    <Compile Include="SceneObjects\CoordinateBox.cs" />
+    <Compile Include="Common\Disposer.cs" />
+    <Compile Include="Common\Framerate.cs" />
+    <Compile Include="Renderers\HeightMapRenderer.cs" />
+    <Compile Include="Renderers\IsosurfaceRenderer.cs" />
+    <Compile Include="DrawingObjects\Lighting.cs" />
+    <Compile Include="DrawingObjects\ModelCamera.cs" />
+    <Compile Include="Renderers\NewVolumeRenderer.cs" />
+    <Compile Include="Controls\PointLightSourceControl.xaml.cs">
       <DependentUpon>PointLightSourceControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -170,26 +174,26 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="RenderDetailsWindow.xaml.cs">
+    <Compile Include="Controls\RenderDetailsWindow.xaml.cs">
       <DependentUpon>RenderDetailsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RenderIsosurface.cs" />
-    <Compile Include="RenderVolume.cs" />
-    <Compile Include="RenderWindow.xaml.cs">
+    <Compile Include="DrawingObjects\RenderIsosurface.cs" />
+    <Compile Include="DrawingObjects\RenderVolume.cs" />
+    <Compile Include="Controls\RenderWindow.xaml.cs">
       <DependentUpon>RenderWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ScreenCaptureDisplay.xaml.cs">
+    <Compile Include="Controls\ScreenCaptureDisplay.xaml.cs">
       <DependentUpon>ScreenCaptureDisplay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Renderer.cs" />
-    <Compile Include="ShaderDisplay.xaml.cs">
+    <Compile Include="Renderers\Renderer.cs" />
+    <Compile Include="Controls\ShaderDisplay.xaml.cs">
       <DependentUpon>ShaderDisplay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ShaderDisplayWindow.xaml.cs">
+    <Compile Include="Controls\ShaderDisplayWindow.xaml.cs">
       <DependentUpon>ShaderDisplayWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\RenderingViewModel.cs" />
-    <Compile Include="VolumeRenderer.cs" />
+    <Compile Include="Renderers\VolumeRenderer.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -255,6 +259,7 @@
     <Content Include="Shaders\Isosurface.gso.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Shaders\CombinedVolume.hlsl" />
     <Content Include="Shaders\Isosurface.pso.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -338,15 +343,15 @@
     <Resource Include="Images\TransparentBackground.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="PointLightSourceControl.xaml">
+    <Page Include="Controls\PointLightSourceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RenderDetailsWindow.xaml">
+    <Page Include="Controls\RenderDetailsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RenderWindow.xaml">
+    <Page Include="Controls\RenderWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -354,15 +359,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ScreenCaptureDisplay.xaml">
+    <Page Include="Controls\ScreenCaptureDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ShaderDisplay.xaml">
+    <Page Include="Controls\ShaderDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ShaderDisplayWindow.xaml">
+    <Page Include="Controls\ShaderDisplayWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -388,15 +393,6 @@
 xcopy /y $(SolutionDir)Direct3DRendering\bin\Debug\Shaders\*.pso $(SolutionDir)MainApplication\Shaders\
 xcopy /y $(SolutionDir)Direct3DRendering\bin\Debug\Shaders\*.gso $(SolutionDir)MainApplication\Shaders\</PostBuildEvent>
   </PropertyGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets'))" />
-    <Error Condition="!Exists('..\packages\SharpDX.2.6.3\build\SharpDX.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SharpDX.2.6.3\build\SharpDX.targets'))" />
-  </Target>
-  <Import Project="..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets" Condition="Exists('..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets')" />
-  <Import Project="..\packages\SharpDX.2.6.3\build\SharpDX.targets" Condition="Exists('..\packages\SharpDX.2.6.3\build\SharpDX.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

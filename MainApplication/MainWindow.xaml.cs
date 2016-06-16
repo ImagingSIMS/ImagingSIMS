@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Deployment.Application;
 using System.Diagnostics;
@@ -11,14 +9,13 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 using Microsoft.Win32;
 
-using Direct3DRendering;
+using ImagingSIMS.Direct3DRendering;
 
 using ImagingSIMS.Common;
 using ImagingSIMS.Common.Dialogs;
@@ -26,16 +23,14 @@ using ImagingSIMS.Common.Math;
 using ImagingSIMS.Common.Registry;
 using ImagingSIMS.Controls;
 using ImagingSIMS.Data;
-using ImagingSIMS.Data.Analysis;
 using ImagingSIMS.Data.Imaging;
 using ImagingSIMS.Data.Spectra;
 using ImagingSIMS.Data.Rendering;
-using System.Threading.Tasks;
 using ImagingSIMS.Controls.Tabs;
 using ImagingSIMS.Controls.BaseControls;
 using ImagingSIMS.Controls.BaseControls.SpectrumView;
-using System.Collections;
-using System.Windows.Media.Animation;
+using ImagingSIMS.Direct3DRendering.DrawingObjects;
+using ImagingSIMS.Direct3DRendering.Controls;
 
 namespace ImagingSIMS.MainApplication
 {

@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using ImagingSIMS.Direct3DRendering.Renderers;
 using ImagingSIMS.Common.Controls;
 using SharpDX;
 
 using Color = SharpDX.Color;
 
-namespace Direct3DRendering.Converters
+namespace ImagingSIMS.Direct3DRendering.Converters
 {
     public class BoolVisInvertedConverter : IValueConverter
     {

@@ -1,0 +1,34 @@
+﻿<Window x:Class="ImagingSIMS.Direct3DRendering.Controls.ShaderDisplayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Shader View" Height="650" Width="750"
+        Loaded="Window_Loaded"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Grid Background="#FF2C2C2C">
+        <Grid x:Name="grid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="125"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ListBox x:Name="listShaders"  Margin="4"
+                 Width="Auto" Height="Auto" 
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 SelectionChanged="listShaders_SelectionChanged"
+                 Background="Transparent"
+                 ItemsSource="{Binding Path=Shaders}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Key}" Foreground="White"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <TextBox x:Name="textBoxShaderContent" Grid.Column="1" Margin="4"
+                 Width="Auto" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 TextWrapping="Wrap" IsReadOnly="True"
+                 Background="Transparent" Foreground="White"
+                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+        </Grid>
+    </Grid>
+</Window>

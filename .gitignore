@@ -218,4 +218,5 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+/ITKImageRegistration/CMakeFiles/3.4.2
 /ITKImageRegistration
