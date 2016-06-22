@@ -4276,6 +4276,26 @@ namespace ImagingSIMS.MainApplication
         {
             
         }
+        private async void test6_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private async void test7_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private async void test8_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private async void test9_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private async void test10_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
 #pragma warning restore 1998
 
         #endregion
