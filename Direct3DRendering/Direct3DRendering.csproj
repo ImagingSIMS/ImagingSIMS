@@ -144,6 +144,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Renderers\CombinedVolumeRenderer.cs" />
     <Compile Include="SceneObjects\Axes.cs" />
     <Compile Include="SceneObjects\BoundingBox.cs" />
     <Compile Include="DrawingObjects\Camera.cs" />

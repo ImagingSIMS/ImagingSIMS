@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml;
-using Direct3DRendering;
+using ImagingSIMS.Direct3DRendering;
 using ImagingSIMS.Data;
 using ImagingSIMS.Data.Converters;
 
@@ -30,6 +30,9 @@ namespace ConsoleApp
 
             Console.WriteLine("Press Enter to begin...");
             Console.ReadLine();
+
+            string test = "\n";
+            Console.Write(test.Length);
 
             Console.Write("Press Enter to exit.");
             Console.ReadLine();
