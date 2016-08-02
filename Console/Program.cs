@@ -31,8 +31,11 @@ namespace ConsoleApp
             Console.WriteLine("Press Enter to begin...");
             Console.ReadLine();
 
-            string test = "\n";
-            Console.Write(test.Length);
+            for (int i = 0; i < 2500; i++)
+            {
+                if (!File.Exists($@"D:\Swap\Training Set\Raw\APMLarge PS-2017-2016\Validation\Validation_{i}.txt"))
+                    Console.WriteLine($"Not found: {i}");
+            }
 
             Console.Write("Press Enter to exit.");
             Console.ReadLine();

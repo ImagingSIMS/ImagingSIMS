@@ -4477,19 +4477,234 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test6_Click(object sender, RoutedEventArgs e)
         {
+            var inputFolder = @"D:\Swap\Training Set Test\Input";
+            var validationFolder = @"D:\Swap\Training Set Test\Validation";
 
+            Random r = new Random();
+            int index = r.Next(0, 1249);
+
+            DataDisplayTab dt = tabMain.SelectedContent as DataDisplayTab;
+            if(dt == null)
+            {
+                dt = new DataDisplayTab();
+                ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Input/Validation", true);
+                tabMain.Items.Add(cti);
+                tabMain.SelectedItem = cti;
+            }
+
+            string inputFileName = $"Input_{index}.txt";
+            string validationFileName = $"Validation_{index}.txt";
+
+            if (!File.Exists(Path.Combine(validationFolder, validationFileName)))
+            {
+                DialogBox.Show($"Validation file with index {index} do mot exist in the folder.", validationFolder, "Input/Validation", DialogIcon.Error);
+                return;
+            }
+
+            using (StreamReader sr = new StreamReader(Path.Combine(inputFolder, $"Input_{index}.txt")))
+            {
+                string[] parameters = sr.ReadLine().Split('\t');
+
+                //FileType = (FileType)int.Parse(parts[0]),
+                //OriginalDataType = (FileType)int.Parse(parts[1]),
+                //Width = int.Parse(parts[2]),
+                //Height = int.Parse(parts[3]),
+                //StageX = int.Parse(parts[4]),
+                //StageY = int.Parse(parts[5]),
+                //Index = int.Parse(parts[6]),
+
+                int sizeX = int.Parse(parameters[2]);
+                int sizeY = int.Parse(parameters[3]);
+
+                float[,] matrix = new float[sizeX, sizeY];
+
+                for (int y = 0; y < sizeY; y++)
+                {
+                    string[] parts = sr.ReadLine().Split('\t');
+                    for (int x = 0; x < sizeX; x++)
+                    {
+                        matrix[x, y] = int.Parse(parts[x]);
+                    }
+                }
+
+                Data2D d = new Data2D(matrix);
+                d.DataName = Path.GetFileNameWithoutExtension($"Input {index}");
+
+                await dt.AddDataSourceAsync(d);
+            }
+            using (StreamReader sr = new StreamReader(Path.Combine(validationFolder, $"Validation_{index}.txt")))
+            {
+                string[] parameters = sr.ReadLine().Split('\t');
+
+                //FileType = (FileType)int.Parse(parts[0]),
+                //OriginalDataType = (FileType)int.Parse(parts[1]),
+                //Width = int.Parse(parts[2]),
+                //Height = int.Parse(parts[3]),
+                //StageX = int.Parse(parts[4]),
+                //StageY = int.Parse(parts[5]),
+                //Index = int.Parse(parts[6]),
+
+                int sizeX = int.Parse(parameters[2]);
+                int sizeY = int.Parse(parameters[3]);
+
+                float[,] matrix = new float[sizeX, sizeY];
+
+                for (int y = 0; y < sizeY; y++)
+                {
+                    string[] parts = sr.ReadLine().Split('\t');
+                    for (int x = 0; x < sizeX; x++)
+                    {
+                        matrix[x, y] = int.Parse(parts[x]);
+                    }
+                }
+
+                Data2D d = new Data2D(matrix);
+                d.DataName = Path.GetFileNameWithoutExtension($"Validation {index}");
+
+                await dt.AddDataSourceAsync(d);
+            }
         }
         private async void test7_Click(object sender, RoutedEventArgs e)
         {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Text Files (.txt)|*.txt";
+            ofd.Multiselect = true;
 
+            if (ofd.ShowDialog() != true) return;
+
+            int filesLoaded = 0;
+            try
+            {
+                foreach (string s in ofd.FileNames)
+                {
+                    Data2D loaded = await Data2D.LoadData2DAsync(s, FileType.SmartSeekerData);
+                    Workspace.Data.Add(loaded);
+                    filesLoaded++;
+                }
+            }
+            catch (IOException IOex)
+            {
+                Mouse.OverrideCursor = Cursors.Arrow;
+                DialogBox.Show(string.Format("Could not load the specified file: {0}", IOex.Message),
+                    string.Format("Check to make sure you are loading data tables that match the specified file type ({0}).", FileType.SmartSeekerData),
+                    "Load", DialogIcon.Error);
+                return;
+            }
+            catch (Exception ex)
+            {
+                Mouse.OverrideCursor = Cursors.Arrow;
+                string msg = ex.Message;
+                if (ex.InnerException != null)
+                {
+                    msg += (" " + ex.InnerException.Message);
+                }
+
+                DialogBox.Show("Could not load the specified file.", msg, "Load", DialogIcon.Error);
+                return;
+            }
+
+            StatusUpdated(this, new StatusUpdatedRoutedEventArgs(string.Format("{0} tables loaded.", filesLoaded)));
         }
         private async void test8_Click(object sender, RoutedEventArgs e)
         {
+            string inputFolder = @"D:\Swap\Training Set\Input\";
+            string validationFolder = @"D:\Swap\Training Set\Validation\";
 
+            List<int> randNums = new List<int>();
+            Random rand = new Random();
+
+            for (int i = 0; i < 100; i++)
+            {
+                int index = rand.Next(8000);
+                while (randNums.Contains(index))
+                {
+                    index = rand.Next(8000);
+                }
+                randNums.Add(index);
+            }
+
+            for (int i = 0; i < randNums.Count; i++)
+            {
+                Data2D input = await Data2D.LoadData2DAsync(Path.Combine(inputFolder, $"Input_{randNums[i]}.txt"), FileType.SmartSeekerData);
+                Data2D validation = await Data2D.LoadData2DAsync(Path.Combine(validationFolder, $"Validation_{randNums[i]}.txt"), FileType.SmartSeekerData);
+                Workspace.Data.Add(input);
+                Workspace.Data.Add(validation);
+            }
         }
         private async void test9_Click(object sender, RoutedEventArgs e)
         {
 
+            List<Cameca1280Spectrum> spectra = new List<Cameca1280Spectrum>();
+            foreach (var item in listViewSpectra.SelectedItems)
+            {
+                var spec = item as Cameca1280Spectrum;
+                if (spec != null)
+                {
+                    spectra.Add(spec);
+                }
+            }
+
+            if(spectra.Count == 0)
+            {
+                DialogBox.Show("No spectra selected.", "Selecte one or more Cameca1280 spectra and try again.", "Combined", DialogIcon.Stop);
+                return;
+            }
+
+            var species = spectra[0].Species;
+
+            List<Data3D> combinedMasses = new List<Data3D>();
+
+            try
+            {
+                foreach (var sp in species)
+                {
+                    List<Data3D> individual = new List<Data3D>();
+
+                    foreach (var spec in spectra)
+                    {
+                        Data3D d = await spec.FromSpeciesAsync(sp, spec.Name + " - " + sp.Mass.ToString("0.00"));
+                        individual.Add(d);
+                    }
+
+                    int sizeX = individual[0].Width * individual.Count;
+                    int sizeY = individual[0].Height;
+                    int sizeZ = individual[0].Depth;
+
+                    Data3D combined = new Data3D(sizeX, sizeY, sizeZ);
+
+                    for (int i = 0; i < individual.Count; i++)
+                    {
+                        Data3D d = individual[i];
+                        for (int x = 0; x < d.Width; x++)
+                        {
+                            for (int y = 0; y < d.Height; y++)
+                            {
+                                for (int z = 0; z < d.Depth; z++)
+                                {
+                                    combined[i * d.Width + x, y, z] = d[x, y, z];
+                                }
+                            }
+                        }
+                    }
+
+                    combinedMasses.Add(combined);
+                }
+            }
+            catch (Exception ex)
+            {
+                Dialog.Show("Could not generate masses", ex.Message, "Combine", DialogIcon.Stop);
+                return;
+            }
+
+            DataDisplayTab dt = new DataDisplayTab();
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Combined", true);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+
+            foreach (var d in combinedMasses)
+            {
+                await dt.AddDataSourceAsync(d);
+            }            
         }
         private async void test10_Click(object sender, RoutedEventArgs e)
         {

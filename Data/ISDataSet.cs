@@ -277,6 +277,9 @@ namespace ImagingSIMS.Data
                         break;
                     case FileType.QStar:
                         throw new ArgumentException("QStar data is not supported");
+                    case FileType.SmartSeekerData:
+                        LoadSmartSeeker(LoadPath);
+                        break;
                 }
             }
             catch (IOException IOex)
@@ -397,6 +400,36 @@ namespace ImagingSIMS.Data
                 }
 
                 _matrix[w - 1, h - 1] = 0;
+
+                DataName = Path.GetFileNameWithoutExtension(LoadPath);
+            }
+            catch (FormatException)
+            {
+                throw new IOException("The input file was an incorrect format.");
+            }
+        }
+        private void LoadSmartSeeker(string LoadPath)
+        {
+            try
+            {
+                using (StreamReader sr = new StreamReader(LoadPath))
+                {
+                    string[] parameters = sr.ReadLine().Split('\t');
+
+                    int sizeX = int.Parse(parameters[2]);
+                    int sizeY = int.Parse(parameters[3]);
+
+                    _matrix = new FlatArray<float>(sizeX, sizeY);
+
+                    for (int y = 0; y < sizeY; y++)
+                    {
+                        string[] parts = sr.ReadLine().Split('\t');
+                        for (int x = 0; x < sizeX; x++)
+                        {
+                            _matrix[x, y] = float.Parse(parts[x]);
+                        }
+                    }
+                }
 
                 DataName = Path.GetFileNameWithoutExtension(LoadPath);
             }
@@ -833,24 +866,27 @@ namespace ImagingSIMS.Data
 
                 //try
                 //{
-                    Data2D d = new Data2D();
-                    switch (FileType)
-                    {
-                        case FileType.BioToF:
-                            d = FromBioToF(lines);
-                            break;
-                        case FileType.J105:
-                            d = FromJ105(lines);
-                            break;
-                        case FileType.QStar:
-                            throw new ArgumentException("QStar data is not supported");
-                        case FileType.CSV:
-                            d = FromCSV(lines);
-                            break;
+                Data2D d = new Data2D();
+                switch (FileType)
+                {
+                    case FileType.BioToF:
+                        d = FromBioToF(lines);
+                        break;
+                    case FileType.J105:
+                        d = FromJ105(lines);
+                        break;
+                    case FileType.QStar:
+                        throw new ArgumentException("QStar data is not supported");
+                    case FileType.CSV:
+                        d = FromCSV(lines);
+                        break;
                     case FileType.CamecaAPM:
                         d = FromCamecaAPM(lines);
                         break;
-                    }
+                    case FileType.SmartSeekerData:
+                        d = FromSmartSeeker(lines);
+                        break;
+                }
 
                 //Set Data2D name
                 d.DataName = Path.GetFileNameWithoutExtension(LoadPath);
@@ -1050,6 +1086,26 @@ namespace ImagingSIMS.Data
             }
 
             //Return object
+            return d;
+        }
+        private static Data2D FromSmartSeeker(List<string> FileLines)
+        {
+            string[] parameters = FileLines[0].Split('\t');
+            FileLines.Remove(FileLines[0]);
+
+            int sizeX = int.Parse(parameters[2]);
+            int sizeY = int.Parse(parameters[3]);
+
+            Data2D d = new Data2D(sizeX, sizeY);
+
+            for (int y = 0; y < sizeY; y++)
+            {
+            string[] lineDelim = FileLines[y].Split('\t');
+            for (int x = 0; x < sizeX; x++)
+            {
+                d[x, y] = float.Parse(lineDelim[x]);
+            }
+            }
             return d;
         }
         public static explicit operator int[,](Data2D d)
