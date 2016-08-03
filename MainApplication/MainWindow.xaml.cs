@@ -4708,7 +4708,65 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test10_Click(object sender, RoutedEventArgs e)
         {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Raw binary files (.raw)|*.raw";
+            if (ofd.ShowDialog() != true) return;
 
+            Data3D orignal = new Data3D(768, 256, 500);
+
+            using (Stream stream = File.OpenRead(ofd.FileName))
+            {
+                BinaryReader br = new BinaryReader(stream);
+
+                for (int x = 0; x < orignal.Width; x++)
+                {
+                    for (int y = 0; y < orignal.Height; y++)
+                    {
+                        for (int z = 0; z < orignal.Depth; z++)
+                        {
+                            orignal[x, y, z] = br.ReadSingle();
+                        }
+                    }
+                }
+            }
+
+            int binSize = 5;
+
+            Data3D binned = new Data3D(orignal.Width, orignal.Height, orignal.Depth / binSize);
+
+            for (int x = 0; x < binned.Width; x++)
+            {
+                for (int y = 0; y < binned.Height; y++)
+                {
+                    for (int z = 0; z < binned.Depth; z++)
+                    {
+                        float sum = 0;
+                        for (int w = 0; w < binSize; w++)
+                        {
+                            sum += orignal[x, y, z * binSize + w];
+                        }
+                        binned[x, y, z] = sum;
+                    }
+                }
+            }
+
+            string binnedFilePath = ofd.FileName.Insert(ofd.FileName.Length - 4, "_binned");
+
+            using (Stream stream = File.OpenWrite(binnedFilePath))
+            {
+                BinaryWriter bw = new BinaryWriter(stream);
+
+                for (int x = 0; x < binned.Width; x++)
+                {
+                    for (int y = 0; y < binned.Height; y++)
+                    {
+                        for (int z = 0; z < binned.Depth; z++)
+                        {
+                            bw.Write(binned[x, y, z]);
+                        }
+                    }
+                }
+            }
         }
 #pragma warning restore 1998
 
