@@ -77,11 +77,6 @@ namespace ImagingSIMS.Controls.BaseControls
             DisplayItem.ImageTransformedWidth = ImageWidth * DisplayItem.Scale;
             DisplayItem.ImageTransformedHeight = ImageHeight * DisplayItem.Scale;
         }
-
-        private void buttonShowColor_MouseEnter(object sender, RoutedEventArgs e)
-        {
-            popupSolidColorScale.IsOpen = true;
-        }
         private void buttonPixelStats_Click(object sender, RoutedEventArgs e)
         {
             e.Handled = true;

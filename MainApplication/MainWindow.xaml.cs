@@ -431,6 +431,15 @@ namespace ImagingSIMS.MainApplication
                 return;
             }
         }
+        private void ribbonOpenInstallationFolder_Click(object sender, RoutedEventArgs e)
+        {
+            var location = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var folder = Path.GetDirectoryName(location);
+
+            Process p = new Process();
+            p.StartInfo = new ProcessStartInfo("explorer.exe", folder);
+            p.Start();
+        }
 
         #endregion
 
@@ -2143,6 +2152,7 @@ namespace ImagingSIMS.MainApplication
                 await window.SetDataAsync(renderVolumes);
                 window.BeginRendering();
             }
+
             catch (Exception ex)
             {
                 DialogBox db = new DialogBox("There was an error creating the 3D rendering.", ex.Message, "Direct3D", DialogIcon.Error);
@@ -4765,6 +4775,5 @@ namespace ImagingSIMS.MainApplication
             }
         }
         #endregion
-
     }
 }

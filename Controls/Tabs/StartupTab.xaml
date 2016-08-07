@@ -122,8 +122,8 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Border BorderBrush="White" Background="Wheat" Width="8" Height="8" CornerRadius="4"/>
-                        <local:Hyperlink Grid.Column="1" LinkTarget="https://www.microsoft.com/en-us/download/details.aspx?id=8109">
-                            You must have DirectX installed in order to create the rendering. If you receive a DLL Not Found error, click here to download and install DirectX
+                        <local:Hyperlink Grid.Column="1" LinkTarget="https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing">
+                            You must have DirectX installed in order to create the rendering. If you receive a DLL Not Found error, click here for instructions on how to install the necessary files
                         </local:Hyperlink>
                     </Grid>
                     <TextBlock Margin="12,2,0,0">

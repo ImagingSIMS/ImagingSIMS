@@ -14,6 +14,8 @@ using ImagingSIMS.Data.ClusterIdentification;
 using ImagingSIMS.Controls.Tabs;
 using System.Windows;
 using ImagingSIMS.Data.Fusion;
+using ImagingSIMS.Common.Controls;
+using System.Windows.Media;
 
 namespace ImagingSIMS.Controls.Converters
 {
@@ -584,8 +586,11 @@ namespace ImagingSIMS.Controls.Converters
             // [3]:  (int)saturation
             try
             {
+                if (values[0] == DependencyProperty.UnsetValue)
+                    return null;
+
                 ColorScaleTypes colorScale = (ColorScaleTypes)values[0];
-                System.Windows.Media.Color solidColorScale = (System.Windows.Media.Color)values[1];
+                Color solidColorScale = (Color)values[1];
                 float dataMaximum = (float)values[2];
                 double saturation = (double)values[3];
 
@@ -846,5 +851,32 @@ namespace ImagingSIMS.Controls.Converters
             throw new NotImplementedException();
         }
     }
+    public class ColorToNotifiableColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                Color c = (Color)value;
+                return (NotifiableColor)c;
+            }
+            catch (Exception)
+            {
+                return NotifiableColor.Black;
+            }
+        }
 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                NotifiableColor c = (NotifiableColor)value;
+                return (Color)c;
+            }
+            catch (Exception)
+            {
+                return Color.FromArgb(255, 0, 0, 0);
+            }
+        }
+    }
 }

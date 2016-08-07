@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ImagingSIMS.Common.Controls;
 using ImagingSIMS.Data;
 using ImagingSIMS.Data.Imaging;
 using ImagingSIMS.Data.Rendering;
@@ -23,7 +24,7 @@ namespace ImagingSIMS.Controls.ViewModels
         double _saturation;
         double _initialSaturation;
         ColorScaleTypes _colorScale;
-        Color _solidColorScale;
+        NotifiableColor _solidColorScale;
         double _imageTransformedWidth;
         double _imageTransformedHeight;
         int _layerStart;
@@ -107,15 +108,20 @@ namespace ImagingSIMS.Controls.ViewModels
                 }
             }
         }
-        public Color SolidColorScale
+        public NotifiableColor SolidColorScale
         {
             get { return _solidColorScale; }
             set
             {
                 if (_solidColorScale != value)
                 {
+                    if(_solidColorScale != null)
+                    {
+                        _solidColorScale.ColorChanged -= SolidColorScale_PropertyChanged;
+                    }
                     _solidColorScale = value;
                     NotifyPropertyChanged("SolidColorScale");
+                    _solidColorScale.ColorChanged += SolidColorScale_PropertyChanged;
                     redraw();
                 }
             }
@@ -215,21 +221,21 @@ namespace ImagingSIMS.Controls.ViewModels
 
         private Data3DDisplayViewModel()
         {
-
+            SolidColorScale = NotifiableColor.White;
         }
         public Data3DDisplayViewModel(Data3D dataSource, ColorScaleTypes colorScale)
         {
             ImageTransformedWidth = 225;
             ImageTransformedHeight = 225;
 
-            SolidColorScale = Color.FromArgb(255, 255, 255, 255);
+            SolidColorScale = NotifiableColor.White;
 
             DataSource = dataSource;
             ColorScale = colorScale;
 
             Scale = 1;
         }
-        public Data3DDisplayViewModel(Data3D dataSource, Color solidColorScale)
+        public Data3DDisplayViewModel(Data3D dataSource, NotifiableColor solidColorScale)
         {
             ImageTransformedWidth = 225;
             ImageTransformedHeight = 225;
@@ -240,6 +246,14 @@ namespace ImagingSIMS.Controls.ViewModels
             ColorScale = ColorScaleTypes.Solid;
 
             Scale = 1;
+        }
+
+        private void SolidColorScale_PropertyChanged(object sender, NotifiableColorChangedEventArgs e)
+        {
+            if(e.OldColor != e.NewColor)
+            {
+                redraw();
+            }            
         }
 
         public async Task SetData3DDisplayItemAsync(Data3D dataSource, ColorScaleTypes colorScale)
@@ -256,8 +270,6 @@ namespace ImagingSIMS.Controls.ViewModels
             ImageTransformedWidth = 225;
             ImageTransformedHeight = 225;
 
-            SolidColorScale = Color.FromArgb(255, 255, 255, 255);
-
             DataSource = dataSource;
             ColorScale = colorScale;
 
@@ -266,7 +278,7 @@ namespace ImagingSIMS.Controls.ViewModels
 
             Scale = 1;
         }
-        private void setData3DDisplayItem(Data3D dataSource, Color solidColorScale)
+        private void setData3DDisplayItem(Data3D dataSource, NotifiableColor solidColorScale)
         {
             ImageTransformedWidth = 225;
             ImageTransformedHeight = 225;

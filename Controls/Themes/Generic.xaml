@@ -19,8 +19,9 @@
 	<converters:Data2DToBitmapSourceConverter x:Key="data2DToBitmapSourceConverter"/>
 	<converters:EnumDescriptionConverter x:Key="enumDescriptionConverter"/>
 	<converters:DataMaximumToSliderRangeConverter x:Key="dataMaximumToSliderRangeConverter"/>
+    <converters:ColorToNotifiableColorConverter x:Key="colorToNotifiableColorConverter"/>
 
-	<ObjectDataProvider x:Key="fusionFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+    <ObjectDataProvider x:Key="fusionFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
 		<ObjectDataProvider.MethodParameters>
 			<x:Type TypeName="fusion:FusionType"/>
 		</ObjectDataProvider.MethodParameters>
