@@ -1,0 +1,4 @@
+#Ignore rules for pub folder
+
+!x64/
+!x86/

@@ -48,10 +48,17 @@ namespace ImagingSIMS.Common.Controls
         public CollapsedColorSelector()
         {
             SelectedColor = NotifiableColor.FromArgb(255, 0, 0, 0);
+            SelectedColor.ColorChanged += SelectedColor_ColorChanged;
 
             IsAlphaEnabled = true;
             
             InitializeComponent();
+        }
+
+        private void SelectedColor_ColorChanged(object sender, NotifiableColorChangedEventArgs e)
+        {
+            if(e.OldColor != e.NewColor)
+                SelectedColor = e.NewColor;
         }
     }
 
@@ -131,9 +138,11 @@ namespace ImagingSIMS.Common.Controls
             {
                 if(_a != value)
                 {
+                    NotifiableColor oldColor = Color;
                     _a = value;
                     NotifyPropertyChanged("A");
                     NotifyPropertyChanged("Color");
+                    NotifyColorChanged(oldColor, Color);
                 }
             }
         }
@@ -144,9 +153,11 @@ namespace ImagingSIMS.Common.Controls
             {
                 if (_r != value)
                 {
+                    NotifiableColor oldColor = Color;
                     _r = value;
                     NotifyPropertyChanged("R");
                     NotifyPropertyChanged("Color");
+                    NotifyColorChanged(oldColor, Color);
                 }
             }
         }
@@ -157,9 +168,11 @@ namespace ImagingSIMS.Common.Controls
             {
                 if (_g != value)
                 {
+                    NotifiableColor oldColor = Color;
                     _g = value;
                     NotifyPropertyChanged("G");
                     NotifyPropertyChanged("Color");
+                    NotifyColorChanged(oldColor, Color);
                 }
             }
         }
@@ -170,9 +183,11 @@ namespace ImagingSIMS.Common.Controls
             {
                 if (_b != value)
                 {
+                    NotifiableColor oldColor = Color;
                     _b = value;
                     NotifyPropertyChanged("B");
                     NotifyPropertyChanged("Color");
+                    NotifyColorChanged(oldColor, Color);
                 }
             }
         }
@@ -181,13 +196,30 @@ namespace ImagingSIMS.Common.Controls
             get { return Color.FromArgb(_a, _r, _g, _b); }
             set
             {
-                A = value.A;
-                R = value.R;
-                G = value.G;
-                B = value.B; 
+                if (value != Color)
+                {
+                    NotifiableColor oldColor = Color;
+                    A = value.A;
+                    R = value.R;
+                    G = value.G;
+                    B = value.B;
+                    NotifyPropertyChanged("Color");
+                    NotifyColorChanged(oldColor, value);
+                }
+
             }
         }
 
+        public NotifiableColor()
+        {
+            int i = 0;
+        }
+
+        public event NotifiableColorChangedEventHandler ColorChanged;
+        private void NotifyColorChanged(NotifiableColor oldColor, NotifiableColor newColor)
+        {
+            ColorChanged?.Invoke(this, new NotifiableColorChangedEventArgs(oldColor, newColor));
+        }
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
@@ -235,6 +267,20 @@ namespace ImagingSIMS.Common.Controls
                     A = 255
                 };
             }
+        }
+    }
+
+    public delegate void NotifiableColorChangedEventHandler(object sender, NotifiableColorChangedEventArgs e);
+    public class NotifiableColorChangedEventArgs : EventArgs
+    {
+        public NotifiableColor OldColor { get; protected set; }
+        public NotifiableColor NewColor { get; protected set; }
+
+        public NotifiableColorChangedEventArgs(NotifiableColor oldColor, NotifiableColor newColor)
+            : base()
+        {
+            OldColor = oldColor;
+            NewColor = newColor;
         }
     }
 }

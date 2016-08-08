@@ -2,6 +2,7 @@
         x:Name="userControl"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ImagingSIMS.Common.Controls"
         Title="{Binding ElementName=userControl, Path=Header}" Background="#FF414141" Width="400" MaxWidth="400" 
         SizeToContent="Height" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
         Icon="Images\PaintPalette.ico">
@@ -12,6 +13,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -75,8 +77,13 @@
                    Margin="8" Foreground="#FFD8D8D8" MouseMove="msg_MouseMove"/>
         <TextBlock Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding ElementName=userControl, Path=BottomMessage}"
                    Margin="8" Foreground="#FFD8D8D8" MouseMove="msg_MouseMove"/>
-        
-        <ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+
+        <local:Hyperlink Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Margin="8" 
+                         Visibility="{Binding ElementName=userControl, Path=LinkTarget, Converter={StaticResource stringToVisConverter}}"
+                         Text="Click here for more" Foreground="#FFD8D8D8"
+                         LinkTarget="{Binding ElementName=userControl, Path=LinkTarget}"/>
+
+        <ItemsControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
                           HorizontalAlignment="Right" Margin="8" ItemsSource="{Binding ElementName=userControl, Path=DialogOptions}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
