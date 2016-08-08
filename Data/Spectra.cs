@@ -1893,6 +1893,40 @@ namespace ImagingSIMS.Data.Spectra
             }
         }
 
+        public void SaveXYZT(string fileName)
+        {
+            using (Stream stream = File.OpenWrite(fileName))
+            {
+                BinaryWriter bw = new BinaryWriter(stream);
+
+                bw.Write(SizeX);
+                bw.Write(SizeY);
+                bw.Write(SizeZ);
+
+                for (int x = 0; x < SizeX; x++)
+                {
+                    for (int y = 0; y < SizeY; y++)
+                    {
+                        for (int z = 0; z < SizeZ; z++)
+                        {
+                            FlightTimeArray fta = _xyts[z][x, y];
+
+                            int[] intensities = fta.Intensities;
+                            int[] flightTimes = fta.FlightTimes;
+
+                            bw.Write(flightTimes.Length);
+
+                            for (int w = 0; w < flightTimes.Length; w++)
+                            {
+                                bw.Write(TimeToMass(flightTimes[w]));
+                                bw.Write(intensities[w]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         #region ISavable
 
         // Layout:
@@ -2064,6 +2098,15 @@ namespace ImagingSIMS.Data.Spectra
         int[] _intensities;
 
         int _totalCounts;
+
+        public int[] FlightTimes
+        {
+            get { return _flightTimes; }
+        }
+        public int[] Intensities
+        {
+            get { return _intensities; }
+        }
 
         public int CountsAtPixel
         {
