@@ -159,6 +159,8 @@
     <Compile Include="Controls\CollapsedColorSelector.xaml.cs">
       <DependentUpon>CollapsedColorSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Converters.cs" />
+    <Compile Include="Controls\Hyperlink.cs" />
     <Compile Include="Controls\PreviewRectangle.xaml.cs">
       <DependentUpon>PreviewRectangle.xaml</DependentUpon>
     </Compile>

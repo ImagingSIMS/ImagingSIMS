@@ -11,8 +11,10 @@ namespace Direct3DEffectCompiler
     internal static class FilePaths
     {
         internal static string executablePath = @"C:\Program Files (x86)\Windows Kits\10\bin\x64\fxc.exe";
-        internal static string sourceFolder = @"C:\Users\taro148\Source\Repos\ImagingSIMS\Direct3DRendering\Shaders\";
-        internal static string outputFolder = @"C:\Users\taro148\Source\Repos\ImagingSIMS\Direct3DRendering\Shaders\";
+        //internal static string sourceFolder = @"C:\Users\taro148\Source\Repos\ImagingSIMS\Direct3DRendering\Shaders\";
+        //internal static string outputFolder = @"C:\Users\taro148\Source\Repos\ImagingSIMS\Direct3DRendering\Shaders\";
+        internal static string sourceFolder = @"C:\Users\jay50\Source\Repos\jay5026\ImagingSIMS3\ImagingSIMS\Direct3DRendering\Shaders\";
+        internal static string outputFolder = @"C:\Users\jay50\Source\Repos\jay5026\ImagingSIMS3\ImagingSIMS\Direct3DRendering\Shaders\";
         //internal static _outputFolder = @"C:\Users\jayt\Desktop\test\";
     }
     class Program
@@ -79,7 +81,7 @@ namespace Direct3DEffectCompiler
                 if (!vs.Compile(false))
                     errorCount++;
 
-                if(shaders[i,0] == "Isosurface")
+                if(shaders[i, 0] == "Isosurface" || shaders[i, 0] == "Raycast" || shaders[i, 0] == "Model")
                 {
                     Shader gs = new Shader(shaders[i, 0], shaders[i, 1], ShaderType.Geometry);
                     if (!gs.Compile(true))

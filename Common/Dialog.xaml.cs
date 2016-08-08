@@ -28,6 +28,8 @@ namespace ImagingSIMS.Common.Dialogs
             typeof(string), typeof(Dialog));
         public static DependencyProperty IconTypeProperty = DependencyProperty.Register("IconType",
             typeof(DialogIcon), typeof(Dialog));
+        public static DependencyProperty LinkTargetProperty = DependencyProperty.Register("LinkTarget",
+            typeof(string), typeof(Dialog));
 
         public string TopMessage
         {
@@ -48,6 +50,11 @@ namespace ImagingSIMS.Common.Dialogs
         {
             get { return (DialogIcon)GetValue(IconTypeProperty); }
             set { SetValue(IconTypeProperty, value); }
+        }
+        public string LinkTarget
+        {
+            get { return (string)GetValue(LinkTargetProperty); }
+            set { SetValue(LinkTargetProperty, value); }
         }
 
         ObservableCollection<string> _dialogOptions;
@@ -99,6 +106,50 @@ namespace ImagingSIMS.Common.Dialogs
 
             InitializeComponent();
         }
+        public Dialog(string topMessage, string bottomMessage, string header, DialogIcon icon, string linkTarget)
+        {
+            this.TopMessage = topMessage;
+            this.BottomMessage = bottomMessage;
+            this.Header = header;
+            this.IconType = icon;
+            this.DialogOptions = new ObservableCollection<string>(Dialogs.DialogOptions.OK);
+            this.LinkTarget = linkTarget;
+
+            InitializeComponent();
+        }
+        public Dialog(string topMessage, string bottomMessage, string header, DialogIcon icon, ObservableCollection<string> dialogOptions, string linkTarget)
+        {
+            this.TopMessage = topMessage;
+            this.BottomMessage = bottomMessage;
+            this.Header = header;
+            this.IconType = icon;
+            this.DialogOptions = dialogOptions;
+            this.LinkTarget = linkTarget;
+
+            InitializeComponent();
+        }
+        public Dialog(string topMessage, string bottomMessage, string header, DialogIcon icon, List<string> dialogOptions, string linkTarget)
+        {
+            this.TopMessage = topMessage;
+            this.BottomMessage = bottomMessage;
+            this.Header = header;
+            this.IconType = icon;
+            this.DialogOptions = new ObservableCollection<string>(dialogOptions);
+            this.LinkTarget = linkTarget;
+
+            InitializeComponent();
+        }
+        public Dialog(string topMessage, string bottomMessage, string header, DialogIcon icon, string[] dialogOptions, string linkTarget)
+        {
+            this.TopMessage = topMessage;
+            this.BottomMessage = bottomMessage;
+            this.Header = header;
+            this.IconType = icon;
+            this.DialogOptions = new ObservableCollection<string>(dialogOptions);
+            this.LinkTarget = linkTarget;
+
+            InitializeComponent();
+        }
 
         private void buttonDialogOption_Click(object sender, RoutedEventArgs e)
         {
@@ -142,6 +193,30 @@ namespace ImagingSIMS.Common.Dialogs
         public static string Show(string topMessage, string bottomMessage, string header, DialogIcon icon, string[] dialogOptions)
         {
             Dialog d = new Dialog(topMessage, bottomMessage, header, icon, dialogOptions);
+            d.ShowDialog();
+            return d.DialogResponse;
+        }
+        public static string Show(string topMessage, string bottomMessage, string header, DialogIcon icon, string linkTarget)
+        {
+            Dialog d = new Dialog(topMessage, bottomMessage, header, icon, linkTarget);
+            d.ShowDialog();
+            return d.DialogResponse;
+        }
+        public static string Show(string topMessage, string bottomMessage, string header, DialogIcon icon, List<string> dialogOptions, string linkTarget)
+        {
+            Dialog d = new Dialog(topMessage, bottomMessage, header, icon, dialogOptions, linkTarget);
+            d.ShowDialog();
+            return d.DialogResponse;
+        }
+        public static string Show(string topMessage, string bottomMessage, string header, DialogIcon icon, ObservableCollection<string> dialogOptions, string linkTarget)
+        {
+            Dialog d = new Dialog(topMessage, bottomMessage, header, icon, dialogOptions, linkTarget);
+            d.ShowDialog();
+            return d.DialogResponse;
+        }
+        public static string Show(string topMessage, string bottomMessage, string header, DialogIcon icon, string[] dialogOptions, string linkTarget)
+        {
+            Dialog d = new Dialog(topMessage, bottomMessage, header, icon, dialogOptions, linkTarget);
             d.ShowDialog();
             return d.DialogResponse;
         }

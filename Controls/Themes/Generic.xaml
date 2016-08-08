@@ -91,51 +91,42 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	
-	<Style x:Key="CloseButtonStyle" TargetType="{x:Type Button}">
-		<Setter Property="SnapsToDevicePixels" Value="true"/>
-		<Setter Property="OverridesDefaultStyle" Value="true"/>
-		<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
-		<Setter Property="Background" Value="Transparent"/>
-		<Setter Property="Content" Value="X"/>
-		<Setter Property="FontSize" Value="11"/>
-		<Setter Property="FontFamily" Value="SegoeUI"/>
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type Button}">
-					<Border x:Name="Border"
+
+    <Style x:Key="CloseButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Content" Value="X"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontFamily" Value="SegoeUI"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="Border"
 							Margin="2"
 							CornerRadius="7" BorderThickness="0" 
 							Background="Transparent" BorderBrush="Transparent">
-						<ContentPresenter x:Name="ContentPresenter" Margin="0,0,0,0" 
+                        <ContentPresenter x:Name="ContentPresenter" Margin="0,0,0,0" 
 										  HorizontalAlignment="Center" VerticalAlignment="Center"
 										  RecognizesAccessKey="True"/>
-					</Border>
-					<ControlTemplate.Triggers>
-						<Trigger Property="IsMouseOver" Value="true">
-							<Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonHoverBackground}"/>
-							<Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource ButtonHoverForeground}"/>
-						</Trigger>
-						<Trigger Property="IsPressed" Value="true">
-							<Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonClickBackground}"/>
-							<Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource ButtonClickForeground}"/>
-						</Trigger>
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonHoverBackground}"/>
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource ButtonHoverForeground}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonClickBackground}"/>
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource ButtonClickForeground}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
-	<Style TargetType="{x:Type base:Hyperlink}">
-		<Style.Triggers>
-			<Trigger Property="IsMouseOver" Value="True">
-				<Setter Property="Foreground" Value="Blue"/>
-				<Setter Property="TextDecorations" Value="Underline"/>
-			</Trigger>
-		</Style.Triggers>
-	</Style>
-
-	<Style TargetType="{x:Type tabs:ClosableTabItem}">
+    <Style TargetType="{x:Type tabs:ClosableTabItem}">
 		<Setter Property="FocusVisualStyle" Value="{StaticResource TabItemFocusVisual}"/>
 		<Setter Property="MinWidth" Value="40"/>
 		<Setter Property="Width" Value="Auto"/>

@@ -24,6 +24,8 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
         InputLayout _ilRaycast;
         PixelShader _psPosition;
         PixelShader _psRaycast;
+        GeometryShader _gsPosition;
+        GeometryShader _gsRaycast;
 
         Texture2D[] _texPositions;
         ShaderResourceView[] _srvPositions;
@@ -138,6 +140,12 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
             psByteCode = ShaderBytecode.FromFile(_raycastEffectPath + ".pso");
             _psRaycast = new PixelShader(_device, psByteCode);
+
+            var gsByteCode = ShaderBytecode.FromFile(_modelEffectPath + ".gso");
+            _gsPosition = new GeometryShader(_device, gsByteCode);
+
+            gsByteCode = ShaderBytecode.FromFile(_raycastEffectPath + ".gso");
+            _gsRaycast = new GeometryShader(_device, gsByteCode);
         }
         protected override void InitializeStates()
         {
@@ -440,6 +448,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 context.VertexShader.Set(_vsPosition);
                 context.VertexShader.SetConstantBuffer(0, _bufferRenderParams);
                 context.VertexShader.SetConstantBuffer(2, _volumeParamBuffer);
+                context.GeometryShader.Set(_gsPosition);
                 context.PixelShader.Set(_psPosition);
 
                 // Set active voxel lookup volume for both the VS and PS
@@ -457,6 +466,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 context.DrawIndexed(36, 0, 0);
 
                 context.VertexShader.Set(_vsRaycast);
+                context.GeometryShader.Set(_gsRaycast);
                 context.PixelShader.Set(_psRaycast);
                 context.InputAssembler.InputLayout = _ilRaycast;                
 
@@ -486,6 +496,9 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
                 ShaderResourceView[] nullRV = new ShaderResourceView[3] { null, null, null };
                 context.PixelShader.SetShaderResources(0, 3, nullRV);
+
+                // Clear geometry shader since axes/bounding box don't use it
+                context.GeometryShader.Set(null);
             }
 
             CompleteDraw();

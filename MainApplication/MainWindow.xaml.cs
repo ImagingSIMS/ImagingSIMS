@@ -2152,7 +2152,45 @@ namespace ImagingSIMS.MainApplication
                 await window.SetDataAsync(renderVolumes);
                 window.BeginRendering();
             }
+            catch(DllNotFoundException dnfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was missing. Click the link below for more information.",
+                    dnfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
 
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
+            catch(FileNotFoundException fnfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was missing. Click the link below for more information.",
+                    fnfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
+            catch(BadImageFormatException bimfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was the wrong format. Click the link below for more information and ensure the DLLs with the correct bitness have been copied.",
+                    bimfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
             catch (Exception ex)
             {
                 DialogBox db = new DialogBox("There was an error creating the 3D rendering.", ex.Message, "Direct3D", DialogIcon.Error);
@@ -2248,6 +2286,45 @@ namespace ImagingSIMS.MainApplication
                 await window.SetDataAsync(isosurfaces);
                 window.BeginRendering();
             }
+            catch (DllNotFoundException dnfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was missing. Click the link below for more information.",
+                    dnfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
+            catch (FileNotFoundException fnfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was missing. Click the link below for more information.",
+                    fnfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
+            catch (BadImageFormatException bimfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was the wrong format. Click the link below for more information and ensure the DLLs with the correct bitness have been copied.",
+                    bimfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
             catch (Exception ex)
             {
                 DialogBox db = new DialogBox("There was an error creating the 3D rendering.", ex.Message, "Direct3D", DialogIcon.Error);
@@ -2315,6 +2392,45 @@ namespace ImagingSIMS.MainApplication
 
                 await window.SetDataAsync(hm.CorrectedHeightData, hm.CorrectedColorData);
                 window.BeginRendering();
+            }
+            catch (DllNotFoundException dnfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was missing. Click the link below for more information.",
+                    dnfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
+            catch (FileNotFoundException fnfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was missing. Click the link below for more information.",
+                    fnfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
+            catch (BadImageFormatException bimfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was the wrong format. Click the link below for more information and ensure the DLLs with the correct bitness have been copied.",
+                    bimfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
             }
             catch (Exception ex)
             {

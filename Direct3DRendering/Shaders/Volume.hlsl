@@ -132,6 +132,16 @@ MODEL_PS_Input MODEL_VS(MODEL_VS_Input input)
 
 	return output;
 }
+
+[maxvertexcount(3)]
+void MODEL_GS(triangle MODEL_PS_Input input[3], inout TriangleStream<MODEL_PS_Input> stream) {
+
+	for (int i = 0; i < 3; i++)
+	{
+		stream.Append(input[i]);
+	}
+}
+
 float4 MODEL_PS(MODEL_PS_Input input)		: SV_Target
 {
 	float4 pos = input.pos / 3;
@@ -146,6 +156,15 @@ RAYCAST_PS_Input RAYCAST_VS(RAYCAST_VS_Input input)
 	output.pos = mul(WorldProjView, input.pos);
 
 	return output;
+}
+
+[maxvertexcount(3)]
+void RAYCAST_GS(triangle RAYCAST_PS_Input input[3], inout TriangleStream<RAYCAST_PS_Input> stream) {
+
+	for (int i = 0; i < 3; i++)
+	{
+		stream.Append(input[i]);
+	}
 }
 
 float4 RAYCAST_PS(RAYCAST_PS_Input input) : SV_TARGET
