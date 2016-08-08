@@ -40,7 +40,7 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>8</ApplicationRevision>
+    <ApplicationRevision>7</ApplicationRevision>
     <ApplicationVersion>3.6.2.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -391,12 +391,6 @@
     </Content>
     <Content Include="Shaders\Model.gso" />
     <Content Include="Shaders\Raycast.gso" />
-    <Content Include="Redist\x64\placeholder.file">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Redist\x86\placeholder.file">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Images\Previous.ico" />
     <Resource Include="Images\Redo_grey.ico" />
     <Content Include="Shaders\Isosurface.gso" />
