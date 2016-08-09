@@ -7,4 +7,7 @@ To create a ClickOnce deployment:
     has been added to the Included changes. If it hasn't, expand the Untracked 
     Files section, right click the folder, and add it to the Included changes
 5. Commit the changes with the comment "ClickOnce deployment for version *.*.*.*"
+	**NOTE: As of 3.6.2.7, Visual Studio will not include redist subfolders (x86 and x64) when 
+			detecting changes and committing. Git for Windows will though, so use that to create
+			the commit and push to GitHub**
 6. Sync changes

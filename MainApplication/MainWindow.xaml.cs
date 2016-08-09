@@ -431,6 +431,15 @@ namespace ImagingSIMS.MainApplication
                 return;
             }
         }
+        private void ribbonOpenInstallationFolder_Click(object sender, RoutedEventArgs e)
+        {
+            var location = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var folder = Path.GetDirectoryName(location);
+
+            Process p = new Process();
+            p.StartInfo = new ProcessStartInfo("explorer.exe", folder);
+            p.Start();
+        }
 
         #endregion
 
@@ -779,19 +788,25 @@ namespace ImagingSIMS.MainApplication
             string cameca1280 = "Cameca 1280 Spectra Files (.imp)|*.imp";
             if (Workspace.Registry.DefaultProgram == DefaultProgram.BioToF)
             {
-                filter.Append(bioToF);
-                filter.Append("|");
-                filter.Append(j105);
-                filter.Append("|");
-                filter.Append(cameca1280);
-            }
-            else if (Workspace.Registry.DefaultProgram == DefaultProgram.J105)
-            {
-                filter.Append(j105);
-                filter.Append("|");
-                filter.Append(bioToF);
-                filter.Append("|");
-                filter.Append(cameca1280);
+                case DefaultProgram.BioToF:
+                    filter.Append(bioToF);
+                    filter.Append("|");
+                    filter.Append(j105);
+                    break;
+                case DefaultProgram.J105:
+                    filter.Append(j105);
+                    filter.Append("|");
+                    filter.Append(bioToF);
+                    break;
+                case DefaultProgram.NotSpecified:
+                    filter.Append(bioToF);
+                    filter.Append("|");
+                    filter.Append(j105);
+                default:
+                    filter.Append(bioToF);
+                    filter.Append("|");
+                    filter.Append(j105);
+                    break;
             }
             else if(Workspace.Registry.DefaultProgram == DefaultProgram.Cameca1280)
             {
@@ -2197,6 +2212,45 @@ namespace ImagingSIMS.MainApplication
                 await window.SetDataAsync(renderVolumes);
                 window.BeginRendering();
             }
+            catch(DllNotFoundException dnfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was missing. Click the link below for more information.",
+                    dnfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
+            catch(FileNotFoundException fnfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was missing. Click the link below for more information.",
+                    fnfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
+            catch(BadImageFormatException bimfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was the wrong format. Click the link below for more information and ensure the DLLs with the correct bitness have been copied.",
+                    bimfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
             catch (Exception ex)
             {
                 DialogBox db = new DialogBox("There was an error creating the 3D rendering.", ex.Message, "Direct3D", DialogIcon.Error);
@@ -2292,6 +2346,45 @@ namespace ImagingSIMS.MainApplication
                 await window.SetDataAsync(isosurfaces);
                 window.BeginRendering();
             }
+            catch (DllNotFoundException dnfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was missing. Click the link below for more information.",
+                    dnfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
+            catch (FileNotFoundException fnfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was missing. Click the link below for more information.",
+                    fnfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
+            catch (BadImageFormatException bimfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was the wrong format. Click the link below for more information and ensure the DLLs with the correct bitness have been copied.",
+                    bimfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
             catch (Exception ex)
             {
                 DialogBox db = new DialogBox("There was an error creating the 3D rendering.", ex.Message, "Direct3D", DialogIcon.Error);
@@ -2359,6 +2452,45 @@ namespace ImagingSIMS.MainApplication
 
                 await window.SetDataAsync(hm.CorrectedHeightData, hm.CorrectedColorData);
                 window.BeginRendering();
+            }
+            catch (DllNotFoundException dnfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was missing. Click the link below for more information.",
+                    dnfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
+            catch (FileNotFoundException fnfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was missing. Click the link below for more information.",
+                    fnfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
+            }
+            catch (BadImageFormatException bimfEx)
+            {
+                Dialog.Show("The rendering engine could not be started because a necessary DLL was the wrong format. Click the link below for more information and ensure the DLLs with the correct bitness have been copied.",
+                    bimfEx.Message, "Rendering", DialogIcon.Error, "https://github.com/ImagingSIMS/ImagingSIMS/wiki/D3DCompiler_47.dll-Missing");
+
+                if (window != null)
+                {
+                    window.Close();
+                    window = null;
+                }
+
+                return;
             }
             catch (Exception ex)
             {
@@ -5237,6 +5369,5 @@ namespace ImagingSIMS.MainApplication
             }
         }
         #endregion
-
     }
 }

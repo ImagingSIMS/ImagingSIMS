@@ -2,6 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:ImagingSIMS.Common.Controls"
+    xmlns:cnvt="clr-namespace:ImagingSIMS.Common.Controls.Converters"
     xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero">
 
     <BitmapImage x:Key="AlertIcon" UriSource="../Images/Alert.png"/>
@@ -19,8 +20,10 @@
     <BitmapImage x:Key="SuppressedIcon" UriSource="../Images/Suppressed.png"/>
     <BitmapImage x:Key="WarningIcon" UriSource="../Images/Warning.png"/>
     <BitmapImage x:Key="WarningGrayIcon" UriSource="../Images/WarningGray.png"/>
-    
+
+    <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
     <local:BoolToScrollTextConverter x:Key="boolToScrollConverter"/>
+    <cnvt:StringToVisibilityConverter x:Key="stringToVisConverter"/>
 
     <LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientBrush.GradientStops>
@@ -529,5 +532,14 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+
+    <Style TargetType="{x:Type local:Hyperlink}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="Blue"/>
+                <Setter Property="TextDecorations" Value="Underline"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
 </ResourceDictionary>

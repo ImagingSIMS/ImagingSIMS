@@ -150,13 +150,16 @@
                 <TextBlock Grid.Column="2" Text="{Binding DisplayItem.Saturation, StringFormat=0.0, ElementName=userControl}"/>
             </Grid>
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0">Color Scale:</TextBlock>
-                <ComboBox Grid.Column="1" Margin="4" Width="Auto" Height="20" IsEditable="False" 
+                <TextBlock Grid.Row="0" Grid.Column="0">Color Scale:</TextBlock>
+                <ComboBox Grid.Row="0" Grid.Column="1" Margin="4" Width="Auto" Height="20" IsEditable="False" 
                                       ItemsSource="{Binding Source={StaticResource colorScaleFromEnum}}"
                                       SelectedItem="{Binding DisplayItem.ColorScale, ElementName=userControl}">
                     <ComboBox.ItemTemplate>
@@ -165,7 +168,11 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button x:Name="buttonShowColor" Grid.Column="2" Width="20" Height="20" Margin="4" 
+                <cc:CollapsedColorSelector Grid.Row="1" Grid.Column="2" Margin="4"
+                                           IsEnabled="{Binding DisplayItem.ColorScale, Converter={StaticResource colorScaleToBoolConverter}, ElementName=userControl}"
+                                           SelectedColor="{Binding DisplayItem.SolidColorScale, ElementName=userControl, Mode=TwoWay}"                                           
+                                           IsAlphaEnabled="False"/>
+                <!--<Button x:Name="buttonShowColor" Grid.Column="2" Width="20" Height="20" Margin="4" 
                         IsEnabled="{Binding DisplayItem.ColorScale, Converter={StaticResource colorScaleToBoolConverter}, ElementName=userControl}"
                         MouseEnter="buttonShowColor_MouseEnter">
                     <Image Source="..\Images\PaintPalette.ico"/>
@@ -174,8 +181,8 @@
                     <Grid Background="{StaticResource MenuBackground}">
                         <cc:ColorSelector SelectedColor="{Binding DisplayItem.SolidColorScale, Mode=TwoWay, ElementName=userControl}" IsAlphaEnabled="False"/>
                     </Grid>
-                </Popup>
-            </Grid>
+                </Popup>-->
+            </Grid>         
             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Width="20" Height="20" Click="contentButtonRemove_Click" Margin="4" ToolTip="Delete">
                     <Image Source="..\Images\Remove24.png"/>

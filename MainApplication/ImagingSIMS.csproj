@@ -250,6 +250,22 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="..\Redist\x64\d3dcompiler_47.dll">
+      <Link>Redist\x64\d3dcompiler_47.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Redist\x64\d3dcsx_47.dll">
+      <Link>Redist\x64\d3dcsx_47.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Redist\x86\d3dcompiler_47.dll">
+      <Link>Redist\x86\d3dcompiler_47.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Redist\x86\d3dcsx_47.dll">
+      <Link>Redist\x86\d3dcsx_47.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\References\ITKCommon-4.5.dll">
       <Link>Plugins\ITKCommon-4.5.dll</Link>
     </Content>
@@ -370,6 +386,13 @@
     <Content Include="Icons\Workspace.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Redist\Files.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shaders\Model.gso" />
+    <Content Include="Shaders\Raycast.gso" />
+    <Resource Include="Images\Previous.ico" />
+    <Resource Include="Images\Redo_grey.ico" />
     <Resource Include="Images\Isotope.ico" />
     <Resource Include="Images\Grid.ico" />
     <Content Include="Shaders\Isosurface.gso" />

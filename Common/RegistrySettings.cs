@@ -213,7 +213,7 @@ namespace ImagingSIMS.Common.Registry
                 SaveQuickLoad = BoolInt.Convert((int)keyOptions.GetValue("SaveQuickLoad", 1));
                 HideLoadDialog = BoolInt.Convert((int)keyOptions.GetValue("HideLoadDialog", 0));
                 ClearPluginData = BoolInt.Convert((int)keyOptions.GetValue("ClearPluginData", 0));
-                DefaultProgram = (DefaultProgram)((int)keyOptions.GetValue("DefaultProgram", 1));
+                DefaultProgram = (DefaultProgram)((int)keyOptions.GetValue("DefaultProgram", 0));
                 StartWithTrace = BoolInt.Convert((int)keyOptions.GetValue("StartWithTrace", 0));
                 SuppressRegistrationWarnings = BoolInt.Convert((int)keyOptions.GetValue("SuppressRegistrationWarnings", 0));
                 DataDisplayWidth = double.Parse((string)keyOptions.GetValue("DataDisplayWidth", 225d));
@@ -394,6 +394,8 @@ namespace ImagingSIMS.Common.Registry
 
     public enum DefaultProgram
     {
+        [Description("Not Specified")]
+        NotSpecified = 0,
         [Description("J105")]
         J105 = 1,
         [Description("Bio-ToF")]

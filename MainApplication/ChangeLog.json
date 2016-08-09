@@ -66,5 +66,24 @@
     "Updates": [
       "Fixed issue with change window showing all updates, not just most recent."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 7
+    },
+    "Updates": [
+      "Moved batch tasks when viewing data tables to a contextual ribbon.",
+      "2D and now 3D data sets can be visualized.",
+      "3D data sets from already created volumes can be visualized.",
+      "Color selector has been cleaned up and now supports collapsed views in certain contexts",
+      "Updated SharpDX to utilize DirectX 11.1.",
+      "Added dialog with help link if d3dcompiler_47.dll cannot be found when creating a 3D rendering.",
+      "Isosurface rendering has been re-implemented.",
+      "The rendering control panel has been redesigned to be simplified and a bit more clean.",
+      "Render controls added for isosurface rendering that include clipping planes and directional lighting."
+    ]
   }
 ]

@@ -14,6 +14,7 @@ using ImagingSIMS.Data.ClusterIdentification;
 using ImagingSIMS.Controls.Tabs;
 using System.Windows;
 using ImagingSIMS.Data.Fusion;
+using ImagingSIMS.Common.Controls;
 using System.Windows.Media;
 
 namespace ImagingSIMS.Controls.Converters
@@ -585,8 +586,11 @@ namespace ImagingSIMS.Controls.Converters
             // [3]:  (int)saturation
             try
             {
+                if (values[0] == DependencyProperty.UnsetValue)
+                    return null;
+
                 ColorScaleTypes colorScale = (ColorScaleTypes)values[0];
-                System.Windows.Media.Color solidColorScale = (System.Windows.Media.Color)values[1];
+                Color solidColorScale = (Color)values[1];
                 float dataMaximum = (float)values[2];
                 double saturation = (double)values[3];
 
@@ -864,38 +868,31 @@ namespace ImagingSIMS.Controls.Converters
             throw new NotImplementedException();
         }
     }
-    public class StatusToTextConverter : IValueConverter
+    public class ColorToNotifiableColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
-                bool? b = (bool?)value;
-
-                if (b == true) return "activated";
-                else if (b == false) return "deactivated";
-                else return "not set";
+                Color c = (Color)value;
+                return (NotifiableColor)c;
             }
             catch (Exception)
             {
-                return "invalid";
+                return NotifiableColor.Black;
             }
         }
+
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
-                bool? returnValue = null;
-
-                string s = (string)value;
-                if (s == "activated") returnValue = true;
-                else if (s == "deactivated") returnValue = false;
-
-                return returnValue;
+                NotifiableColor c = (NotifiableColor)value;
+                return (Color)c;
             }
             catch (Exception)
             {
-                return null;
+                return Color.FromArgb(255, 0, 0, 0);
             }
         }
     }

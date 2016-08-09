@@ -57,9 +57,9 @@
                                   Command="Save" ToolTipTitle="Save Workspace"
                                   ToolTipDescription="Saves the current workspace to an ImagingSIMS Workspace (.wks) file."
                                   ToolTipImageSource="Images\Workspace.ico"/>
-                    <RibbonButton x:Name="qaUndo" KeyTip="4" SmallImageSource="Images\Undo16.png" 
+                    <RibbonButton x:Name="qaUndo" KeyTip="4" SmallImageSource="Images\Undo_grey.ico" 
                                   Command="Undo" ToolTip="Undo"/>
-                    <RibbonButton x:Name="qaRedo" KeyTip="5" SmallImageSource="Images\Redo16.png" 
+                    <RibbonButton x:Name="qaRedo" KeyTip="5" SmallImageSource="Images\Redo_grey.ico" 
                                   Command="Redo" ToolTip="Redo"/>
                 </RibbonQuickAccessToolBar>
             </Ribbon.QuickAccessToolBar>
@@ -162,6 +162,9 @@
                                                ToolTipTitle="Open TraceListener Window" ToolTipDescription="Opens a TraceListener window to monitor specific events and progress of tasks."
                                                ToolTipImageSource="Images\IntelliTrace.png"/>
                     <RibbonSeparator/>
+                    <RibbonApplicationMenuItem Header="Open Installation Folder" x:Name="ribbonOpenInstallationFolder"
+                                               ImageSource="Images\Undo_grey.ico" Click="ribbonOpenInstallationFolder_Click" ToolTipTitle="Open Installation Folder"
+                                               ToolTipDescription="Opens the installation location of this application in Windows Explorer" ToolTipImageSource="Images\Undo_grey.ico"/>
                     <RibbonApplicationMenuItem Header="About" x:Name="ribbonButtonAbout"
                                                    ImageSource="Images\Info.ico" Click="ribbonButtonAbout_Click"  ToolTipTitle="About"
                                                ToolTipDescription="Opens the about window." ToolTipImageSource="Images\Info.ico"/>
@@ -601,7 +604,7 @@
                     <RibbonButton x:Name="specViewBack" Label="Back" LargeImageSource="Images\Last.ico"
                                   ToolTipTitle="Back"
                                   ToolTipDescription="Return to the previous mass range view."
-                                  ToolTipImageSource="Images\Last.ico" Command="{x:Static ns:MainWindow.SpecBackCommand}"
+                                  ToolTipImageSource="Images\Previous.ico" Command="{x:Static ns:MainWindow.SpecBackCommand}"
                                   />
                                   <!--Click="specViewBack_Click"-->
                                   <!--DataContext="{Binding ElementName=tabMain, Path=SelectedContent}"
@@ -621,7 +624,7 @@
                     <RibbonButton x:Name="specViewFull" Label="Reset" LargeImageSource="Images\Original.ico"
                                   ToolTipTitle="Reset"
                                   ToolTipDescription="Return to the original mass range view."
-                                  ToolTipImageSource="Images\Original.ico" Command="{x:Static ns:MainWindow.SpecResetCommand}"
+                                  ToolTipImageSource="Images\Undo_grey.ico" Command="{x:Static ns:MainWindow.SpecResetCommand}"
                                   />
                                   <!--Click="specViewFull_Click"--> 
                                   <!--DataContext="{Binding ElementName=tabMain, Path=SelectedContent}"
