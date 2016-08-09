@@ -779,18 +779,25 @@ namespace ImagingSIMS.MainApplication
             StringBuilder filter = new StringBuilder();
             string j105 = "Ionoptika compressed V2 files (.zip)|*.zip;*.IonoptikaIA2DspectrV2";
             string bioToF = "Bio-ToF Spectra Files (.xyt, .dat)|*.xyt;*.dat";
-            if (Workspace.Registry.DefaultProgram == DefaultProgram.BioToF)
+            switch (Workspace.Registry.DefaultProgram)
             {
-                filter.Append(bioToF);
-                filter.Append("|");
-                filter.Append(j105);
+                case DefaultProgram.BioToF:
+                    filter.Append(bioToF);
+                    filter.Append("|");
+                    filter.Append(j105);
+                    break;
+                case DefaultProgram.J105:
+                    filter.Append(j105);
+                    filter.Append("|");
+                    filter.Append(bioToF);
+                    break;
+                default:
+                    filter.Append(bioToF);
+                    filter.Append("|");
+                    filter.Append(j105);
+                    break;
             }
-            else if (Workspace.Registry.DefaultProgram == DefaultProgram.J105)
-            {
-                filter.Append(j105);
-                filter.Append("|");
-                filter.Append(bioToF);
-            }
+
             ofd.Title = "Open Spectra";
             ofd.Filter = filter.ToString();
             ofd.Multiselect = true;
