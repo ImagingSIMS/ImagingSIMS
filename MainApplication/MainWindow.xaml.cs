@@ -786,7 +786,7 @@ namespace ImagingSIMS.MainApplication
             string j105 = "Ionoptika compressed V2 files (.zip)|*.zip;*.IonoptikaIA2DspectrV2";
             string bioToF = "Bio-ToF Spectra Files (.xyt, .dat)|*.xyt;*.dat";
             string cameca1280 = "Cameca 1280 Spectra Files (.imp)|*.imp";
-            if (Workspace.Registry.DefaultProgram == DefaultProgram.BioToF)
+            switch (Workspace.Registry.DefaultProgram)
             {
                 case DefaultProgram.BioToF:
                     filter.Append(bioToF);
@@ -798,24 +798,25 @@ namespace ImagingSIMS.MainApplication
                     filter.Append("|");
                     filter.Append(bioToF);
                     break;
+                case DefaultProgram.Cameca1280:
+                    filter.Append(cameca1280);
+                    filter.Append("|");
+                    filter.Append(j105);
+                    filter.Append("|");
+                    filter.Append(bioToF);
+                    break;
                 case DefaultProgram.NotSpecified:
                     filter.Append(bioToF);
                     filter.Append("|");
                     filter.Append(j105);
+                    break;
                 default:
                     filter.Append(bioToF);
                     filter.Append("|");
                     filter.Append(j105);
                     break;
             }
-            else if(Workspace.Registry.DefaultProgram == DefaultProgram.Cameca1280)
-            {
-                filter.Append(cameca1280);
-                filter.Append("|");
-                filter.Append(j105);
-                filter.Append("|");
-                filter.Append(bioToF);
-            }
+
             ofd.Title = "Open Spectra";
             ofd.Filter = filter.ToString();
             ofd.Multiselect = true;
