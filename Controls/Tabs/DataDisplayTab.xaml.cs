@@ -664,5 +664,32 @@ namespace ImagingSIMS.Controls.Tabs
 
             AvailableHost.AvailableTablesSource.AddTables(summed);
         }
+
+        private void ExportToWorkspace_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            List<Data3DDisplayViewModel> toExport = new List<Data3DDisplayViewModel>();
+
+            if(itemsControl.SelectedItems.Count == 0)
+            {
+                var result = Dialog.Show("No data sets selected.", "Choose one of the options below to proceed.", "Data", DialogIcon.Warning, new string[] { "Export All", "Cancel" });
+                if (result != "Export All") return;
+
+                toExport = _displayItems.ToList();
+            }
+            else
+            {
+                foreach (var item in itemsControl.SelectedItems)
+                {
+                    Data3DDisplayViewModel dItem = item as Data3DDisplayViewModel;
+                    if (dItem == null) continue;
+
+                    toExport.Add(dItem);
+                }
+            }
+
+            var data = toExport.Select(d => d.ViewableDataSource).ToList();
+
+            AvailableHost.AvailableTablesSource.AddTables(data);
+        }
     }
 }

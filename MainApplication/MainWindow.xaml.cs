@@ -795,6 +795,7 @@ namespace ImagingSIMS.MainApplication
                     filter.Append(bioToF);
                     filter.Append("|");
                     filter.Append(j105);
+                    break;
                 default:
                     filter.Append(bioToF);
                     filter.Append("|");

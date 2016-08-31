@@ -342,9 +342,7 @@
     <Resource Include="Images\_NewIso.ico" />
     <Resource Include="Images\_Spec.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{e095ba5d-b020-4056-b4d4-bcba59208616}</Project>
@@ -361,6 +359,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="BaseControls\Data3DDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Icons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
