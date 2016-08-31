@@ -28,6 +28,7 @@
                 <ResourceDictionary Source="Resources\Generic.xaml"/>
                 <ResourceDictionary Source="Resources\RibbonResources.xaml"/>
                 <ResourceDictionary Source="Resources\ControlResources.xaml"/>
+                <ResourceDictionary Source="Resources\Icons.xaml"/>
                 <ResourceDictionary>
                     <ControlTemplate x:Key="RibbonCodeGroup">
                         
@@ -947,6 +948,12 @@
                     <RibbonButton Label="Get Volumes"
                                   LargeImageSource="Images\NewCube.ico" SmallImageSource="Images\NewCube.ico"
                                   Command="c:DataDisplayTabCommands.GetSelectedVolumes"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Export Data">
+                    <RibbonButton Label="Add To Workspace"
+                                  LargeImageSource="{StaticResource IconExportData}" SmallImageSource="{StaticResource IconExportData}"
+                                  Command="c:DataDisplayTabCommands.ExportToWorkspace"
                                   CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
                 </RibbonGroup>
             </RibbonTab>
