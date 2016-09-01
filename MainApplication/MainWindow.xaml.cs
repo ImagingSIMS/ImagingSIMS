@@ -4544,69 +4544,53 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            string folder = @"D:\Swap\PS-02-17-2016\FirstHalf\Output\";
-            //string folder = @"D:\Swap\subset3\Output\";
+            var volumes = GetAvailableVolumes();
 
-            var files = Directory.GetFiles(folder).ToList().Where(file => file.Contains("Training_"));
+            List<IEnumerable<VolumeCoords>> volumeSets = new List<IEnumerable<VolumeCoords>>();
 
-            List<int> iterations = new List<int>();
-            foreach (var file in files)
+            volumeSets.Add(volumes.Where(v => v.VolumeName.Contains("12.00")).Select(v => new VolumeCoords(v)));
+            volumeSets.Add(volumes.Where(v => v.VolumeName.Contains("89.90")).Select(v => new VolumeCoords(v)));
+            volumeSets.Add(volumes.Where(v => v.VolumeName.Contains("97.91")).Select(v => new VolumeCoords(v)));
+            volumeSets.Add(volumes.Where(v => v.VolumeName.Contains("235.04")).Select(v => new VolumeCoords(v)));
+            volumeSets.Add(volumes.Where(v => v.VolumeName.Contains("238.05")).Select(v => new VolumeCoords(v)));
+
+            List<Volume> combinedVolumes = new List<Volume>();
+
+            foreach (var set in volumeSets)
             {
-                string fileName = Path.GetFileNameWithoutExtension(file);
-                int startIndex = fileName.IndexOf("-") + 1;
-                int endIndex = fileName.IndexOf("-Image");
-                int length = endIndex - startIndex;
-                string part = fileName.Substring(startIndex, length);
-                int iteration = int.Parse(part);
-                iterations.Add(iteration);
-            }
+                int sizeX = set.First().Volume.Width * 6;
+                int sizeY = set.First().Volume.Height * 2;
+                int sizeZ = set.First().Volume.Depth;
 
-            int maxIteration = iterations.Max();
+                Data3D combined = new Data3D(sizeX, sizeY, sizeZ);
 
-            var filesToLoad = files.Where(s => s.Contains($"Training_(Iteration-{maxIteration}-Image-"));
-
-            List<Data2D> readIn = new List<Data2D>();
-
-            foreach (var file in filesToLoad)
-            {
-                using (StreamReader sr = new StreamReader(file))
+                for (int a = 0; a < 6; a++)
                 {
-                    string[] parameters = sr.ReadLine().Split('\t');
-
-                    int sizeX = int.Parse(parameters[0]);
-                    int sizeY = int.Parse(parameters[1]);
-                    int fovNumber = int.Parse(parameters[2]);
-                    int stageX = int.Parse(parameters[3]);
-                    int stageY = int.Parse(parameters[4]);
-                    int fileType = int.Parse(parameters[5]);
-
-                    float[,] matrix = new float[sizeX, sizeY];
-
-                    for (int y = 0; y < sizeY; y++)
+                    for (int b = 0; b < 2; b++)
                     {
-                        string[] parts = sr.ReadLine().Split('\t');
-                        for (int x = 0; x < sizeX; x++)
+                        Data3D toCombine = set.Where(s => s.X == a + 1 && s.Y == b + 1).Select(s => s.Volume.Data).FirstOrDefault();
+                        if (toCombine == null) continue;
+
+                        int startX = a * toCombine.Width;
+                        int startY = b * toCombine.Height;
+
+                        for (int x = 0; x < toCombine.Width; x++)
                         {
-                            matrix[x, y] = float.Parse(parts[x]);
+                            for (int y = 0; y < toCombine.Height; y++)
+                            {
+                                for (int z = 0; z < toCombine.Depth; z++)
+                                {
+                                    combined[startX + x, startY + y, z] = toCombine[x, y, z];
+                                }
+                            }
                         }
                     }
-
-                    Data2D d = new Data2D(matrix);
-                    d.DataName = Path.GetFileNameWithoutExtension(file);
-
-                    readIn.Add(d);
                 }
+
+                combinedVolumes.Add(new Volume(combined, set.First().Volume.DataColor, set.First().Name));
             }
 
-            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalCold);
-            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Data", true);
-            tabMain.Items.Add(cti);
-            tabMain.SelectedItem = cti;
-
-            foreach (var d in readIn)
-            {
-                await dt.AddDataSourceAsync(d);
-            }
+            AddVolumes(combinedVolumes);
         }
         private async void test6_Click(object sender, RoutedEventArgs e)
         {
@@ -4899,6 +4883,21 @@ namespace ImagingSIMS.MainApplication
                         }
                     }
                 }
+            }
+        }
+        internal struct VolumeCoords
+        {
+            internal int X;
+            internal int Y;
+            internal Volume Volume;
+            internal string Name;
+
+            internal VolumeCoords(Volume volume)
+            {
+                Volume = volume;
+                Y = int.Parse(Volume.VolumeName.Substring(1, 1));
+                X = int.Parse(Volume.VolumeName.Substring(3, 1));
+                Name = Volume.VolumeName.Substring(5);
             }
         }
 #pragma warning restore 1998
