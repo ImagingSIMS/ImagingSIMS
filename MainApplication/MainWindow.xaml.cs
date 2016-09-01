@@ -4487,7 +4487,7 @@ namespace ImagingSIMS.MainApplication
         {
             return Workspace.Data.ToList();
         }
-        public void RemoveTables(List<Data2D> tablesToRemove)
+        public void RemoveTables(IEnumerable<Data2D> tablesToRemove)
         {
             List<Data2D> notRemoved = new List<Data2D>();
             
@@ -4551,7 +4551,7 @@ namespace ImagingSIMS.MainApplication
                     sb.ToString(), "Remove", DialogIcon.Alert);
             }
         }
-        public void AddTables(List<Data2D> tablesToAdd)
+        public void AddTables(IEnumerable<Data2D> tablesToAdd)
         {
             List<Data2D> notAdded = new List<Data2D>();
 
@@ -4665,7 +4665,7 @@ namespace ImagingSIMS.MainApplication
                 return;
             }
         }
-        public void SelectTables(List<Data2D> toSelect, bool clearSelected = false)
+        public void SelectTables(IEnumerable<Data2D> toSelect, bool clearSelected = false)
         {
             if (clearSelected)
             {
@@ -4741,7 +4741,7 @@ namespace ImagingSIMS.MainApplication
         {
             return Workspace.Volumes.ToList();
         }
-        public void RemoveVolumes(List<Volume> volumesToRemove)
+        public void RemoveVolumes(IEnumerable<Volume> volumesToRemove)
         {
             List<Volume> notRemoved = new List<Volume>();
 
@@ -4805,7 +4805,7 @@ namespace ImagingSIMS.MainApplication
                     sb.ToString(), "Remove", DialogIcon.Alert);
             }
         }
-        public void AddVolumes(List<Volume> volumesToAdd)
+        public void AddVolumes(IEnumerable<Volume> volumesToAdd)
         {
             List<Volume> notAdded = new List<Volume>();
 
