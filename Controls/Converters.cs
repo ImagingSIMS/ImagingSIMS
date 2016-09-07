@@ -590,7 +590,7 @@ namespace ImagingSIMS.Controls.Converters
                     return null;
 
                 ColorScaleTypes colorScale = (ColorScaleTypes)values[0];
-                Color solidColorScale = (Color)values[1];
+                Color solidColorScale = ((NotifiableColor)values[1]).Color;
                 float dataMaximum = (float)values[2];
                 double saturation = (double)values[3];
 

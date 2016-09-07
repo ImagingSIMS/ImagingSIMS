@@ -233,6 +233,9 @@ namespace ImagingSIMS.Controls.ViewModels
             DataSource = dataSource;
             ColorScale = colorScale;
 
+            LayerStart = 1;
+            LayerEnd = dataSource.Depth;
+
             Scale = 1;
         }
         public Data3DDisplayViewModel(Data3D dataSource, NotifiableColor solidColorScale)
@@ -244,6 +247,9 @@ namespace ImagingSIMS.Controls.ViewModels
 
             DataSource = dataSource;
             ColorScale = ColorScaleTypes.Solid;
+
+            LayerStart = 1;
+            LayerEnd = dataSource.Depth;
 
             Scale = 1;
         }
