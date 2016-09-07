@@ -25,7 +25,7 @@ namespace ImagingSIMS.Controls
         /// Removes the specified tables from the control that implements the interface.
         /// </summary>
         /// <param name="tablesToRemove">Tables to remove from the collection.</param>
-        void RemoveTables(List<Data2D> tablesToRemove);
+        void RemoveTables(IEnumerable<Data2D> tablesToRemove);
 
         /// <summary>
         /// Removes the specified tables from the control that implements the interface.
@@ -37,7 +37,7 @@ namespace ImagingSIMS.Controls
         /// Adds the specified tables to the control that implements the interface.
         /// </summary>
         /// <param name="tablesToAdd">Tables to add.</param>
-        void AddTables(List<Data2D> tablesToAdd);
+        void AddTables(IEnumerable<Data2D> tablesToAdd);
 
         /// <summary>
         /// Adds the specified tables to the control that implements the interface.
@@ -64,7 +64,7 @@ namespace ImagingSIMS.Controls
         /// </summary>
         /// <param name="toSelect">Tables to select.</param>
         /// /// <param name="clearSelected">Select true to clear the currently selected items first.</param>
-        void SelectTables(List<Data2D> toSelect, bool clearSelected = false);
+        void SelectTables(IEnumerable<Data2D> toSelect, bool clearSelected = false);
 
         /// <summary>
         /// Selects the specified table in the control that implements the interface.
