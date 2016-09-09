@@ -16,7 +16,7 @@
                 <ResourceDictionary Source="..\Themes\Generic.xaml"/>
                 <ResourceDictionary>
                     <converters:HasDataToBorderBrushConverter x:Key="hasDataToBorderBrushConverter"/>
-                    <converters:Data2DToBitmapSourceConverter x:Key="data2DToBitmapSourceConverter"/>
+                    <converters:Data3DToBitmapSourceConverter x:Key="data3DToBitmapSourceConverter"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -44,7 +44,7 @@
                                 PreviewMouseDown="Border_PreviewMouseDown"
                                 Drop="Border_Drop" AllowDrop="True">
                                 <Grid>
-                                    <Image Source="{Binding DataItem, Converter={StaticResource data2DToBitmapSourceConverter}}"
+                                    <Image Source="{Binding DataItem, Converter={StaticResource data3DToBitmapSourceConverter}}"
                                     Stretch="Fill"/>
                                     <TextBlock Margin="2" TextWrapping="Wrap" 
                                            HorizontalAlignment="Left" VerticalAlignment="Top" 

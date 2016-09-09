@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using ImagingSIMS.Common.Dialogs;
 using ImagingSIMS.Controls.ViewModels;
 using ImagingSIMS.Data;
@@ -229,6 +230,7 @@ namespace ImagingSIMS.Controls.Tabs
 
             int width = 0;
             int height = 0;
+            int depth = 0;
 
             for (int x = 0; x < currentCols; x++)
             {
@@ -240,13 +242,14 @@ namespace ImagingSIMS.Controls.Tabs
 
                     if(i.DataItem != null)
                     {
-                        if(width == 0 && height == 0)
+                        if(width == 0 && height == 0 && depth == 0)
                         {
                             width = i.DataItem.Width;
                             height = i.DataItem.Height;
+                            depth = i.DataItem.Depth;
                         }
 
-                        if(width!= i.DataItem.Width || height != i.DataItem.Height)
+                        if(width != i.DataItem.Width || height != i.DataItem.Height || depth != i.DataItem.Depth)
                         {
                             DialogBox.Show("Invalid dimensions.", 
                                 "One or more tables to be stitched does not match the dimensions of the others.", "Stitch", DialogIcon.Error);
@@ -263,35 +266,74 @@ namespace ImagingSIMS.Controls.Tabs
                 return;
             }
 
-            int newWidth = width * currentCols;
-            int newHeight = height * currentRows;
+            int newWidth = width * currentCols + OffsetX;
+            int newHeight = height * currentRows + OffsetY;
 
-            Data2D stitched = new Data2D(newWidth, newHeight);
-            stitched.DataName = OutputName;
+            bool isSingleLayer = depth == 1;           
 
-            for (int i = 0; i < currentCols; i++)
+            if (isSingleLayer)
             {
-                for (int j = 0; j < currentRows; j++)
+                Data2D stitched = new Data2D(newWidth, newHeight);
+                stitched.DataName = OutputName;
+
+                for (int i = 0; i < currentCols; i++)
                 {
-                    int startX = i * width;
-                    int startY = j * height;
-
-                    var data = (from item in ItemsToStitch
-                             where item.IndexX == i && item.IndexY == j
-                             select item).First();
-
-                    for (int x = 0; x < width; x++)
+                    for (int j = 0; j < currentRows; j++)
                     {
-                        for (int y = 0; y < height; y++)
+                        int startX = i * width + OffsetX;
+                        int startY = j * height + OffsetY;
+
+                        var data = (from item in ItemsToStitch
+                                    where item.IndexX == i && item.IndexY == j
+                                    select item).First();
+
+                        for (int x = 0; x < width; x++)
                         {
-                            float value = data.DataItem != null ? data.DataItem[x, y] : 0;
-                            stitched[startX + x, startY + y] = value;
+                            for (int y = 0; y < height; y++)
+                            {
+                                float value = data.DataItem != null ? data.DataItem[x, y, 0] : 0;
+                                stitched[startX + x, startY + y] = value;
+                            }
                         }
                     }
                 }
+
+                Workspace.Data.Add(stitched);
             }
 
-            Workspace.Data.Add(stitched);
+            else
+            {
+                Data3D stitched = new Data3D(newWidth, newHeight, depth);
+                stitched.DataName = OutputName;
+
+                for (int i = 0; i < currentCols; i++)
+                {
+                    for (int j = 0; j < currentRows; j++)
+                    {
+                        int startX = i * width + OffsetX;
+                        int startY = j * height + OffsetY;
+
+                        var data = (from item in ItemsToStitch
+                                    where item.IndexX == i && item.IndexY == j
+                                    select item).First();
+
+                        for (int x = 0; x < width; x++)
+                        {
+                            for (int y = 0; y < height; y++)
+                            {
+                                for (int z = 0; z < depth; z++)
+                                {
+                                    float value = data.DataItem != null ? data.DataItem[x, y, z] : 0;
+                                    stitched[startX + x, startY + y, z] = value;
+                                }                                
+                            }
+                        }
+                    }
+                }
+
+                Volume volume = new Volume(stitched, Color.FromArgb(255, 255, 255, 255));
+                Workspace.Volumes.Add(volume);
+            }
         }
         private void buttonClear_Click(object sender, RoutedEventArgs e)
         {
