@@ -4556,9 +4556,11 @@ namespace ImagingSIMS.MainApplication
 
             List<Volume> combinedVolumes = new List<Volume>();
 
+            int rowOffset = 35;
+
             foreach (var set in volumeSets)
             {
-                int sizeX = set.First().Volume.Width * 6;
+                int sizeX = set.First().Volume.Width * 6 + rowOffset;
                 int sizeY = set.First().Volume.Height * 2;
                 int sizeZ = set.First().Volume.Depth;
 
@@ -4573,6 +4575,8 @@ namespace ImagingSIMS.MainApplication
 
                         int startX = a * toCombine.Width;
                         int startY = b * toCombine.Height;
+
+                        if (b == 0) startX += rowOffset;
 
                         for (int x = 0; x < toCombine.Width; x++)
                         {
