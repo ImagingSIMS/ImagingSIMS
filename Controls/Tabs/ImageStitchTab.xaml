@@ -85,6 +85,10 @@
         </ScrollViewer>-->
 
         <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal">
                 <TextBlock>Columns:</TextBlock>
                 <ComboBox Margin="4" Height="23" Width="50" 
@@ -111,6 +115,12 @@
                          Text="{Binding ElementName=userControl, Path=OutputName}"/>
                 <Button Margin="4" Width="75" Click="buttonStitch_Click">Stitch</Button>
                 <Button Margin="4" Width="75" Click="buttonClear_Click">Clear</Button>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <TextBlock>Offset X:</TextBlock>
+                <TextBox Margin="4" Height="23" Width="75" Text="{Binding ElementName=userControl, Path=OffsetX}"/>
+                <TextBlock>Offset Y:</TextBlock>
+                <TextBox Margin="4" Height="23" Width="75" Text="{Binding ElementName=userControl, Path=OffsetY}"/>
             </StackPanel>
         </Grid>
     </Grid>

@@ -8,6 +8,7 @@ using System.Windows.Input;
 using ImagingSIMS.Common.Dialogs;
 using ImagingSIMS.Controls.ViewModels;
 using ImagingSIMS.Data;
+using ImagingSIMS.Data.Rendering;
 
 namespace ImagingSIMS.Controls.Tabs
 {
@@ -330,7 +331,14 @@ namespace ImagingSIMS.Controls.Tabs
                 Data2D d = e.Data.GetData("Data2D") as Data2D;
                 if (d == null) return;
 
-                toDrop.DataItem = d;
+                toDrop.DataItem = new Data3D(new Data2D[] { d });
+            }
+            else if (e.Data.GetDataPresent("Volume"))
+            {
+                var volume = e.Data.GetData("Volume") as Volume;
+                if (volume == null) return;
+
+                toDrop.DataItem = volume.Data;
             }
         }
 
