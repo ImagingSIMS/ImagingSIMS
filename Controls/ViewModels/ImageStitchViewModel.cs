@@ -7,7 +7,7 @@ namespace ImagingSIMS.Controls.ViewModels
     {
         int _indexX;
         int _indexY;
-        Data2D _dataItem;
+        Data3D _dataItem;
 
         public int IndexX
         {
@@ -33,7 +33,7 @@ namespace ImagingSIMS.Controls.ViewModels
                 }
             }
         }
-        public Data2D DataItem
+        public Data3D DataItem
         {
             get { return _dataItem; }
             set

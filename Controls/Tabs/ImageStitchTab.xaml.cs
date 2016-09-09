@@ -24,6 +24,10 @@ namespace ImagingSIMS.Controls.Tabs
             typeof(string), typeof(ImageStitchTab));
         public static readonly DependencyProperty WorkspaceProperty = DependencyProperty.Register("Workspace",
             typeof(Workspace), typeof(ImageStitchTab));
+        public static readonly DependencyProperty OffsetXProperty = DependencyProperty.Register("OffsetX",
+            typeof(int), typeof(ImageStitchTab));
+        public static readonly DependencyProperty OffsetYProperty = DependencyProperty.Register("OffsetY",
+            typeof(int), typeof(ImageStitchTab));
 
         public int MaxColumns
         {
@@ -39,6 +43,16 @@ namespace ImagingSIMS.Controls.Tabs
         {
             get { return (string)GetValue(OutputNameProperty); }
             set { SetValue(OutputNameProperty, value); }
+        }
+        public int OffsetX
+        {
+            get { return (int)GetValue(OffsetXProperty); }
+            set { SetValue(OffsetXProperty, value); }
+        }
+        public int OffsetY
+        {
+            get { return (int)GetValue(OffsetYProperty); }
+            set { SetValue(OffsetYProperty, value); }
         }
 
         public int CurrentRows
