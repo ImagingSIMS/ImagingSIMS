@@ -4246,6 +4246,18 @@ namespace ImagingSIMS.MainApplication
                 DragDrop.DoDragDrop(lvi, obj, DragDropEffects.Copy);
             }
         }
+        private void listViewItemVolumesMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                var lvi = sender as ListViewItem;
+                if (lvi == null) return;
+
+                var volume = lvi.Content as Volume;
+                DataObject obj = new DataObject("Volume", volume);
+                DragDrop.DoDragDrop(lvi, obj, DragDropEffects.Copy);
+            }
+        }
         #endregion
 
         #region Status Bar
