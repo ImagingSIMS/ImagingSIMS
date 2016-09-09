@@ -85,5 +85,16 @@
       "The rendering control panel has been redesigned to be simplified and a bit more clean.",
       "Render controls added for isosurface rendering that include clipping planes and directional lighting."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 8
+    },
+    "Updates": [
+      "Patched an issue with adding new data tables to the DataDisplayTab"
+    ]
   }
 ]
