@@ -26,10 +26,6 @@ namespace ImagingSIMS.Controls.Tabs
             typeof(string), typeof(ImageStitchTab));
         public static readonly DependencyProperty WorkspaceProperty = DependencyProperty.Register("Workspace",
             typeof(Workspace), typeof(ImageStitchTab));
-        public static readonly DependencyProperty OffsetXProperty = DependencyProperty.Register("OffsetX",
-            typeof(int), typeof(ImageStitchTab));
-        public static readonly DependencyProperty OffsetYProperty = DependencyProperty.Register("OffsetY",
-            typeof(int), typeof(ImageStitchTab));
 
         public int MaxColumns
         {
@@ -45,16 +41,6 @@ namespace ImagingSIMS.Controls.Tabs
         {
             get { return (string)GetValue(OutputNameProperty); }
             set { SetValue(OutputNameProperty, value); }
-        }
-        public int OffsetX
-        {
-            get { return (int)GetValue(OffsetXProperty); }
-            set { SetValue(OffsetXProperty, value); }
-        }
-        public int OffsetY
-        {
-            get { return (int)GetValue(OffsetYProperty); }
-            set { SetValue(OffsetYProperty, value); }
         }
 
         public int CurrentRows
@@ -109,7 +95,9 @@ namespace ImagingSIMS.Controls.Tabs
             {
                 for (int y = 0; y < MaxColumns; y++)
                 {
-                    ItemsToStitch.Add(new ImageStitchItemViewModel(x, y));
+                    var viewModel = new ImageStitchItemViewModel(x, y);
+                    viewModel.OffsetChanged += ViewModel_OffsetChanged;
+                    ItemsToStitch.Add(viewModel);
                 }
             }
         }
@@ -136,7 +124,10 @@ namespace ImagingSIMS.Controls.Tabs
                 {
                     for (int y = 0; y < currentRows; y++)
                     {
-                        ItemsToStitch.Add(new ImageStitchItemViewModel(x, y));
+                        var viewModel = new ImageStitchItemViewModel(x, y);
+                        viewModel.OffsetX = ItemsToStitch.Where(item => item.IndexY == y).Select(item => item.OffsetX).Max();
+                        viewModel.OffsetChanged += ViewModel_OffsetChanged;
+                        ItemsToStitch.Add(viewModel);
                     }
                 }
             }
@@ -149,6 +140,7 @@ namespace ImagingSIMS.Controls.Tabs
                                     select item).ToArray();
                     for (int i = 0; i < toRemove.Length; i++)
                     {
+                        toRemove[i].OffsetChanged -= ViewModel_OffsetChanged;
                         ItemsToStitch.Remove(toRemove[i]);
                     }
                 }
@@ -176,7 +168,10 @@ namespace ImagingSIMS.Controls.Tabs
                 {
                     for (int x = 0; x < currentCols; x++)
                     {
-                        ItemsToStitch.Add(new ImageStitchItemViewModel(x, y));
+                        var viewModel = new ImageStitchItemViewModel(x, y);
+                        viewModel.OffsetY = ItemsToStitch.Where(item => item.IndexX == x).Select(item => item.OffsetY).Max();
+                        viewModel.OffsetChanged += ViewModel_OffsetChanged;
+                        ItemsToStitch.Add(viewModel);
                     }
                 }
             }
@@ -189,8 +184,35 @@ namespace ImagingSIMS.Controls.Tabs
                                     select item).ToArray();
                     for (int i = 0; i < toRemove.Length; i++)
                     {
+                        toRemove[i].OffsetChanged -= ViewModel_OffsetChanged;
                         ItemsToStitch.Remove(toRemove[i]);
                     }
+                }
+            }
+        }
+
+        private void ViewModel_OffsetChanged(object sender, OffsetChangedEventArgs e)
+        {
+            ImageStitchItemViewModel model = sender as ImageStitchItemViewModel;
+            if (model == null) return;
+
+            int col = model.IndexX;
+            int row = model.IndexY;
+
+            if (e.IsChangedX)
+            {
+                var toUpdate = ItemsToStitch.Where(item => item.IndexY == row);
+                foreach (var item in toUpdate)
+                {
+                    item.OffsetX= model.OffsetX;
+                }
+            }
+            else if (e.IsChangedY)
+            {
+                var toUpdate = ItemsToStitch.Where(item => item.IndexX == col);
+                foreach (var item in toUpdate)
+                {
+                    item.OffsetY = model.OffsetY;
                 }
             }
         }
@@ -200,6 +222,7 @@ namespace ImagingSIMS.Controls.Tabs
             int currentCols = CurrentColumns;
             int currentRows = CurrentRows;
 
+            // Check for and warn of grid locations with no data
             List<Point> missingItems = new List<Point>();
 
             for (int x = 0; x < currentCols; x++)
@@ -228,6 +251,7 @@ namespace ImagingSIMS.Controls.Tabs
                     message, "Stitch", DialogIcon.Error, true) == false) return;
             }
 
+            // Validate that dimensions are the same for all tables
             int width = 0;
             int height = 0;
             int depth = 0;
@@ -259,6 +283,7 @@ namespace ImagingSIMS.Controls.Tabs
                 }
             }
 
+            // Validate output name is set
             if(string.IsNullOrEmpty(OutputName))
             {
                 DialogBox.Show("Missing output table name.", 
@@ -266,8 +291,20 @@ namespace ImagingSIMS.Controls.Tabs
                 return;
             }
 
-            int newWidth = width * currentCols + OffsetX;
-            int newHeight = height * currentRows + OffsetY;
+            // Ensure no specified offsets are negative
+            if(ItemsToStitch.Where(item=>item.OffsetX < 0 || item.OffsetY<0).Count() > 0)
+            {
+                DialogBox.Show("One or more offsets are negative.",
+                    "Only positive offsets can be used. If necessary, switch the sign of the negative offset(s) and compensate with the offsets of other rows and columns",
+                    "Stitch", DialogIcon.Error);
+                return;
+            }
+
+            int maxOffsetX = ItemsToStitch.Select(item => item.OffsetX).Max();
+            int maxOffsetY = ItemsToStitch.Select(item => item.OffsetY).Max();
+
+            int newWidth = width * currentCols + maxOffsetX;
+            int newHeight = height * currentRows + maxOffsetY;
 
             bool isSingleLayer = depth == 1;           
 
@@ -280,12 +317,12 @@ namespace ImagingSIMS.Controls.Tabs
                 {
                     for (int j = 0; j < currentRows; j++)
                     {
-                        int startX = i * width + OffsetX;
-                        int startY = j * height + OffsetY;
-
                         var data = (from item in ItemsToStitch
                                     where item.IndexX == i && item.IndexY == j
                                     select item).First();
+
+                        int startX = i * width + data.OffsetX;
+                        int startY = j * height + data.OffsetY;
 
                         for (int x = 0; x < width; x++)
                         {
@@ -310,12 +347,12 @@ namespace ImagingSIMS.Controls.Tabs
                 {
                     for (int j = 0; j < currentRows; j++)
                     {
-                        int startX = i * width + OffsetX;
-                        int startY = j * height + OffsetY;
-
                         var data = (from item in ItemsToStitch
                                     where item.IndexX == i && item.IndexY == j
                                     select item).First();
+
+                        int startX = i * width + data.OffsetX;
+                        int startY = j * height + data.OffsetY;
 
                         for (int x = 0; x < width; x++)
                         {
@@ -394,8 +431,9 @@ namespace ImagingSIMS.Controls.Tabs
                 int row = Grid.GetRow(border);
                 int column = Grid.GetColumn(border);
 
+
                 ImageStitchItemViewModel toRemove = (from item in ItemsToStitch
-                                                   where item.IndexY == column && item.IndexX == row
+                                                   where item.IndexX == column && item.IndexY == row
                                                    select item).First();
 
                 toRemove.DataItem = null;

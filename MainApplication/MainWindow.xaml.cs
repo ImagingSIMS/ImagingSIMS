@@ -3665,8 +3665,7 @@ namespace ImagingSIMS.MainApplication
 
                         foreach(CamecaSpecies species in cSpec.Species)
                         {
-                            //Data2D d = await cSpec.FromSpeciesAsync(species);
-                            Data3D d = await cSpec.FromSpeciesAsync(species, cSpec.Name + " - " + species.Mass.ToString("0.00"));
+                            Data3D d = await cSpec.FromSpeciesAsync(species, cSpec.Name + " - " + species.Label);
                             await dt.AddDataSourceAsync(d);
                         }
 
@@ -3675,16 +3674,13 @@ namespace ImagingSIMS.MainApplication
                     }
                     else
                     {
-                    SpectrumTab st = new SpectrumTab();
-                    st.SetData(s.Name, s);
+                        SpectrumTab st = new SpectrumTab();
+                        st.SetData(s.Name, s);
 
-                    ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Spectrum, s.Name, true);
-                    tabMain.Items.Add(cti);
-                    tabMain.SelectedItem = cti;
-                    }
-
-                   
-                    
+                        ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Spectrum, s.Name, true);
+                        tabMain.Items.Add(cti);
+                        tabMain.SelectedItem = cti;
+                    }           
 
                     Ribbon.SelectedIndex = 3;
                 }

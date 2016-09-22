@@ -2461,38 +2461,70 @@ namespace ImagingSIMS.Data.Spectra
                 }
 
                 int pos = 0;
-                float[,,,] tempValues = new float[_species.Count, numCyclesForFile[i], imageSize, imageSize];
+                //float[,,,] tempValues = new float[_species.Count, numCyclesForFile[i], imageSize, imageSize];
 
-                for (int s = 0; s < _species.Count; s++)
+                //for (int s = 0; s < _species.Count; s++)
+                //{
+                //    for (int z = 0; z < numCyclesForFile[i]; z++)
+                //    {
+                //        for (int y = 0; y < imageSize; y++)
+                //        {
+                //            for (int x = 0; x < imageSize; x++)
+                //            {
+                //                tempValues[s, z, y, x] = values[pos++];
+                //            }
+                //        }
+
+                //    }
+                //}
+
+                //for (int z = 0; z < numCyclesForFile[i]; z++)
+                //{
+                //    Data2D[] layer = new Data2D[_species.Count];
+                //    for (int s = 0; s < _species.Count; s++)
+                //    {
+                //        CamecaSpecies species = _species[s];
+                //        Data2D layerSpecies = new Data2D(imageSize, imageSize);
+                //        for (int y = 0; y < imageSize; y++)
+                //        {
+                //            for (int x = 0; x < imageSize; x++)
+                //            {
+                //                layerSpecies[x, y] = tempValues[s, z, y, x];
+                //            }
+                //        }
+                //        layer[s] = layerSpecies;
+                //    }
+                //    _matrix.Add(layer);
+                //}
+                int numRecords = _species.Count * numCyclesForFile[i];
+                float[,,] tempValues = new float[numRecords, imageSize, imageSize];
+                for (int r = 0; r < numRecords; r++)
                 {
-                    for (int z = 0; z < numCyclesForFile[i]; z++)
+                    for (int y = 0; y < imageSize; y++)
                     {
-                        for (int y = 0; y < imageSize; y++)
+                        for (int x = 0; x < imageSize; x++)
                         {
-                            for (int x = 0; x < imageSize; x++)
-                            {
-                                tempValues[s, z, y, x] = values[pos++];
-                            }
+                            tempValues[r, y, x] = values[pos++];
                         }
-
                     }
                 }
 
+                // _matrix[layer][species][x,y]
                 for (int z = 0; z < numCyclesForFile[i]; z++)
                 {
                     Data2D[] layer = new Data2D[_species.Count];
-                    for (int s = 0; s < _species.Count; s++)
+                    for (int r = 0; r < _species.Count; r++)
                     {
-                        CamecaSpecies species = _species[s];
+                        int recordNum = _species[r].RecordIds[z];
                         Data2D layerSpecies = new Data2D(imageSize, imageSize);
                         for (int y = 0; y < imageSize; y++)
                         {
                             for (int x = 0; x < imageSize; x++)
                             {
-                                layerSpecies[x, y] = tempValues[s, z, y, x];
+                                layerSpecies[x, y] = tempValues[recordNum, y, x];
                             }
                         }
-                        layer[s] = layerSpecies;
+                        layer[r] = layerSpecies;
                     }
                     _matrix.Add(layer);
                 }
@@ -4827,6 +4859,7 @@ namespace ImagingSIMS.Data.Spectra
         public double CountTime;
         public double WellTime;
         public double ExtraTime;
+        public int[] RecordIds;
 
         public static CamecaSpecies FromXmlNode(XmlNode node)
         {
@@ -4859,7 +4892,41 @@ namespace ImagingSIMS.Data.Spectra
             XmlNode nodeExtraTime = node.SelectSingleNode("PROPERTIES/DPSPECIESDATA/d_ExtraTime");
             species.ExtraTime = double.Parse(nodeExtraTime.InnerText);
 
+            XmlNode nodeRecord = node.SelectSingleNode("RECORD");
+            species.RecordIds = recordFromString(nodeRecord.InnerText);
+
             return species;
+        }
+
+        private static int[] recordFromString(string record)
+        {
+            List<int> values = new List<int>();
+
+            string[] segments = record.Split(';');
+
+            foreach (var segment in segments)
+            {
+                if (segment.StartsWith("[") && segment.EndsWith("]"))
+                {
+                    var rangeString = segment.Replace("[", string.Empty);
+                    rangeString = rangeString.Replace("]", string.Empty);
+
+                    int hyphenIndex = rangeString.IndexOf('-');
+                    int startIndex = int.Parse(rangeString.Substring(0, hyphenIndex));
+                    int endIndex = int.Parse(rangeString.Substring(hyphenIndex + 1));
+
+                    for (int i = startIndex; i <= endIndex ; i++)
+                    {
+                        values.Add(i);
+                    }
+                }
+                else
+                {
+                    values.Add(int.Parse(segment));
+                }
+            }
+
+            return values.ToArray();
         }
 
         // Layout:
@@ -4872,6 +4939,8 @@ namespace ImagingSIMS.Data.Spectra
         // (double) CountTime
         // (double) WellTime
         // (double) ExtraTime
+        // (int)    RecordIds.Length
+        // (int[])  RecordIds
 
         public byte[] ToByteArray()
         {
@@ -4893,6 +4962,11 @@ namespace ImagingSIMS.Data.Spectra
                 bw.Write(CountTime);
                 bw.Write(WellTime);
                 bw.Write(ExtraTime);
+                bw.Write(RecordIds.Length);
+                for (int i = 0; i < RecordIds.Length; i++)
+                {
+                    bw.Write(RecordIds[i]);
+                }
 
                 // Return to beginning of writer and write the length
                 bw.Seek(0, SeekOrigin.Begin);
@@ -4930,6 +5004,13 @@ namespace ImagingSIMS.Data.Spectra
                 CountTime = br.ReadDouble();
                 WellTime = br.ReadDouble();
                 ExtraTime = br.ReadDouble();
+
+                int recordLength = br.ReadInt32();
+                RecordIds = new int[recordLength];
+                for (int i = 0; i < recordLength; i++)
+                {
+                    RecordIds[i] = br.ReadInt32();
+                }
             }
         }
     }

@@ -28,67 +28,59 @@
         </Grid.RowDefinitions>
 
         <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <cbase:GridAwareItemsControl>
-                <cbase:GridAwareItemsControl x:Name="itemsControl" ItemsSource="{Binding ElementName=userControl, Path=ItemsToStitch}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Grid cbase:GridAutoLayout.NumberOfRows="{Binding ElementName=userControl, Path=MaxRows}"
-                              cbase:GridAutoLayout.NumberOfColumns="{Binding ElementName=userControl, Path=MaxColumns}"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="{x:Type cvm:ImageStitchItemViewModel}">
-                            <Border Grid.Row="{Binding IndexY}" Grid.Column="{Binding IndexX}" 
-                                BorderThickness="1" BorderBrush="{Binding DataItem, Converter={StaticResource hasDataToBorderBrushConverter}}"
-                                Background="Transparent"
-                                PreviewMouseDown="Border_PreviewMouseDown"
-                                Drop="Border_Drop" AllowDrop="True">
-                                <Grid>
-                                    <Image Source="{Binding DataItem, Converter={StaticResource data3DToBitmapSourceConverter}}"
-                                    Stretch="Fill"/>
-                                    <TextBlock Margin="2" TextWrapping="Wrap" 
-                                           HorizontalAlignment="Left" VerticalAlignment="Top" 
-                                           Text="{Binding DataItem.DataName}"/>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </cbase:GridAwareItemsControl>
-            </cbase:GridAwareItemsControl>
-        </ScrollViewer>
-        <!--<ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <cbase:GridAwareItemsControl x:Name="itemsControl" ItemsSource="{Binding ElementName=userControl, Path=ItemsToStitch}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Grid local:GridAutoLayout.NumberOfRows="{Binding ElementName=userControl, Path=MaxRows}"
-                              local:GridAutoLayout.NumberOfColumns="{Binding ElementName=userControl, Path=MaxColumns}"/>
+                        <Grid cbase:GridAutoLayout.NumberOfRows="{Binding ElementName=userControl, Path=MaxRows}"
+                              cbase:GridAutoLayout.NumberOfColumns="{Binding ElementName=userControl, Path=MaxColumns}"
+                                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type local:ImageStitchItemViewModel}">
+                    <DataTemplate DataType="{x:Type cvm:ImageStitchItemViewModel}">
                         <Border Grid.Row="{Binding IndexY}" Grid.Column="{Binding IndexX}" 
                                 BorderThickness="1" BorderBrush="{Binding DataItem, Converter={StaticResource hasDataToBorderBrushConverter}}"
                                 Background="Transparent"
                                 PreviewMouseDown="Border_PreviewMouseDown"
                                 Drop="Border_Drop" AllowDrop="True">
                             <Grid>
-                                <Image Source="{Binding DataItem, Converter={StaticResource data2DToBitmapSourceConverter}}"
+                                <Image Source="{Binding DataItem, Converter={StaticResource data3DToBitmapSourceConverter}}"
                                     Stretch="Fill"/>
+
                                 <TextBlock Margin="2" TextWrapping="Wrap" 
                                            HorizontalAlignment="Left" VerticalAlignment="Top" 
                                            Text="{Binding DataItem.DataName}"/>
+
+                                <Border Margin="4" BorderBrush="White" Background="DarkGray"
+                                            HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Opacity" Value="0.4"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="Border.IsMouseOver" Value="True">
+                                                    <Setter Property="Border.Opacity" Value="1"/>
+                                                </Trigger>
+                                                <Trigger Property="Border.IsKeyboardFocusWithin" Value="True">
+                                                    <Setter Property="Border.Opacity" Value="1"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
+                                        <TextBlock VerticalAlignment="Center">Offset X:</TextBlock>
+                                        <TextBox Width="40" Height="20" Text="{Binding OffsetX}"/>
+                                        <TextBlock VerticalAlignment="Center">Y:</TextBlock>
+                                        <TextBox Width="40" Height="20" Text="{Binding OffsetY}"/>
+                                    </StackPanel>
+                                </Border>
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </cbase:GridAwareItemsControl>
-        </ScrollViewer>-->
+        </ScrollViewer>
 
         <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal">
                 <TextBlock>Columns:</TextBlock>
                 <ComboBox Margin="4" Height="23" Width="50" 
@@ -115,12 +107,6 @@
                          Text="{Binding ElementName=userControl, Path=OutputName}"/>
                 <Button Margin="4" Width="75" Click="buttonStitch_Click">Stitch</Button>
                 <Button Margin="4" Width="75" Click="buttonClear_Click">Clear</Button>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Orientation="Horizontal">
-                <TextBlock>Offset X:</TextBlock>
-                <TextBox Margin="4" Height="23" Width="75" Text="{Binding ElementName=userControl, Path=OffsetX}"/>
-                <TextBlock>Offset Y:</TextBlock>
-                <TextBox Margin="4" Height="23" Width="75" Text="{Binding ElementName=userControl, Path=OffsetY}"/>
             </StackPanel>
         </Grid>
     </Grid>
