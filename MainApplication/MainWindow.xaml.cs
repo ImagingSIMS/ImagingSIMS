@@ -4699,6 +4699,8 @@ namespace ImagingSIMS.MainApplication
             ofd.Filter = "Text Files (.txt)|*.txt";
             ofd.Multiselect = true;
 
+            DialogBox.Show("Just a test message", "Test", "Test", DialogIcon.Information);
+
             if (ofd.ShowDialog() != true) return;
 
             int filesLoaded = 0;
