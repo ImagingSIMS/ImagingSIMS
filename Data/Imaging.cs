@@ -1385,6 +1385,26 @@ namespace ImagingSIMS.Data.Imaging
         }
     }
 
+    public enum FalseColorOverlayMode
+    {
+        [Description("Magenta-Green")]
+        MagentaGreen,
+
+        [Description("Green-Magenta")]
+        GreenMagenta,
+
+        [Description("Cyan-Red")]
+        CyanRed,
+
+        [Description("Red-Cyan")]
+        RedCyan,
+
+        [Description("Yellow-Blue")]
+        YellowBlue,
+
+        [Description("Blue-Yellow")]
+        BlueYellow
+    }
     public static class Overlay
     {
         public static BitmapSource CreateOverlay(BitmapSource[] Images)
@@ -1424,6 +1444,66 @@ namespace ImagingSIMS.Data.Imaging
             }
 
             return ImageHelper.CreateImage(new Data3D(overlay));
+        }
+        public static BitmapSource CreateFalseColorOverlay(BitmapSource image1, BitmapSource image2, FalseColorOverlayMode colorMode)
+        {
+            var gray1 = ImageHelper.ConvertToData2D(image1, Data2DConverionType.Grayscale);
+            var gray2 = ImageHelper.ConvertToData2D(image2, Data2DConverionType.Grayscale);
+
+            if (gray1.Width != gray2.Width || gray1.Height != gray2.Height)
+                throw new ArgumentException("Image dimensions do not match");
+
+            Data3D overlay = new Data3D(gray1.Width, gray2.Height, 4);
+
+            var falseColor1 = new Color();
+            var falseColor2 = new Color();
+
+            switch (colorMode)
+            {
+                case FalseColorOverlayMode.BlueYellow:
+                    falseColor1 = Color.FromArgb(255, 0, 0, 255);
+                    falseColor2 = Color.FromArgb(255, 255, 255, 0);
+                    break;
+                case FalseColorOverlayMode.CyanRed:
+                    falseColor1 = Color.FromArgb(255, 0, 255, 255);
+                    falseColor2 = Color.FromArgb(255, 255, 0, 0);
+                    break;
+                case FalseColorOverlayMode.GreenMagenta:
+                    falseColor1 = Color.FromArgb(255, 0, 255, 0);
+                    falseColor2 = Color.FromArgb(255, 255, 0, 255);
+                    break;
+                case FalseColorOverlayMode.MagentaGreen:
+                    falseColor1 = Color.FromArgb(255, 255, 0, 255);
+                    falseColor2 = Color.FromArgb(255, 0, 255, 0);
+                    break;
+                case FalseColorOverlayMode.RedCyan:
+                    falseColor1 = Color.FromArgb(255, 255, 0, 0);
+                    falseColor2 = Color.FromArgb(255, 0, 255, 255);
+                    break;
+                case FalseColorOverlayMode.YellowBlue:
+                    falseColor1 = Color.FromArgb(255, 255, 255, 0);
+                    falseColor2 = Color.FromArgb(255, 0, 0, 255);
+                    break;
+            }
+
+            for (int x = 0; x < gray1.Width; x++)
+            {
+                for (int y = 0; y < gray2.Height; y++)
+                {
+                    var color1 = ColorScales.Solid(gray1[x, y], gray1.Maximum, falseColor1);
+                    var color2 = ColorScales.Solid(gray2[x, y], gray2.Maximum, falseColor2);
+
+                    overlay[x, y] = new float[]
+                    {
+                        color1.B + color2.B,
+                        color1.G + color2.G,
+                        color1.R + color2.R,
+                        255
+                    };
+                }
+            }
+
+            return ImageHelper.CreateImage(overlay);
         }
 
         public static Color OverlayColors(Color[] Colors)
