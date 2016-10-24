@@ -5,10 +5,11 @@ import pywt as pywt
 
 def hslFusion(lowRes, highRes):  
 
-    highRes = matchHistogram(highRes, lowRes)
-
     lowRes = np.divide(lowRes, 255)
     lowRes = color.rgb2hsv(lowRes)
+
+    # Histogram match pan wrt intensity image
+    highRes = matchHistogram(highRes, lowRes[:,:,2])
 
     highRes = np.divide(highRes, np.max(highRes))
 
@@ -63,16 +64,42 @@ def pyramidFusion(lowRes, highRes):
     
 def dwtFusion(lowRes, highRes):
 
-    coeffsMs = pywt.wavedec(lowRes, 'db1')
-    coeffsPan = pywt.wavedec(highRes, 'db1')
+    # Convert ms to hsv color
+    ms = np.divide(lowRes, 255)
+    ms = color.rgb2hsv(lowRes)
 
-    reconMs = pywt.waverec(coeffsMs, 'db1')
-    reconPan = pywt.waverec(coeffsPan, 'db1')
+    # Histogram match pan wrt intensity image
+    highRes = matchHistogram(highRes, lowRes[:,:,2]) 
+    
+    # Decompose pan
+    numLevels = 1
+    decompPan = pywt.wavedec2(highRes, 'haar', level=numLevels)
+    decompInt = pywt.wavedec2(ms[:,:,2], 'haar', level=numLevels)
 
-    misc.imsave('D:\\Data\\ReconMs.bmp', reconMs)
-    misc.imsave('D:\\Data\\ReconPan.bmp', reconPan)
+    decompInt[0] += decompPan[0]
+    #for l in range(1, numLevels + 1):
+    #    for y in range(3):
+    #        decompInt[l][y] += decompPan[l][y]
 
-    print(pywt.wavelist())
+    ms[:,:,2] = pywt.waverec2(decompInt, 'haar')
+    ms = color.hsv2rgb(ms)
+
+    return ms
+    #decompPan[0],      ll
+    #decompPan[1][0],   lh
+    #decompPan[1][1],   hl
+    #decompPan[1][2],   hh
+    #decompPan[2][0],   lh
+    #decompPan[2][1],   hl
+    #decompPan[2][2]    hh
+
+    #for x in range(len(decompPan)):
+    #    decomp = decompPan[x]
+    #    if not len(decomp) == 3:
+    #        misc.imsave("D:\\Data\decomp{0}.bmp".format(x), decomp)
+    #    else:
+    #        for y in range(len(decomp)):
+    #            misc.imsave("D:\\Data\decomp{0}-{1}.bmp".format(x, y), decomp[y])
 
 def upscale(lowRes, highRes):
 
@@ -108,9 +135,12 @@ if __name__ == "__main__":
 
     lowRes = upscale(lowRes, highRes)
 
-    # fused = hslFusion(lowRes, highRes)
-    # fused = pyramidFusion(lowRes, highRes)
+    fused = hslFusion(lowRes, highRes)
+
+    if fused is not None:
+        misc.imsave('D:\\Data\\FusedHSL.bmp', fused)
+
     fused = dwtFusion(lowRes, highRes)
 
     if fused is not None:
-        misc.imsave('D:\\Data\\Fused.bmp', fused)
+        misc.imsave('D:\\Data\\FusedDWT.bmp', fused)
