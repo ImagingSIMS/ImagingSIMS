@@ -848,6 +848,31 @@ namespace ImagingSIMS.Data
             return d;
         }
 
+        public void FlipHorizontal()
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width / 2; x++)
+                {
+                    float temp = _matrix[x, y];
+                    _matrix[x, y] = _matrix[Width - 1 - x, y];
+                    _matrix[Width - 1 - x, y] = temp;
+                }
+            }
+        }
+        public void FlipVertical()
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height / 2; y++)
+                {
+                    float temp = _matrix[x, y];
+                    _matrix[x, y] = _matrix[x, Height - 1 - y];
+                    _matrix[x, Height - 1 - y] = temp;
+                }
+            }
+        }
+
         public static async Task<Data2D> LoadData2DAsync(string LoadPath, FileType FileType)
         {
             try
@@ -2078,6 +2103,21 @@ namespace ImagingSIMS.Data
             }
 
             return returnArray;
+        }
+
+        public void FlipHorizontal()
+        {
+            foreach (var layer in _layers)
+            {
+                layer.FlipHorizontal();
+            }
+        }
+        public void FlipVertical()
+        {
+            foreach (var layer in _layers)
+            {
+                layer.FlipVertical();
+            }
         }
 
         public List<Data2D> ToArray()

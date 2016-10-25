@@ -299,6 +299,10 @@
                                   Label="Transform Data" ToolTipImageSource="Images\Transform.ico"
                                   ToolTipTitle="Transform Data"
                                   ToolTipDescription="Opens a tab to specify a transform to shift and scale data tables"/>
+                    <RibbonButton LargeImageSource="Images\merge.png" Label="Open Overlay Window" Click="ribbonRegistrationOverlay_Click"
+                                  ToolTipTitle="Open Overlay Window"
+                                  ToolTipDescription="Opens a window for manually overlaying two images for registration to generate initial guesses."
+                                  IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, Converter={StaticResource TabBoolConverter}, ConverterParameter=DataRegistration}"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Expand Pixels" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
                                   Converter={StaticResource TabBoolConverter}, ConverterParameter=DataDisplay}">
@@ -829,7 +833,7 @@
                 </RibbonGroup>
                 <RibbonGroup Header="Registration" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
                         Converter={StaticResource TabBoolConverter}, ConverterParameter=Fusion}">
-                    <RibbonButton LargeImageSource="Images\merge.png" Label="Open Overlay Window" Click="ribbonFusionOverlay_Click"
+                    <RibbonButton LargeImageSource="Images\merge.png" Label="Open Overlay Window" Click="ribbonRegistrationOverlay_Click"
                                   ToolTipTitle="Open Overlay Window"
                                   ToolTipDescription="Opens a window for manually overlaying two images for registration to generate initial guesses."/>
                     <RibbonButton SmallImageSource="Images\chart.png" Label="View Results" Click="ribbonFusionViewResults_Click"
@@ -913,6 +917,24 @@
                                   Label="Reset"
                                   Command="c:DataDisplayTabCommands.ResetSaturations"
                                   CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Transform">
+                    <RibbonButton LargeImageSource="{StaticResource FlipHorizontal}"
+                                  Label="Flip Horizontal"
+                                  Command="c:DataDisplayTabCommands.TransformData" CommandParameter="FlipHorizontal"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
+                    <RibbonButton LargeImageSource="{StaticResource FlipVertical}"
+                                  Label="Flip Vertical"
+                                  Command="c:DataDisplayTabCommands.TransformData" CommandParameter="FlipVertical"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
+                    <!--<RibbonButton LargeImageSource="{StaticResource RotateClockwise}"
+                                  Label="Flip Vertical"
+                                  Command="c:DataDisplayTabCommands.TransformData" CommandParameter="RotateClockwise"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
+                    <RibbonButton LargeImageSource="{StaticResource RotateCounterclockwise}"
+                                  Label="Flip Vertical"
+                                  Command="c:DataDisplayTabCommands.TransformData" CommandParameter="RotateCouterclockwise"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>-->
                 </RibbonGroup>
                 <RibbonGroup Header="Layers">
                     <StackPanel Orientation="Horizontal">

@@ -48,6 +48,7 @@
         <CommandBinding Command="c:DataDisplayTabCommands.GetSelectedVolumes" Executed="GetSelectedVolumes_Executed"/>
         <CommandBinding Command="c:DataDisplayTabCommands.GetSummedLayers" Executed="GetSummedLayers_Executed"/>
         <CommandBinding Command="c:DataDisplayTabCommands.ExportToWorkspace" Executed="ExportToWorkspace_Executed"/>
+        <CommandBinding Command="c:DataDisplayTabCommands.TransformData" Executed="TransformData_Executed"/>
     </UserControl.CommandBindings>
     <Grid>
         <Grid.ColumnDefinitions>
