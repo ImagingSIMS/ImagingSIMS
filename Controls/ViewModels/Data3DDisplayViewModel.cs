@@ -382,6 +382,37 @@ namespace ImagingSIMS.Controls.ViewModels
                 DisplayImageSource = bs;
             }
         }
+        public void Redraw()
+        {
+            if (DataSource == null) return;
+
+            int startLayer = LayerStart - 1;
+            int endLayer = LayerEnd - 1;
+
+            if (startLayer < 0) return;
+            if (endLayer >= DataSource.Depth) return;
+
+            ViewableDataSource = DataSource.FromLayers(startLayer, endLayer);
+
+            _previousEndLayer = endLayer;
+            _previousStartLayer = startLayer;
+
+            Saturation = ViewableDataSource.Maximum;
+            InitialSaturation = Saturation;
+
+            if (ColorScale == ColorScaleTypes.Solid)
+            {
+                BitmapSource bs = ImageHelper.CreateSolidColorImage(ViewableDataSource, SolidColorScale, (float)Saturation);
+                bs.Freeze();
+                DisplayImageSource = bs;
+            }
+            else
+            {
+                BitmapSource bs = ImageHelper.CreateColorScaleImage(ViewableDataSource, ColorScale, (float)Saturation);
+                bs.Freeze();
+                DisplayImageSource = bs;
+            }
+        }
         
         public void ZeroSelectedRows()
         {

@@ -13,4 +13,58 @@
             </DrawingGroup>
         </DrawingImage.Drawing>        
     </DrawingImage>
+    <DrawingImage x:Key="FlipHorizontal" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Children>
+                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M6.0003,-0.000199999999999534L6.0003,1.4138 6.5863,1.9998 3.9993,1.9998 3.9993,5.9138 1.3203,4.0008 0.000300000000000189,4.0008 0.000300000000000189,15.9998 1.3213,15.9998 8.0003,11.2288 14.6793,15.9998 16.0003,15.9998 16.0003,4.0008 14.6793,4.0008 13.9413,4.5268 9.4143,-0.000199999999999534z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M2,6.9434L6.279,10.0004 2,13.0564z M1,15.0004L8,10.0004 1,5.0004z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M8,10L15,15 15,5z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M7,7L9,7 12,4 9,1 7,1 9,3 5,3 5,5 9,5z" />
+                    <GeometryDrawing Brush="#FFF0EFF1" Geometry="F1M2,6.9434L2,13.0564 6.279,10.0004z" />
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="FlipVertical" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Children>
+                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M0,-0.000199999999999534L0,1.3208 4.771,7.9998 0,14.6798 0,15.9998 12,15.9998 12,14.6798 10.086,12.0008 14,12.0008 14,9.4138 14.586,9.9998 16,9.9998 16,6.5858 11.472,2.0588 12,1.3208 12,-0.000199999999999534z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M2.9434,14L6.0004,9.721 9.0564,14z M1.0004,15L11.0004,15 6.0004,8z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M1,1L6,8 11,1z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M12,4L9,7 9,9 11,7 11,11 13,11 13,7 15,9 15,7z" />
+                    <GeometryDrawing Brush="#FFF0EFF1" Geometry="F1M6,9.7207L2.943,13.9997 9.057,13.9997z" />
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="RotateCounterclockwise" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Children>
+                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M0,11.7129L0,12.9999 16,12.9999 16,11.4449 7,5.8209 7,4.9139 9.086,6.9999 11,6.9999 11,7.9999 14,7.9999 14,5.4999C14,4.3969,13.281,3.4579,12.287,3.1269L13.414,1.9999 9.086,1.9999 7,4.0859 7,0.512900000000002z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M6,12L6,4 1,12z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M8,8.8042L11.514,11.0002 8,11.0002z M7,7.0002L7,12.0002 15,12.0002z" />
+                    <GeometryDrawing Brush="#FF00529C" Geometry="F1M11,6L10,5 11.5,5C11.775,5,12,5.225,12,5.5L12,7 13,7 13,5.5C13,4.673,12.328,4,11.5,4L10,4 11,3 9.5,3 8,4.5 9.5,6z" />
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="RotateClockwise" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Children>
+                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M16,11.7129L16,12.9999 0,12.9999 0,11.4449 9,5.8209 9,4.9139 6.914,6.9999 5,6.9999 5,7.9999 2,7.9999 2,5.4999C2,4.3969,2.719,3.4579,3.713,3.1269L2.586,1.9999 6.914,1.9999 9,4.0859 9,0.512900000000002z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M10,4L10,12 15,12z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M8,11L4.487,11 8,8.804z M9,12L9,7 1,12z" />
+                    <GeometryDrawing Brush="#FF00529C" Geometry="F1M4,5.5C4,5.225,4.225,5,4.5,5L6,5 5,6 6.5,6 8,4.5 6.5,3 5,3 6,4 4.5,4C3.672,4,3,4.673,3,5.5L3,7 4,7z" />
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 </ResourceDictionary>

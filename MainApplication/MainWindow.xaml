@@ -907,6 +907,24 @@
                                   Command="c:DataDisplayTabCommands.ResetSaturations"
                                   CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
                 </RibbonGroup>
+                <RibbonGroup Header="Transform">
+                    <RibbonButton LargeImageSource="{StaticResource FlipHorizontal}"
+                                  Label="Flip Horizontal"
+                                  Command="c:DataDisplayTabCommands.TransformData" CommandParameter="FlipHorizontal"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
+                    <RibbonButton LargeImageSource="{StaticResource FlipVertical}"
+                                  Label="Flip Vertical"
+                                  Command="c:DataDisplayTabCommands.TransformData" CommandParameter="FlipVertical"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
+                    <!--<RibbonButton LargeImageSource="{StaticResource RotateClockwise}"
+                                  Label="Flip Vertical"
+                                  Command="c:DataDisplayTabCommands.TransformData" CommandParameter="RotateClockwise"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>
+                    <RibbonButton LargeImageSource="{StaticResource RotateCounterclockwise}"
+                                  Label="Flip Vertical"
+                                  Command="c:DataDisplayTabCommands.TransformData" CommandParameter="RotateCouterclockwise"
+                                  CommandTarget="{Binding ElementName=tabMain, Path=SelectedContent}"/>-->
+                </RibbonGroup>
                 <RibbonGroup Header="Layers">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Margin="4" MinWidth="20" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"/>
