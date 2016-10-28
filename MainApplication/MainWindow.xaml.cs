@@ -3668,9 +3668,7 @@ namespace ImagingSIMS.MainApplication
                 foreach (object obj in listViewSpectra.SelectedItems)
                 {
                     Spectrum s = (Spectrum)obj;
-                    if (s == null) continue;
-
-                    
+                    if (s == null) continue;                    
 
                     if (s.SpectrumType == SpectrumType.Cameca1280)
                     {
@@ -3681,13 +3679,17 @@ namespace ImagingSIMS.MainApplication
                         tabMain.Items.Add(cti);
                         tabMain.SelectedItem = cti;
 
-                        pw = new ProgressWindow($"Generating images from spectrum {s.Name}. Please wait.", "Spectrum", true);
+                        pw = new ProgressWindow($"Generating images from spectrum {s.Name}. Please wait.", "Spectrum");
                         pw.Show();
+
+                        int counter = 0;
+                        int numSpec = cSpec.NumberSpecies;
 
                         foreach(CamecaSpecies species in cSpec.Species)
                         {
                             Data3D d = await cSpec.FromSpeciesAsync(species, cSpec.Name + " - " + species.Label);
                             await dt.AddDataSourceAsync(d);
+                            pw.UpdateProgress(++counter * 100 / numSpec);
                         }
 
                         pw.Close();
