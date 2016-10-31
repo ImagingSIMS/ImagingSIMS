@@ -635,6 +635,41 @@ namespace ImagingSIMS.Data.Imaging
         {
             return Task.Run(() => CreateColorScaleImage(data, scale, saturation));
         }
+        public static BitmapSource CreateColorScaleImage(Data2D data, ColorScaleTypes scale, float saturation, float threshold)
+        {
+            int sizeX = data.Width;
+            int sizeY = data.Height;
+
+            int pos = 0;
+
+            PixelFormat pf = PixelFormats.Bgr32;
+
+            int rawStride = (sizeX * pf.BitsPerPixel) / 8;
+            rawStride = rawStride + (rawStride % 4) * 4;
+            byte[] rawImage = new byte[rawStride * sizeY];
+
+            float max = saturation;
+            for (int y = 0; y < sizeY; y++)
+            {
+                for (int x = 0; x < sizeX; x++)
+                {
+                    float value = data[x, y] >= threshold ? data[x, y] : 0;
+
+                    Color c = ColorScales.FromScale(value, max, scale);
+
+                    rawImage[pos + 0] = c.B;
+                    rawImage[pos + 1] = c.G;
+                    rawImage[pos + 2] = c.R;
+
+                    pos += 4;
+                }
+            }
+            return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+        }
+        public static Task<BitmapSource> CreateColorScaleImageAsync(Data2D data, ColorScaleTypes scale, float saturation, float threshold)
+        {
+            return Task.Run(() => CreateColorScaleImage(data, scale, saturation, threshold));
+        }
         public static BitmapSource CreateSolidColorImage(Data2D Data, Color SolidColor)
         {
             int sizeX = Data.Width;
@@ -700,6 +735,42 @@ namespace ImagingSIMS.Data.Imaging
         public static Task<BitmapSource> CreateSolidColorImageAsync(Data2D data, Color solidColor, float saturation)
         {
             return Task.Run(() => CreateSolidColorImage(data, solidColor, saturation));
+        }
+        public static BitmapSource CreateSolidColorImage(Data2D data, Color solidColor, float saturation, float threshold)
+        {
+            int sizeX = data.Width;
+            int sizeY = data.Height;
+
+            int pos = 0;
+
+            PixelFormat pf = PixelFormats.Bgr32;
+
+            int rawStride = (sizeX * pf.BitsPerPixel) / 8;
+            rawStride = rawStride + (rawStride % 4) * 4;
+            byte[] rawImage = new byte[rawStride * sizeY];
+
+            float max = saturation;
+            for (int y = 0; y < sizeY; y++)
+            {
+                for (int x = 0; x < sizeX; x++)
+                {
+                    float value = data[x, y] >= threshold ? data[x, y] : 0;
+
+                    Color c = ColorScales.FromScale(value, max, ColorScaleTypes.Solid, solidColor);
+
+                    rawImage[pos + 0] = c.B;
+                    rawImage[pos + 1] = c.G;
+                    rawImage[pos + 2] = c.R;
+                    
+
+                    pos += 4;
+                }
+            }
+            return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+        }
+        public static Task<BitmapSource> CreateSolidColorImageAsync(Data2D data, Color solidColor, float saturation, float threshold)
+        {
+            return Task.Run(() => CreateSolidColorImage(data, solidColor, saturation, threshold));
         }
 
         public static BitmapSource GetXZ(BitmapSource[] Images, int YCoord)
