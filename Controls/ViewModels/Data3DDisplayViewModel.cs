@@ -29,6 +29,7 @@ namespace ImagingSIMS.Controls.ViewModels
         double _imageTransformedHeight;
         int _layerStart;
         int _layerEnd;
+        double _threshold;
 
         Point? _lastCenterPositionOnTarget;
         double _scale;
@@ -180,6 +181,19 @@ namespace ImagingSIMS.Controls.ViewModels
                         LayerStart = _layerEnd;
                     }
                     NotifyPropertyChanged("LayerEnd");
+                    redraw();
+                }
+            }
+        }
+        public double Threshold
+        {
+            get { return _threshold; }
+            set
+            {
+                if (_threshold != value)
+                {
+                    _threshold = value;
+                    NotifyPropertyChanged("Threshold");
                     redraw();
                 }
             }
@@ -371,13 +385,13 @@ namespace ImagingSIMS.Controls.ViewModels
 
             if (ColorScale == ColorScaleTypes.Solid)
             {
-                BitmapSource bs = ImageHelper.CreateSolidColorImage(ViewableDataSource, SolidColorScale, (float)Saturation);
+                BitmapSource bs = ImageHelper.CreateSolidColorImage(ViewableDataSource, SolidColorScale, (float)Saturation, (float)Threshold);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
             else
             {
-                BitmapSource bs = ImageHelper.CreateColorScaleImage(ViewableDataSource, ColorScale, (float)Saturation);
+                BitmapSource bs = ImageHelper.CreateColorScaleImage(ViewableDataSource, ColorScale, (float)Saturation, (float)Threshold);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
@@ -402,13 +416,13 @@ namespace ImagingSIMS.Controls.ViewModels
 
             if (ColorScale == ColorScaleTypes.Solid)
             {
-                BitmapSource bs = ImageHelper.CreateSolidColorImage(ViewableDataSource, SolidColorScale, (float)Saturation);
+                BitmapSource bs = ImageHelper.CreateSolidColorImage(ViewableDataSource, SolidColorScale, (float)Saturation, (float)Threshold);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
             else
             {
-                BitmapSource bs = ImageHelper.CreateColorScaleImage(ViewableDataSource, ColorScale, (float)Saturation);
+                BitmapSource bs = ImageHelper.CreateColorScaleImage(ViewableDataSource, ColorScale, (float)Saturation, (float)Threshold);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
@@ -501,6 +515,21 @@ namespace ImagingSIMS.Controls.ViewModels
                     LayerEnd = 1,
                 };
             }
+        }
+
+        protected static Data2D ThresholdViewData(Data2D data, double threshold)
+        {
+            var thresholded = new Data2D(data.Width, data.Height);
+
+            for (int x = 0; x < data.Width; x++)
+            {
+                for (int y = 0; y < data.Height; y++)
+                {
+                    thresholded[x, y] = data[x, y] >= threshold ? data[x, y] : 0;
+                }
+            }
+
+            return thresholded;
         }
     }
 }
