@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="C:\Users\taro148\Source\Repos\ImagingSIMS\ITKImageRegistration\main.cxx">
@@ -117,10 +117,10 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{73231A90-F2FD-4D13-AF11-E5CD5CD8880B}</UniqueIdentifier>
+      <UniqueIdentifier>{BE179EEA-D545-4A12-8188-9426630FB0E1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{0EBDDBD0-8464-4F6B-8F99-75EF64C7339D}</UniqueIdentifier>
+      <UniqueIdentifier>{4F34F265-20AB-4752-AD9E-A0E6CBEB0C7C}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
