@@ -1426,7 +1426,25 @@ namespace ImagingSIMS.Data.Imaging
             return ImageHelper.CreateImage(new Data3D(overlay));
         }
 
-        public static Color OverlayColors(Color[] Colors)
+        public static Color OverlayColors(Color[] colors)
+        {
+            double sumR = 0;
+            double sumG = 0;
+            double sumB = 0;
+
+            int numColors = colors.Length;
+
+            foreach (var color in colors)
+            {
+                sumR += color.R * color.R;
+                sumG += color.G * color.G;
+                sumB += color.B * color.B;
+            }
+
+            return Color.FromArgb(255, (byte)Math.Sqrt(sumR / numColors),
+                (byte)Math.Sqrt(sumG / numColors), (byte)Math.Sqrt(sumB / numColors));
+        }
+        private static Color _OverlayColors(Color[] Colors)
         {
             List<LAB> colors = new List<LAB>();
             foreach (Color c in Colors)
