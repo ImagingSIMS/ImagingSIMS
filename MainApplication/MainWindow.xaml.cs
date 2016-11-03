@@ -3312,23 +3312,44 @@ namespace ImagingSIMS.MainApplication
             ft.CallSave(FusionSaveParameter.Series);
         }
 
-        private void ribbonFusionOverlay_Click(object sender, RoutedEventArgs e)
+        private void ribbonRegistrationOverlay_Click(object sender, RoutedEventArgs e)
         {
             ClosableTabItem cti = tabMain.SelectedItem as ClosableTabItem;
             if (cti == null)
             {
-                DialogBox.Show("Not a valid fusion document.", "Navigate to a fusion document and try again.",
-                    "Registration", DialogIcon.Error);
+                DialogBox.Show("Not a registration enabled document.", "Navigate to a registration enabled tab and try again.",
+                        "Registration", DialogIcon.Error);
             }
 
-            FusionTab ft = cti.Content as FusionTab;
-            if (ft == null)
+            if (cti.TabType == TabType.Fusion)
             {
-                DialogBox.Show("Not a valid fusion document.", "Navigate to a fusion document and try again.",
-                    "Registration", DialogIcon.Error);
+                FusionTab ft = cti.Content as FusionTab;
+                if (ft == null)
+                {
+                    DialogBox.Show("Not a valid fusion document.", "Navigate to a fusion tab and try again.",
+                        "Registration", DialogIcon.Error);
+                    return;
+                }
+                ft.OpenOverlay();
+            }
+            else if (cti.TabType == TabType.DataRegistration)
+            {
+                DataRegistrationTab dt = cti.Content as DataRegistrationTab;
+                if(dt == null)
+                {
+                    DialogBox.Show("Not a valid data registration document.", "Navigate to a data registration tab and try again.",
+                            "Registration", DialogIcon.Error);
+                }
+                dt.OpenOverlay();
             }
 
-            ft.OpenOverlay();
+            else
+            {
+                DialogBox.Show("Not a registration enabled document.", "Navigate to a registration enabled tab and try again.",
+                        "Registration", DialogIcon.Error);
+                return;
+            }
+
         }
         private void ribbonFusionViewFolder_Click(object sender, RoutedEventArgs e)
         {
@@ -4246,6 +4267,18 @@ namespace ImagingSIMS.MainApplication
                 DragDrop.DoDragDrop(lvi, obj, DragDropEffects.Copy);
             }
         }
+        private void listViewItemVolumesMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                var lvi = sender as ListViewItem;
+                if (lvi == null) return;
+
+                var volume = lvi.Content as Volume;
+                DataObject obj = new DataObject("Volume", volume);
+                DragDrop.DoDragDrop(lvi, obj, DragDropEffects.Copy);
+            }
+        }
         #endregion
 
         #region Status Bar
@@ -4309,7 +4342,6 @@ namespace ImagingSIMS.MainApplication
             if (button == null) return;
 
             DataRegistrationTab drt = new DataRegistrationTab();
-            drt.SetAvailableTables(Workspace.Data);
 
             if (button == ribbonbuttonOpenTransformFromFusion)
             {
@@ -4549,6 +4581,19 @@ namespace ImagingSIMS.MainApplication
 
                 DialogBox.Show("The following tables could not be removed from the workspace:",
                     sb.ToString(), "Remove", DialogIcon.Alert);
+            }
+        }
+        public void AddTable(Data2D tableToAdd)
+        {
+            try
+            {
+                Workspace.Data.Add(tableToAdd);
+            }
+            catch (Exception ex)
+            {
+                DialogBox.Show("The table could not be added to the workspace.",
+                    ex.Message, "Add", DialogIcon.Alert);
+                return;
             }
         }
         public void AddTables(IEnumerable<Data2D> tablesToAdd)

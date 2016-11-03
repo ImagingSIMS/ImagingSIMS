@@ -21,6 +21,7 @@ using Fusion = ImagingSIMS.Data.Fusion.Fusion;
 using ImagingSIMS.Controls.Tabs;
 using ImagingSIMS.Controls.BaseControls;
 using ImagingSIMS.Controls.ViewModels;
+using System.Windows.Media;
 
 namespace ImagingSIMS.Controls.Tabs
 {
@@ -49,6 +50,8 @@ namespace ImagingSIMS.Controls.Tabs
             typeof(bool), typeof(FusionTab));
         public static readonly DependencyProperty RegistrationResultsProperty = DependencyProperty.Register("RegistrationResults",
             typeof(RegistrationResult), typeof(FusionTab));
+        public static readonly DependencyProperty RegisteredOverlayProperty = DependencyProperty.Register("RegisteredOverlay",
+            typeof(BitmapSource), typeof(FusionTab));
 
         public FusionImageViewModel LowResImage
         {
@@ -109,6 +112,11 @@ namespace ImagingSIMS.Controls.Tabs
         {
             get { return (RegistrationResult)GetValue(RegistrationResultsProperty); }
             set { SetValue(RegistrationResultsProperty, value); }
+        }
+        public BitmapSource RegisteredOverlay
+        {
+            get { return (BitmapSource)GetValue(RegisteredOverlayProperty); }
+            set { SetValue(RegisteredOverlayProperty, value); }
         }
 
         public FusionTab()
@@ -445,6 +453,8 @@ namespace ImagingSIMS.Controls.Tabs
                
                 HighResImage.IsRegistered = true;
                 LowResImage.IsRegistered = true;
+
+                RegisteredOverlay = Overlay.CreateFalseColorOverlay(HighResImage.ImageSource, LowResImage.ImageSource, FalseColorOverlayMode.MagentaGreen);
 
                 RegistrationResults = _imageRegistration.RegistrationResults;
                 IsRegistered = true;
@@ -1005,9 +1015,9 @@ namespace ImagingSIMS.Controls.Tabs
         {
             foreach (Point p in pointSet)
             {
-                if (p.X > 1d || p.Y > 1d) return true;
+                if (p.X > 1d || p.Y > 1d) return false;
             }
-            return false;
+            return true;
         }
 
         private void updateClosableTabItem(string message)

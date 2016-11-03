@@ -691,5 +691,63 @@ namespace ImagingSIMS.Controls.Tabs
 
             AvailableHost.AvailableTablesSource.AddTables(data);
         }
+        private async void TransformData_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            List<Data3DDisplayViewModel> toTransform = new List<Data3DDisplayViewModel>();
+
+            if(itemsControl.SelectedItems.Count == 0)
+            {
+                var result = Dialog.Show("No data sets selected.", "Choose one of the options below to proceed.", "Data", DialogIcon.Warning, new string[] { "Transform All", "Cancel" });
+                if (result != "Transform All") return;
+
+                toTransform = _displayItems.ToList();
+            }
+            else
+            {
+                foreach (var item in itemsControl.SelectedItems)
+                {
+                    Data3DDisplayViewModel dItem = item as Data3DDisplayViewModel;
+                    if (dItem == null) continue;
+
+                    toTransform.Add(dItem);
+                }
+            }
+
+            ProgressWindow pw = new ProgressWindow("Transforming data. Please wait...", "Transform");
+            pw.Show();
+
+            int progress = 0;
+            int numToTransform = toTransform.Count;
+            
+            foreach (var item in toTransform)
+            {
+                var transformed = item.DataSource;
+                await Task.Run(() =>
+                {
+                    switch ((string)e.Parameter)
+                    {
+                        case "FlipVertical":
+                            transformed.FlipVertical();
+                            break;
+                        case "FlipHorizontal":
+                            transformed.FlipHorizontal();
+                            break;
+                        case "RotateCounterclockwise":
+                            //transformed.RotateCounterClockwise();
+                            break;
+                        case "RotateClockwise":
+                            //transformed.RotateClockwise();
+                            break;
+                    }
+                });
+
+                item.DataSource = transformed;
+                item.Redraw();
+
+                pw.UpdateProgress(progress++ * 100 / numToTransform);
+            }
+
+            pw.Close();
+        }
     }
 }

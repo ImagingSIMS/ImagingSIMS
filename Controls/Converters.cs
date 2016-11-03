@@ -271,9 +271,23 @@ namespace ImagingSIMS.Controls.Converters
                 Data3D d = (Data3D)value;
                 if (d == null) return null;
 
-                if (d.Depth != 4) return null;
+                bool isImage = false;
 
-                return ImageHelper.CreateImage(d);
+                if (argument != null && ((string)argument).ToLower() == "image")
+                    isImage = true;
+
+                if (isImage)
+                {
+                    if (d.Depth != 4) return null;
+
+                    return ImageHelper.CreateImage(d);
+                }
+
+                else
+                {
+                    return ImageHelper.CreateColorScaleImage(d.Summed, ColorScaleTypes.ThermalWarm);
+                }
+                
             }
             catch (Exception)
             {

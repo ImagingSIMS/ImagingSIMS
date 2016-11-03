@@ -30,10 +30,12 @@
         
         <Grid x:Name="gridOverlayRegion" Grid.Row="0">
             <Image x:Name="fixedImage" 
-               Width="350" Height="350"
+               Width="Auto" Height="Auto"
+               HorizontalAlignment="Stretch" VerticalAlignment="Top"
                Source="{Binding ElementName=userControl, Path=FixedImageSource}"/>
             <Image x:Name="movingImage"
-                   Width="350" Height="350"
+                   Width="Auto" Height="Auto"
+                   HorizontalAlignment="Stretch" VerticalAlignment="Top"
                    Source="{Binding ElementName=userControl, Path=MovingImageSource}"
                    Opacity="{Binding ElementName=sliderOpacity, Path=Value}"
                    PreviewMouseDown="movingImage_PreviewMouseDown"
@@ -63,7 +65,7 @@
         
         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
             <TextBlock>Moving image opacity:</TextBlock>
-            <Slider x:Name="sliderOpacity" Margin="4" Minimum="0" Maximum="1" SmallChange="0.1" LargeChange="0.3" Width="100" Value="0.5"/>
+            <Slider x:Name="sliderOpacity" Margin="4" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1" Width="100" Value="0.5"/>
             <TextBlock Text="{Binding ElementName=sliderOpacity, Path=Value, StringFormat=0.00}"/>
             <Button Click="generate_Click">Generate</Button>
             <Button Click="reset_Click">Reset</Button>
