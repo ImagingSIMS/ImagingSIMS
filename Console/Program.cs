@@ -20,6 +20,8 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
 using Device = SharpDX.Direct3D11.Device;
+using ImagingSIMS.Common;
+using ImagingSIMS.Data.Imaging;
 
 namespace ConsoleApp
 {
@@ -31,10 +33,40 @@ namespace ConsoleApp
             Console.WriteLine("Press Enter to begin...");
             Console.ReadLine();
 
-            for (int i = 0; i < 2500; i++)
+            var directory = @"Y:\B.Naes\SM160340 UMo Foil SIMS 88406\";
+            var imageFiles = Directory.GetFiles(directory).Where(f => f.Contains("UMoFoil #") && f.EndsWith(".tiff"));
+
+            foreach (var file in imageFiles)
             {
-                if (!File.Exists($@"D:\Swap\Training Set\Raw\APMLarge PS-2017-2016\Validation\Validation_{i}.txt"))
-                    Console.WriteLine($"Not found: {i}");
+                var src = new BitmapImage();
+                src.BeginInit();
+                src.UriSource = new Uri(file, UriKind.Absolute);
+                src.CacheOption = BitmapCacheOption.OnLoad;
+                src.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                src.EndInit();
+
+                var imageData = ImageHelper.ConvertToData3D(src);
+                var cropped = new Data3D(1024, 704, 4);
+
+                for (int x = 0; x < cropped.Width; x++)
+                {
+                    for (int y = 0; y < cropped.Height; y++)
+                    {
+                        int yIndex = y + 20;
+
+                        for (int z = 0; z < cropped.Depth; z++)
+                        {
+                            cropped[x, y, z] = imageData[x, yIndex, z];
+                        }
+                    }
+                }
+
+                var fileName = Path.GetFileName(file);
+                fileName = fileName.Remove(fileName.Length - 9, 4);
+                fileName = fileName.Insert(fileName.Length - 5, "-cropped");
+
+                var bsImage = ImageHelper.CreateImage(cropped);
+                bsImage.Save(Path.Combine(directory, fileName));
             }
 
             Console.Write("Press Enter to exit.");
