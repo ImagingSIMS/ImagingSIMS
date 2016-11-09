@@ -343,6 +343,59 @@ namespace ImagingSIMS.Data.Imaging
             }
             else return Color.FromArgb(255, 0, 0, 0);
         }
+        public static Color Viridis(double Value, double Maximum)
+        {
+            double ratio = Value / Maximum;
+
+            if (ratio == Zero) return Color.FromArgb(255, 68, 1, 84);
+
+            double remainder = ratio;
+            if(ratio < OneEighth) // (68, 1, 84) to (71, 44, 122)
+            {
+                return BetweenRange(Color.FromArgb(255, 68, 1, 84), Color.FromArgb(255, 71, 44, 122), remainder, OneEighth);
+            }
+            if(ratio >= OneEighth && ratio < OneQuarter) // (71, 44, 122) to (59, 81, 139)
+            {
+                remainder -= OneEighth;
+                return BetweenRange(Color.FromArgb(255, 71, 44, 122), Color.FromArgb(255, 59, 81, 139), remainder, OneEighth);
+            }
+            if (ratio >= OneQuarter &&  ratio < ThreeEighths) // (59, 81, 139) to (44, 113, 142)
+            {
+                remainder -= OneQuarter;
+                return BetweenRange(Color.FromArgb(255, 59, 81, 139), Color.FromArgb(255, 44, 113, 142), remainder, OneEighth);
+            }
+            if(ratio >= ThreeEighths && ratio < OneHalf) // (44, 113, 142) to (33, 144, 141)
+            {
+                remainder -= ThreeEighths;
+                return BetweenRange(Color.FromArgb(255, 44, 113, 142), Color.FromArgb(255, 33, 144, 141), remainder, OneEighth);
+            }
+            if(ratio >= OneHalf && ratio < FiveEighths) // (33, 144, 141) to (39, 173, 129)
+            {
+                remainder -= OneHalf;
+                return BetweenRange(Color.FromArgb(255, 33, 144, 141), Color.FromArgb(255, 39, 173, 129), remainder, OneEighth);
+            }
+            if(ratio >= FiveEighths && ratio < ThreeQuarters) // (39, 173, 129) to (99, 200, 99)
+            {
+                remainder -= FiveEighths;
+                return BetweenRange(Color.FromArgb(255, 39, 173, 129), Color.FromArgb(255, 99, 200, 99), remainder, OneEighth);
+            }
+            if (ratio >= ThreeQuarters && ratio < SevenEighths) // (99, 200, 99) to (170, 220, 50)
+            {
+                remainder -= ThreeQuarters;
+                return BetweenRange(Color.FromArgb(255, 99, 200, 99), Color.FromArgb(255, 170, 220, 50), remainder, OneEighth);
+            }
+            if(ratio>=SevenEighths && ratio < One) // (170, 220, 50) to (253, 231, 32)
+            {
+                remainder -= SevenEighths;
+                return BetweenRange(Color.FromArgb(255, 170, 220, 50), Color.FromArgb(255, 253, 231, 32), remainder, OneEighth);
+            }
+            if(ratio >= One)
+            {
+                return Color.FromArgb(255, 253, 231, 37);
+            }
+
+            return Color.FromArgb(255, 0, 0, 0);
+        }
 
         public static Color FromScale(double Value, double Maximum, ColorScaleTypes Type, 
             Color SolidColor = new Color())
@@ -377,8 +430,19 @@ namespace ImagingSIMS.Data.Imaging
                     return Rainbow(Value, Maximum);
                 case ColorScaleTypes.HeatMap:
                     return HeatMap(Value, Maximum);
+                case ColorScaleTypes.Viridis:
+                    return Viridis(Value, Maximum);
                 default: return ThermalWarm(Value, Maximum);
             }
+        }
+
+        private static Color BetweenRange(Color color1, Color color2, double value, double range)
+        {
+            return Color.FromArgb(255,
+                (byte)(color1.R + ((color2.R - color1.R) * (value / range))),
+                (byte)(color1.G + ((color2.G - color1.G) * (value / range))),
+                (byte)(color1.B + ((color2.B - color1.B) * (value / range)))
+                );
         }
     }
 
@@ -420,5 +484,7 @@ namespace ImagingSIMS.Data.Imaging
 
         [Description("Heat Map")]
         HeatMap,
+
+        Viridis,
     }
 }
