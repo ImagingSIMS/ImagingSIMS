@@ -203,7 +203,24 @@
                                 ItemContainerStyle="{StaticResource BlueTabItemHeader}" 
                                 BorderThickness="0">
                     <TabItem Header="Registration Output">
-                        <reg:RegistrationProgressTextBox x:Name="registrationProgressTextBox"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" MinWidth="250"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <reg:RegistrationProgressTextBox Grid.Column="0" x:Name="registrationProgressTextBox"/>
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock>Registered:</TextBlock>
+                                <Image Grid.Row="1" Margin="4"
+                                   Width="Auto" Height="Auto"
+                                   HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                                   Source="{Binding ElementName=userControl, Path=RegisteredOverlay}"/>
+                            </Grid>                            
+                        </Grid>                        
                     </TabItem>
                     <TabItem Header="Analysis Output">
                         <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="textBoxCC" VerticalScrollBarVisibility="Auto"

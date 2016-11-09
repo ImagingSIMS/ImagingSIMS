@@ -52,7 +52,6 @@ namespace ImagingSIMS.Controls.Tabs
             set { SetValue(FixedImageProperty, value); }
         }
 
-        ObservableCollection<Data2D> _availableTables;
         ObservableCollection<Data2D> _selectedTablesMoving;
         ObservableCollection<Data2D> _selectedTablesFixed;
 
@@ -66,17 +65,13 @@ namespace ImagingSIMS.Controls.Tabs
             get { return _selectedTablesFixed; }
             set { _selectedTablesFixed = value; }
         }
-        public ObservableCollection<Data2D> AvailableTables
-        {
-            get { return _availableTables; }
-            set { _availableTables = value; }
-        }
+
+        ImageOverlayWindow _overlayWindow;
 
         public DataRegistrationTab()
         {
             SelectedTablesMoving = new ObservableCollection<Data2D>();
             SelectedTablesFixed = new ObservableCollection<Data2D>();
-            AvailableTables = new ObservableCollection<Data2D>();
 
             TransformParameters = new ImageRegistration.TransformParameters()
             {
@@ -92,10 +87,6 @@ namespace ImagingSIMS.Controls.Tabs
             InitializeComponent();
         }
 
-        public void SetAvailableTables(ObservableCollection<Data2D> Tables)
-        {
-            this.AvailableTables = Tables;
-        }
         public void SetRegisteredImages(BitmapSource MovingImage, BitmapSource FixedImage)
         {
             this.MovingImage = MovingImage;
@@ -129,6 +120,35 @@ namespace ImagingSIMS.Controls.Tabs
         public void SetFixedImage(BitmapSource FixedImage)
         {
             this.FixedImage = FixedImage;
+        }
+
+        public void OpenOverlay()
+        {
+            _overlayWindow = new ImageOverlayWindow();
+
+            _overlayWindow.FixedImageSource = FixedImage;
+            _overlayWindow.MovingImageSource = MovingImage;
+
+            _overlayWindow.ParametersGenerated += _overlayWindow_ParametersGenerated;
+            _overlayWindow.Closed += _overlayWindow_Closed;
+
+            _overlayWindow.Show();
+        }
+
+        private void _overlayWindow_ParametersGenerated(object sender, ParametersGeneratedEventArgs e)
+        {
+            RegistrationParameters parameters = e.Paramaters;
+
+            TransformParameters.Angle = parameters.Angle;
+            TransformParameters.Scale = parameters.Scale;
+            TransformParameters.TranslationX = parameters.TranslationX;
+            TransformParameters.TranslationY = parameters.TranslationY;
+        }
+        private void _overlayWindow_Closed(object sender, EventArgs e)
+        {
+            _overlayWindow.ParametersGenerated -= _overlayWindow_ParametersGenerated;
+            _overlayWindow.Closed -= _overlayWindow_Closed;
+            _overlayWindow = null;
         }
 
         private void buttonAdd_Click(object sender, RoutedEventArgs e)
@@ -377,7 +397,7 @@ namespace ImagingSIMS.Controls.Tabs
                 if (transform.TransformSucceeded)
                 {
                     Data2D result = transform.FinalizeDataTransform();
-                    AvailableTables.Add(result);
+                    AvailableHost.AvailableTablesSource.AddTable(result);
                 }
 
                 else
@@ -405,7 +425,7 @@ namespace ImagingSIMS.Controls.Tabs
                 if (transform.TransformSucceeded)
                 {
                     Data2D result = transform.FinalizeDataTransform();
-                    AvailableTables.Add(result);
+                    AvailableHost.AvailableTablesSource.AddTable(result);
                 }
 
                 else
@@ -464,7 +484,22 @@ namespace ImagingSIMS.Controls.Tabs
                 Data2D data = e.Data.GetData("Data2D") as Data2D;
                 if(data==null)return;
 
-                bs = ImageHelper.CreateColorScaleImage(data, ColorScaleTypes.ThermalWarm);
+                if (moving)
+                {
+                    bs = ImageHelper.CreateColorScaleImage(data, ColorScaleTypes.ThermalWarm);
+                    if (!SelectedTablesMoving.Contains(data))
+                    {
+                        SelectedTablesMoving.Add(data);
+                    }
+                }
+                else
+                {
+                    bs = ImageHelper.CreateColorScaleImage(data, ColorScaleTypes.ThermalCold);
+                    if (!SelectedTablesFixed.Contains(data))
+                    {
+                        SelectedTablesFixed.Add(data);
+                    }
+                }
             }
             else return;
 

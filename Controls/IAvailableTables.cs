@@ -34,6 +34,12 @@ namespace ImagingSIMS.Controls
         void RemoveTables(Data2D[] tablesToRemove);
 
         /// <summary>
+        /// Adds the specified table to the control that implements the interface.
+        /// </summary>
+        /// <param name="tableToAdd">Table to add.</param>
+        void AddTable(Data2D tableToAdd);
+
+        /// <summary>
         /// Adds the specified tables to the control that implements the interface.
         /// </summary>
         /// <param name="tablesToAdd">Tables to add.</param>

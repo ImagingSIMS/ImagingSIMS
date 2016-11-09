@@ -117,10 +117,10 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{075A6806-EF7D-40B9-B0C2-6C1382E6DF7D}</UniqueIdentifier>
+      <UniqueIdentifier>{BE179EEA-D545-4A12-8188-9426630FB0E1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{62658F3A-E9D5-4881-8A2B-3BB28AD813CE}</UniqueIdentifier>
+      <UniqueIdentifier>{4F34F265-20AB-4752-AD9E-A0E6CBEB0C7C}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

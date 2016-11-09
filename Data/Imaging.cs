@@ -635,6 +635,41 @@ namespace ImagingSIMS.Data.Imaging
         {
             return Task.Run(() => CreateColorScaleImage(data, scale, saturation));
         }
+        public static BitmapSource CreateColorScaleImage(Data2D data, ColorScaleTypes scale, float saturation, float threshold)
+        {
+            int sizeX = data.Width;
+            int sizeY = data.Height;
+
+            int pos = 0;
+
+            PixelFormat pf = PixelFormats.Bgr32;
+
+            int rawStride = (sizeX * pf.BitsPerPixel) / 8;
+            rawStride = rawStride + (rawStride % 4) * 4;
+            byte[] rawImage = new byte[rawStride * sizeY];
+
+            float max = saturation;
+            for (int y = 0; y < sizeY; y++)
+            {
+                for (int x = 0; x < sizeX; x++)
+                {
+                    float value = data[x, y] >= threshold ? data[x, y] : 0;
+
+                    Color c = ColorScales.FromScale(value, max, scale);
+
+                    rawImage[pos + 0] = c.B;
+                    rawImage[pos + 1] = c.G;
+                    rawImage[pos + 2] = c.R;
+
+                    pos += 4;
+                }
+            }
+            return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+        }
+        public static Task<BitmapSource> CreateColorScaleImageAsync(Data2D data, ColorScaleTypes scale, float saturation, float threshold)
+        {
+            return Task.Run(() => CreateColorScaleImage(data, scale, saturation, threshold));
+        }
         public static BitmapSource CreateSolidColorImage(Data2D Data, Color SolidColor)
         {
             int sizeX = Data.Width;
@@ -700,6 +735,42 @@ namespace ImagingSIMS.Data.Imaging
         public static Task<BitmapSource> CreateSolidColorImageAsync(Data2D data, Color solidColor, float saturation)
         {
             return Task.Run(() => CreateSolidColorImage(data, solidColor, saturation));
+        }
+        public static BitmapSource CreateSolidColorImage(Data2D data, Color solidColor, float saturation, float threshold)
+        {
+            int sizeX = data.Width;
+            int sizeY = data.Height;
+
+            int pos = 0;
+
+            PixelFormat pf = PixelFormats.Bgr32;
+
+            int rawStride = (sizeX * pf.BitsPerPixel) / 8;
+            rawStride = rawStride + (rawStride % 4) * 4;
+            byte[] rawImage = new byte[rawStride * sizeY];
+
+            float max = saturation;
+            for (int y = 0; y < sizeY; y++)
+            {
+                for (int x = 0; x < sizeX; x++)
+                {
+                    float value = data[x, y] >= threshold ? data[x, y] : 0;
+
+                    Color c = ColorScales.FromScale(value, max, ColorScaleTypes.Solid, solidColor);
+
+                    rawImage[pos + 0] = c.B;
+                    rawImage[pos + 1] = c.G;
+                    rawImage[pos + 2] = c.R;
+                    
+
+                    pos += 4;
+                }
+            }
+            return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+        }
+        public static Task<BitmapSource> CreateSolidColorImageAsync(Data2D data, Color solidColor, float saturation, float threshold)
+        {
+            return Task.Run(() => CreateSolidColorImage(data, solidColor, saturation, threshold));
         }
 
         public static BitmapSource GetXZ(BitmapSource[] Images, int YCoord)
@@ -1385,6 +1456,26 @@ namespace ImagingSIMS.Data.Imaging
         }
     }
 
+    public enum FalseColorOverlayMode
+    {
+        [Description("Magenta-Green")]
+        MagentaGreen,
+
+        [Description("Green-Magenta")]
+        GreenMagenta,
+
+        [Description("Cyan-Red")]
+        CyanRed,
+
+        [Description("Red-Cyan")]
+        RedCyan,
+
+        [Description("Yellow-Blue")]
+        YellowBlue,
+
+        [Description("Blue-Yellow")]
+        BlueYellow
+    }
     public static class Overlay
     {
         public static BitmapSource CreateOverlay(BitmapSource[] Images)
@@ -1425,8 +1516,86 @@ namespace ImagingSIMS.Data.Imaging
 
             return ImageHelper.CreateImage(new Data3D(overlay));
         }
+        public static BitmapSource CreateFalseColorOverlay(BitmapSource image1, BitmapSource image2, FalseColorOverlayMode colorMode)
+        {
+            var gray1 = ImageHelper.ConvertToData2D(image1, Data2DConverionType.Grayscale);
+            var gray2 = ImageHelper.ConvertToData2D(image2, Data2DConverionType.Grayscale);
 
-        public static Color OverlayColors(Color[] Colors)
+            if (gray1.Width != gray2.Width || gray1.Height != gray2.Height)
+                throw new ArgumentException("Image dimensions do not match");
+
+            Data3D overlay = new Data3D(gray1.Width, gray2.Height, 4);
+
+            var falseColor1 = new Color();
+            var falseColor2 = new Color();
+
+            switch (colorMode)
+            {
+                case FalseColorOverlayMode.BlueYellow:
+                    falseColor1 = Color.FromArgb(255, 0, 0, 255);
+                    falseColor2 = Color.FromArgb(255, 255, 255, 0);
+                    break;
+                case FalseColorOverlayMode.CyanRed:
+                    falseColor1 = Color.FromArgb(255, 0, 255, 255);
+                    falseColor2 = Color.FromArgb(255, 255, 0, 0);
+                    break;
+                case FalseColorOverlayMode.GreenMagenta:
+                    falseColor1 = Color.FromArgb(255, 0, 255, 0);
+                    falseColor2 = Color.FromArgb(255, 255, 0, 255);
+                    break;
+                case FalseColorOverlayMode.MagentaGreen:
+                    falseColor1 = Color.FromArgb(255, 255, 0, 255);
+                    falseColor2 = Color.FromArgb(255, 0, 255, 0);
+                    break;
+                case FalseColorOverlayMode.RedCyan:
+                    falseColor1 = Color.FromArgb(255, 255, 0, 0);
+                    falseColor2 = Color.FromArgb(255, 0, 255, 255);
+                    break;
+                case FalseColorOverlayMode.YellowBlue:
+                    falseColor1 = Color.FromArgb(255, 255, 255, 0);
+                    falseColor2 = Color.FromArgb(255, 0, 0, 255);
+                    break;
+            }
+
+            for (int x = 0; x < gray1.Width; x++)
+            {
+                for (int y = 0; y < gray2.Height; y++)
+                {
+                    var color1 = ColorScales.Solid(gray1[x, y], gray1.Maximum, falseColor1);
+                    var color2 = ColorScales.Solid(gray2[x, y], gray2.Maximum, falseColor2);
+
+                    overlay[x, y] = new float[]
+                    {
+                        color1.B + color2.B,
+                        color1.G + color2.G,
+                        color1.R + color2.R,
+                        255
+                    };
+                }
+            }
+
+            return ImageHelper.CreateImage(overlay);
+        }
+
+        public static Color OverlayColors(Color[] colors)
+        {
+            double sumR = 0;
+            double sumG = 0;
+            double sumB = 0;
+
+            int numColors = colors.Length;
+
+            foreach (var color in colors)
+            {
+                sumR += color.R * color.R;
+                sumG += color.G * color.G;
+                sumB += color.B * color.B;
+            }
+
+            return Color.FromArgb(255, (byte)Math.Sqrt(sumR / numColors),
+                (byte)Math.Sqrt(sumG / numColors), (byte)Math.Sqrt(sumB / numColors));
+        }
+        private static Color _OverlayColors(Color[] Colors)
         {
             List<LAB> colors = new List<LAB>();
             foreach (Color c in Colors)
