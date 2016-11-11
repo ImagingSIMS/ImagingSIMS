@@ -416,7 +416,6 @@
     <Content Include="ChangeLog.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="ImagingSIMS_TemporaryKey.pfx" />
     <Content Include="Shaders\Axes.pso" />
     <Content Include="Shaders\Axes.vso" />
     <Content Include="Shaders\BoundingBox.pso" />
@@ -440,6 +439,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Images\DepthProfile.ico" />
+    <None Include="ImagingSIMS_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <Resource Include="Images\Update.png" />
     <Resource Include="Images\gaussian.ico" />
