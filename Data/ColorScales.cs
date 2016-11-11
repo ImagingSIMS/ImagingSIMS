@@ -379,7 +379,7 @@ namespace ImagingSIMS.Data.Imaging
                 remainder -= FiveEighths;
                 return BetweenRange(Color.FromArgb(255, 39, 173, 129), Color.FromArgb(255, 99, 200, 99), remainder, OneEighth);
             }
-            if (ratio >= ThreeQuarters && ratio < SevenEighths) // (99, 200, 99) to (170, 220, 50)
+            if (ratio < SevenEighths) // (99, 200, 99) to (170, 220, 50)
             {
                 remainder -= ThreeQuarters;
                 return BetweenRange(Color.FromArgb(255, 99, 200, 99), Color.FromArgb(255, 170, 220, 50), remainder, OneEighth);
