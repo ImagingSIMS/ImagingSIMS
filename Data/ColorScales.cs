@@ -52,11 +52,11 @@ namespace ImagingSIMS.Data.Imaging
             {
                 return Color.FromArgb(255, (byte)(ratio * 768d), 0, 0);
             }
-            else if (ratio >= OneThird && ratio < TwoThirds)
+            else if (ratio < TwoThirds)
             {
                 return Color.FromArgb(255, 255, (byte)((ratio * 768d) - 256d), 0);
             }
-            else if (ratio >= TwoThirds && ratio < One)
+            else if (ratio < One)
             {
                 return Color.FromArgb(255, 255, 255, (byte)((ratio * 768d) - 512d));
             }
@@ -76,11 +76,11 @@ namespace ImagingSIMS.Data.Imaging
             {
                 return Color.FromArgb(255, 0, 0, (byte)(ratio * 768d));
             }
-            else if (ratio >= OneThird && ratio < TwoThirds)
+            else if (ratio < TwoThirds)
             {
                 return Color.FromArgb(255, 0, (byte)((ratio * 768d) - 256d), 255);
             }
-            else if (ratio >= TwoThirds && ratio < One)
+            else if (ratio < One)
             {
                 return Color.FromArgb(255, (byte)((ratio * 768d) - 512d), 255, 255);
             }
@@ -100,11 +100,11 @@ namespace ImagingSIMS.Data.Imaging
             {
                 return Color.FromArgb(255, (byte)(ratio * 768d), (byte)(255 - (ratio * 768d)), 255);
             }
-            else if (ratio >= OneThird && ratio < TwoThirds)
+            else if (ratio < TwoThirds)
             {
                 return Color.FromArgb(255, 255, (byte)((ratio * 768d) - 256d), (byte)(255d - ((ratio * 768d) - 256d)));
             }
-            else if (ratio >= TwoThirds && ratio < One)
+            else if (ratio < One)
             {
                 return Color.FromArgb(255, 255, 255, (byte)((ratio * 768d) - 512d));
             }
@@ -127,11 +127,11 @@ namespace ImagingSIMS.Data.Imaging
             {
                 return Color.FromArgb(255, (byte)(255 - (ratio * 768d)), (byte)(ratio * 768d), 255);
             }
-            else if (ratio >= OneThird && ratio < TwoThirds)
+            else if (ratio < TwoThirds)
             {
                 return Color.FromArgb(255, (byte)((ratio * 768d) - 256d), 255, (byte)(255d - ((ratio * 768d) - 256d)));
             }
-            else if (ratio >= TwoThirds && ratio < One)
+            else if (ratio < One)
             {
                 return Color.FromArgb(255, 255, 255, (byte)((ratio * 768d) - 512d));
             }
@@ -174,7 +174,7 @@ namespace ImagingSIMS.Data.Imaging
             {
                 return Color.FromArgb(255, 0, (byte)(ratio * 512d ), 0);
             }
-            else if (ratio >= OneHalf && ratio < One)
+            else if (ratio < One)
             {
                 return Color.FromArgb(255, (byte)(ratio * 512d - 256d), 255, (byte)(ratio * 512d - 256d));
             }
@@ -193,7 +193,7 @@ namespace ImagingSIMS.Data.Imaging
             {
                 return Color.FromArgb(255, (byte)(ratio * 512d), 0, 0);
             }
-            else if (ratio >= OneHalf && ratio < One)
+            else if (ratio < One)
             {
                 return Color.FromArgb(255, 255, (byte)(ratio * 512d - 256d), (byte)(ratio * 512d - 256d));
             }
@@ -212,7 +212,7 @@ namespace ImagingSIMS.Data.Imaging
             {
                 return Color.FromArgb(255, 0, 0, (byte)(ratio * 512d));
             }
-            else if (ratio >= OneHalf && ratio < One)
+            else if (ratio < One)
             {
                 return Color.FromArgb(255, (byte)(ratio * 512d - 256d), (byte)(ratio * 512d - 256d), 255);
             }
@@ -231,7 +231,7 @@ namespace ImagingSIMS.Data.Imaging
             {
                 return Color.FromArgb(255, (byte)(ratio * 512d), 0, (byte)(ratio * 512d));
             }
-            else if (ratio >= OneHalf && ratio < One)
+            else if (ratio < One)
             {
                 return Color.FromArgb(255, 255, (byte)(ratio * 512d - 256d), 255);
             }
@@ -250,7 +250,7 @@ namespace ImagingSIMS.Data.Imaging
             {
                 return Color.FromArgb(255, (byte)(ratio * 512d), (byte)(ratio * 512d), 0);
             }
-            else if (ratio >= OneHalf && ratio < One)
+            else if (ratio < One)
             {
                 return Color.FromArgb(255, 255, 255, (byte)(ratio * 512d - 256d));
             }
@@ -269,7 +269,7 @@ namespace ImagingSIMS.Data.Imaging
             {
                 return Color.FromArgb(255, 0, (byte)(ratio * 512d), (byte)(ratio * 512d));
             }
-            else if (ratio >= OneHalf && ratio < One)
+            else if (ratio < One)
             {
                 return Color.FromArgb(255, (byte)(ratio * 512d - 256d), 255, 255);
             }
@@ -289,27 +289,27 @@ namespace ImagingSIMS.Data.Imaging
             {
                 return Color.FromArgb(255, 0, 0, (byte)(ratio * 1792d));
             }
-            else if(ratio >= OneSeventh && ratio < TwoSevenths) // blue to cyan
+            else if(ratio < TwoSevenths) // blue to cyan
             {
                 return Color.FromArgb(255, 0, (byte)(ratio * 1792d - 256d), 255);
             }
-            else if(ratio >= TwoSevenths && ratio < ThreeSevenths) // cyan to green
+            else if(ratio < ThreeSevenths) // cyan to green
             {
                 return Color.FromArgb(255, 0, 255, (byte)(255 - (ratio * 1792d - 512d)));
             }
-            else if(ratio >= ThreeSevenths && ratio < FourSevenths) // green to yellow
+            else if(ratio < FourSevenths) // green to yellow
             {
                 return Color.FromArgb(255, (byte)(ratio * 1792d - 768d), 255, 0);
             }
-            else if(ratio >= FourSevenths && ratio < FiveSevenths) // yellow to red
+            else if(ratio < FiveSevenths) // yellow to red
             {
                 return Color.FromArgb(255, 255, (byte)(255 - (ratio * 1792d - 1024d)), 0);
             }
-            else if(ratio >= FiveSevenths && ratio < SixSevenths) // red to magenta
+            else if(ratio < SixSevenths) // red to magenta
             {
                 return Color.FromArgb(255, 255, 0, (byte)(ratio * 1792d - 1280d));
             }
-            else if(ratio >= SixSevenths && ratio < One) // magenta to white
+            else if(ratio < One) // magenta to white
             {
                 return Color.FromArgb(255, 255, (byte)(ratio * 1792d - 1536d), 255);
             }
@@ -329,11 +329,11 @@ namespace ImagingSIMS.Data.Imaging
             {
                 return Color.FromArgb(255, 0, (byte)(ratio * 768d), 255);
             }
-            else if (ratio >= OneThird && ratio < TwoThirds) // cyan to yellow
+            else if (ratio < TwoThirds) // cyan to yellow
             {
                 return Color.FromArgb(255, (byte)(ratio * 768d - 256d), 255, (byte)(255 - (ratio * 768d - 256d)));
             }
-            else if(ratio >= TwoThirds && ratio < One) // yellow to red
+            else if(ratio < One) // yellow to red
             {
                 return Color.FromArgb(255, 255, (byte)(255 - (ratio * 768d - 512d)), 0);
             }
@@ -342,6 +342,59 @@ namespace ImagingSIMS.Data.Imaging
                 return Color.FromArgb(255, 255, 0, 0);
             }
             else return Color.FromArgb(255, 0, 0, 0);
+        }
+        public static Color Viridis(double Value, double Maximum)
+        {
+            double ratio = Value / Maximum;
+
+            if (ratio == Zero) return Color.FromArgb(255, 68, 1, 84);
+
+            double remainder = ratio;
+            if(ratio < OneEighth) // (68, 1, 84) to (71, 44, 122)
+            {
+                return BetweenRange(Color.FromArgb(255, 68, 1, 84), Color.FromArgb(255, 71, 44, 122), remainder, OneEighth);
+            }
+            if (ratio < OneQuarter) // (71, 44, 122) to (59, 81, 139)
+            {
+                remainder -= OneEighth;
+                return BetweenRange(Color.FromArgb(255, 71, 44, 122), Color.FromArgb(255, 59, 81, 139), remainder, OneEighth);
+            }
+            if (ratio < ThreeEighths) // (59, 81, 139) to (44, 113, 142)
+            {
+                remainder -= OneQuarter;
+                return BetweenRange(Color.FromArgb(255, 59, 81, 139), Color.FromArgb(255, 44, 113, 142), remainder, OneEighth);
+            }
+            if (ratio < OneHalf) // (44, 113, 142) to (33, 144, 141)
+            {
+                remainder -= ThreeEighths;
+                return BetweenRange(Color.FromArgb(255, 44, 113, 142), Color.FromArgb(255, 33, 144, 141), remainder, OneEighth);
+            }
+            if (ratio < FiveEighths) // (33, 144, 141) to (39, 173, 129)
+            {
+                remainder -= OneHalf;
+                return BetweenRange(Color.FromArgb(255, 33, 144, 141), Color.FromArgb(255, 39, 173, 129), remainder, OneEighth);
+            }
+            if (ratio < ThreeQuarters) // (39, 173, 129) to (99, 200, 99)
+            {
+                remainder -= FiveEighths;
+                return BetweenRange(Color.FromArgb(255, 39, 173, 129), Color.FromArgb(255, 99, 200, 99), remainder, OneEighth);
+            }
+            if (ratio < SevenEighths) // (99, 200, 99) to (170, 220, 50)
+            {
+                remainder -= ThreeQuarters;
+                return BetweenRange(Color.FromArgb(255, 99, 200, 99), Color.FromArgb(255, 170, 220, 50), remainder, OneEighth);
+            }
+            if (ratio < One) // (170, 220, 50) to (253, 231, 32)
+            {
+                remainder -= SevenEighths;
+                return BetweenRange(Color.FromArgb(255, 170, 220, 50), Color.FromArgb(255, 253, 231, 32), remainder, OneEighth);
+            }
+            if (ratio >= One)
+            {
+                return Color.FromArgb(255, 253, 231, 37);
+            }
+
+            return Color.FromArgb(255, 0, 0, 0);
         }
 
         public static Color FromScale(double Value, double Maximum, ColorScaleTypes Type, 
@@ -377,8 +430,19 @@ namespace ImagingSIMS.Data.Imaging
                     return Rainbow(Value, Maximum);
                 case ColorScaleTypes.HeatMap:
                     return HeatMap(Value, Maximum);
+                case ColorScaleTypes.Viridis:
+                    return Viridis(Value, Maximum);
                 default: return ThermalWarm(Value, Maximum);
             }
+        }
+
+        private static Color BetweenRange(Color color1, Color color2, double value, double range)
+        {
+            return Color.FromArgb(255,
+                (byte)(color1.R + ((color2.R - color1.R) * (value / range))),
+                (byte)(color1.G + ((color2.G - color1.G) * (value / range))),
+                (byte)(color1.B + ((color2.B - color1.B) * (value / range)))
+                );
         }
     }
 
@@ -420,5 +484,7 @@ namespace ImagingSIMS.Data.Imaging
 
         [Description("Heat Map")]
         HeatMap,
+
+        Viridis,
     }
 }

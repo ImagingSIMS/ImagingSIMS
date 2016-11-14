@@ -76,15 +76,7 @@
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
             <TextBlock>Selection:</TextBlock>
-            <Button x:Name="buttonShowColor" Width="20" Height="20" Margin="4" 
-                    MouseEnter="buttonShowColor_MouseEnter" Click="buttonShowColor_Click">
-                <Image Source="..\Images\PaintPalette.ico"/>
-            </Button>
-            <Popup x:Name="popupSolidColorScale" IsOpen="False" PlacementTarget="{Binding ElementName=buttonShowColor}" StaysOpen="False">
-                <Grid Background="{StaticResource MenuBackground}">
-                    <cc:ColorSelector SelectedColor="{Binding Mode=TwoWay, ElementName=userControl, Path=SelectionColor}" IsAlphaEnabled="False"/>
-                </Grid>
-            </Popup>
+            <cc:CollapsedColorSelector SelectedColor="{Binding ElementName=userControl, Path=SelectionColor, Mode=TwoWay}" IsAlphaEnabled="False"/>
         </StackPanel>
         
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="3">

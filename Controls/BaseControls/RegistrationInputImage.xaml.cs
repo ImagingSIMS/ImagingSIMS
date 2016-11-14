@@ -18,6 +18,7 @@ using Microsoft.Win32;
 
 using ImagingSIMS.Data;
 using ImagingSIMS.Data.Imaging;
+using ImagingSIMS.Common.Controls;
 
 namespace ImagingSIMS.Controls.BaseControls
 {
@@ -37,7 +38,7 @@ namespace ImagingSIMS.Controls.BaseControls
         public static readonly DependencyProperty IsPointBasedProperty = DependencyProperty.Register("IsPointBased",
             typeof(bool), typeof(RegistrationInputImage), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.None, isPointBasedChanged));
         public static readonly DependencyProperty SelectionColorProperty = DependencyProperty.Register("SelectionColor",
-            typeof(Color), typeof(RegistrationInputImage), new FrameworkPropertyMetadata(Color.FromArgb(255, 0, 255, 0), FrameworkPropertyMetadataOptions.None, updateOverlayImage));
+            typeof(NotifiableColor), typeof(RegistrationInputImage), new FrameworkPropertyMetadata(NotifiableColor.FromArgb(255, 0, 255, 0), FrameworkPropertyMetadataOptions.None, updateOverlayImage));
         public static readonly DependencyProperty PointSourceProperty = DependencyProperty.Register("PointSource",
             typeof(PointSource), typeof(RegistrationInputImage), new FrameworkPropertyMetadata(PointSource.Selection));
         public static readonly DependencyProperty CanSelectROIProperty = DependencyProperty.Register("CanSelectROI",
@@ -68,9 +69,9 @@ namespace ImagingSIMS.Controls.BaseControls
             get { return (bool)GetValue(IsPointBasedProperty); }
             set { SetValue(IsPointBasedProperty, value); }
         }
-        public Color SelectionColor
+        public NotifiableColor SelectionColor
         {
-            get { return (Color)GetValue(SelectionColorProperty); }
+            get { return (NotifiableColor)GetValue(SelectionColorProperty); }
             set { SetValue(SelectionColorProperty, value); }
         }
         public PointSource PointSource
@@ -192,13 +193,15 @@ namespace ImagingSIMS.Controls.BaseControls
                 }
             }
 
+            var colorArray = ((Color)SelectionColor).ToFloatArray();
+
             for (int x = 0; x < _dataSource.Width; x++)
             {
                 for (int y = 0; y < _dataSource.Height; y++)
                 {
                     if (pointMask[x, y])
                     {
-                        imagePreview[x, y] = SelectionColor.ToFloatArray();
+                        imagePreview[x, y] = colorArray;
                     }
                     else
                     {
@@ -323,14 +326,6 @@ namespace ImagingSIMS.Controls.BaseControls
             SelectedPoints.Add(new Point(x, y));
         }
 
-        private void buttonShowColor_MouseEnter(object sender, RoutedEventArgs e)
-        {
-            popupSolidColorScale.IsOpen = true;
-        }
-        private void buttonShowColor_Click(object sender, RoutedEventArgs e)
-        {
-            popupSolidColorScale.IsOpen = true;
-        }
         private void buttonSave_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
