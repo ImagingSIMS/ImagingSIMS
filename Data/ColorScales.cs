@@ -396,6 +396,54 @@ namespace ImagingSIMS.Data.Imaging
 
             return Color.FromArgb(255, 0, 0, 0);
         }
+        public static Color RedBlackGreen(double Value)
+        {
+            var abs = Math.Abs(Value);
+            if (Value <= -1)
+                return Color.FromArgb(255, 255, 0, 0);
+            if (Value < 0)
+                return Color.FromArgb(255, (byte)(abs * 255), 0, 0);
+            if (Value == 0)
+                return Color.FromArgb(255, 0, 0, 0);
+            if (Value < 1)
+                return Color.FromArgb(255, 0, (byte)(abs * 255), 0);
+            if (Value >= 1)
+                return Color.FromArgb(255, 0, 255, 0);
+
+            return Color.FromArgb(255, 0, 0, 0);
+        }
+        public static Color RedBlackBlue(double Value)
+        {
+            var abs = Math.Abs(Value);
+            if (Value <= -1)
+                return Color.FromArgb(255, 255, 0, 0);
+            if (Value < 0)
+                return Color.FromArgb(255, (byte)(abs * 255), 0, 0);
+            if (Value == 0)
+                return Color.FromArgb(255, 0, 0, 0);
+            if (Value < 1)
+                return Color.FromArgb(255, 0, 0, (byte)(abs * 255));
+            else if (Value >= 1)
+                return Color.FromArgb(255, 0, 255, 0);
+
+            return Color.FromArgb(255, 0, 0, 0);
+        }
+        public static Color GreenBlackBlue(double Value)
+        {
+            var abs = Math.Abs(Value);
+            if (Value <= -1)
+                return Color.FromArgb(255, 255, 0, 0);
+            if (Value < 0)
+                return Color.FromArgb(255, 0, (byte)(abs * 255), 0);
+            if (Value == 0)
+                return Color.FromArgb(255, 0, 0, 0);
+            if (Value < 1)
+                return Color.FromArgb(255, 0, 0, (byte)(abs * 255));
+            else if (Value >= 1)
+                return Color.FromArgb(255, 0, 255, 0);
+
+            return Color.FromArgb(255, 0, 0, 0);
+        }
 
         public static Color FromScale(double Value, double Maximum, ColorScaleTypes Type, 
             Color SolidColor = new Color())
@@ -432,6 +480,12 @@ namespace ImagingSIMS.Data.Imaging
                     return HeatMap(Value, Maximum);
                 case ColorScaleTypes.Viridis:
                     return Viridis(Value, Maximum);
+                case ColorScaleTypes.RedBlackGreen:
+                    return RedBlackGreen(Value);
+                case ColorScaleTypes.RedBlackBlue:
+                    return RedBlackBlue(Value);
+                case ColorScaleTypes.GreenBlackBlue:
+                    return GreenBlackBlue(Value);
                 default: return ThermalWarm(Value, Maximum);
             }
         }
@@ -486,5 +540,14 @@ namespace ImagingSIMS.Data.Imaging
         HeatMap,
 
         Viridis,
+
+        [Description("Red-Black-Green")]
+        RedBlackGreen,
+
+        [Description("Red-Black-Blue")]
+        RedBlackBlue,
+
+        [Description("Green-Black-Blue")]
+        GreenBlackBlue,
     }
 }
