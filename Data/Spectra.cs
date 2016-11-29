@@ -2524,7 +2524,13 @@ namespace ImagingSIMS.Data.Spectra
                                 layerSpecies[x, y] = tempValues[recordNum, y, x];
                             }
                         }
-                        layer[r] = layerSpecies;
+                        // If layer is not saturated with same value, add to species 
+                        // otherwise add blank layer
+                        if (!checkForSaturatedLayer(layerSpecies))
+                        {
+                            layer[r] = layerSpecies;
+                        }
+                        else layer[r] = new Data2D(imageSize, imageSize);
                     }
                     _matrix.Add(layer);
                 }
@@ -2898,6 +2904,28 @@ namespace ImagingSIMS.Data.Spectra
                     _matrix.Add(layer);
                 }
             }
+        }
+
+        /// <summary>
+        /// Analyzes a layer to determine if all value are the same (equal to maximum) which indicates something went wrong during acquisition. 
+        /// Check returns false if the maximum is zero.
+        /// </summary>
+        /// <param name="layer"></param>
+        /// <returns>True if all values are the same and greater than zero, false otherwise. </returns>
+        private bool checkForSaturatedLayer(Data2D layer)
+        {
+            var max = layer.Maximum;
+            if (max == 0) return false;
+
+            for (int x = 0; x < layer.Width; x++)
+            {
+                for (int y = 0; y < layer.Height; y++)
+                {
+                    if (layer[x, y] != max)
+                        return false;
+                }
+            }
+            return true;
         }
     }
 
