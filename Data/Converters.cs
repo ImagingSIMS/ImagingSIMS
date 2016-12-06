@@ -488,7 +488,7 @@ namespace ImagingSIMS.Data.Converters
         }
         public static RGB HSLtoRGB(HSL hsl)
         {
-            if (hsl.H < 0 || hsl.H > 360 || hsl.L < 0 || hsl.L > 1 || hsl.S < 0 || hsl.S > 1)
+            if (hsl.H < 0 || hsl.H > 360 || hsl.S < 0 || hsl.S > 1 || hsl.L < 0 || hsl.L > 1)
                 throw new ArgumentException("Invalid HSL color. Color channels not scaled to [0,360) [0,1) [0,1).");
 
             // http://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
@@ -595,6 +595,44 @@ namespace ImagingSIMS.Data.Colors
             H = ihs[1];
             S = ihs[2];
         }
+
+        public IHS ClampIfNecessary(double tolerance = 0.001)
+        {
+            return ClampIfNecessary(this, tolerance);
+        }
+        public static IHS ClampIfNecessary(IHS ihs, double tolerance = 0.001)
+        {
+            double i = ihs.I;
+            double h = ihs.H;
+            double s = ihs.S;
+
+            if (ihs.I < 0 || ihs.I > 3)
+            {
+                if (ihs.I < 0 && ihs.I > 0 - tolerance)
+                    i = 0;
+                else if (ihs.I < 3 + tolerance)
+                    i = 3;
+                else throw new ArgumentException("Invalid IHS color. Color channels not scaled to [0,3) [0,3) [0,1).");
+            }
+            if (ihs.H < 0 || ihs.H > 3)
+            {
+                if (ihs.H < 0 && ihs.H > 0 - tolerance)
+                    h = 0;
+                else if (ihs.H < 3 + tolerance)
+                    h = 3;
+                else throw new ArgumentException("Invalid IHS color. Color channels not scaled to [0,3) [0,3) [0,1).");
+            }
+            if (ihs.S < 0 || ihs.S > 1)
+            {
+                if (ihs.S < 0 && ihs.S > 0 - tolerance)
+                    s = 0;
+                else if (ihs.S < 1 + tolerance)
+                    s = 1;
+                else throw new ArgumentException("Invalid IHS color. Color channels not scaled to [0,3) [0,3) [0,1).");
+            }
+
+            return new IHS(i, h, s);
+        }
     }
     public struct HSL
     {
@@ -613,6 +651,44 @@ namespace ImagingSIMS.Data.Colors
             H = hsl[0];
             S = hsl[1];
             L = hsl[2];
+        }
+
+        public HSL ClampIfNecessary(double tolerance = 0.001)
+        {
+            return ClampIfNecessary(this, tolerance);
+        }
+        public static HSL ClampIfNecessary(HSL hsl, double tolerance = 0.001)
+        {
+            double h = hsl.H;
+            double s = hsl.S;
+            double l = hsl.L;
+
+            if (hsl.H < 0 || hsl.H > 360)
+            {
+                if (hsl.H < 0 && hsl.H > 0 - tolerance)
+                    h = 0;
+                else if (hsl.H < 360 + tolerance)
+                    h = 360;
+                else throw new ArgumentException("Invalid HSL color. Color channels not scaled to [0,360) [0,1) [0,1).");
+            }
+            if (hsl.S < 0 || hsl.S > 1)
+            {
+                if (hsl.S < 0 && hsl.S > 0 - tolerance)
+                    s = 0;
+                else if (hsl.S < 1 + tolerance)
+                    s = 1;
+                else throw new ArgumentException("Invalid HSL color. Color channels not scaled to [0,360) [0,1) [0,1).");
+            }
+            if (hsl.L < 0 || hsl.L > 1)
+            {
+                if (hsl.L < 0 && hsl.L > 0 - tolerance)
+                    l = 0;
+                else if (hsl.L < 1 + tolerance)
+                    l = 1;
+                else throw new ArgumentException("Invalid HSL color. Color channels not scaled to [0,360) [0,1) [0,1).");
+            }
+
+            return new HSL(h, s, l);
         }
     }
     public struct RGB
@@ -664,6 +740,44 @@ namespace ImagingSIMS.Data.Colors
             {
                 return Color.FromArgb(255, (byte)R, (byte)G, (byte)B);
             }
+        }
+
+        public RGB ClampIfNecessary(double tolerance = 0.001)
+        {
+            return ClampIfNecessary(this, tolerance);
+        }
+        public static RGB ClampIfNecessary(RGB rgb, double tolerance = 0.001)
+        {
+            double r = rgb.R;
+            double g = rgb.G;
+            double b = rgb.B;
+
+            if (rgb.R < 0 || rgb.R > 255)
+            {
+                if (rgb.R < 0 && rgb.R > 0 - tolerance)
+                    r = 0;
+                else if (rgb.R < 255 + tolerance)
+                    r = 255;
+                else throw new ArgumentException("Invalid RGB color. Color channels not scaled to [0,255) [0,255) [0,255).");
+            }
+            if (rgb.G < 0 || rgb.G > 255)
+            {
+                if (rgb.G < 0 && rgb.G > 0 - tolerance)
+                    g = 0;
+                else if (rgb.G < 255 + tolerance)
+                    g = 255;
+                else throw new ArgumentException("Invalid RGB color. Color channels not scaled to [0,255) [0,255) [0,255).");
+            }
+            if (rgb.B < 0 || rgb.B > 255)
+            {
+                if (rgb.B < 0 && rgb.B > 0 - tolerance)
+                    b = 0;
+                else if (rgb.B < 255 + tolerance)
+                    b = 255;
+                else throw new ArgumentException("Invalid RGB color. Color channels not scaled to [0,255) [0,255) [0,255).");
+            }
+
+            return new RGB(r, g, b);
         }
     }
 
