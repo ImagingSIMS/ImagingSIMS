@@ -16,6 +16,7 @@ using Accord.Statistics.Analysis;
 using Accord.Math;
 using Accord.Statistics;
 using Accord.Math.Decompositions;
+using ImagingSIMS.Data.Colors;
 
 namespace ImagingSIMS.Data.Fusion
 {
@@ -925,7 +926,6 @@ namespace ImagingSIMS.Data.Fusion
             // 1. The resampled multi-spectral image is transformed with PCA
 
             int linearLength = _highResSizeX * _highResSizeY;
-            int numberComponents = 3;
 
             double[,] msLinearData = new double[linearLength, 3];
             double[,] msIhsData = new double[linearLength, 3];
@@ -938,27 +938,52 @@ namespace ImagingSIMS.Data.Fusion
                 {
                     int index = y * _highResSizeX + x;
 
-                    msLinearData[index, 0] = _color.Layers[2][x, y];
-                    msLinearData[index, 1] = _color.Layers[1][x, y];
-                    msLinearData[index, 2] = _color.Layers[0][x, y];
+                    var rgb = new RGB(_color.Layers[2][x, y], _color.Layers[1][x, y], _color.Layers[0][x, y]);
+                    rgb = rgb.Normalize();
+
+                    msLinearData[index, 0] = rgb.R;
+                    msLinearData[index, 1] = rgb.G;
+                    msLinearData[index, 2] = rgb.B;
 
                     panLinearData[index] = _gray[x, y];
 
-                    var ihs = ColorConversion.RGBtoIHS(msLinearData[index, 0] / 255d, msLinearData[index, 1] / 255d, msLinearData[index, 2] / 255d);
-                    msIhsData[index, 0] = ihs[0];
-                    msIhsData[index, 1] = ihs[1];
-                    msIhsData[index, 2] = ihs[2];
+                    var ihs = ColorConversion.RGBtoIHS(rgb);
 
-                    intensityBand[index] = ihs[0];
+                    msIhsData[index, 0] = ihs.I;
+                    msIhsData[index, 1] = ihs.H;
+                    msIhsData[index, 2] = ihs.S;
+
+                    intensityBand[index] = ihs.I;
+                }
+            }
+            
+            var svd = new SingularValueDecomposition(msLinearData, true, true, false, false);
+            var u = svd.LeftSingularVectors;
+
+            // 2. The panchromatic image is smoothed by a Gaussian filter. 
+            Data2D smoothed = Filter.DoFilter(_gray, FilterType.LowPass);
+
+            // 3.  The high spatial detail of panchromatic image is extracted
+            //      as the difference between the original panchromatic
+            //      image and the smoothed one. 
+
+            double[] highSpatialDetail = new double[linearLength];
+            for (int x = 0; x < _highResSizeX; x++)
+            {
+                for (int y = 0; y < _highResSizeY; y++)
+                {
+                    int index = y * _highResSizeX + x;
+
+                    highSpatialDetail[index] = _gray[x, y] - smoothed[x, y];
+                    //highSpatialDetail[index] = _gray[x, y];
                 }
             }
 
-
-            HistogramMatching hist = new HistogramMatching(panLinearData.ToFloatArray(), intensityBand.ToFloatArray());
-            var panMatched = hist.Match1D();
-
-            var svd = new SingularValueDecomposition(msIhsData, true, true, false, false);
-            var u = svd.LeftSingularVectors;
+            // 4. A linear combination of the extracted high spatial detail
+            //      of the panchromatic image into the first principal
+            //      component using a gain parameter as the ratio of standard
+            //      deviation of pc1 to standard deviation of panchromatic
+            //      image.
 
             double[] pc1 = new double[linearLength];
             for (int i = 0; i < linearLength; i++)
@@ -966,11 +991,18 @@ namespace ImagingSIMS.Data.Fusion
                 pc1[i] = u[i, 0];
             }
 
-            for (int i = 0; i < linearLength; i++)
-            {
-                u[i, 0] = panMatched[i];
+            HistogramMatching hist = new HistogramMatching(highSpatialDetail.ToFloatArray(), pc1.ToFloatArray());
+            //highSpatialDetail = hist.Match1D().ToDoubleArray();
 
-            }
+            double pcMin = pc1.Min();
+            double pcMax = pc1.Max();
+            double panMin = highSpatialDetail.Min();
+            double panMax = highSpatialDetail.Max();
+
+            //for (int i = 0; i < linearLength; i++)
+            //{
+            //    u[i, 0] = ((highSpatialDetail[i] - panMin) / (panMax - panMin)) * (pcMax - pcMax) + pcMin;
+            //}
 
             var reverted = svd.Reverse();
             var fused = new Data3D(_highResSizeX, _highResSizeY, 4);
@@ -981,9 +1013,12 @@ namespace ImagingSIMS.Data.Fusion
                 {
                     int index = y * _highResSizeX + x;
 
-                    fused.Layers[2][x, y] = (float)reverted[index, 0];
-                    fused.Layers[1][x, y] = (float)reverted[index, 1];
-                    fused.Layers[0][x, y] = (float)reverted[index, 2];
+                    var ihs = new IHS(reverted[index, 0], reverted[index, 1], reverted[index, 2]);
+                    var rgb = ColorConversion.IHStoRGB(ihs);
+
+                    fused.Layers[2][x, y] = (float)rgb.R;
+                    fused.Layers[1][x, y] = (float)rgb.G;
+                    fused.Layers[0][x, y] = (float)rgb.B;
                 }
             }
 
