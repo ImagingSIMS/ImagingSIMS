@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 
 using ImagingSIMS.Common;
 using ImagingSIMS.Common.Math;
+using ImagingSIMS.Data.Colors;
 using ImagingSIMS.Data.Converters;
 
 namespace ImagingSIMS.Data.Imaging
@@ -1634,9 +1635,9 @@ namespace ImagingSIMS.Data.Imaging
         private static XYZ RGBtoXYZ(RGB RGB)
         {
             // normalize red, green, blue values
-            double rLinear = (double)RGB.r / 255.0;
-            double gLinear = (double)RGB.g / 255.0;
-            double bLinear = (double)RGB.b / 255.0;
+            double rLinear = RGB.R / 255;
+            double gLinear = RGB.G / 255;
+            double bLinear = RGB.B / 255;
 
             // convert to a sRGB form
             double r = (rLinear > 0.04045) ? Math.Pow((rLinear + 0.055) / (
@@ -1714,124 +1715,6 @@ namespace ImagingSIMS.Data.Imaging
         private static Color ArrayToColor(double[] Array)
         {
             return Color.FromRgb((byte)Array[0], (byte)Array[1], (byte)Array[2]);
-        }
-    }
-
-    internal struct RGB
-    {
-        private double red;
-        private double green;
-        private double blue;
-
-        public double r
-        {
-            get { return red; }
-            set
-            {
-                red = (value > 255) ? 255 : ((value < 0) ? 0 : value);
-            }
-        }
-        public double g
-        {
-            get { return green; }
-            set
-            {
-                green = (value > 255) ? 255 : ((value < 0) ? 0 : value);
-            }
-        }
-        public double b
-        {
-            get { return blue; }
-            set
-            {
-                blue = (value > 255) ? 255 : ((value < 0) ? 0 : value);
-            }
-        }
-
-        public RGB(double r, double g, double b)
-        {
-            red = (r > 255) ? 255 : ((r < 0) ? 0 : r);
-            green = (g > 255) ? 255 : ((g < 0) ? 0 : g);
-            blue = (b > 255) ? 255 : ((b < 0) ? 0 : b);
-        }
-        public RGB(Color c)
-        {
-            red = (c.R > 255) ? 255 : ((c.R < 0) ? 0 : c.R);
-            green = (c.G > 255) ? 255 : ((c.G < 0) ? 0 : c.G);
-            blue = (c.B > 255) ? 255 : ((c.B < 0) ? 0 : c.B);
-        }
-        public Color Color
-        {
-            get 
-            { 
-                return Color.FromArgb(0, (byte)r, (byte)g, (byte)b);
-            }
-        }
-    }
-    internal struct XYZ
-    {
-        private double X;
-        private double Y;
-        private double Z;
-
-        public double x
-        {
-            get { return X; }
-            set
-            {
-                X = (value > 0.9505) ? 0.9505 : ((value < 0) ? 0 : value);
-            }
-        }
-        public double y
-        {
-            get { return Y; }
-            set
-            {
-                Y = (value > 0.9505) ? 0.9505 : ((value < 0) ? 0 : value);
-            }
-        }
-        public double z
-        {
-            get { return Z; }
-            set
-            {
-                Z = (value > 1.089) ? 1.089 : ((value < 0) ? 0 : value);
-            }
-
-        }
-
-        /// <summary>
-        /// Gets an empty CIEXYZ structure.
-        /// </summary>
-        public static readonly XYZ Empty = new XYZ();
-        /// <summary>
-        /// Gets the CIE D65 (white) structure.
-        /// </summary>
-        public static readonly XYZ D65 = new XYZ(0.9505, 1.0, 1.0890);
-
-        public XYZ(double x, double y, double z)
-        {
-            X = (x > 0.9505) ? 0.9505 : ((x < 0) ? 0 : x);
-            Y = (y > 1.0) ? 1.0 : ((y < 0) ? 0 : y);
-            Z = (z > 1.089) ? 1.089 : ((z < 0) ? 0 : z);
-        }
-    }
-    internal struct LAB
-    {
-        public double l;
-        public double a;
-        public double b;
-
-        /// <summary>
-        /// Gets an empty CIELab structure.
-        /// </summary>
-        public static readonly LAB Empty = new LAB();
-
-        public LAB(double l, double a, double b)
-        {
-            this.l = l;
-            this.a = a;
-            this.b = b;
         }
     }
 
