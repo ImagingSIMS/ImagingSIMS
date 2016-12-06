@@ -5,13 +5,15 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>70070e3d-6896-4dd3-b7aa-be5052c57e2b</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>PCA.py</StartupFile>
+    <StartupFile>Fusion.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>Python</Name>
     <RootNamespace>Python</RootNamespace>
+    <InterpreterId>{c97cacda-797d-4186-93ae-f31296b8c944}</InterpreterId>
+    <InterpreterVersion>3.5</InterpreterVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,10 +24,17 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Fusion.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PCA.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Testing.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="{2af0f10d-7135-4994-9156-5d01c9c11b7e}\3.5" />
+    <InterpreterReference Include="{c97cacda-797d-4186-93ae-f31296b8c944}\3.5" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -15,6 +15,7 @@ using Matrix = DotNumerics.LinearAlgebra.Matrix;
 using Accord.Statistics.Analysis;
 using Accord.Math;
 using Accord.Statistics;
+using Accord.Math.Decompositions;
 
 namespace ImagingSIMS.Data.Fusion
 {
@@ -927,6 +928,9 @@ namespace ImagingSIMS.Data.Fusion
             int numberComponents = 3;
 
             double[,] msLinearData = new double[linearLength, 3];
+            double[,] msIhsData = new double[linearLength, 3];
+            double[] panLinearData = new double[linearLength];
+            double[] intensityBand = new double[linearLength];
 
             for (int x = 0; x < _highResSizeX; x++)
             {
@@ -938,87 +942,38 @@ namespace ImagingSIMS.Data.Fusion
                     msLinearData[index, 1] = _color.Layers[1][x, y];
                     msLinearData[index, 2] = _color.Layers[0][x, y];
 
+                    panLinearData[index] = _gray[x, y];
+
+                    var ihs = ColorConversion.RGBtoIHS(msLinearData[index, 0] / 255d, msLinearData[index, 1] / 255d, msLinearData[index, 2] / 255d);
+                    msIhsData[index, 0] = ihs[0];
+                    msIhsData[index, 1] = ihs[1];
+                    msIhsData[index, 2] = ihs[2];
+
+                    intensityBand[index] = ihs[0];
                 }
             }
 
 
-            PrincipalComponentAnalysis pca = new PrincipalComponentAnalysis(msLinearData, AnalysisMethod.Center);
-            pca.Compute();
+            HistogramMatching hist = new HistogramMatching(panLinearData.ToFloatArray(), intensityBand.ToFloatArray());
+            var panMatched = hist.Match1D();
 
-            // 2. The panchromatic image is smoothed by a Gaussian filter. 
+            var svd = new SingularValueDecomposition(msIhsData, true, true, false, false);
+            var u = svd.LeftSingularVectors;
 
-            Data2D smoothed = Filter.DoFilter(_gray, FilterType.LowPass);
-
-            // 3.  The high spatial detail of panchromatic image is extracted
-            //      as the difference between the original panchromatic
-            //      image and the smoothed one. 
-
-            double[] highSpatialDetail = new double[linearLength];
-            for (int x = 0; x < _highResSizeX; x++)
-            {
-                for (int y = 0; y < _highResSizeY; y++)
-                {
-                    int index = y * _highResSizeX + x;
-
-                    //highSpatialDetail[index] = _gray[x, y] - smoothed[x, y];
-                    highSpatialDetail[index] = _gray[x, y];
-                }
-            }
-
-            // 4. A linear combination of the extracted high spatial detail
-            //      of the panchromatic image into the first principal
-            //      component using a gain parameter as the ratio of standard
-            //      deviation of pc1 to standard deviation of panchromatic
-            //      image.
-
-            //double stdDevGray = _gray.StdDev;
-            //double avgPc1 = 0;
-
-            double[,] components = pca.ComponentMatrix;
-            double[,] transformed = pca.Transform(msLinearData);
-            
-            double[] pc1 = transformed.GetColumn(0);
-
-            HistogramMatching hist = new HistogramMatching(highSpatialDetail.ToFloatArray(), pc1.ToFloatArray());
-            //highSpatialDetail = hist.Match1D().ToDoubleArray();
-
-            //for (int i = 0; i < linearLength; i++)
-            //{
-            //    avgPc1 += pc1[i];
-            //}
-
-            //avgPc1 /= linearLength;
-
-            //double stdDevPca1 = 0;
-            //for (int i = 0; i < linearLength; i++)
-            //{
-            //    stdDevPca1 += ((pc1[i] - avgPc1) * (pc1[i] - avgPc1));
-            //}
-            //stdDevPca1 = Math.Sqrt(stdDevPca1 / linearLength);
-
-            //double a = stdDevPca1 / stdDevGray;
-
-
-            double pcMin = pc1.Min();
-            double pcMax = pc1.Max();
-            double panMin = highSpatialDetail.Min();
-            double panMax = highSpatialDetail.Max();
-
-            double[] replaced = new double[linearLength];
+            double[] pc1 = new double[linearLength];
             for (int i = 0; i < linearLength; i++)
             {
-                replaced[i] = ((highSpatialDetail[i] - panMin) / (panMax - panMin)) * (pcMax - pcMax) + pcMin;
+                pc1[i] = u[i, 0];
             }
 
-            //transformed.SetColumn(0, highSpatialDetail);
-            transformed.SetColumn(0, replaced);
+            for (int i = 0; i < linearLength; i++)
+            {
+                u[i, 0] = panMatched[i];
 
-            // 5. The new first principle component and other principle
-            //      component are transformed with the inverse PCA to
-            //      obtain the pan sharpened multi - spectral image.
+            }
 
-            Data3D fused = new Data3D(_highResSizeX, _highResSizeY, 4);
-            double[,] reverted = pca.Revert(transformed);
+            var reverted = svd.Reverse();
+            var fused = new Data3D(_highResSizeX, _highResSizeY, 4);
 
             for (int x = 0; x < _highResSizeX; x++)
             {
@@ -1033,7 +988,99 @@ namespace ImagingSIMS.Data.Fusion
             }
 
             return fused;
-            //return Data3D.Rescale(fused, 0, 255, 0, 3);
+
+            //PrincipalComponentAnalysis pca = new PrincipalComponentAnalysis(msLinearData, AnalysisMethod.Center);
+            //pca.Compute();
+
+            //// 2. The panchromatic image is smoothed by a Gaussian filter. 
+
+            //Data2D smoothed = Filter.DoFilter(_gray, FilterType.LowPass);
+
+            //// 3.  The high spatial detail of panchromatic image is extracted
+            ////      as the difference between the original panchromatic
+            ////      image and the smoothed one. 
+
+            //double[] highSpatialDetail = new double[linearLength];
+            //for (int x = 0; x < _highResSizeX; x++)
+            //{
+            //    for (int y = 0; y < _highResSizeY; y++)
+            //    {
+            //        int index = y * _highResSizeX + x;
+
+            //        //highSpatialDetail[index] = _gray[x, y] - smoothed[x, y];
+            //        highSpatialDetail[index] = _gray[x, y];
+            //    }
+            //}
+
+            //// 4. A linear combination of the extracted high spatial detail
+            ////      of the panchromatic image into the first principal
+            ////      component using a gain parameter as the ratio of standard
+            ////      deviation of pc1 to standard deviation of panchromatic
+            ////      image.
+
+            ////double stdDevGray = _gray.StdDev;
+            ////double avgPc1 = 0;
+
+            //double[,] components = pca.ComponentMatrix;
+            //double[,] transformed = pca.Transform(msLinearData);
+            
+            //double[] pc1 = transformed.GetColumn(0);
+
+            //HistogramMatching hist = new HistogramMatching(highSpatialDetail.ToFloatArray(), pc1.ToFloatArray());
+            ////highSpatialDetail = hist.Match1D().ToDoubleArray();
+
+            ////for (int i = 0; i < linearLength; i++)
+            ////{
+            ////    avgPc1 += pc1[i];
+            ////}
+
+            ////avgPc1 /= linearLength;
+
+            ////double stdDevPca1 = 0;
+            ////for (int i = 0; i < linearLength; i++)
+            ////{
+            ////    stdDevPca1 += ((pc1[i] - avgPc1) * (pc1[i] - avgPc1));
+            ////}
+            ////stdDevPca1 = Math.Sqrt(stdDevPca1 / linearLength);
+
+            ////double a = stdDevPca1 / stdDevGray;
+
+
+            //double pcMin = pc1.Min();
+            //double pcMax = pc1.Max();
+            //double panMin = highSpatialDetail.Min();
+            //double panMax = highSpatialDetail.Max();
+
+            //double[] replaced = new double[linearLength];
+            //for (int i = 0; i < linearLength; i++)
+            //{
+            //    replaced[i] = ((highSpatialDetail[i] - panMin) / (panMax - panMin)) * (pcMax - pcMax) + pcMin;
+            //}
+
+            ////transformed.SetColumn(0, highSpatialDetail);
+            //transformed.SetColumn(0, replaced);
+
+            //// 5. The new first principle component and other principle
+            ////      component are transformed with the inverse PCA to
+            ////      obtain the pan sharpened multi - spectral image.
+
+            //Data3D fused = new Data3D(_highResSizeX, _highResSizeY, 4);
+            //double[,] reverted = pca.Revert(transformed);
+
+            //for (int x = 0; x < _highResSizeX; x++)
+            //{
+            //    for (int y = 0; y < _highResSizeY; y++)
+            //    {
+            //        int index = y * _highResSizeX + x;
+
+            //        fused.Layers[2][x, y] = (float)reverted[index, 0];
+            //        fused.Layers[1][x, y] = (float)reverted[index, 1];
+            //        fused.Layers[0][x, y] = (float)reverted[index, 2];
+            //    }
+            //}
+
+            //return fused;
+            ////return Data3D.Rescale(fused, 0, 255, 0, 3);
         }
 
         public async override Task<Data3D> DoFusionAsync()

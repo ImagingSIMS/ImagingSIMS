@@ -130,17 +130,30 @@ def matchHistogram(target, reference):
 
 if __name__ == "__main__":
 
-    highRes = misc.imread('D:\\Data\\1a.bmp', mode='F')
-    lowRes = misc.imread('D:\\Data\\4b_m.bmp', mode='RGB')
+    #highRes = misc.imread('D:\\Data\\1a.bmp', mode='F')
+    #lowRes = misc.imread('D:\\Data\\4b_m.bmp', mode='RGB')
 
-    lowRes = upscale(lowRes, highRes)
+    #lowRes = upscale(lowRes, highRes)
 
-    fused = hslFusion(lowRes, highRes)
+    #fused = hslFusion(lowRes, highRes)
 
-    if fused is not None:
-        misc.imsave('D:\\Data\\FusedHSL.bmp', fused)
+    #if fused is not None:
+    #    misc.imsave('D:\\Data\\FusedHSL.bmp', fused)
 
-    fused = dwtFusion(lowRes, highRes)
+    #fused = dwtFusion(lowRes, highRes)
 
-    if fused is not None:
-        misc.imsave('D:\\Data\\FusedDWT.bmp', fused)
+    #if fused is not None:
+    #    misc.imsave('D:\\Data\\FusedDWT.bmp', fused)
+
+    src = np.random.rand(516,516)
+    dest = np.empty((512,512))
+
+    for x in range(512):
+        for y in range(512):
+
+            adjX = x + 2
+            adjY = y + 2
+            subset = src[adjX-2:adjX+3, adjY-2:adjY+3]
+            s = subset.shape
+            assert s[0] == 5 and s[1] == 5, "Array shape is [0,1] at {2},{3}".format(s[0],s[1],x,y)
+            j=0;
