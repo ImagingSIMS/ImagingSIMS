@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 using ImagingSIMS.Data;
+using ImagingSIMS.Data.Colors;
 using ImagingSIMS.Data.Converters;
 
 using SharpDX;
@@ -28,6 +29,41 @@ namespace ConsoleApp
         {
             Console.WriteLine("Press Enter to begin...");
             Console.ReadLine();
+
+            int numTested = 0;
+            int numHslFailed = 0;
+            int numIhsFailed = 0;
+
+            for (int r = 0; r < 256; r++)
+            {
+                for (int g = 0; g < 255; g++)
+                {
+                    for (int b = 0; b < 255; b++)
+                    { 
+                        numTested++;
+
+                        RGB rgb = new RGB(r, g, b);
+                        var hsl = ColorConversion.RGBtoHSL(rgb.Normalize());
+                        var ihs = ColorConversion.RGBtoIHS(rgb.Normalize());
+
+                        var hslBack = ColorConversion.HSLtoRGB(hsl);
+                        var ihsBack = ColorConversion.IHStoRGB(ihs);
+
+                        if (!hslBack.IsClose(rgb, 1))
+                        {
+                            Console.WriteLine($"HSL failed-- R:{r} G:{g} B:{b}");
+                            numHslFailed++;
+                        }
+                        if (!ihsBack.IsClose(rgb))
+                        {
+                            Console.WriteLine($"IHS failed-- R:{r} G:{g} B:{b}");
+                            numIhsFailed++;
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine($"Failed HSL: {(numHslFailed * 100d / numTested).ToString("0.0")}% IHS: {(numIhsFailed * 100d / numTested).ToString("0.0")}%");
 
             //IntPtr windowHandle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
             //var desc = new SwapChainDescription()
@@ -103,8 +139,8 @@ namespace ConsoleApp
             //    }
             //}
 
-            float result = 0f / 1f;
-            Console.WriteLine(result);
+            //float result = 0f / 1f;
+            //Console.WriteLine(result);
 
             Console.Write("Press Enter to exit.");
             Console.ReadLine();
