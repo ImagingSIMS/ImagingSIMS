@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using ImagingSIMS.Data.Colors;
 
 namespace ImagingSIMS.Data.Converters
@@ -649,6 +650,88 @@ namespace ImagingSIMS.Data.Colors
                 Math.Abs(rgb1.B - rgb2.B) < delta)
                 return true;
             else return false;
+        }
+
+        public RGB(Color c)
+        {
+            R = (c.R > 255) ? 255 : ((c.R < 0) ? 0 : c.R);
+            G = (c.G > 255) ? 255 : ((c.G < 0) ? 0 : c.G);
+            B = (c.B > 255) ? 255 : ((c.B < 0) ? 0 : c.B);
+        }
+        public Color Color
+        {
+            get
+            {
+                return Color.FromArgb(255, (byte)R, (byte)G, (byte)B);
+            }
+        }
+    }
+
+    internal struct XYZ
+    {
+        private double X;
+        private double Y;
+        private double Z;
+
+        public double x
+        {
+            get { return X; }
+            set
+            {
+                X = (value > 0.9505) ? 0.9505 : ((value < 0) ? 0 : value);
+            }
+        }
+        public double y
+        {
+            get { return Y; }
+            set
+            {
+                Y = (value > 0.9505) ? 0.9505 : ((value < 0) ? 0 : value);
+            }
+        }
+        public double z
+        {
+            get { return Z; }
+            set
+            {
+                Z = (value > 1.089) ? 1.089 : ((value < 0) ? 0 : value);
+            }
+
+        }
+
+        /// <summary>
+        /// Gets an empty CIEXYZ structure.
+        /// </summary>
+        public static readonly XYZ Empty = new XYZ();
+        /// <summary>
+        /// Gets the CIE D65 (white) structure.
+        /// </summary>
+        public static readonly XYZ D65 = new XYZ(0.9505, 1.0, 1.0890);
+
+        public XYZ(double x, double y, double z)
+        {
+            X = (x > 0.9505) ? 0.9505 : ((x < 0) ? 0 : x);
+            Y = (y > 1.0) ? 1.0 : ((y < 0) ? 0 : y);
+            Z = (z > 1.089) ? 1.089 : ((z < 0) ? 0 : z);
+        }
+    }
+
+    internal struct LAB
+    {
+        public double l;
+        public double a;
+        public double b;
+
+        /// <summary>
+        /// Gets an empty CIELab structure.
+        /// </summary>
+        public static readonly LAB Empty = new LAB();
+
+        public LAB(double l, double a, double b)
+        {
+            this.l = l;
+            this.a = a;
+            this.b = b;
         }
     }
 }
