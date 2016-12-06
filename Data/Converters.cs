@@ -669,7 +669,7 @@ namespace ImagingSIMS.Data.Colors
                     h = 0;
                 else if (hsl.H < 360 + tolerance)
                     h = 360;
-                else throw new ArgumentException("Invalid IHS color. Color channels not scaled to [0,3) [0,3) [0,1).");
+                else throw new ArgumentException("Invalid HSL color. Color channels not scaled to [0,360) [0,1) [0,1).");
             }
             if (hsl.S < 0 || hsl.S > 1)
             {
@@ -677,7 +677,7 @@ namespace ImagingSIMS.Data.Colors
                     s = 0;
                 else if (hsl.S < 1 + tolerance)
                     s = 1;
-                else throw new ArgumentException("Invalid IHS color. Color channels not scaled to [0,3) [0,3) [0,1).");
+                else throw new ArgumentException("Invalid HSL color. Color channels not scaled to [0,360) [0,1) [0,1).");
             }
             if (hsl.L < 0 || hsl.L > 1)
             {
@@ -685,7 +685,7 @@ namespace ImagingSIMS.Data.Colors
                     l = 0;
                 else if (hsl.L < 1 + tolerance)
                     l = 1;
-                else throw new ArgumentException("Invalid IHS color. Color channels not scaled to [0,3) [0,3) [0,1).");
+                else throw new ArgumentException("Invalid HSL color. Color channels not scaled to [0,360) [0,1) [0,1).");
             }
 
             return new HSL(h, s, l);
@@ -758,7 +758,7 @@ namespace ImagingSIMS.Data.Colors
                     r = 0;
                 else if (rgb.R < 255 + tolerance)
                     r = 255;
-                else throw new ArgumentException("Invalid IHS color. Color channels not scaled to [0,3) [0,3) [0,1).");
+                else throw new ArgumentException("Invalid RGB color. Color channels not scaled to [0,255) [0,255) [0,255).");
             }
             if (rgb.G < 0 || rgb.G > 255)
             {
@@ -766,7 +766,7 @@ namespace ImagingSIMS.Data.Colors
                     g = 0;
                 else if (rgb.G < 255 + tolerance)
                     g = 255;
-                else throw new ArgumentException("Invalid IHS color. Color channels not scaled to [0,3) [0,3) [0,1).");
+                else throw new ArgumentException("Invalid RGB color. Color channels not scaled to [0,255) [0,255) [0,255).");
             }
             if (rgb.B < 0 || rgb.B > 255)
             {
@@ -774,7 +774,7 @@ namespace ImagingSIMS.Data.Colors
                     b = 0;
                 else if (rgb.B < 255 + tolerance)
                     b = 255;
-                else throw new ArgumentException("Invalid IHS color. Color channels not scaled to [0,3) [0,3) [0,1).");
+                else throw new ArgumentException("Invalid RGB color. Color channels not scaled to [0,255) [0,255) [0,255).");
             }
 
             return new RGB(r, g, b);
