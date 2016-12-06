@@ -957,7 +957,7 @@ namespace ImagingSIMS.Data.Fusion
                 }
             }
             
-            var svd = new SingularValueDecomposition(msLinearData, true, true, false, false);
+            var svd = new SingularValueDecomposition(msIhsData, true, true, false, false);
             var u = svd.LeftSingularVectors;
 
             // 2. The panchromatic image is smoothed by a Gaussian filter. 
@@ -999,10 +999,10 @@ namespace ImagingSIMS.Data.Fusion
             double panMin = highSpatialDetail.Min();
             double panMax = highSpatialDetail.Max();
 
-            //for (int i = 0; i < linearLength; i++)
-            //{
-            //    u[i, 0] = ((highSpatialDetail[i] - panMin) / (panMax - panMin)) * (pcMax - pcMax) + pcMin;
-            //}
+            for (int i = 0; i < linearLength; i++)
+            {
+                u[i, 0] = ((highSpatialDetail[i] - panMin) / (panMax - panMin)) * (pcMax - pcMax) + pcMin;
+            }
 
             var reverted = svd.Reverse();
             var fused = new Data3D(_highResSizeX, _highResSizeY, 4);
