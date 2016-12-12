@@ -31,6 +31,11 @@ using ImagingSIMS.Controls.BaseControls;
 using ImagingSIMS.Controls.BaseControls.SpectrumView;
 using ImagingSIMS.Direct3DRendering.DrawingObjects;
 using ImagingSIMS.Direct3DRendering.Controls;
+using ImagingSIMS.Data.Colors;
+using ImagingSIMS.Data.Converters;
+
+using Accord.Math;
+using Accord.Math.Decompositions;
 
 namespace ImagingSIMS.MainApplication
 {
@@ -4760,29 +4765,89 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test8_Click(object sender, RoutedEventArgs e)
         {
-            string inputFolder = @"D:\Swap\Training Set\Input\";
-            string validationFolder = @"D:\Swap\Training Set\Validation\";
+            FusionTab ft = tabMain.SelectedContent as FusionTab;
 
-            List<int> randNums = new List<int>();
-            Random rand = new Random();
+            var panImage = ImageHelper.ConvertToData2D(ft.HighResImage.ImageSource);
+            var msImage = ImageHelper.ConvertToData3D(ft.LowResImage.ImageSource);
 
-            for (int i = 0; i < 100; i++)
+            // var matched = HistogramMatching.Match(panImage, msImage, 1000);
+            var linearLength = panImage.Width * panImage.Height;
+            msImage = ImageHelper.Upscale(msImage, panImage.Width, panImage.Height);
+
+            var panLinear = new double[linearLength];
+            var msLinear = new double[linearLength, 3];
+            var msIhs = new double[linearLength, 3];
+
+            for (int x = 0; x < panImage.Width; x++)
             {
-                int index = rand.Next(8000);
-                while (randNums.Contains(index))
+                for (int y = 0; y < panImage.Height; y++)
                 {
-                    index = rand.Next(8000);
+                    int index = x * panImage.Height + y;
+
+                    var rgb = new RGB(msImage.Layers[2][x, y], msImage.Layers[1][x, y], msImage.Layers[0][x, y]);
+                    rgb = rgb.Normalize();
+
+                    msLinear[index, 0] = rgb.R;
+                    msLinear[index, 1] = rgb.G;
+                    msLinear[index, 2] = rgb.B;
+
+                    panLinear[index] = panImage[x, y];
+
+                    var ihs = ColorConversion.RGBtoIHS(rgb);
+
+                    msIhs[index, 0] = ihs.I;
+                    msIhs[index, 1] = ihs.H;
+                    msIhs[index, 2] = ihs.S;
                 }
-                randNums.Add(index);
             }
 
-            for (int i = 0; i < randNums.Count; i++)
+            var svd = new SingularValueDecomposition(msIhs, true, true, false, false);
+            var u = svd.LeftSingularVectors;
+
+            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalWarm);
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+
+            for (int i = 0; i < svd.Ordering.Length; i++)
             {
-                Data2D input = await Data2D.LoadData2DAsync(Path.Combine(inputFolder, $"Input_{randNums[i]}.txt"), FileType.SmartSeekerData);
-                Data2D validation = await Data2D.LoadData2DAsync(Path.Combine(validationFolder, $"Validation_{randNums[i]}.txt"), FileType.SmartSeekerData);
-                Workspace.Data.Add(input);
-                Workspace.Data.Add(validation);
+                Data2D pc = new Data2D(panImage.Width, panImage.Height);
+                pc.DataName = svd.Ordering[i].ToString();
+
+                for (int x = 0; x < panImage.Width; x++)
+                {
+                    for (int y = 0; y < panImage.Height; y++)
+                    {
+                        int index = x * panImage.Height + y;
+                        pc[x, y] = (float)u[index, i] * 1000f;
+                    }
+                }
+
+                await dt.AddDataSourceAsync(pc, ColorScaleTypes.RedBlackGreen);
             }
+
+            var pc1 = new double[linearLength];
+            for (int i = 0; i < linearLength; i++)
+            {
+                pc1[i] = u[i, 0];
+            }
+
+            var matched = HistogramMatching.Match(panLinear, pc1, 1000);
+            Data2D panMatched = new Data2D(panImage.Width, panImage.Height);
+
+            for (int x = 0; x < panImage.Width; x++)
+            {
+                for (int y = 0; y < panImage.Height; y++)
+                {
+                    int index = x * panImage.Height + y;
+                    panMatched[x, y] = (float)matched[index] * 1000f;
+                }
+            }
+
+            await dt.AddDataSourceAsync(panMatched, ColorScaleTypes.ThermalCold);
+            //dt.AddDataSource(panImage);
+            //dt.AddDataSource(msImage);
+            //dt.AddDataSource(matched);
         }
         private async void test9_Click(object sender, RoutedEventArgs e)
         {

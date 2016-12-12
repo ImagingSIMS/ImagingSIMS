@@ -22,7 +22,6 @@ using SharpDX.DXGI;
 
 using Device = SharpDX.Direct3D11.Device;
 using ImagingSIMS.Common;
-using ImagingSIMS.Data.Spectra;
 using ImagingSIMS.Data.Imaging;
 
 using Accord.Math.Decompositions;
@@ -36,6 +35,21 @@ namespace ConsoleApp
 
             Console.WriteLine("Press Enter to begin...");
             Console.ReadLine();
+
+            double[,] forwardTranform = new double[,]
+            {
+                { 1d / 3, 1d / 3, 1d / 3 },
+                { -Math.Sqrt(2) / 6, -Math.Sqrt(2) / 6, 2 * Math.Sqrt(2) / 6 },
+                { 1 / Math.Sqrt(2), -1 / Math.Sqrt(2), 0 }
+            };
+            for (int x = 0; x < 3; x++)
+            {
+
+                for (int y = 0; y < 3; y++)
+                {
+                    Console.WriteLine($"X:{x} Y:{y} {forwardTranform[x, y]}");
+                }
+            }
 
             //linearRegression();
             checkColors();

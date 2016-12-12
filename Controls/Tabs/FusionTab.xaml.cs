@@ -574,6 +574,9 @@ namespace ImagingSIMS.Controls.Tabs
                 case FusionType.PCA:
                     fusion = new PCAFusion(highRes, lowRes);
                     break;
+                case FusionType.IHS:
+                    fusion = new IHSFusion(highRes, lowRes);
+                    break;
                 default:
                     Mouse.OverrideCursor = Cursors.Arrow;
                     return;
