@@ -1418,6 +1418,59 @@ namespace ImagingSIMS.Data
             return d;
         }
 
+        /// <summary>
+        /// Resizes the array to the specified width and height. Can only be used 
+        /// to increase the matrix dimensions.
+        /// </summary>
+        /// <param name="targetWidth">Width of the new matrix.</param>
+        /// <param name="targetHeight">Height of the new matrix.</param>
+        /// <returns>Matrix resized to the specified dimensions.</returns>
+        public Data2D Upscale(int targetWidth, int targetHeight)
+        {
+            int lowResSizeX = Width;
+            int lowResSizeY = Height;
+            int highResSizeX = targetWidth;
+            int highResSizeY = targetHeight;
+
+            if (lowResSizeX > highResSizeX || lowResSizeY > highResSizeY)
+                throw new ArgumentException("Cannot downscale data using this function.");
+
+            Data2D resized = new Data2D(highResSizeX, highResSizeY);
+
+            float A, B, C, D;
+            int x, y;
+            float xRatio = (lowResSizeX - 1f) / highResSizeX;
+            float yRatio = (lowResSizeY - 1f) / highResSizeY;
+            float xDiff, yDiff;
+
+            for (int i = 0; i < highResSizeX; i++)
+            {
+                for (int j = 0; j < highResSizeY; j++)
+                {
+                    x = (int)(xRatio * i);
+                    y = (int)(yRatio * j);
+                    xDiff = (xRatio * i) - x;
+                    yDiff = (yRatio * j) - y;
+
+
+                    int x1 = x + 1;
+                    if (x1 >= highResSizeX) x1 = x;
+                    int y1 = y + 1;
+                    if (y1 >= highResSizeY) y1 = y;
+
+                    A = _matrix[x, y];
+                    B = _matrix[x + 1, y];
+                    C = _matrix[x, y + 1];
+                    D = _matrix[x + 1, y + 1];
+
+                    resized[i, j] = (A * (1f - xDiff) * (1f - yDiff)) + (B * (xDiff) * (1f - yDiff)) +
+                        (C * (yDiff) * (1f - xDiff)) + (D * (xDiff) * (yDiff));
+                }
+            }
+
+            return resized;
+        }
+
         #region Operator Overloads
         public static Data2D operator +(Data2D a, Data2D b)
         {
@@ -2428,6 +2481,65 @@ namespace ImagingSIMS.Data
             }
 
             return r;
+        }
+
+        /// <summary>
+        /// Resizes the array to the specified width and height. Can only be used 
+        /// to increase the matrix dimensions.
+        /// </summary>
+        /// <param name="targetWidth">Width of the new matrix.</param>
+        /// <param name="targetHeight">Height of the new matrix.</param>
+        /// <returns>Matrix resized to the specified dimensions.</returns>
+        public Data3D Upscale(int targetWidth, int targetHeight)
+        {
+            int lowResSizeX = Width;
+            int lowResSizeY = Height;
+            int highResSizeX = targetWidth;
+            int highResSizeY = targetHeight;
+
+            if (lowResSizeX > highResSizeX || lowResSizeY > highResSizeY)
+                throw new ArgumentException("Cannot downscale data using this function.");
+
+            Data2D[] resized = new Data2D[Depth];
+            for (int i = 0; i < 4; i++)
+            {
+                resized[i] = new Data2D(highResSizeX, highResSizeY);
+            }
+
+            float A, B, C, D;
+            int x, y;
+            float xRatio = (lowResSizeX - 1f) / highResSizeX;
+            float yRatio = (lowResSizeY - 1f) / highResSizeY;
+            float xDiff, yDiff;
+
+            for (int i = 0; i < highResSizeX; i++)
+            {
+                for (int j = 0; j < highResSizeY; j++)
+                {
+                    x = (int)(xRatio * i);
+                    y = (int)(yRatio * j);
+                    xDiff = (xRatio * i) - x;
+                    yDiff = (yRatio * j) - y;
+
+                    for (int k = 0; k < 4; k++)
+                    {
+                        int x1 = x + 1;
+                        if (x1 >= highResSizeX) x1 = x;
+                        int y1 = y + 1;
+                        if (y1 >= highResSizeY) y1 = y;
+
+                        A = this[x, y, k];
+                        B = this[x + 1, y, k];
+                        C = this[x, y + 1, k];
+                        D = this[x + 1, y + 1, k];
+
+                        resized[k][i, j] = (A * (1f - xDiff) * (1f - yDiff)) + (B * (xDiff) * (1f - yDiff)) +
+                            (C * (yDiff) * (1f - xDiff)) + (D * (xDiff) * (yDiff));
+                    }
+                }
+            }
+
+            return new Data3D(resized);
         }
     }
 }
