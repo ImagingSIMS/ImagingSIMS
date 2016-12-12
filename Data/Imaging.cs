@@ -1032,6 +1032,19 @@ namespace ImagingSIMS.Data.Imaging
 
             return resized;
         }      
+
+        public static BitmapSource BitmapSourceFromFile(string fileName)
+        {
+            BitmapImage src = new BitmapImage();
+
+            src.BeginInit();
+            src.UriSource = new Uri(fileName, UriKind.Absolute);
+            src.CacheOption = BitmapCacheOption.OnLoad;
+            src.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+            src.EndInit();
+
+            return src;
+        }
     }
 
     public struct ImageParameters
