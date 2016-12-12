@@ -49,14 +49,14 @@ namespace ConsoleApp
                         var hslBack = ColorConversion.HSLtoRGB(hsl);
                         var ihsBack = ColorConversion.IHStoRGB(ihs);
 
-                        if (!hslBack.IsClose(rgb, 1))
+                        if (!hslBack.IsClose(rgb, 1.5))
                         {
-                            Console.WriteLine($"HSL failed-- R:{r} G:{g} B:{b}");
+                            Console.WriteLine($"HSL failed-- R:{r} G:{g} B:{b} ({hslBack.R},{hslBack.G},{hslBack.B})");
                             numHslFailed++;
                         }
                         if (!ihsBack.IsClose(rgb))
                         {
-                            Console.WriteLine($"IHS failed-- R:{r} G:{g} B:{b}");
+                            Console.WriteLine($"IHS failed-- R:{r} G:{g} B:{b} ({ihsBack.R},{ihsBack.G},{ihsBack.B})");
                             numIhsFailed++;
                         }
                     }
