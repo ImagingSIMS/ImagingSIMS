@@ -4722,46 +4722,11 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test7_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Text Files (.txt)|*.txt";
-            ofd.Multiselect = true;
+            var bsHighRes = ImageHelper.BitmapSourceFromFile(@"D:\Data\10-01-12\1e.bmp");
+            var spec = new BioToFSpectrum("grid 894");
+            spec.LoadFromFile(@"D:\Data\10-01-12\grid 894 fov_50shot._2ND xyt.xyt", null);
 
-            DialogBox.Show("Just a test message", "Test", "Test", DialogIcon.Information);
 
-            if (ofd.ShowDialog() != true) return;
-
-            int filesLoaded = 0;
-            try
-            {
-                foreach (string s in ofd.FileNames)
-                {
-                    Data2D loaded = await Data2D.LoadData2DAsync(s, FileType.SmartSeekerData);
-                    Workspace.Data.Add(loaded);
-                    filesLoaded++;
-                }
-            }
-            catch (IOException IOex)
-            {
-                Mouse.OverrideCursor = Cursors.Arrow;
-                DialogBox.Show(string.Format("Could not load the specified file: {0}", IOex.Message),
-                    string.Format("Check to make sure you are loading data tables that match the specified file type ({0}).", FileType.SmartSeekerData),
-                    "Load", DialogIcon.Error);
-                return;
-            }
-            catch (Exception ex)
-            {
-                Mouse.OverrideCursor = Cursors.Arrow;
-                string msg = ex.Message;
-                if (ex.InnerException != null)
-                {
-                    msg += (" " + ex.InnerException.Message);
-                }
-
-                DialogBox.Show("Could not load the specified file.", msg, "Load", DialogIcon.Error);
-                return;
-            }
-
-            StatusUpdated(this, new StatusUpdatedRoutedEventArgs(string.Format("{0} tables loaded.", filesLoaded)));
         }
         private async void test8_Click(object sender, RoutedEventArgs e)
         {

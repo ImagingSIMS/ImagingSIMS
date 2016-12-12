@@ -2461,41 +2461,6 @@ namespace ImagingSIMS.Data.Spectra
                 }
 
                 int pos = 0;
-                //float[,,,] tempValues = new float[_species.Count, numCyclesForFile[i], imageSize, imageSize];
-
-                //for (int s = 0; s < _species.Count; s++)
-                //{
-                //    for (int z = 0; z < numCyclesForFile[i]; z++)
-                //    {
-                //        for (int y = 0; y < imageSize; y++)
-                //        {
-                //            for (int x = 0; x < imageSize; x++)
-                //            {
-                //                tempValues[s, z, y, x] = values[pos++];
-                //            }
-                //        }
-
-                //    }
-                //}
-
-                //for (int z = 0; z < numCyclesForFile[i]; z++)
-                //{
-                //    Data2D[] layer = new Data2D[_species.Count];
-                //    for (int s = 0; s < _species.Count; s++)
-                //    {
-                //        CamecaSpecies species = _species[s];
-                //        Data2D layerSpecies = new Data2D(imageSize, imageSize);
-                //        for (int y = 0; y < imageSize; y++)
-                //        {
-                //            for (int x = 0; x < imageSize; x++)
-                //            {
-                //                layerSpecies[x, y] = tempValues[s, z, y, x];
-                //            }
-                //        }
-                //        layer[s] = layerSpecies;
-                //    }
-                //    _matrix.Add(layer);
-                //}
                 int numRecords = _species.Count * numCyclesForFile[i];
                 float[,,] tempValues = new float[numRecords, imageSize, imageSize];
                 for (int r = 0; r < numRecords; r++)
