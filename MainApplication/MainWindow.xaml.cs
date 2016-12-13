@@ -4726,7 +4726,94 @@ namespace ImagingSIMS.MainApplication
             var spec = new BioToFSpectrum("grid 894");
             spec.LoadFromFile(@"D:\Data\10-01-12\grid 894 fov_50shot._2ND xyt.xyt", null);
 
+            var pan = ImageHelper.ConvertToData2D(bsHighRes);
 
+            List<Data2D> masses = new List<Data2D>();
+            for (int i = (int)spec.StartMass; i < spec.EndMass; i++)
+            {
+                float max = 0;
+                var m = spec.FromMassRange(new MassRangePair(i - 0.5d, i + 0.5d), out max, null);
+                masses.Add(m.Upscale(pan.Width, pan.Height));
+            }
+
+            int linearLength = pan.Width * pan.Height;
+            int numChannels = masses.Count;
+
+            double[] panData = new double[linearLength];
+            for (int x = 0; x < pan.Width; x++)
+            {
+                for (int y = 0; y < pan.Height; y++)
+                {
+                    int index = x * pan.Height + y;
+                    panData[index] = pan[x, y];
+                }
+            }
+
+            double[,] hsData = new double[linearLength, numChannels];
+            double[] hsMeans = new double[linearLength];
+            for (int i = 0; i < numChannels; i++)
+            {
+                var channel = masses[i];
+                hsMeans[i] = channel.Mean;
+
+                for (int x = 0; x < pan.Width; x++)
+                {
+                    for (int y = 0; y < pan.Height; y++)
+                    {
+                        int index = x * pan.Height + y;
+                        hsData[index, i] = channel[x, y] - hsMeans[i];
+                    }
+                }
+            }
+
+            var svd = new SingularValueDecomposition(hsData, true, false, false, false);
+            var u = svd.LeftSingularVectors;
+
+            //var indexPc1 = svd.Ordering.IndexOf(0);
+            int indexPc1 = 0;
+
+            double[] pc1 = new double[linearLength];
+            for (int i = 0; i < linearLength; i++)
+            {
+                pc1[i] = u[i, indexPc1];
+            }
+
+            var matched = HistogramMatching.Match(panData, pc1, 1000);
+
+            for (int i = 0; i < linearLength; i++)
+            {
+                u[i, indexPc1] = matched[i];
+            }
+
+            var reverted = svd.Reverse();
+
+            for (int i = 0; i < numChannels; i++)
+            {
+                Data2D hr = new Data2D(pan.Width, pan.Height);
+                for (int x = 0; x < pan.Width; x++)
+                {
+                    for (int y = 0; y < pan.Height; y++)
+                    {
+                        int index = x * pan.Height + y;
+                        hr[x, y] = (float)reverted[index, i];
+                    }
+                }
+
+                masses[i] = hr;
+            }
+
+            DataDisplayTab dt = new DataDisplayTab();
+            var cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+
+            foreach (var mass in masses)
+            {
+                if(mass.TotalCounts > 10000)
+                {
+                    await dt.AddDataSourceAsync(mass, ColorScaleTypes.ThermalWarm);
+                }
+            }
         }
         private async void test8_Click(object sender, RoutedEventArgs e)
         {
