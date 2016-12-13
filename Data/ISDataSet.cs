@@ -1318,8 +1318,9 @@ namespace ImagingSIMS.Data
         /// </summary>
         /// <param name="targetWidth">Width of the new matrix.</param>
         /// <param name="targetHeight">Height of the new matrix.</param>
+        /// <param name="useBilinear">True for bilinear interpolation or false for bicubic interpolation.</param>
         /// <returns>Matrix resized to the specified dimensions.</returns>
-        public Data2D Upscale(int targetWidth, int targetHeight)
+        public Data2D Upscale(int targetWidth, int targetHeight, bool useBilinear = true)
         {
             int lowResSizeX = Width;
             int lowResSizeY = Height;
@@ -1329,6 +1330,14 @@ namespace ImagingSIMS.Data
             if (lowResSizeX > highResSizeX || lowResSizeY > highResSizeY)
                 throw new ArgumentException("Cannot downscale data using this function.");
 
+            if (useBilinear)
+                return UpscaleBilinear(lowResSizeX, lowResSizeY, highResSizeX, highResSizeY);
+            else
+                return UpscaleBicubic(lowResSizeX, lowResSizeY, highResSizeX, highResSizeY);
+        }
+
+        private Data2D UpscaleBilinear(int lowResSizeX, int lowResSizeY, int highResSizeX, int highResSizeY)
+        {
             Data2D resized = new Data2D(highResSizeX, highResSizeY);
 
             float A, B, C, D;
@@ -1346,7 +1355,6 @@ namespace ImagingSIMS.Data
                     xDiff = (xRatio * i) - x;
                     yDiff = (yRatio * j) - y;
 
-
                     int x1 = x + 1;
                     if (x1 >= highResSizeX) x1 = x;
                     int y1 = y + 1;
@@ -1363,6 +1371,51 @@ namespace ImagingSIMS.Data
             }
 
             return resized;
+        }
+        private Data2D UpscaleBicubic(int lowResSizeX, int lowResSizeY, int highResSizeX, int highResSizeY)
+        {
+            Data2D resized = new Data2D(highResSizeX, highResSizeY);
+
+            float xRatio = (lowResSizeX - 1f) / highResSizeX;
+            float yRatio = (lowResSizeY - 1f) / highResSizeY;
+
+            for (int i = 0; i < highResSizeX; i++)
+            {
+                for (int j = 0; j < highResSizeY; j++)
+                {
+                    int x = (int)(xRatio * i);
+                    int y = (int)(yRatio * j);
+
+                    int[] xCoords = new int[]
+                    {
+                        x, Math.Min(x + 1, x), Math.Min(x + 2, x), Math.Min(x + 3, x)
+                    };
+                    int[] yCoords = new int[]
+                    {
+                        y, Math.Min(y + 1, y), Math.Min(y + 2, y), Math.Min(y + 3, y)
+                    };
+
+                    float[] xv = new float[4];
+                    for (int k = 0; k < 4; k++)
+                    {
+                        xv[k] = InterpolateCubic(_matrix[xCoords[0], yCoords[k]], 
+                            _matrix[xCoords[1], yCoords[k]], _matrix[xCoords[2], yCoords[k]], _matrix[xCoords[3], yCoords[k]], xRatio);
+                    }
+
+                    resized[i, j] = InterpolateCubic(xv[0], xv[1], xv[2], xv[3], yRatio);
+                }
+            }
+            
+            return resized;
+        }
+        private float InterpolateCubic(float v0, float v1, float v2, float v3, float frac)
+        {
+            float a = (v3 - v2) - (v0 - v1);
+            float b = (v0 - v1) - a;
+            float c = v2 - v0;
+            float d = v1;
+
+            return d + frac * (c + frac * (b + frac * a));
         }
 
         #region Operator Overloads
@@ -2383,8 +2436,9 @@ namespace ImagingSIMS.Data
         /// </summary>
         /// <param name="targetWidth">Width of the new matrix.</param>
         /// <param name="targetHeight">Height of the new matrix.</param>
+        /// <param name="useBilinear">True for bilinear interpolation or false for bicubic interpolation.</param>
         /// <returns>Matrix resized to the specified dimensions.</returns>
-        public Data3D Upscale(int targetWidth, int targetHeight)
+        public Data3D Upscale(int targetWidth, int targetHeight, bool useBilinear = true)
         {
             int lowResSizeX = Width;
             int lowResSizeY = Height;
@@ -2397,40 +2451,7 @@ namespace ImagingSIMS.Data
             Data2D[] resized = new Data2D[Depth];
             for (int i = 0; i < 4; i++)
             {
-                resized[i] = new Data2D(highResSizeX, highResSizeY);
-            }
-
-            float A, B, C, D;
-            int x, y;
-            float xRatio = (lowResSizeX - 1f) / highResSizeX;
-            float yRatio = (lowResSizeY - 1f) / highResSizeY;
-            float xDiff, yDiff;
-
-            for (int i = 0; i < highResSizeX; i++)
-            {
-                for (int j = 0; j < highResSizeY; j++)
-                {
-                    x = (int)(xRatio * i);
-                    y = (int)(yRatio * j);
-                    xDiff = (xRatio * i) - x;
-                    yDiff = (yRatio * j) - y;
-
-                    for (int k = 0; k < 4; k++)
-                    {
-                        int x1 = x + 1;
-                        if (x1 >= highResSizeX) x1 = x;
-                        int y1 = y + 1;
-                        if (y1 >= highResSizeY) y1 = y;
-
-                        A = this[x, y, k];
-                        B = this[x + 1, y, k];
-                        C = this[x, y + 1, k];
-                        D = this[x + 1, y + 1, k];
-
-                        resized[k][i, j] = (A * (1f - xDiff) * (1f - yDiff)) + (B * (xDiff) * (1f - yDiff)) +
-                            (C * (yDiff) * (1f - xDiff)) + (D * (xDiff) * (yDiff));
-                    }
-                }
+                resized[i] = Layers[i].Upscale(highResSizeX, highResSizeY, useBilinear);
             }
 
             return new Data3D(resized);
