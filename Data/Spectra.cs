@@ -159,6 +159,21 @@ namespace ImagingSIMS.Data.Spectra
         /// Compiles a two dimensional matrix of intensities within the specified mass range.
         /// </summary>
         /// <param name="MassRange">The desired mass range.</param>
+        /// <param name="bw">BackgroundWorker instance for the method to update.</param>
+        /// <returns>A two dimensional intensity matrix.</returns>
+        public abstract Data2D FromMassRange(MassRangePair MassRange, BackgroundWorker bw = null);
+        /// <summary>
+        /// Compiles a two dimensional matrix of intensities within the specified mass range.
+        /// </summary>
+        /// <param name="MassRange">The desired mass range.</param>
+        /// <param name="Layer">Layer of spectrum to sample.</param>
+        /// <param name="bw">BackgroundWorker instance for the method to update.</param>
+        /// <returns>A two dimensional intensity matrix series.</returns>
+        public abstract Data2D FromMassRange(MassRangePair MassRange, int Layer, BackgroundWorker bw = null);
+        /// <summary>
+        /// Compiles a two dimensional matrix of intensities within the specified mass range.
+        /// </summary>
+        /// <param name="MassRange">The desired mass range.</param>
         /// <param name="Max">The maximum intensity in the DataTable.</param>
         /// <param name="bw">BackgroundWorker instance for the method to update.</param>
         /// <returns>A two dimensional intensity matrix.</returns>
@@ -215,6 +230,19 @@ namespace ImagingSIMS.Data.Spectra
         /// <param name="Masses">Array of mass values.</param>
         /// <returns>Array of intensites.</returns>
         public abstract uint[] GetSpectrum(out float[] Masses);
+
+        /// <summary>
+        /// Creates a p x m matrix from the spectra with default mass binnings (if necessary).
+        /// </summary>
+        /// <returns>Two dimensional matrix of size p x m where p is the number of pixels and m is the number of mass channels.</returns>
+        public abstract double[,] GetPxMMatrix();
+        /// <summary>
+        /// Creates a p x m matrix from the spectra with default mass binnings (if necessary).
+        /// </summary>
+        /// <param name="binCenters">Array of mass centers to bin and include.</param>
+        /// <param name="binWidths">Array of bin widths. Must correspond to number of centers specified.</param>
+        /// <returns>Two dimensional matrix of size p x m where p is the number of pixels and m is the number of mass channels.</returns>
+        public abstract double[,] GetPxMMatrix(double[] binCenters, double[] binWidths);
 
         /// <summary>
         /// Saves the spectrum as an ASCII text file with the format: mass,intensity
@@ -348,6 +376,73 @@ namespace ImagingSIMS.Data.Spectra
             throw new ArgumentException("J105 spectra only support a single file path.");
         }
 
+        public override Data2D FromMassRange(MassRangePair MassRange, BackgroundWorker bw = null)
+        {
+            Data2D dt = new Data2D(_sizeX, _sizeY);
+
+            double totalSteps = _sizeX;
+
+            List<Data2D> dts = FromMassRange(MassRange, "preview", true, bw);
+
+            if (bw != null && bw.CancellationPending) return dt;
+
+            for (int x = 0; x < _sizeX; x++)
+            {
+                for (int y = 0; y < _sizeY; y++)
+                {
+                    float sum = 0;
+                    for (int z = 0; z < dts.Count; z++)
+                    {
+                        sum += dts[z][x, y];
+                    }
+                    dt[x, y] = sum;
+                }
+                if (bw != null && bw.CancellationPending) return dt;
+                if (bw != null) bw.ReportProgress(Percentage.GetPercent(x, totalSteps));
+            }
+            dt.DataName = string.Format("{0} {1}-{2}", Name, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"));
+            return dt;
+        }
+        public override Data2D FromMassRange(MassRangePair MassRange, int Layer, BackgroundWorker bw = null)
+        {
+            if (!_stream.IsStreamOpen) throw new ArgumentException("No V2 stream has been initialized.");
+            if (Layer >= SizeZ)
+                throw new ArgumentException(string.Format("Layer {0} does not exist in the spectrum (Number layers: {1}).", Layer, SizeZ));
+
+            int ct = 0;
+            double totalSteps = _tilesX * _pixelsX;
+
+            if (bw != null) bw.ReportProgress(0);
+
+            if (bw != null && bw.CancellationPending) return null;
+
+            Data2D dt = new Data2D(_sizeX, _sizeY);
+
+            for (int tx = 0; tx < _tilesX; tx++)
+            {
+                for (int x = 0; x < _pixelsX; x++)
+                {
+                    int xIndex = (tx * _pixelsX) + x;
+                    Parallel.For(0, _tilesY,
+                        ty =>
+                        {
+                            Parallel.For(0, _pixelsY,
+                                y =>
+                                {
+                                    int yIndex = (ty * _pixelsY) + y;
+
+                                    dt[xIndex, yIndex] = _stream.IntensityFromMassRange(Layer, ty, tx, y, x, (float)MassRange.StartMass, (float)MassRange.EndMass);
+                                }
+                            );
+                            ct++;
+                            if (bw != null) bw.ReportProgress(Percentage.GetPercent(ct, totalSteps));
+                        });
+                    if (bw != null && bw.CancellationPending) return null;
+                }
+            }
+
+            return dt;
+        }
         public override Data2D FromMassRange(MassRangePair MassRange, out float Max, BackgroundWorker bw = null)
         {
             Data2D dt = new Data2D(_sizeX, _sizeY);
@@ -498,6 +593,51 @@ namespace ImagingSIMS.Data.Spectra
         {
             Masses = _masses;
             return _intensities;
+        }
+
+        public override double[,] GetPxMMatrix()
+        {
+            return GetPxMMatrix(new double[] { 0.5d }, new double[] { 0.5d });
+        }
+        public override double[,] GetPxMMatrix(double[] binCenters, double[] binWidths)
+        {
+            if (binCenters.Length != binWidths.Length)
+                throw new ArgumentException("Numbers of centers and widths do not match");
+
+            foreach (var center in binCenters)
+            {
+                if (center < 0d || center > 1.0d)
+                    throw new ArgumentException("Bin centers must be between 0 and 1");
+            }
+
+
+            int layerLinearLength = SizeX * SizeY;
+            int numMassChannels = binCenters.Length * (int)(EndMass - StartMass + 1);
+
+            double[,] matrix = new double[layerLinearLength * SizeZ, numMassChannels];
+
+            for (int m = (int)StartMass; m < EndMass; m++)
+            {
+                for (int i = 0; i < binCenters.Length; i++)
+                {
+                    for (int z = 0; z < SizeZ; z++)
+                    {
+                        int massPosition = m * binCenters.Length + i;
+                        var intensities = FromMassRange(new MassRangePair(m - binCenters[i], m + binCenters[i]));
+
+                        for (int x = 0; x < intensities.Width; x++)
+                        {
+                            for (int y = 0; y < intensities.Height; y++)
+                            {
+                                int pixel = z * intensities.Width * intensities.Height + x * intensities.Height + y;
+                                matrix[pixel, massPosition] = intensities[x, y];
+                            }
+                        }
+                    }
+                }
+            }
+
+            return matrix;
         }
 
         /// <summary>
@@ -1048,6 +1188,62 @@ namespace ImagingSIMS.Data.Spectra
             dt.DataName = string.Format("{0} {1}-{2}", Name, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"));
             return dt;
         }
+        public override Data2D FromMassRange(MassRangePair MassRange, BackgroundWorker bw = null)
+        {
+            Data2D dt = new Data2D(_sizeX, _sizeY);
+
+            List<Data2D> dts = FromMassRange(MassRange, "preview", true, bw);
+
+            if (bw != null && bw.CancellationPending) return dt;
+
+            for (int x = 0; x < _sizeX; x++)
+            {
+                for (int y = 0; y < _sizeY; y++)
+                {
+                    float sum = 0;
+                    for (int z = 0; z < dts.Count; z++)
+                    {
+                        sum += dts[z][x, y];
+                    }
+                    dt[x, y] = sum;
+                }
+                if (bw != null && bw.CancellationPending) return dt;
+            }
+            dt.DataName = string.Format("{0} {1}-{2}", Name, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"));
+            return dt;
+        }
+        public override Data2D FromMassRange(MassRangePair MassRange, int Layer, BackgroundWorker bw = null)
+        {
+            if (_xyts.Count == 0)
+            {
+                throw new IndexOutOfRangeException("No xyt data has been loaded into memory.");
+            }
+            if (Layer >= SizeZ)
+                throw new ArgumentException(string.Format("Layer {0} does not exist in the spectrum (Number layers: {1}).", Layer, SizeZ));
+
+            List<Data2D> returnTables = new List<Data2D>();
+
+            FlightTimeArray[,] xyt = _xyts[Layer];
+
+            if (bw != null && bw.CancellationPending) return null;
+
+            Data2D dt = new Data2D(_sizeX, _sizeY);
+
+            for (int x = 0; x < _sizeX; x++)
+            {
+                if (bw != null && bw.CancellationPending) return null;
+
+                for (int y = 0; y < _sizeY; y++)
+                {
+                    dt[x, y] = xyt[x, y].GetNumberCounts(MassToTime(_parameters.Slope, _parameters.Intercept, MassRange.StartMass),
+                        MassToTime(_parameters.Slope, _parameters.Intercept, MassRange.EndMass));
+                }
+            }
+
+            if (bw != null && bw.CancellationPending) return null;
+
+            return dt;
+        }
         public override List<Data2D> FromMassRange(MassRangePair MassRange, string TableBaseName, bool OmitNumbering, BackgroundWorker bw = null)
         {
             if (_xyts.Count == 0)
@@ -1583,6 +1779,51 @@ namespace ImagingSIMS.Data.Spectra
             else Masses = _masses;
 
             return valuesOut;
+        }
+
+        public override double[,] GetPxMMatrix()
+        {
+            return GetPxMMatrix(new double[] { 0.5d }, new double[] { 0.5d });
+        }
+        public override double[,] GetPxMMatrix(double[] binCenters, double[] binWidths)
+        {
+            if (binCenters.Length != binWidths.Length)
+                throw new ArgumentException("Numbers of centers and widths do not match");
+
+            foreach (var center in binCenters)
+            {
+                if (center < 0d || center > 1.0d)
+                    throw new ArgumentException("Bin centers must be between 0 and 1");
+            }
+
+
+            int layerLinearLength = SizeX * SizeY;
+            int numMassChannels = binCenters.Length * (int)(EndMass - StartMass + 1);
+
+            double[,] matrix = new double[layerLinearLength * SizeZ, numMassChannels];
+
+            for (int m = (int)StartMass; m < EndMass; m++)
+            {
+                for (int i = 0; i < binCenters.Length; i++)
+                {
+                    for (int z = 0; z < SizeZ; z++)
+                    {
+                        int massPosition = m * binCenters.Length + i;
+                        var intensities = FromMassRange(new MassRangePair(m - binCenters[i], m + binCenters[i]));
+
+                        for (int x = 0; x < intensities.Width; x++)
+                        {
+                            for (int y = 0; y < intensities.Height; y++)
+                            {
+                                int pixel = z * intensities.Width * intensities.Height + x * intensities.Height + y;
+                                matrix[pixel, massPosition] = intensities[x, y];
+                            }
+                        }
+                    }
+                }
+            }
+
+            return matrix;
         }
 
         /// <summary>
