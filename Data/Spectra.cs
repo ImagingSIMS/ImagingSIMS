@@ -243,6 +243,15 @@ namespace ImagingSIMS.Data.Spectra
         /// <param name="binWidths">Array of bin widths. Must correspond to number of centers specified.</param>
         /// <returns>Two dimensional matrix of size p x m where p is the number of pixels and m is the number of mass channels.</returns>
         public abstract double[,] GetPxMMatrix(double[] binCenters, double[] binWidths);
+        /// <summary>
+        /// Creates a p x m matrix from the spectra with default mass binnings (if necessary).
+        /// </summary>
+        /// <param name="binCenters">Array of mass centers to bin and include.</param>
+        /// <param name="binWidths">Array of bin widths. Must correspond to number of centers specified.</param>
+        /// <param name="startMass">Start of mass range to create matrix from.</param>
+        /// <param name="endMass">End of mass range to create matrix from.</param>
+        /// <returns>Two dimensional matrix of size p x m where p is the number of pixels and m is the number of mass channels.</returns>
+        public abstract double[,] GetPxMMatrix(double[] binCenters, double[] binWidths, double startMass, double endMass);
 
         /// <summary>
         /// Saves the spectrum as an ASCII text file with the format: mass,intensity
@@ -597,9 +606,13 @@ namespace ImagingSIMS.Data.Spectra
 
         public override double[,] GetPxMMatrix()
         {
-            return GetPxMMatrix(new double[] { 0.5d }, new double[] { 0.5d });
+            return GetPxMMatrix(new double[] { 0.5d }, new double[] { 0.5d }, StartMass, EndMass);
         }
         public override double[,] GetPxMMatrix(double[] binCenters, double[] binWidths)
+        {
+            return GetPxMMatrix(binCenters, binWidths, StartMass, EndMass);
+        }
+        public override double[,] GetPxMMatrix(double[] binCenters, double[] binWidths, double startMass, double endMass)
         {
             if (binCenters.Length != binWidths.Length)
                 throw new ArgumentException("Numbers of centers and widths do not match");
@@ -610,13 +623,15 @@ namespace ImagingSIMS.Data.Spectra
                     throw new ArgumentException("Bin centers must be between 0 and 1");
             }
 
+            if (startMass >= endMass)
+                throw new ArgumentException("Invalid mass range");
 
             int layerLinearLength = SizeX * SizeY;
-            int numMassChannels = binCenters.Length * (int)(EndMass - StartMass + 1);
+            int numMassChannels = binCenters.Length * (int)(endMass - startMass + 1);
 
             double[,] matrix = new double[layerLinearLength * SizeZ, numMassChannels];
 
-            for (int m = (int)StartMass; m < EndMass; m++)
+            for (int m = (int)startMass; m < endMass; m++)
             {
                 for (int i = 0; i < binCenters.Length; i++)
                 {
@@ -1780,9 +1795,13 @@ namespace ImagingSIMS.Data.Spectra
 
         public override double[,] GetPxMMatrix()
         {
-            return GetPxMMatrix(new double[] { 0.5d }, new double[] { 0.5d });
+            return GetPxMMatrix(new double[] { 0.5d }, new double[] { 0.5d }, StartMass, EndMass);
         }
         public override double[,] GetPxMMatrix(double[] binCenters, double[] binWidths)
+        {
+            return GetPxMMatrix(binCenters, binWidths, StartMass, EndMass);
+        }
+        public override double[,] GetPxMMatrix(double[] binCenters, double[] binWidths, double startMass, double endMass)
         {
             if (binCenters.Length != binWidths.Length)
                 throw new ArgumentException("Numbers of centers and widths do not match");
@@ -1793,13 +1812,15 @@ namespace ImagingSIMS.Data.Spectra
                     throw new ArgumentException("Bin centers must be between 0 and 1");
             }
 
+            if (startMass >= endMass)
+                throw new ArgumentException("Invalid mass range");
 
             int layerLinearLength = SizeX * SizeY;
-            int numMassChannels = binCenters.Length * (int)(EndMass - StartMass + 1);
+            int numMassChannels = binCenters.Length * (int)(endMass - startMass + 1);
 
             double[,] matrix = new double[layerLinearLength * SizeZ, numMassChannels];
 
-            for (int m = (int)StartMass; m < EndMass; m++)
+            for (int m = (int)startMass; m < endMass; m++)
             {
                 for (int i = 0; i < binCenters.Length; i++)
                 {
