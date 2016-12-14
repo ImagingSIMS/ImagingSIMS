@@ -2392,15 +2392,19 @@ namespace ImagingSIMS.Data.Spectra
             base.Dispose(disposing);
         }
         
-        public Data2D FromSpecies(CamecaSpecies species, out float Max, BackgroundWorker bw = null)
+        public Data2D FromSpecies(CamecaSpecies species, BackgroundWorker bw = null)
         {
-            Data2D d = FromMassRange(new MassRangePair(species.Mass - 0.1d, species.Mass + 0.1d), out Max, bw);
+            Data2D d = FromMassRange(new MassRangePair(species.Mass - 0.1d, species.Mass + 0.1d));
             return d;
         }
         public async Task<Data2D> FromSpeciesAsync(CamecaSpecies species)
         {
-            float tableMax = 0;
-            Data2D d = await Task.Run(() => (FromSpecies(species, out tableMax, null)));
+            Data2D d = await Task.Run(() => (FromSpecies(species, null)));
+            return d;
+        }
+        public Data2D FromSpecies(CamecaSpecies species, out float Max, BackgroundWorker bw = null)
+        {
+            Data2D d = FromMassRange(new MassRangePair(species.Mass - 0.1d, species.Mass + 0.1d), out Max, bw);
             return d;
         }
         public List<Data2D> FromSpecies(CamecaSpecies species, string TableBaseName, bool OmitNumbering, BackgroundWorker bw = null)
@@ -2456,6 +2460,54 @@ namespace ImagingSIMS.Data.Spectra
             Max = max;
             dt.DataName = string.Format("{0} {1}-{2}", Name, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"));
             return dt;
+        }
+        public override Data2D FromMassRange(MassRangePair MassRange, BackgroundWorker bw = null)
+        {
+            Data2D dt = new Data2D(_sizeX, _sizeY);
+
+            List<Data2D> dts = FromMassRange(MassRange, "preview", true, bw);
+
+            if (bw != null && bw.CancellationPending) return dt;
+
+            for (int x = 0; x < _sizeX; x++)
+            {
+                for (int y = 0; y < _sizeY; y++)
+                {
+                    float sum = 0;
+                    for (int z = 0; z < dts.Count; z++)
+                    {
+                        sum += dts[z][x, y];
+                    }
+                    dt[x, y] = sum;
+                }
+                if (bw != null && bw.CancellationPending) return dt;
+            }
+
+            dt.DataName = string.Format("{0} {1}-{2}", Name, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"));
+            return dt;
+        }
+        public override Data2D FromMassRange(MassRangePair MassRange, int Layer, BackgroundWorker bw = null)
+        {
+            if (_matrix == null || _matrix.Count == 0)
+            {
+                throw new IndexOutOfRangeException("No xyt data has been loaded into memory.");
+            }
+            if (Layer >= SizeZ)
+                throw new ArgumentException(string.Format("Layer {0} does not exist in the spectrum (Number layers: {1}).", Layer, SizeZ));
+
+
+            Data2D d = new Data2D(SizeX, SizeY);
+            for (int x = 0; x < SizeX; x++)
+            {
+                for (int y = 0; y < SizeY; y++)
+                {
+                    d[x, y] = getMatrixValue(x, y, Layer, MassRange);
+                }
+            }
+
+            if (bw != null && bw.CancellationPending) return null;
+
+            return d;
         }
         public override List<Data2D> FromMassRange(MassRangePair MassRange, string TableBaseName, bool OmitNumbering, BackgroundWorker bw = null)
         {
@@ -3007,6 +3059,40 @@ namespace ImagingSIMS.Data.Spectra
             }
 
             return matrix;
+        }
+
+        public override double[,] GetPxMMatrix()
+        {
+
+            int layerLinearLength = SizeX * SizeY;
+            int numMassChannels = NumberSpecies;
+
+            double[,] matrix = new double[layerLinearLength * SizeZ, numMassChannels];
+
+            for (int m = 0; m < NumberSpecies; m++)
+            {
+                for (int z = 0; z < SizeZ; z++)
+                {
+                    int massPosition = m;
+                    var intensities = FromSpecies(Species[m]);
+
+                    for (int x = 0; x < intensities.Width; x++)
+                    {
+                        for (int y = 0; y < intensities.Height; y++)
+                        {
+                            int pixel = z * intensities.Width * intensities.Height + x * intensities.Height + y;
+                            matrix[pixel, massPosition] = intensities[x, y];
+                        }
+                    }
+                }                
+            }
+
+            return matrix;
+        }
+        public override double[,] GetPxMMatrix(double[] binCenters, double[] binWidths)
+        {
+            Trace.WriteLine("WARNING: CAMECA spectra cannot specify mass binning for PxM matrix.");
+            return GetPxMMatrix();
         }
 
         // Layout

@@ -4579,57 +4579,44 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            var volumes = GetAvailableVolumes();
+            var bsHighRes = ImageHelper.BitmapSourceFromFile(@"D:\Data\10-01-12\1e.bmp");
+            var spec = new BioToFSpectrum("grid 894");
+            spec.LoadFromFile(@"D:\Data\10-01-12\grid 894 fov_50shot._2ND xyt.xyt", null);
 
-            List<IEnumerable<VolumeCoords>> volumeSets = new List<IEnumerable<VolumeCoords>>();
+            var pan = ImageHelper.ConvertToData2D(bsHighRes);
 
-            volumeSets.Add(volumes.Where(v => v.VolumeName.Contains("12.00")).Select(v => new VolumeCoords(v)));
-            volumeSets.Add(volumes.Where(v => v.VolumeName.Contains("89.90")).Select(v => new VolumeCoords(v)));
-            volumeSets.Add(volumes.Where(v => v.VolumeName.Contains("97.91")).Select(v => new VolumeCoords(v)));
-            volumeSets.Add(volumes.Where(v => v.VolumeName.Contains("235.04")).Select(v => new VolumeCoords(v)));
-            volumeSets.Add(volumes.Where(v => v.VolumeName.Contains("238.05")).Select(v => new VolumeCoords(v)));
+            var hsData = spec.GetPxMMatrix();
+            int numPixels = hsData.GetLength(0);
+            int numMasses = hsData.GetLength(1);
 
-            List<Volume> combinedVolumes = new List<Volume>();
-
-            int rowOffset = 35;
-
-            foreach (var set in volumeSets)
+            // Mean center the columns
+            double[] means = new double[numMasses];
+            for (int i = 0; i < numMasses; i++)
             {
-                int sizeX = set.First().Volume.Width * 6 + rowOffset;
-                int sizeY = set.First().Volume.Height * 2;
-                int sizeZ = set.First().Volume.Depth;
-
-                Data3D combined = new Data3D(sizeX, sizeY, sizeZ);
-
-                for (int a = 0; a < 6; a++)
+                double sum = 0;
+                for (int j = 0; j < numPixels; j++)
                 {
-                    for (int b = 0; b < 2; b++)
-                    {
-                        Data3D toCombine = set.Where(s => s.X == a + 1 && s.Y == b + 1).Select(s => s.Volume.Data).FirstOrDefault();
-                        if (toCombine == null) continue;
-
-                        int startX = a * toCombine.Width;
-                        int startY = b * toCombine.Height;
-
-                        if (b == 0) startX += rowOffset;
-
-                        for (int x = 0; x < toCombine.Width; x++)
-                        {
-                            for (int y = 0; y < toCombine.Height; y++)
-                            {
-                                for (int z = 0; z < toCombine.Depth; z++)
-                                {
-                                    combined[startX + x, startY + y, z] = toCombine[x, y, z];
-                                }
-                            }
-                        }
-                    }
+                    sum += hsData[j, i];
                 }
-
-                combinedVolumes.Add(new Volume(combined, set.First().Volume.DataColor, set.First().Name));
+                means[i] = sum / numPixels;
+                for (int j = 0; j < numPixels; j++)
+                {
+                    hsData[j, i] -= means[i];
+                }
             }
 
-            AddVolumes(combinedVolumes);
+            var svd = new SingularValueDecomposition(hsData, true, false, false, false);
+            var u = svd.LeftSingularVectors;
+            var d = svd.Diagonal;
+
+            double[] pctExplained = new double[numMasses];
+            double sumSv = d.Sum();
+            for (int i = 0; i < numMasses; i++)
+            {
+                pctExplained[i] = d[i] / sumSv;
+            }
+
+            int abc = 0;
         }
         private async void test6_Click(object sender, RoutedEventArgs e)
         {
