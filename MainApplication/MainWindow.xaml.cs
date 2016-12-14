@@ -4575,18 +4575,22 @@ namespace ImagingSIMS.MainApplication
             {
                 await dt.AddDataSourceAsync(d);
             }
-
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
             var bsHighRes = ImageHelper.BitmapSourceFromFile(@"D:\Data\10-01-12\1e.bmp");
             var spec = new BioToFSpectrum("grid 894");
-            spec.LoadFromFile(@"D:\Data\10-01-12\grid 894 fov_50shot._2ND xyt.xyt", null);
+            spec.LoadFromFile(@"D:\Data\10-01-12\grid 894 fov_50shot.xyt", null);
 
             var pan = ImageHelper.ConvertToData2D(bsHighRes);
 
-            var hsData = spec.GetPxMMatrix();
-            int numPixels = hsData.GetLength(0);
+            var hsData = spec.GetPxMMatrix(new double[] { 0.5d }, new double[] { 0.5d }, 0, 250);
+            int lrWidth = spec.SizeX;
+            int lrHeight = spec.SizeY;
+            int lrPixels = lrWidth * lrHeight;
+            int hrWidth = pan.Width;
+            int hrHeight = pan.Height;
+            int hrPixels = hrWidth * hrHeight;
             int numMasses = hsData.GetLength(1);
 
             // Mean center the columns
@@ -4594,12 +4598,12 @@ namespace ImagingSIMS.MainApplication
             for (int i = 0; i < numMasses; i++)
             {
                 double sum = 0;
-                for (int j = 0; j < numPixels; j++)
+                for (int j = 0; j < lrPixels; j++)
                 {
                     sum += hsData[j, i];
                 }
-                means[i] = sum / numPixels;
-                for (int j = 0; j < numPixels; j++)
+                means[i] = sum / lrPixels;
+                for (int j = 0; j < lrPixels; j++)
                 {
                     hsData[j, i] -= means[i];
                 }
@@ -4614,6 +4618,38 @@ namespace ImagingSIMS.MainApplication
             for (int i = 0; i < numMasses; i++)
             {
                 pctExplained[i] = d[i] / sumSv;
+            }
+
+            double sumPct = 0;
+            int p = 0;
+            for (int i = 0; i < numMasses; i++)
+            {
+                sumPct += pctExplained[i];
+                if (sumPct >= 0.75)
+                {
+                    p = i;
+                    break;
+                }
+            }
+
+            double[,] upsampledMatrix = new double[hrPixels, numMasses];
+            for (int i = 0; i < p; i++)
+            {
+                double[,] pcResahped = new double[lrWidth, lrHeight];
+                for (int x = 0; x < lrWidth; x++)
+                {
+                    for (int y = 0; y < lrHeight; y++)
+                    {
+                        int index = x * lrHeight + y;
+                        pcResahped[x, y] = u[index, i];
+                    }
+                }
+
+
+            }
+            for (int i = p; i < numMasses; i++)
+            {
+                
             }
 
             int abc = 0;

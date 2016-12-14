@@ -3082,20 +3082,19 @@ namespace ImagingSIMS.Data.Spectra
             return matrix;
         }
 
-        public override double[,] GetPxMMatrix()
+        private double[,] getPxMMatrix(List<CamecaSpecies> species)
         {
-
             int layerLinearLength = SizeX * SizeY;
-            int numMassChannels = NumberSpecies;
+            int numMassChannels = species.Count;
 
             double[,] matrix = new double[layerLinearLength * SizeZ, numMassChannels];
 
-            for (int m = 0; m < NumberSpecies; m++)
+            for (int m = 0; m < species.Count; m++)
             {
                 for (int z = 0; z < SizeZ; z++)
                 {
                     int massPosition = m;
-                    var intensities = FromSpecies(Species[m]);
+                    var intensities = FromSpecies(species[m]);
 
                     for (int x = 0; x < intensities.Width; x++)
                     {
@@ -3105,15 +3104,35 @@ namespace ImagingSIMS.Data.Spectra
                             matrix[pixel, massPosition] = intensities[x, y];
                         }
                     }
-                }                
+                }
             }
 
             return matrix;
         }
+        public override double[,] GetPxMMatrix()
+        {
+            return getPxMMatrix(Species);
+        }
         public override double[,] GetPxMMatrix(double[] binCenters, double[] binWidths)
         {
-            Trace.WriteLine("WARNING: CAMECA spectra cannot specify mass binning for PxM matrix.");
-            return GetPxMMatrix();
+            if (binWidths != null || binCenters != null)
+                Trace.WriteLine("WARNING: CAMECA spectra cannot specify mass binning for PxM matrix.");
+
+            return getPxMMatrix(Species);
+        }
+        public override double[,] GetPxMMatrix(double[] binCenters, double[] binWidths, double startMass, double endMass)
+        {
+            if (binWidths != null || binCenters != null)
+                Trace.WriteLine("WARNING: CAMECA spectra cannot specify mass binning for PxM matrix.");
+
+            List<CamecaSpecies> species = new List<CamecaSpecies>();
+            foreach (var s in Species)
+            {
+                if (s.Mass >= startMass && s.Mass < endMass)
+                    species.Add(s);
+            }
+
+            return getPxMMatrix(species);
         }
 
         // Layout
