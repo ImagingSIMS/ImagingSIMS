@@ -4948,5 +4948,17 @@ namespace ImagingSIMS.MainApplication
             }
         }
         #endregion
+
+        #region TabControl
+        private void AddTabItem(ClosableTabItem tabItem)
+        {
+            tabMain.Items.Add(tabItem);
+        }
+        private void AddTabItemAndNavigate(ClosableTabItem tabItem)
+        {
+            tabMain.Items.Add(tabItem);
+            tabMain.SelectedItem = tabItem;
+        }
+        #endregion
     }
 }
