@@ -4578,6 +4578,28 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
+            //Random r = new Random();
+            //using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(@"D:\Data\10-01-12\test.bin")))
+            //{
+            //    double[,] matrix = new double[5, 2];
+            //    for (int i = 0; i < 5; i++)
+            //    {
+            //        for (int j = 0; j < 2; j++)
+            //        {
+            //            matrix[i, j] = r.NextDouble();
+            //        }
+            //    }
+
+            //    for (int j = 0; j < 2; j++)
+            //    {
+            //        for (int i = 0; i < 5; i++)
+            //        {
+
+            //            bw.Write(matrix[i, j]);
+            //        }
+            //    }
+            //}
+
             var bsHighRes = ImageHelper.BitmapSourceFromFile(@"D:\Data\10-01-12\1e.bmp");
             var spec = new BioToFSpectrum("grid 894");
             spec.LoadFromFile(@"D:\Data\10-01-12\grid 894 fov_50shot.xyt", null);
@@ -4592,6 +4614,17 @@ namespace ImagingSIMS.MainApplication
             int hrHeight = pan.Height;
             int hrPixels = hrWidth * hrHeight;
             int numMasses = hsData.GetLength(1);
+
+            using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(@"D:\Data\10-01-12\grid_binned.bin")))
+            {
+                for (int i = 0; i < numMasses; i++)
+                {
+                    for (int j = 0; j < lrPixels; j++)
+                    {
+                        bw.Write(hsData[j, i]);
+                    }
+                }
+            }
 
             // Mean center the columns
             double[] means = new double[numMasses];
@@ -4633,7 +4666,7 @@ namespace ImagingSIMS.MainApplication
             }
 
             double[,] upsampledMatrix = new double[hrPixels, numMasses];
-            for (int i = 0; i < p; i++)
+            for (int i = 0; i < numMasses; i++)
             {
                 double[,] pcResahped = new double[lrWidth, lrHeight];
                 for (int x = 0; x < lrWidth; x++)
@@ -4645,102 +4678,172 @@ namespace ImagingSIMS.MainApplication
                     }
                 }
 
+                var upscaled = pcResahped.Upscale(hrWidth, hrHeight, false);
+                double[] hrPc = new double[hrPixels];
 
+                // If PC number is less than p, upscale and do guided filter
+                if (i <= p)
+                {
+                    // Do guided filter
+                }
+
+                // Otherwise just upscale and threshold
+                else
+                {                   
+                    for (int x = 0; x < hrWidth; x++)
+                    {
+                        for (int y = 0; y < hrHeight; y++)
+                        {
+                            int index = x * hrHeight + y;
+                            hrPc[index] = upscaled[x, y];
+                        }
+                    }
+
+                    hrPc = SoftThreshold(hrPc, 0.1);
+                }
+
+                // Place into matrix
+                for (int j = 0; j < hrPixels; j++)
+                {
+                    upsampledMatrix[j, i] = hrPc[j];
+                }
             }
-            for (int i = p; i < numMasses; i++)
+
+            // reverted = upsampledMatrix * u'
+            var reverted = upsampledMatrix.DotWithTransposed(u);
+
+            List<Data2D> masses = new List<Data2D>();
+            for (int i = 0; i < numMasses; i++)
             {
-                
+                Data2D mass = new Data2D(hrWidth, hrHeight);
+
+                for (int x = 0; x < hrWidth; x++)
+                {
+                    for (int y = 0; y < hrHeight; y++)
+                    {
+                        int index = x * hrHeight + y;
+                        mass[x, y] = (float)reverted[index, i];
+                    }
+                }
+
+                mass.DataName = $"Mass: {i + 0.5}";
+
+                if (mass.TotalCounts > 500)
+                    masses.Add(mass);
+            }
+
+            DataDisplayTab dt = new DataDisplayTab();
+            var cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+
+            foreach (var mass in masses)
+            {
+                await dt.AddDataSourceAsync(mass);
             }
 
             int abc = 0;
         }
+
+        private double[,] GuidedFilter(double[,] guide, double[,] matrix, int r = 2, double eps = 0.05)
+        {
+            int sizeX = guide.GetLength(0);
+            int sizeY = guide.GetLength(1);
+
+            for (int x = 0; x < sizeX; x++)
+            {
+                for (int y = 0; y < sizeY; y++)
+                {
+                    int bcWidth = Math.Min(x + r, sizeX - 1) - Math.Max(x - r, 0);
+                    int bcHeight = Math.Min(y + r, sizeY - 1) - Math.Max(y - r, 0);
+                    int bcArea = bcWidth * bcHeight;
+
+                    double[,] bcG = new double[bcWidth, bcHeight];
+                    double[,] bcM = new double[bcWidth, bcHeight];
+
+                    int bcX = 0;
+                    int bcY = 0;
+                    for (int a = x - r; a < x + r; a++)
+                    {
+                        if (a < 0 || a >= sizeX) continue;
+                        for (int b = y - r; b < y + r; b++)
+                        {
+                            if (b < 0 || b >= sizeY) continue;
+
+                            bcG[bcX, bcY] = guide[a, b];
+                            bcM[bcX, bcY] = matrix[a, b];
+
+                            bcY++;
+                        }
+                        bcX++;
+                        bcY = 0;
+                    }
+
+                    double meanG = bcG.Sum() / bcArea;
+                    double meanM = bcM.Sum() / bcArea;
+                    double meanGM = bcG.Dot(bcM).Sum() / bcArea;
+                    //double covIP = meanGM - m
+                }
+            }
+
+
+            return new double[1, 1];
+        }
+        private double[] SoftThreshold(double[] array, double lambda)
+        {
+            double th = lambda / 2;
+            double[] temp = new double[array.Length];
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] > th)
+                    temp[i] = array[i] - th;
+                else if (array[i] < -th)
+                    temp[i] = array[i] + th;
+                else
+                    temp[i] = 0;
+            }
+
+            return temp;
+        }
+
         private async void test6_Click(object sender, RoutedEventArgs e)
         {
-            var inputFolder = @"D:\Swap\Training Set Test\Input";
-            var validationFolder = @"D:\Swap\Training Set Test\Validation";
+            var ofd = new OpenFileDialog();
+            if (ofd.ShowDialog() != true) return;
 
-            Random r = new Random();
-            int index = r.Next(0, 1249);
+            int sizeX = 512;
+            int sizeY = 512;
+            int numPixels = sizeX * sizeY;
+            int numMasses = 251;
 
-            DataDisplayTab dt = tabMain.SelectedContent as DataDisplayTab;
-            if(dt == null)
+            double[,] buffer = new double[numPixels, numMasses];
+
+            using (BinaryReader br = new BinaryReader(File.OpenRead(ofd.FileName)))
             {
-                dt = new DataDisplayTab();
-                ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Input/Validation", true);
-                tabMain.Items.Add(cti);
-                tabMain.SelectedItem = cti;
-            }
-
-            string inputFileName = $"Input_{index}.txt";
-            string validationFileName = $"Validation_{index}.txt";
-
-            if (!File.Exists(Path.Combine(validationFolder, validationFileName)))
-            {
-                DialogBox.Show($"Validation file with index {index} do mot exist in the folder.", validationFolder, "Input/Validation", DialogIcon.Error);
-                return;
-            }
-
-            using (StreamReader sr = new StreamReader(Path.Combine(inputFolder, $"Input_{index}.txt")))
-            {
-                string[] parameters = sr.ReadLine().Split('\t');
-
-                //FileType = (FileType)int.Parse(parts[0]),
-                //OriginalDataType = (FileType)int.Parse(parts[1]),
-                //Width = int.Parse(parts[2]),
-                //Height = int.Parse(parts[3]),
-                //StageX = int.Parse(parts[4]),
-                //StageY = int.Parse(parts[5]),
-                //Index = int.Parse(parts[6]),
-
-                int sizeX = int.Parse(parameters[2]);
-                int sizeY = int.Parse(parameters[3]);
-
-                float[,] matrix = new float[sizeX, sizeY];
-
-                for (int y = 0; y < sizeY; y++)
+                for (int j = 0; j < numMasses; j++)
                 {
-                    string[] parts = sr.ReadLine().Split('\t');
-                    for (int x = 0; x < sizeX; x++)
+                    for (int i = 0; i < numPixels; i++)
                     {
-                        matrix[x, y] = int.Parse(parts[x]);
+                        buffer[i, j] = br.ReadDouble();
+                    }
+                }
+            }
+
+            for (int i = 0; i < numMasses; i++)
+            {
+                Data2D mass = new Data2D(sizeX, sizeY);
+                for (int x = 0; x < sizeX; x++)
+                {
+                    for (int y = 0; y < sizeY; y++)
+                    {
+                        mass[x, y] = (float)buffer[x * sizeY + y, i];
                     }
                 }
 
-                Data2D d = new Data2D(matrix);
-                d.DataName = Path.GetFileNameWithoutExtension($"Input {index}");
+                mass.DataName = $"Mass {i + 0.5}";
 
-                await dt.AddDataSourceAsync(d);
-            }
-            using (StreamReader sr = new StreamReader(Path.Combine(validationFolder, $"Validation_{index}.txt")))
-            {
-                string[] parameters = sr.ReadLine().Split('\t');
-
-                //FileType = (FileType)int.Parse(parts[0]),
-                //OriginalDataType = (FileType)int.Parse(parts[1]),
-                //Width = int.Parse(parts[2]),
-                //Height = int.Parse(parts[3]),
-                //StageX = int.Parse(parts[4]),
-                //StageY = int.Parse(parts[5]),
-                //Index = int.Parse(parts[6]),
-
-                int sizeX = int.Parse(parameters[2]);
-                int sizeY = int.Parse(parameters[3]);
-
-                float[,] matrix = new float[sizeX, sizeY];
-
-                for (int y = 0; y < sizeY; y++)
-                {
-                    string[] parts = sr.ReadLine().Split('\t');
-                    for (int x = 0; x < sizeX; x++)
-                    {
-                        matrix[x, y] = int.Parse(parts[x]);
-                    }
-                }
-
-                Data2D d = new Data2D(matrix);
-                d.DataName = Path.GetFileNameWithoutExtension($"Validation {index}");
-
-                await dt.AddDataSourceAsync(d);
+                AvailableHost.AvailableTablesSource.AddTable(mass);
             }
         }
         private async void test7_Click(object sender, RoutedEventArgs e)
