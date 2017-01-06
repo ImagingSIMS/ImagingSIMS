@@ -149,7 +149,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 0);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 0);
             if (ratio >= One) return Color.FromArgb(255, 255, 255, 255);
 
             byte value = (byte)(ratio * 255d);
@@ -160,7 +160,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 0);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 0);
             if (ratio >= One) return C;
 
             return Color.FromArgb(255, (byte)(C.R * ratio), (byte)(C.G * ratio), (byte)(C.B * ratio));
