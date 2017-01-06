@@ -1077,7 +1077,6 @@ namespace ImagingSIMS.Data.Fusion
 
             return fused;
         }
-
         public async override Task<Data3D> DoFusionAsync()
         {
             return await Task.Run(() => DoFusion());

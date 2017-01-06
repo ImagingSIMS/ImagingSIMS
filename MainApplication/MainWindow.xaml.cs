@@ -36,6 +36,9 @@ using ImagingSIMS.Data.Converters;
 
 using Accord.Math;
 using Accord.Math.Decompositions;
+using System.Threading.Tasks;
+
+using Matrix = Accord.Math.Matrix;
 
 namespace ImagingSIMS.MainApplication
 {
@@ -4578,35 +4581,58 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            //Random r = new Random();
-            //using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(@"D:\Data\10-01-12\test.bin")))
+            var bsHighRes = ImageHelper.BitmapSourceFromFile(@"D:\Data\10-01-12\1e.bmp");
+            //var dt58 = await Data2D.LoadData2DAsync(@"D:\Data\10-01-12\58.csv", FileType.CSV);
+            //var highRes = ImageHelper.ConvertToData2D(bsHighRes);
+            //dt58 = dt58.Upscale(highRes.Width, highRes.Height);
+
+            //double[,] dGuide = new double[highRes.Width, highRes.Height];
+            //double[,] dImage = new double[highRes.Width, highRes.Height];
+            //for (int x = 0; x < highRes.Width; x++)
             //{
-            //    double[,] matrix = new double[5, 2];
-            //    for (int i = 0; i < 5; i++)
+            //    for (int y = 0; y < highRes.Height; y++)
             //    {
-            //        for (int j = 0; j < 2; j++)
-            //        {
-            //            matrix[i, j] = r.NextDouble();
-            //        }
-            //    }
-
-            //    for (int j = 0; j < 2; j++)
-            //    {
-            //        for (int i = 0; i < 5; i++)
-            //        {
-
-            //            bw.Write(matrix[i, j]);
-            //        }
+            //        dGuide[x, y] = (double)highRes[x, y];
+            //        dImage[x, y] = (double)dt58[x, y];
             //    }
             //}
 
-            var bsHighRes = ImageHelper.BitmapSourceFromFile(@"D:\Data\10-01-12\1e.bmp");
+            //var result = GuidedFilter(dGuide, dImage);
+            //var dtResult = new Data2D(highRes.Width, highRes.Height);
+            //for (int x = 0; x < highRes.Width; x++)
+            //{
+            //    for (int y = 0; y < highRes.Height; y++)
+            //    {
+            //        dtResult[x, y] = (float)result[x, y];
+            //    }
+            //}
+            //var min = dtResult.Minimum;
+            //if (min < 0) dtResult += -min;
+            //var resultImage = ImageHelper.CreateColorScaleImage(dtResult, ColorScaleTypes.Gray);
+            //resultImage.Save(@"D:\Data\10-01-12\58-gfcs.bmp");
+
+            //return;
+
             var spec = new BioToFSpectrum("grid 894");
-            spec.LoadFromFile(@"D:\Data\10-01-12\grid 894 fov_50shot.xyt", null);
+
+            Trace.WriteLine("Loading spectrum from file");
+            await Task.Run(() =>
+            {
+                spec.LoadFromFile(@"D:\Data\10-01-12\grid 894 fov_50shot.xyt", null);
+            });
+            
 
             var pan = ImageHelper.ConvertToData2D(bsHighRes);
+            pan /= pan.Maximum;
 
-            var hsData = spec.GetPxMMatrix(new double[] { 0.5d }, new double[] { 0.5d }, 0, 250);
+            Trace.WriteLine("Geting pixel by mass matrix from spectrum.");
+
+            double[,] hsData = new double[1, 1];
+            await Task.Run(() =>
+            {
+                hsData = spec.GetPxMMatrix(new double[] { 0.5d }, new double[] { 0.5d }, 0, 250);
+            });
+            
             int lrWidth = spec.SizeX;
             int lrHeight = spec.SizeY;
             int lrPixels = lrWidth * lrHeight;
@@ -4615,36 +4641,43 @@ namespace ImagingSIMS.MainApplication
             int hrPixels = hrWidth * hrHeight;
             int numMasses = hsData.GetLength(1);
 
-            using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(@"D:\Data\10-01-12\grid_binned.bin")))
+            double[,] panArray = new double[hrWidth, hrHeight];
+            for (int x = 0; x < hrWidth; x++)
+            {
+                for (int y = 0; y < hrHeight; y++)
+                {
+                    panArray[x,y] = pan[x, y];
+                }
+            }
+
+            Trace.WriteLine("Mean centering data.");
+            // Mean center the columns
+            double[] means = new double[numMasses];
+            await Task.Run(() =>
             {
                 for (int i = 0; i < numMasses; i++)
                 {
+                    double sum = 0;
                     for (int j = 0; j < lrPixels; j++)
                     {
-                        bw.Write(hsData[j, i]);
+                        sum += hsData[j, i];
+                    }
+                    means[i] = sum / lrPixels;
+                    for (int j = 0; j < lrPixels; j++)
+                    {
+                        hsData[j, i] -= means[i];
                     }
                 }
-            }
+            });
 
-            // Mean center the columns
-            double[] means = new double[numMasses];
-            for (int i = 0; i < numMasses; i++)
-            {
-                double sum = 0;
-                for (int j = 0; j < lrPixels; j++)
-                {
-                    sum += hsData[j, i];
-                }
-                means[i] = sum / lrPixels;
-                for (int j = 0; j < lrPixels; j++)
-                {
-                    hsData[j, i] -= means[i];
-                }
-            }
 
-            var svd = new SingularValueDecomposition(hsData, true, false, false, false);
+            Trace.WriteLine("Performing singular value decomposition.");
+
+            var svd = new SingularValueDecomposition(hsData, true, true, false, false);
             var u = svd.LeftSingularVectors;
             var d = svd.Diagonal;
+
+            Trace.WriteLine("SVD complete.");
 
             double[] pctExplained = new double[numMasses];
             double sumSv = d.Sum();
@@ -4665,8 +4698,10 @@ namespace ImagingSIMS.MainApplication
                 }
             }
 
+            Trace.WriteLine($"Number PCs for guided filtering: {p}");
+
             double[,] upsampledMatrix = new double[hrPixels, numMasses];
-            for (int i = 0; i < numMasses; i++)
+            Parallel.For(0, numMasses, i =>
             {
                 double[,] pcResahped = new double[lrWidth, lrHeight];
                 for (int x = 0; x < lrWidth; x++)
@@ -4685,6 +4720,15 @@ namespace ImagingSIMS.MainApplication
                 if (i <= p)
                 {
                     // Do guided filter
+                    var gfpc = GuidedFilter(panArray, upscaled, 2, 0.1);
+                    for (int x = 0; x < hrWidth; x++)
+                    {
+                        for (int y = 0; y < hrHeight; y++)
+                        {
+                            int index = x * hrHeight + y;
+                            hrPc[index] = gfpc[x, y];
+                        }
+                    }
                 }
 
                 // Otherwise just upscale and threshold
@@ -4699,7 +4743,7 @@ namespace ImagingSIMS.MainApplication
                         }
                     }
 
-                    hrPc = SoftThreshold(hrPc, 0.1);
+                    hrPc = SoftThreshold(hrPc, 0.01);
                 }
 
                 // Place into matrix
@@ -4707,10 +4751,27 @@ namespace ImagingSIMS.MainApplication
                 {
                     upsampledMatrix[j, i] = hrPc[j];
                 }
+
+                Trace.WriteLine($"Upscaled PC {i + 1} of {numMasses}");
+            });
+
+            Trace.WriteLine("Reversing SVD decomposition.");
+            var reverted = upsampledMatrix.Dot(svd.DiagonalMatrix).DotWithTransposed(svd.RightSingularVectors);
+
+            for (int i = 0; i < hrPixels; i++)
+            {
+                for (int j = 0; j < numMasses; j++)
+                {
+                    reverted[i, j] += means[j];
+                }
             }
 
-            // reverted = upsampledMatrix * u'
-            var reverted = upsampledMatrix.DotWithTransposed(u);
+            //DataDisplayTab dt = new DataDisplayTab();
+            //var cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
+            //tabMain.Items.Add(cti);
+            //tabMain.SelectedItem = cti;
+
+            Trace.WriteLine("Converting each mass to a Data2D.");
 
             List<Data2D> masses = new List<Data2D>();
             for (int i = 0; i < numMasses; i++)
@@ -4728,21 +4789,12 @@ namespace ImagingSIMS.MainApplication
 
                 mass.DataName = $"Mass: {i + 0.5}";
 
-                if (mass.TotalCounts > 500)
-                    masses.Add(mass);
+                //if (mass.TotalCounts > 500)
+                masses.Add(mass);
             }
 
-            DataDisplayTab dt = new DataDisplayTab();
-            var cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
-            tabMain.Items.Add(cti);
-            tabMain.SelectedItem = cti;
-
-            foreach (var mass in masses)
-            {
-                await dt.AddDataSourceAsync(mass);
-            }
-
-            int abc = 0;
+            Trace.WriteLine("Adding Data2D tables to workspace.");
+            AvailableHost.AvailableTablesSource.AddTables(masses);
         }
 
         private double[,] GuidedFilter(double[,] guide, double[,] matrix, int r = 2, double eps = 0.05)
@@ -4750,45 +4802,79 @@ namespace ImagingSIMS.MainApplication
             int sizeX = guide.GetLength(0);
             int sizeY = guide.GetLength(1);
 
-            for (int x = 0; x < sizeX; x++)
+            double[,] meanG = new double[sizeX, sizeY];
+            double[,] meanM = new double[sizeX, sizeY];
+            double[,] meanGM = new double[sizeX, sizeY];
+            double[,] meanGG = new double[sizeX, sizeY];
+
+            for (int x = 0 ; x < sizeX; x++)
             {
                 for (int y = 0; y < sizeY; y++)
                 {
-                    int bcWidth = Math.Min(x + r, sizeX - 1) - Math.Max(x - r, 0);
-                    int bcHeight = Math.Min(y + r, sizeY - 1) - Math.Max(y - r, 0);
-                    int bcArea = bcWidth * bcHeight;
+                    int bcArea = 0;
 
-                    double[,] bcG = new double[bcWidth, bcHeight];
-                    double[,] bcM = new double[bcWidth, bcHeight];
-
-                    int bcX = 0;
-                    int bcY = 0;
-                    for (int a = x - r; a < x + r; a++)
+                    for (int xx = x - r; xx <= x + r; xx++)
                     {
-                        if (a < 0 || a >= sizeX) continue;
-                        for (int b = y - r; b < y + r; b++)
+                        if (xx < 0 || xx >= sizeX) continue;
+                        for (int yy = y - r; yy <= y + r; yy++)
                         {
-                            if (b < 0 || b >= sizeY) continue;
+                            if (yy < 0 || yy >= sizeY) continue;
 
-                            bcG[bcX, bcY] = guide[a, b];
-                            bcM[bcX, bcY] = matrix[a, b];
+                            meanG[x, y] += guide[xx, yy];
+                            meanM[x, y] += matrix[xx, yy];
+                            meanGM[x, y] += guide[xx, yy] * matrix[xx, yy];
+                            meanGG[x, y] += guide[xx, yy] * guide[xx, yy];
 
-                            bcY++;
+                            bcArea++;
                         }
-                        bcX++;
-                        bcY = 0;
                     }
 
-                    double meanG = bcG.Sum() / bcArea;
-                    double meanM = bcM.Sum() / bcArea;
-                    double meanGM = bcG.Dot(bcM).Sum() / bcArea;
-                    //double covIP = meanGM - m
+                    meanG[x, y] /= bcArea;
+                    meanM[x, y] /= bcArea;
+                    meanGM[x, y] /= bcArea;
+                    meanGG[x, y] /= bcArea;
                 }
             }
 
+            var covGM = Elementwise.Subtract(meanGM, Elementwise.Multiply(meanG, meanM));
+            var varG = Elementwise.Subtract(meanGG, Elementwise.Multiply(meanG, meanG));
 
-            return new double[1, 1];
+            var a = Elementwise.Divide(covGM, varG.Add(eps));
+            var b = Elementwise.Subtract(meanM, Elementwise.Multiply(a, meanG));
+
+            double[,] meanA = new double[sizeX, sizeY];
+            double[,] meanB = new double[sizeX, sizeY];
+
+            for (int x = 0 ; x < sizeX; x++)
+            {
+                for (int y = 0; y < sizeY; y++)
+                {
+                    int bcArea = 0;
+
+                    for (int xx = x - r; xx <= x + r; xx++)
+                    {
+                        if (xx < 0 || xx >= sizeX) continue;
+                        for (int yy = y - r; yy <= y + r; yy++)
+                        {
+                            if (yy < 0 || yy >= sizeY) continue;
+
+                            meanA[x, y] += a[xx, yy];
+                            meanB[x, y] += b[xx, yy];
+
+                            bcArea++;
+                        }
+                    }
+
+                    meanA[x, y] /= bcArea;
+                    meanB[x, y] /= bcArea;
+                }
+            }
+
+            var q = Elementwise.Add(Elementwise.Multiply(meanA, guide), meanB);
+
+            return  q;
         }
+
         private double[] SoftThreshold(double[] array, double lambda)
         {
             double th = lambda / 2;
@@ -4809,42 +4895,7 @@ namespace ImagingSIMS.MainApplication
 
         private async void test6_Click(object sender, RoutedEventArgs e)
         {
-            var ofd = new OpenFileDialog();
-            if (ofd.ShowDialog() != true) return;
-
-            int sizeX = 512;
-            int sizeY = 512;
-            int numPixels = sizeX * sizeY;
-            int numMasses = 251;
-
-            double[,] buffer = new double[numPixels, numMasses];
-
-            using (BinaryReader br = new BinaryReader(File.OpenRead(ofd.FileName)))
-            {
-                for (int j = 0; j < numMasses; j++)
-                {
-                    for (int i = 0; i < numPixels; i++)
-                    {
-                        buffer[i, j] = br.ReadDouble();
-                    }
-                }
-            }
-
-            for (int i = 0; i < numMasses; i++)
-            {
-                Data2D mass = new Data2D(sizeX, sizeY);
-                for (int x = 0; x < sizeX; x++)
-                {
-                    for (int y = 0; y < sizeY; y++)
-                    {
-                        mass[x, y] = (float)buffer[x * sizeY + y, i];
-                    }
-                }
-
-                mass.DataName = $"Mass {i + 0.5}";
-
-                AvailableHost.AvailableTablesSource.AddTable(mass);
-            }
+            // var spec = AvailableHost.
         }
         private async void test7_Click(object sender, RoutedEventArgs e)
         {
