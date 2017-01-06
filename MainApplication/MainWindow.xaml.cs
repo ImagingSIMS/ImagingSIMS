@@ -45,7 +45,8 @@ namespace ImagingSIMS.MainApplication
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : RibbonWindow, IAvailableTables, IAvailableImageSeries, IAvailableVolumes
+    public partial class MainWindow : RibbonWindow, IAvailableTables, 
+        IAvailableImageSeries, IAvailableVolumes, IAvailableSpectra
     {
         #region Properties
         public static readonly DependencyProperty WorkspaceProperty = DependencyProperty.Register("Workspace",
@@ -249,6 +250,7 @@ namespace ImagingSIMS.MainApplication
             AvailableHost.AvailableTablesSource = this;
             AvailableHost.AvailableImageSeriesSource = this;
             AvailableHost.AvailableVolumesSource = this;
+            AvailableHost.AvailableSpectraSource = this;
 
             Trace.WriteLine("Window load complete.");
         }
@@ -5709,6 +5711,156 @@ namespace ImagingSIMS.MainApplication
                         ex.Message, "Replace", DialogIcon.Alert);
                     return;
                 }
+            }
+        }
+        #endregion
+
+        #region IAvailableSpectra
+        public List<Spectrum> GetSelectedSpectra()
+        {
+            List<Spectrum> spectra = new List<Spectrum>();
+            foreach (object obj in listViewSpectra.SelectedItems)
+            {
+                Spectrum s = obj as Spectrum;
+                if (s != null)
+                    spectra.Add(s);
+            }
+            return spectra;
+        }
+        public List<Spectrum> GetAvailableSpectra()
+        {
+            return Workspace.Spectra.ToList();
+        }
+        public void RemoveSpectra(IEnumerable<Spectrum> spectraToRemove)
+        {
+            List<Spectrum> notRemoved = new List<Spectrum>();
+
+            foreach (Spectrum s in spectraToRemove)
+            {
+                if (Workspace.Spectra.Contains(s))
+                {
+                    try
+                    {
+                        Workspace.Spectra.Remove(s);
+                    }
+                    catch (Exception)
+                    {
+                        notRemoved.Add(s);
+                    }
+                }
+                else notRemoved.Add(s);
+            }
+
+            if (notRemoved.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Spectrum s in notRemoved)
+                {
+                    sb.AppendLine(s.Name);
+                }
+
+                DialogBox.Show("The following spectra could not be removed from the workspace:",
+                    sb.ToString(), "Remove", DialogIcon.Alert);
+            }
+        }
+        public void RemoveSpectra(Spectrum[] spectraToRemove)
+        {
+            List<Spectrum> notRemoved = new List<Spectrum>();
+
+            foreach (Spectrum s in spectraToRemove)
+            {
+                if (Workspace.Spectra.Contains(s))
+                {
+                    try
+                    {
+                        Workspace.Spectra.Remove(s);
+                    }
+                    catch (Exception)
+                    {
+                        notRemoved.Add(s);
+                    }
+                }
+                else notRemoved.Add(s);
+            }
+
+            if (notRemoved.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Spectrum s in notRemoved)
+                {
+                    sb.AppendLine(s.Name);
+                }
+
+                DialogBox.Show("The following spectra could not be removed from the workspace:",
+                    sb.ToString(), "Remove", DialogIcon.Alert);
+            }
+        }
+        public void AddSpectrum(Spectrum spectrumToAdd)
+        {
+            try
+            {
+                Workspace.Spectra.Add(spectrumToAdd);
+            }
+            catch (Exception ex)
+            {
+                DialogBox.Show("The spectrum could not be added to the workspace.",
+                    ex.Message, "Add", DialogIcon.Alert);
+            }
+        }
+        public void AddSpectra(IEnumerable<Spectrum> spectraToAdd)
+        {
+            List<Spectrum> notAdded = new List<Spectrum>();
+
+            foreach (Spectrum s in spectraToAdd)
+            {
+                try
+                {
+                    Workspace.Spectra.Add(s);
+                }
+                catch (Exception)
+                {
+                    notAdded.Add(s);
+                }
+            }
+
+            if (notAdded.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Spectrum s in notAdded)
+                {
+                    sb.AppendLine(s.Name);
+                }
+
+                DialogBox.Show("The following spectra could not be added to the workspace:",
+                    sb.ToString(), "Add", DialogIcon.Alert);
+            }
+        }
+        public void AddSpectra(Spectrum[] spectraToAdd)
+        {
+            List<Spectrum> notAdded = new List<Spectrum>();
+
+            foreach (Spectrum s in spectraToAdd)
+            {
+                try
+                {
+                    Workspace.Spectra.Add(s);
+                }
+                catch (Exception)
+                {
+                    notAdded.Add(s);
+                }
+            }
+
+            if (notAdded.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Spectrum s in notAdded)
+                {
+                    sb.AppendLine(s.Name);
+                }
+
+                DialogBox.Show("The following spectra could not be added to the workspace:",
+                    sb.ToString(), "Add", DialogIcon.Alert);
             }
         }
         #endregion

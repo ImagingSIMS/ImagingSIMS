@@ -120,6 +120,7 @@
     <Compile Include="BaseControls\ResizeThumb.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="IAvailableImageSeries.cs" />
+    <Compile Include="IAvailableSpectra.cs" />
     <Compile Include="IAvailableVolumes.cs" />
     <Compile Include="Tabs\RatioTab.xaml.cs">
       <DependentUpon>RatioTab.xaml</DependentUpon>

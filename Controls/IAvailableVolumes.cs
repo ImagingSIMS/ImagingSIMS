@@ -22,28 +22,28 @@ namespace ImagingSIMS.Controls
         /// <summary>
         /// Removes the specified volumes from the control that implements the interface.
         /// </summary>
-        /// <param name="volumesToRemove"></param>
+        /// <param name="volumesToRemove">Collection of volumes to remove</param>
         void RemoveVolumes(IEnumerable<Volume> volumesToRemove);
         /// <summary>
         /// Removes the specified volumes from the control that implements the interface.
         /// </summary>
-        /// <param name="volumesToRemove"></param>
+        /// <param name="volumesToRemove">Array of volumes to remove</param>
         void RemoveVolumes(Volume[] volumesToRemove);
         /// <summary>
         /// Adds the specifed volumes to the control that implements the interface.
         /// </summary>
-        /// <param name="volumesToAdd"></param>
+        /// <param name="volumesToAdd">Collection of volumes to add</param>
         void AddVolumes(IEnumerable<Volume> volumesToAdd);
         /// <summary>
         /// Adds the specifed volumes to the control that implements the interface.
         /// </summary>
-        /// <param name="volumesToAdd"></param>
+        /// <param name="volumesToAdd">Array of volumes to add</param>
         void AddVolumes(Volume[] volumesToAdd);
         /// <summary>
         /// Replaces the specified volumes in the control that implements the interface.
         /// </summary>
-        /// <param name="toReplace"></param>
-        /// <param name="newvolume"></param>
+        /// <param name="toReplace">Volume to remove</param>
+        /// <param name="newvolume">Volume to add in place</param>
         void ReplaceVolume(Volume toReplace, Volume newvolume);
     }
 }
