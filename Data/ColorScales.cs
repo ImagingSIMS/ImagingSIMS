@@ -47,7 +47,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Max;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 0);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 0);
             if (ratio < OneThird)
             {
                 return Color.FromArgb(255, (byte)(ratio * 768d), 0, 0);
@@ -71,7 +71,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 0);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 0);
             if (ratio < OneThird)
             {
                 return Color.FromArgb(255, 0, 0, (byte)(ratio * 768d));
@@ -95,7 +95,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 0);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 0);
             if (ratio < OneThird)
             {
                 return Color.FromArgb(255, (byte)(ratio * 768d), (byte)(255 - (ratio * 768d)), 255);
@@ -122,7 +122,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 0);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 0);
             if (ratio < OneThird)
             {
                 return Color.FromArgb(255, (byte)(255 - (ratio * 768d)), (byte)(ratio * 768d), 255);
@@ -169,7 +169,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 0);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 0);
             if (ratio < OneHalf)
             {
                 return Color.FromArgb(255, 0, (byte)(ratio * 512d ), 0);
@@ -188,7 +188,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 0);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 0);
             if (ratio < OneHalf)
             {
                 return Color.FromArgb(255, (byte)(ratio * 512d), 0, 0);
@@ -207,7 +207,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 0);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 0);
             if (ratio < OneHalf)
             {
                 return Color.FromArgb(255, 0, 0, (byte)(ratio * 512d));
@@ -226,7 +226,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 0);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 0);
             if (ratio < OneHalf)
             {
                 return Color.FromArgb(255, (byte)(ratio * 512d), 0, (byte)(ratio * 512d));
@@ -245,7 +245,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 0);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 0);
             if (ratio < OneHalf)
             {
                 return Color.FromArgb(255, (byte)(ratio * 512d), (byte)(ratio * 512d), 0);
@@ -264,7 +264,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 0);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 0);
             if (ratio < OneHalf)
             {
                 return Color.FromArgb(255, 0, (byte)(ratio * 512d), (byte)(ratio * 512d));
@@ -283,7 +283,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 0);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 0);
 
             if(ratio < OneSeventh) // black to blue
             {
@@ -324,7 +324,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 0, 0, 255);
+            if (ratio <= Zero) return Color.FromArgb(255, 0, 0, 255);
             if (ratio < OneThird) // blue to cyan
             {
                 return Color.FromArgb(255, 0, (byte)(ratio * 768d), 255);
@@ -347,7 +347,7 @@ namespace ImagingSIMS.Data.Imaging
         {
             double ratio = Value / Maximum;
 
-            if (ratio == Zero) return Color.FromArgb(255, 68, 1, 84);
+            if (ratio <= Zero) return Color.FromArgb(255, 68, 1, 84);
 
             double remainder = ratio;
             if(ratio < OneEighth) // (68, 1, 84) to (71, 44, 122)
@@ -537,43 +537,58 @@ namespace ImagingSIMS.Data.Imaging
 
     public enum ColorScaleTypes
     {
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         Solid,
 
         [Description("Thermal Warm")]
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         ThermalWarm,
 
         [Description("Thermal Cold")]
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         ThermalCold,
 
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         Neon,
 
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         Retro,
 
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         Gray,
 
         [Description("Red-White")]
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         RedWhite,
 
         [Description("Green-White")]
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         GreenWhite,
 
         [Description("Blue-White")]
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         BlueWhite,
 
         [Description("Magenta-White")]
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         MagentaWhite,
 
         [Description("Yellow-White")]
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         YellowWhite,
 
         [Description("Cyan-White")]
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         CyanWhite,
 
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         Rainbow,
 
         [Description("Heat Map")]
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         HeatMap,
 
+        [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         Viridis,
 
         [Description("Red-Black-Green")]
