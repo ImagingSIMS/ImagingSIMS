@@ -147,7 +147,7 @@
                         Minimum="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Minimum}"
                         Maximum="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Maximum}"
                         Value="{Binding DisplayItem.Saturation, Mode=TwoWay, ElementName=userControl}"/>
-                <TextBlock Grid.Column="2" Text="{Binding DisplayItem.Saturation, StringFormat=0.0, ElementName=userControl}"/>
+                <TextBlock Grid.Column="2" Text="{Binding DisplayItem.Saturation, StringFormat=0.0####, ElementName=userControl}"/>
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -159,10 +159,10 @@
                 <Slider x:Name="sliderThreshold" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch"
                         SmallChange="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Small}"
                         LargeChange="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Large}"
-                        Minimum="0"
+                        Minimum="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Minimum}"
                         Maximum="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Maximum}"
                         Value="{Binding DisplayItem.Threshold, Mode=TwoWay, ElementName=userControl}"/>
-                <TextBlock Grid.Column="2" Text="{Binding DisplayItem.Threshold, StringFormat=0.0, ElementName=userControl}"/>
+                <TextBlock Grid.Column="2" Text="{Binding DisplayItem.Threshold, StringFormat=0.0####, ElementName=userControl}"/>
             </Grid>
             <Grid>
                 <Grid.RowDefinitions>

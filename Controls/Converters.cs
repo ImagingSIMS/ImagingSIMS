@@ -16,13 +16,13 @@ using System.Windows;
 using ImagingSIMS.Data.Fusion;
 using ImagingSIMS.Common.Controls;
 using System.Windows.Media;
+using ImagingSIMS.Common;
 
 namespace ImagingSIMS.Controls.Converters
 {
     public class BoolToScrollTextConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -50,8 +50,7 @@ namespace ImagingSIMS.Controls.Converters
                 return "Error in operation";
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -91,8 +90,7 @@ namespace ImagingSIMS.Controls.Converters
 
     public class TabToBoolConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
-               System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -117,8 +115,7 @@ namespace ImagingSIMS.Controls.Converters
                 return false;
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return false;
         }
@@ -150,7 +147,6 @@ namespace ImagingSIMS.Controls.Converters
                 return Visibility.Collapsed;
             }
         }
-
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
@@ -158,8 +154,7 @@ namespace ImagingSIMS.Controls.Converters
     }
     public class HasImageToBoolConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
-               System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -173,16 +168,14 @@ namespace ImagingSIMS.Controls.Converters
                 return false;
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return false;
         }
     }
     public class BoolVisInvertedConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
-               System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -202,8 +195,7 @@ namespace ImagingSIMS.Controls.Converters
                 return System.Windows.Visibility.Collapsed;
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return System.Windows.Visibility.Collapsed;
         }
@@ -211,8 +203,7 @@ namespace ImagingSIMS.Controls.Converters
 
     public class HasTextConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
-               System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -229,8 +220,7 @@ namespace ImagingSIMS.Controls.Converters
                 return false;
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return false;
         }
@@ -238,7 +228,7 @@ namespace ImagingSIMS.Controls.Converters
 
     public class Data2DToBitmapSourceConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object argument, CultureInfo culture)
         {
             if (value == null) return null;
 
@@ -254,7 +244,7 @@ namespace ImagingSIMS.Controls.Converters
                 return null;
             }
         }
-        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object argument, CultureInfo culture)
         {
             return false;
         }
@@ -262,7 +252,7 @@ namespace ImagingSIMS.Controls.Converters
 
     public class Data3DToBitmapSourceConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object argument, CultureInfo culture)
         {
             if (value == null) return null;
 
@@ -294,7 +284,7 @@ namespace ImagingSIMS.Controls.Converters
                 return null;
             }
         }
-        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object argument, CultureInfo culture)
         {
             return false;
         }
@@ -302,8 +292,7 @@ namespace ImagingSIMS.Controls.Converters
 
     public class BoolInvertConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
-               System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -316,8 +305,7 @@ namespace ImagingSIMS.Controls.Converters
                 return false;
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return false;
         }
@@ -325,7 +313,7 @@ namespace ImagingSIMS.Controls.Converters
 
     public class Data2DToSizeStringConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object argument, CultureInfo culture)
         {
             if (value == null) return null;
 
@@ -341,14 +329,14 @@ namespace ImagingSIMS.Controls.Converters
                 return null;
             }
         }
-        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object argument, CultureInfo culture)
         {
             return false;
         }
     }
     public class Data3DToSizeStringConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object argument, CultureInfo culture)
         {
             if (value == null) return null;
 
@@ -364,14 +352,14 @@ namespace ImagingSIMS.Controls.Converters
                 return null;
             }
         }
-        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object argument, CultureInfo culture)
         {
             return false;
         }
     }
     public class Data2DToMinMaxStringConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object argument, CultureInfo culture)
         {
             if (value == null) return null;
 
@@ -387,14 +375,14 @@ namespace ImagingSIMS.Controls.Converters
                 return null;
             }
         }
-        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object argument, CultureInfo culture)
         {
             return false;
         }
     }
     public class Data3DToMinMaxStringConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object argument, CultureInfo culture)
         {
             if (value == null) return null;
 
@@ -410,7 +398,7 @@ namespace ImagingSIMS.Controls.Converters
                 return null;
             }
         }
-        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object argument, CultureInfo culture)
         {
             return false;
         }
@@ -444,7 +432,7 @@ namespace ImagingSIMS.Controls.Converters
             }
         }
 
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -457,7 +445,7 @@ namespace ImagingSIMS.Controls.Converters
                 return string.Empty;
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return string.Empty;
         }
@@ -465,7 +453,7 @@ namespace ImagingSIMS.Controls.Converters
 
     public class DisplayImageToDimensionsConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object argument, CultureInfo culture)
         {
             if (value == null) return null;
 
@@ -484,14 +472,14 @@ namespace ImagingSIMS.Controls.Converters
                 return null;
             }
         }
-        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object argument, CultureInfo culture)
         {
             return false;
         }
     }
     public class BitmapSourceToDimensionsConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object argument, CultureInfo culture)
         {
             if (value == null) return null;
 
@@ -507,14 +495,14 @@ namespace ImagingSIMS.Controls.Converters
                 return null;
             }
         }
-        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object argument, CultureInfo culture)
         {
             return false;
         }
     }
     public class RegTypeToEnabledConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object argument, CultureInfo culture)
         {
             if (value == null) return null;
 
@@ -537,14 +525,14 @@ namespace ImagingSIMS.Controls.Converters
                 return false;
             }
         }
-        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object argument, CultureInfo culture)
         {
             return false;
         }
     }
     public class FoundClustersToMaskImageConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object argument, CultureInfo culture)
         {
             if (value == null) return null;
 
@@ -561,14 +549,14 @@ namespace ImagingSIMS.Controls.Converters
                 return null;
             }
         }
-        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object argument, CultureInfo culture)
         {
             return null;
         }
     }
     public class FoundClustersToColorMaskImageConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object argument, CultureInfo culture)
         {
             if (value == null) return null;
 
@@ -585,7 +573,7 @@ namespace ImagingSIMS.Controls.Converters
                 return null;
             }
         }
-        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object argument, CultureInfo culture)
         {
             return null;
         }
@@ -610,12 +598,34 @@ namespace ImagingSIMS.Controls.Converters
 
                 // Using dimensions 200 x 20 pixels to match the size of the image control
                 Data2D d = new Data2D(200, 20);
-                for (int i = 0; i < 200; i++)
+
+                // Get range attributes for enum value
+                //var rangeAttributes = typeof(ColorScaleTypes).GetMember(colorScale.ToString())[0].GetCustomAttributes(typeof(ColorScaleRangeAttribute), false);
+                var rangeAttribute = EnumEx.GetAttributeOfType<ColorScaleRangeAttribute>(colorScale);
+
+                // Check if enum value is for range [-1, +1]
+                if(rangeAttribute?.IsNegOneToOne == true)
                 {
-                    float value = dataMaximum * i / 200f;
-                    for (int j = 0; j < 20; j++)
+                    for (int i = 0; i < 200; i++)
                     {
-                        d[i, j] = value;
+                        float a = i - 100;
+                        float value = dataMaximum * a / 100f;
+                        for (int j = 0; j < 20; j++)
+                        {
+                            d[i, j] = value;
+                        }
+                    }
+                }
+                // Otherwise color scale is for range [0, +1]
+                else
+                {
+                    for (int i = 0; i < 200; i++)
+                    {
+                        float value = dataMaximum * i / 200f;
+                        for (int j = 0; j < 20; j++)
+                        {
+                            d[i, j] = value;
+                        }
                     }
                 }
 
@@ -631,7 +641,6 @@ namespace ImagingSIMS.Controls.Converters
                 return null;
             }
         }
-
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
@@ -730,8 +739,7 @@ namespace ImagingSIMS.Controls.Converters
 
     public class ColorScaleToBoolConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
-               System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
@@ -752,8 +760,7 @@ namespace ImagingSIMS.Controls.Converters
                 return false;
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return false;
         }
@@ -761,15 +768,14 @@ namespace ImagingSIMS.Controls.Converters
     public class MaskToImageSourceConverter : IValueConverter
     {
 
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Data2D d = value as Data2D;
             if (d == null) return null;
 
             return ImageHelper.CreateColorScaleImage(d, ColorScaleTypes.Gray);
         }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
@@ -777,14 +783,14 @@ namespace ImagingSIMS.Controls.Converters
 
     public class ShortPathConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object argument, CultureInfo culture)
         {
             string v = (string)value;
             if (v == null) return String.Empty;
 
             return System.IO.Path.GetFileName(v);
         }
-        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object argument, CultureInfo culture)
         {
             return String.Empty;
         }
@@ -792,7 +798,7 @@ namespace ImagingSIMS.Controls.Converters
 
     public class FusionEnumToVisibilityConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object argument, CultureInfo culture)
         {
             if (value == null) return Visibility.Collapsed;
 
@@ -807,7 +813,7 @@ namespace ImagingSIMS.Controls.Converters
                 return Visibility.Collapsed;
             }
         }
-        public object ConvertBack(object value, Type targetType, object argument, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object argument, CultureInfo culture)
         {
             return null;
         }
@@ -838,7 +844,6 @@ namespace ImagingSIMS.Controls.Converters
                 return 0;
             }
         }
-
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
@@ -859,7 +864,6 @@ namespace ImagingSIMS.Controls.Converters
                 return Visibility.Collapsed;
             }
         }
-
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
@@ -879,7 +883,6 @@ namespace ImagingSIMS.Controls.Converters
                 return NotifiableColor.Black;
             }
         }
-
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try

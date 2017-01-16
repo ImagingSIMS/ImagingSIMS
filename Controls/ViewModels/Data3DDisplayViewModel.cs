@@ -30,6 +30,7 @@ namespace ImagingSIMS.Controls.ViewModels
         int _layerStart;
         int _layerEnd;
         double _threshold;
+        double _initalThreshold;
 
         Point? _lastCenterPositionOnTarget;
         double _scale;
@@ -195,6 +196,18 @@ namespace ImagingSIMS.Controls.ViewModels
                     _threshold = value;
                     NotifyPropertyChanged("Threshold");
                     redraw();
+                }
+            }
+        }
+        public double InitialThreshold
+        {
+            get { return _initalThreshold; }
+            set
+            {
+                if(_initalThreshold != value)
+                {
+                    _initalThreshold = value;
+                    NotifyPropertyChanged("InitialThreshold");
                 }
             }
         }
@@ -381,6 +394,8 @@ namespace ImagingSIMS.Controls.ViewModels
 
                 Saturation = ViewableDataSource.Maximum;
                 InitialSaturation = Saturation;
+                Threshold = ViewableDataSource.Minimum;
+                InitialThreshold = Threshold;
             }
 
             if (ColorScale == ColorScaleTypes.Solid)
@@ -413,6 +428,8 @@ namespace ImagingSIMS.Controls.ViewModels
 
             Saturation = ViewableDataSource.Maximum;
             InitialSaturation = Saturation;
+            Threshold = ViewableDataSource.Minimum;
+            InitialThreshold = Threshold;
 
             if (ColorScale == ColorScaleTypes.Solid)
             {
@@ -452,6 +469,8 @@ namespace ImagingSIMS.Controls.ViewModels
             ViewableDataSource = DataSource.FromLayers(startLayer, endLayer);
             Saturation = ViewableDataSource.Maximum;
             InitialSaturation = Saturation;
+            Threshold = ViewableDataSource.Minimum;
+            InitialThreshold = Threshold;
 
             if (ColorScale == ColorScaleTypes.Solid)
             {
