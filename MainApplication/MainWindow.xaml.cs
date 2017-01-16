@@ -697,13 +697,13 @@ namespace ImagingSIMS.MainApplication
             {
                 fileType = FileType.BioToF;
                 ofd.Title = "Open Bio-ToF Data";
-                ofd.Filter = "Text File (.txt)|*.txt|XYI Image (.img)|*.img";
+                ofd.Filter = "Text Files (.txt)|*.txt|XYI Images (.img)|*.img|All Files|*.*";
             }
             else if (sender == ribbonButtonDataJ105)
             {
                 fileType = FileType.J105;
                 ofd.Title = "Open J105 Data";
-                ofd.Filter = "Text File (.txt)|*.txt|All Files |*.*";
+                ofd.Filter = "Text Files (.txt)|*.txt|All Files|*.*";
             }
             else if(sender == ribbonButtonDataCamecaAPM)
             {
@@ -726,7 +726,7 @@ namespace ImagingSIMS.MainApplication
             {
                 fileType = FileType.CSV;
                 ofd.Title = "Open CSV Data";
-                ofd.Filter = "Comma Separated Values File (.csv)|*.csv";
+                ofd.Filter = "Comma Separated Values Files (.csv)|*.csv|Text Files (.txt)|*.txt|All Files|*.*";
             }
             else return;
 
@@ -3599,14 +3599,14 @@ namespace ImagingSIMS.MainApplication
 
             if (toSave.Count == 1)
             {
-                toSave[0].Save(sfd.FileName, FileType.J105);
+                toSave[0].Save(sfd.FileName, FileType.CSV);
             }
             else if (toSave.Count > 1)
             {
                 for (int i = 0; i < toSave.Count; i++)
                 {
                     string savePath = sfd.FileName.Insert(sfd.FileName.Length - 4, string.Format("_{0}", i.ToString()));
-                    toSave[i].Save(savePath, FileType.J105);
+                    toSave[i].Save(savePath, FileType.CSV);
                 }
             }
 

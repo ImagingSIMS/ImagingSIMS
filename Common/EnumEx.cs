@@ -59,5 +59,18 @@ namespace ImagingSIMS.Common
 
             throw new Exception("Could not determine Enum value.");
         }
+
+        public static T GetAttributeOfType<T>(this Enum enumValue)
+        {
+            var type = enumValue.GetType();
+            var memInfo = type.GetMember(enumValue.ToString());
+            var attributes = memInfo[0].GetCustomAttributes(typeof(T), false);
+            if(attributes.Length > 0)
+            {
+                return (T)attributes[0];
+            }
+
+            return default(T);
+        }
     }
 }

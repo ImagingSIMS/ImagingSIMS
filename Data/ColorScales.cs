@@ -396,51 +396,57 @@ namespace ImagingSIMS.Data.Imaging
 
             return Color.FromArgb(255, 0, 0, 0);
         }
-        public static Color RedBlackGreen(double Value)
+        public static Color RedBlackGreen(double Value, double Maximum)
         {
-            var abs = Math.Abs(Value);
-            if (Value <= -1)
+            var ratio = Value / Maximum;
+            var abs = Math.Abs(ratio);
+
+            if (ratio <= -1)
                 return Color.FromArgb(255, 255, 0, 0);
-            if (Value < 0)
+            if (ratio < 0)
                 return Color.FromArgb(255, (byte)(abs * 255), 0, 0);
-            if (Value == 0)
+            if (ratio == 0)
                 return Color.FromArgb(255, 0, 0, 0);
-            if (Value < 1)
+            if (ratio < 1)
                 return Color.FromArgb(255, 0, (byte)(abs * 255), 0);
-            if (Value >= 1)
+            if (ratio >= 1)
                 return Color.FromArgb(255, 0, 255, 0);
 
             return Color.FromArgb(255, 0, 0, 0);
         }
-        public static Color RedBlackBlue(double Value)
+        public static Color RedBlackBlue(double Value, double Maximum)
         {
-            var abs = Math.Abs(Value);
-            if (Value <= -1)
+            var ratio = Value / Maximum;
+            var abs = Math.Abs(ratio);
+
+            if (ratio <= -1)
                 return Color.FromArgb(255, 255, 0, 0);
-            if (Value < 0)
+            if (ratio < 0)
                 return Color.FromArgb(255, (byte)(abs * 255), 0, 0);
-            if (Value == 0)
+            if (ratio == 0)
                 return Color.FromArgb(255, 0, 0, 0);
-            if (Value < 1)
+            if (ratio < 1)
                 return Color.FromArgb(255, 0, 0, (byte)(abs * 255));
-            else if (Value >= 1)
-                return Color.FromArgb(255, 0, 255, 0);
+            if (ratio >= 1)
+                return Color.FromArgb(255, 0, 0, 255);
 
             return Color.FromArgb(255, 0, 0, 0);
         }
-        public static Color GreenBlackBlue(double Value)
+        public static Color GreenBlackBlue(double Value, double Maximum)
         {
-            var abs = Math.Abs(Value);
-            if (Value <= -1)
-                return Color.FromArgb(255, 255, 0, 0);
-            if (Value < 0)
-                return Color.FromArgb(255, 0, (byte)(abs * 255), 0);
-            if (Value == 0)
-                return Color.FromArgb(255, 0, 0, 0);
-            if (Value < 1)
-                return Color.FromArgb(255, 0, 0, (byte)(abs * 255));
-            else if (Value >= 1)
+            var ratio = Value / Maximum;
+            var abs = Math.Abs(ratio);
+
+            if (ratio <= -1)
                 return Color.FromArgb(255, 0, 255, 0);
+            if (ratio < 0)
+                return Color.FromArgb(255, 0, (byte)(abs * 255), 0);
+            if (ratio == 0)
+                return Color.FromArgb(255, 0, 0, 0);
+            if (ratio < 1)
+                return Color.FromArgb(255, 0, 0, (byte)(abs * 255));
+            if (ratio >= 1)
+                return Color.FromArgb(255, 0, 0, 255);
 
             return Color.FromArgb(255, 0, 0, 0);
         }
@@ -481,11 +487,11 @@ namespace ImagingSIMS.Data.Imaging
                 case ColorScaleTypes.Viridis:
                     return Viridis(Value, Maximum);
                 case ColorScaleTypes.RedBlackGreen:
-                    return RedBlackGreen(Value);
+                    return RedBlackGreen(Value, Maximum);
                 case ColorScaleTypes.RedBlackBlue:
-                    return RedBlackBlue(Value);
+                    return RedBlackBlue(Value, Maximum);
                 case ColorScaleTypes.GreenBlackBlue:
-                    return GreenBlackBlue(Value);
+                    return GreenBlackBlue(Value, Maximum);
                 default: return ThermalWarm(Value, Maximum);
             }
         }
@@ -499,6 +505,35 @@ namespace ImagingSIMS.Data.Imaging
                 );
         }
     }
+
+    public enum ColorScaleRangeType
+    {
+        [Description("Zero to One")]
+        ZeroToOne,
+
+        [Description("Negative One to One")]
+        NegOneToOne
+
+    }
+    [AttributeUsage(AttributeTargets.Field)]
+    public class ColorScaleRangeAttribute : Attribute
+    {
+        public ColorScaleRangeType RangeType { get; set; }
+        public bool IsZeroToOne
+        {
+            get { return RangeType == ColorScaleRangeType.ZeroToOne; }
+        }
+        public bool IsNegOneToOne
+        {
+            get { return RangeType == ColorScaleRangeType.NegOneToOne; }
+        }
+
+        public ColorScaleRangeAttribute(ColorScaleRangeType rangeType)
+        {
+            RangeType = rangeType;
+        }
+    }
+
 
     public enum ColorScaleTypes
     {
@@ -542,12 +577,15 @@ namespace ImagingSIMS.Data.Imaging
         Viridis,
 
         [Description("Red-Black-Green")]
+        [ColorScaleRange(ColorScaleRangeType.NegOneToOne)]
         RedBlackGreen,
 
         [Description("Red-Black-Blue")]
+        [ColorScaleRange(ColorScaleRangeType.NegOneToOne)]
         RedBlackBlue,
 
         [Description("Green-Black-Blue")]
+        [ColorScaleRange(ColorScaleRangeType.NegOneToOne)]
         GreenBlackBlue,
     }
 }
