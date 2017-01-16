@@ -537,7 +537,7 @@ namespace ImagingSIMS.Data.Imaging
 
             PixelFormat pf = PixelFormats.Bgr32;
             int byteStride = 4;
-            if (ChannelData.LayerMaximum(3) != 0) 
+            if (ChannelData.LayerMaximum(3) != float.MinValue) 
             { 
                 pf = PixelFormats.Bgra32;
                 byteStride = 4;
