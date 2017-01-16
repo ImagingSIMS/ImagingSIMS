@@ -17,6 +17,7 @@ using Accord.Math;
 using Accord.Statistics;
 using Accord.Math.Decompositions;
 using ImagingSIMS.Data.Colors;
+using ImagingSIMS.Data.Spectra;
 
 namespace ImagingSIMS.Data.Fusion
 {
@@ -1441,6 +1442,41 @@ namespace ImagingSIMS.Data.Fusion
         }
     }
 
+    public abstract class HyperspectralFusion : Fusion
+    {
+        double[,] _highResData;
+        Spectrum _spectrum;
+        double[,] _hyperspectralData;
+        string[] _massLabels;
+
+        protected int _highResSizeX;
+        protected int _highResSizeY;
+        protected int _lowResSizeX;
+        protected int _lowResSizeY;
+
+        public HyperspectralFusion(Data2D highResData, Spectrum hyperspectralData)
+            : base()
+        {
+            _highResData = (double[,])highResData;
+            _spectrum = hyperspectralData;
+        }
+
+        public void BinMassChannels()
+        {
+            if (_spectrum.SpectrumType != SpectrumType.Cameca1280)
+                throw new ArgumentException("Non-CAMECA spectra must be binned for hyperspectral fusion");
+
+            var masses = ((Cameca1280Spectrum)_spectrum).GetPxMMatrix();
+        }
+        public void BinMassChannels(double[] binCenters , 
+            double[] binWidths, double startMass = 0, double endMass = 0)
+        {
+
+        }
+    }
+
+    
+
     public enum FusionType
     {
         HSL, 
@@ -1458,7 +1494,10 @@ namespace ImagingSIMS.Data.Fusion
 
         PCA,
         
-        IHS
+        IHS,
+
+        [Description("Guided Filter PCA")]
+        GuidedFilterPCA
     }
 
 

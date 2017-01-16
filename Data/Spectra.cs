@@ -2360,10 +2360,10 @@ namespace ImagingSIMS.Data.Spectra
 
     public class Cameca1280Spectrum : Spectrum
     {
-        List<CamecaSpecies> _species;
+        protected List<CamecaSpecies> _species;
 
         // _matrix[layer][species][x,y]
-        List<Data2D[]> _matrix;
+        protected List<Data2D[]> _matrix;
 
         public List<CamecaSpecies> Species
         {
@@ -2379,15 +2379,15 @@ namespace ImagingSIMS.Data.Spectra
             }
         }
 
-        private void setMatrixValue(int x, int y, int z, int species, float value)
+        protected void setMatrixValue(int x, int y, int z, int species, float value)
         {
             _matrix[z][species][x, y] = value;
         }
-        private float getMatrixValue(int x, int y, int z, int species)
+        protected float getMatrixValue(int x, int y, int z, int species)
         {
             return _matrix[z][species][x, y];
         }
-        private float getMatrixValue(int x, int y, int z, MassRangePair range)
+        protected float getMatrixValue(int x, int y, int z, MassRangePair range)
         {
             float value = 0;
             for (int i = 0; i < _species.Count; i++)

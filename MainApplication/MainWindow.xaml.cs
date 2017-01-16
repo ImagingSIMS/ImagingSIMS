@@ -4583,220 +4583,177 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            var bsHighRes = ImageHelper.BitmapSourceFromFile(@"D:\Data\10-01-12\1e.bmp");
-            //var dt58 = await Data2D.LoadData2DAsync(@"D:\Data\10-01-12\58.csv", FileType.CSV);
-            //var highRes = ImageHelper.ConvertToData2D(bsHighRes);
-            //dt58 = dt58.Upscale(highRes.Width, highRes.Height);
+            int numBoxes = 6;
+            int sizeX = 256;
+            int sizeY = 256;
+            int boxSizeX = 50;
+            int boxSizeY = 50;
+            int minBoxCounts = 50;
+            int maxBoxCounts = 100;
+            int minSubstrateCounts = 25;
+            int maxSubstrateCounts = 40;
 
-            //double[,] dGuide = new double[highRes.Width, highRes.Height];
-            //double[,] dImage = new double[highRes.Width, highRes.Height];
-            //for (int x = 0; x < highRes.Width; x++)
-            //{
-            //    for (int y = 0; y < highRes.Height; y++)
-            //    {
-            //        dGuide[x, y] = (double)highRes[x, y];
-            //        dImage[x, y] = (double)dt58[x, y];
-            //    }
-            //}
+            Random rand = new Random();
 
-            //var result = GuidedFilter(dGuide, dImage);
-            //var dtResult = new Data2D(highRes.Width, highRes.Height);
-            //for (int x = 0; x < highRes.Width; x++)
-            //{
-            //    for (int y = 0; y < highRes.Height; y++)
-            //    {
-            //        dtResult[x, y] = (float)result[x, y];
-            //    }
-            //}
-            //var min = dtResult.Minimum;
-            //if (min < 0) dtResult += -min;
-            //var resultImage = ImageHelper.CreateColorScaleImage(dtResult, ColorScaleTypes.Gray);
-            //resultImage.Save(@"D:\Data\10-01-12\58-gfcs.bmp");
-
-            //return;
-
-            var spec = new BioToFSpectrum("grid 894");
-
-            Trace.WriteLine("Loading spectrum from file");
-            await Task.Run(() =>
+            List<Point> centers = new List<Point>()
             {
-                spec.LoadFromFile(@"D:\Data\10-01-12\grid 894 fov_50shot.xyt", null);
-            });
-            
+                new Point(65, 35),
+                new Point(125, 35),
+                new Point(190, 35),
 
-            var pan = ImageHelper.ConvertToData2D(bsHighRes);
-            pan /= pan.Maximum;
+                new Point(65, 135),
+                new Point(125, 135),
+                new Point(190, 135),
+            };
 
-            Trace.WriteLine("Geting pixel by mass matrix from spectrum.");
-
-            double[,] hsData = new double[1, 1];
-            await Task.Run(() =>
+            List<double> masses = new List<double>()
             {
-                hsData = spec.GetPxMMatrix(new double[] { 0.5d }, new double[] { 0.5d }, 0, 250);
-            });
-            
-            int lrWidth = spec.SizeX;
-            int lrHeight = spec.SizeY;
-            int lrPixels = lrWidth * lrHeight;
-            int hrWidth = pan.Width;
-            int hrHeight = pan.Height;
-            int hrPixels = hrWidth * hrHeight;
-            int numMasses = hsData.GetLength(1);
+                10d, 25d, 50d, 75d, 100d, 150d, 5d
+            };
 
-            double[,] panArray = new double[hrWidth, hrHeight];
-            for (int x = 0; x < hrWidth; x++)
+            bool[,] hasSquare = new bool[sizeX, sizeY];
+
+            // Create mass channels
+            List<Data2D> massChannels = new List<Data2D>();
+            // Create substrate channel
+            Data2D substrate = new Data2D(sizeX, sizeY);
+            Data2D ideal = new Data2D(sizeX, sizeY);
+
+            for (int i = 0; i < numBoxes; i++)
             {
-                for (int y = 0; y < hrHeight; y++)
+                int[,] temp = new int[boxSizeX, boxSizeY];
+
+                for (int x = 0; x < boxSizeX; x++)
                 {
-                    panArray[x,y] = pan[x, y];
-                }
-            }
-
-            Trace.WriteLine("Mean centering data.");
-            // Mean center the columns
-            double[] means = new double[numMasses];
-            await Task.Run(() =>
-            {
-                for (int i = 0; i < numMasses; i++)
-                {
-                    double sum = 0;
-                    for (int j = 0; j < lrPixels; j++)
+                    for (int y = 0; y < boxSizeY; y++)
                     {
-                        sum += hsData[j, i];
-                    }
-                    means[i] = sum / lrPixels;
-                    for (int j = 0; j < lrPixels; j++)
-                    {
-                        hsData[j, i] -= means[i];
-                    }
-                }
-            });
-
-
-            Trace.WriteLine("Performing singular value decomposition.");
-
-            var svd = new SingularValueDecomposition(hsData, true, true, false, false);
-            var u = svd.LeftSingularVectors;
-            var d = svd.Diagonal;
-
-            Trace.WriteLine("SVD complete.");
-
-            double[] pctExplained = new double[numMasses];
-            double sumSv = d.Sum();
-            for (int i = 0; i < numMasses; i++)
-            {
-                pctExplained[i] = d[i] / sumSv;
-            }
-
-            double sumPct = 0;
-            int p = 0;
-            for (int i = 0; i < numMasses; i++)
-            {
-                sumPct += pctExplained[i];
-                if (sumPct >= 0.75)
-                {
-                    p = i;
-                    break;
-                }
-            }
-
-            Trace.WriteLine($"Number PCs for guided filtering: {p}");
-
-            double[,] upsampledMatrix = new double[hrPixels, numMasses];
-            Parallel.For(0, numMasses, i =>
-            {
-                double[,] pcResahped = new double[lrWidth, lrHeight];
-                for (int x = 0; x < lrWidth; x++)
-                {
-                    for (int y = 0; y < lrHeight; y++)
-                    {
-                        int index = x * lrHeight + y;
-                        pcResahped[x, y] = u[index, i];
+                        temp[x, y] = rand.Next(minBoxCounts, maxBoxCounts);
                     }
                 }
 
-                var upscaled = pcResahped.Upscale(hrWidth, hrHeight, false);
-                double[] hrPc = new double[hrPixels];
-
-                // If PC number is less than p, upscale and do guided filter
-                if (i <= p)
+                int[,] matrix = new int[boxSizeX, boxSizeY];
+                for (int x = 0; x < boxSizeX; x++)
                 {
-                    // Do guided filter
-                    var gfpc = GuidedFilter(panArray, upscaled, 2, 0.1);
-                    for (int x = 0; x < hrWidth; x++)
+                    for (int y = 0; y < boxSizeY; y++)
                     {
-                        for (int y = 0; y < hrHeight; y++)
+                        int sum = 0;
+                        int startX = x - 3;
+                        int startY = y - 3;
+
+                        for (int a = 0; a < 7; a++)
                         {
-                            int index = x * hrHeight + y;
-                            hrPc[index] = gfpc[x, y];
+                            for (int b = 0; b < 7; b++)
+                            {
+                                int xx = startX + a;
+                                int yy = startY + b;
+
+                                if (xx < 0 || xx >= boxSizeX ||
+                                    yy < 0 || yy >= boxSizeY) continue;
+
+                                sum += temp[xx, yy];
+                            }
                         }
+
+                        matrix[x, y] = (int)(sum / 49d);
                     }
                 }
 
-                // Otherwise just upscale and threshold
-                else
-                {                   
-                    for (int x = 0; x < hrWidth; x++)
+                Data2D massChannel = new Data2D(sizeX, sizeY);
+
+                int boxStartX = (int)centers[i].X - (boxSizeX / 2);
+                int boxStartY = (int)centers[i].Y - (boxSizeY / 2);
+
+                for (int x = 0; x < boxSizeX; x++)
+                {
+                    for (int y = 0; y < boxSizeY; y++)
                     {
-                        for (int y = 0; y < hrHeight; y++)
-                        {
-                            int index = x * hrHeight + y;
-                            hrPc[index] = upscaled[x, y];
-                        }
+                        massChannel[boxStartX + x, boxStartY + y] = matrix[x, y];
+                        hasSquare[boxStartX + x, boxStartY + y] = true;
+
+                        ideal[boxStartX + x, boxStartY + y] = maxBoxCounts;
+
+                        if (temp[x, y] - matrix[x, y] > 0)
+                            substrate[boxStartX + x, boxStartY + y] += temp[x, y] - matrix[x, y];
                     }
-
-                    hrPc = SoftThreshold(hrPc, 0.01);
                 }
 
-                // Place into matrix
-                for (int j = 0; j < hrPixels; j++)
-                {
-                    upsampledMatrix[j, i] = hrPc[j];
-                }
+                massChannels.Add(massChannel);
+            }
 
-                Trace.WriteLine($"Upscaled PC {i + 1} of {numMasses}");
-            });
-
-            Trace.WriteLine("Reversing SVD decomposition.");
-            var reverted = upsampledMatrix.Dot(svd.DiagonalMatrix).DotWithTransposed(svd.RightSingularVectors);
-
-            for (int i = 0; i < hrPixels; i++)
+            // Fill in rest of subtrate channel
+            for (int x = 0; x < sizeX; x++)
             {
-                for (int j = 0; j < numMasses; j++)
+                for (int y = 0; y < sizeY; y++)
                 {
-                    reverted[i, j] += means[j];
+                    if (!hasSquare[x, y])
+                    {
+                        substrate[x, y] += rand.Next(minSubstrateCounts, maxSubstrateCounts);
+                        ideal[x, y] = maxSubstrateCounts;
+                    }
                 }
             }
 
-            //DataDisplayTab dt = new DataDisplayTab();
-            //var cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
-            //tabMain.Items.Add(cti);
-            //tabMain.SelectedItem = cti;
+            massChannels.Add(substrate);
 
-            Trace.WriteLine("Converting each mass to a Data2D.");
-
-            List<Data2D> masses = new List<Data2D>();
-            for (int i = 0; i < numMasses; i++)
+            SimulatedCameca1280Spectrum spec = new SimulatedCameca1280Spectrum();
+            foreach (var mass in masses)
             {
-                Data2D mass = new Data2D(hrWidth, hrHeight);
-
-                for (int x = 0; x < hrWidth; x++)
+                CamecaSpecies species = new CamecaSpecies()
                 {
-                    for (int y = 0; y < hrHeight; y++)
-                    {
-                        int index = x * hrHeight + y;
-                        mass[x, y] = (float)reverted[index, i];
-                    }
-                }
-
-                mass.DataName = $"Mass: {i + 0.5}";
-
-                //if (mass.TotalCounts > 500)
-                masses.Add(mass);
+                    Mass = mass,
+                    Label = $"Mass {mass.ToString("0.00")}"
+                };
+                spec.Species.Add(species);
             }
 
-            Trace.WriteLine("Adding Data2D tables to workspace.");
-            AvailableHost.AvailableTablesSource.AddTables(masses);
+            spec.SetMatrixData(massChannels);
+
+            AvailableHost.AvailableSpectraSource.AddSpectrum(spec);
+
+
+            Data2D totalIon = new Data2D(sizeX, sizeY)
+            {
+                DataName = "Total Ion"
+            };
+            foreach (var d in massChannels)
+            {
+                totalIon += d;
+            }
+
+            var upscaled = ideal.Resize(totalIon.Width * 2, totalIon.Height * 2);
+            upscaled.DataName = "Upscalaed";
+
+            var enhanced = Filter.DoFilter(upscaled, FilterType.MedianSmooth);
+            enhanced.DataName = "Enhanced";
+
+            AvailableHost.AvailableTablesSource.AddTable(enhanced);
+            AvailableHost.AvailableTablesSource.AddTable(upscaled);
+        }
+
+        public class SimulatedCameca1280Spectrum : Cameca1280Spectrum
+        {
+            public SimulatedCameca1280Spectrum()
+                : base("Simulated")
+            {
+                _species = new List<CamecaSpecies>();
+            }
+
+            public void SetMatrixData(List<Data2D> data)
+            {
+                _matrix = new List<Data2D[]>()
+                {
+                    data.ToArray()
+                };
+
+                _sizeX = data[0].Width;
+                _sizeY = data[0].Height;
+                _sizeZ = 1;
+
+                _intensities = GetSpectrum(out _masses);
+
+                _startMass = (float)_species.Min(s => s.Mass);
+                _endMass = (float)_species.Max(s => s.Mass);
+            }
         }
 
         private double[,] GuidedFilter(double[,] guide, double[,] matrix, int r = 2, double eps = 0.05)
@@ -4876,7 +4833,6 @@ namespace ImagingSIMS.MainApplication
 
             return  q;
         }
-
         private double[] SoftThreshold(double[] array, double lambda)
         {
             double th = lambda / 2;
@@ -4897,8 +4853,363 @@ namespace ImagingSIMS.MainApplication
 
         private async void test6_Click(object sender, RoutedEventArgs e)
         {
-            // var spec = AvailableHost.
+            var pan = AvailableHost.AvailableTablesSource.GetAvailableTables()[0];
+            pan /= pan.Maximum;
+
+            var spec = AvailableHost.AvailableSpectraSource.GetAvailableSpectra()[0] as Cameca1280Spectrum;
+
+            var masses = new List<Data2D>();
+            foreach (var species in spec.Species)
+            {
+                masses.Add(spec.FromSpecies(species));
+            }
+
+            int lrSizeX = spec.SizeX;
+            int lrSizeY = spec.SizeY;
+            int lrPixels = spec.SizeX * spec.SizeY;
+            int hrSizeX = pan.Width;
+            int hrSizeY = pan.Height;
+            int hrPixels = pan.Width * pan.Height;
+            int numMasses = masses.Count;
+
+            // Normalize each mass to [0,1]
+            double[,] hsMatrix = new double[lrPixels, numMasses];
+            for (int i = 0; i < numMasses; i++)
+            {
+                for (int x = 0; x < lrSizeX; x++)
+                {
+                    for (int y = 0; y < lrSizeY; y++)
+                    {
+                        hsMatrix[x * lrSizeY + y, i] = masses[i][x, y];// / masses[i].Maximum;
+                    }
+                }
+            }
+            double[,] panArray = new double[hrSizeX, hrSizeY];
+            for (int x = 0; x < hrSizeX; x++)
+            {
+                for (int y = 0; y < hrSizeY; y++)
+                {
+                    panArray[x, y] = pan[x, y];
+                }
+            }
+
+            // Mean center the columns
+            double[] means = new double[numMasses];
+            for (int i = 0; i < numMasses; i++)
+            {
+                double sum = 0;
+                for (int j = 0; j < lrPixels; j++)
+                {
+                    sum += hsMatrix[j, i];
+                }
+                means[i] = sum / lrPixels;
+                for (int j = 0; j < lrPixels; j++)
+                {
+                    hsMatrix[j, i] -= means[i];
+                }
+            }
+
+            var svd = new SingularValueDecomposition(hsMatrix, true, true, false, false);
+            var u = svd.LeftSingularVectors;
+            var d = svd.Diagonal;
+
+            double[] pctExplained = new double[numMasses];
+            double sumSv = d.Sum();
+            for (int i = 0; i < numMasses; i++)
+            {
+                pctExplained[i] = d[i] / sumSv;
+            }
+
+            double sumPct = 0;
+            int p = 0;
+            for (int i = 0; i < numMasses; i++)
+            {
+                sumPct += pctExplained[i];
+                if (sumPct >= 0.75)
+                {
+                    p = i;
+                    break;
+                }
+            }
+
+            double[,] upsampledMatrix = new double[hrPixels, numMasses];
+
+            double[] crossCorrelations = new double[numMasses];
+            Parallel.For(0, numMasses, i =>
+            {
+                double[,] pcReshaped = new double[lrSizeX, lrSizeY];
+                for (int x = 0; x < lrSizeX; x++)
+                {
+                    for (int y = 0; y < lrSizeY; y++)
+                    {
+                        pcReshaped[x, y] = u[x * lrSizeY + y, i];
+                    }
+                }
+
+                var upscaled = pcReshaped.Upscale(hrSizeX, hrSizeY, false);
+
+                double numerator = 0;
+                double sHigh = 0;
+                double sLow = 0;
+                double meanPc = upscaled.Sum() / upscaled.Length;
+                double meanPan = pan.Mean;
+
+                for (int x = 0; x < hrSizeX; x++)
+                {
+                    for (int y = 0; y < hrSizeY; y++)
+                    {
+                        numerator += (upscaled[x, y] - meanPc) * (pan[x, y] - meanPan);
+                        sHigh += (pan[x, y] - meanPan) * (pan[x, y] - meanPan);
+                        sLow += (upscaled[x, y] - meanPc) * (upscaled[x, y] - meanPc);
+                    }
+                }
+
+                crossCorrelations[i] = numerator / Math.Sqrt(sHigh * sLow);
+            });
+
+            int pcIndex = 0;
+            bool pcIsNeg = false;
+            double pcMax = 0;
+            for (int i = 0; i < numMasses; i++)
+            {
+                if(Math.Abs(crossCorrelations[i]) > pcMax)
+                {
+                    pcMax = Math.Abs(crossCorrelations[i]);
+                    pcIndex = i;
+                    pcIsNeg = crossCorrelations[i] < 0;
+                }
+            }
+
+            double[,] pcs = new double[hrPixels, numMasses];
+            double[,] pcToReplace = new double[hrSizeX, hrSizeY];
+
+            List<Data2D> pcImages = new List<Data2D>();
+
+            Parallel.For(0, numMasses, i =>
+            {
+                double[,] pcReshaped = new double[lrSizeX, lrSizeY];
+                for (int x = 0; x < lrSizeX; x++)
+                {
+                    for (int y = 0; y < lrSizeY; y++)
+                    {
+                        pcReshaped[x, y] = u[x * lrSizeY + y, i];
+                    }
+                }
+                var upscaled = pcReshaped.Upscale(hrSizeX, hrSizeY, false);
+
+                Data2D upscaledData = new Data2D(hrSizeX, hrSizeY)
+                {
+                    DataName = $"PC {i}"
+                };
+
+                for (int x = 0; x < hrSizeX; x++)
+                {
+                    for (int y = 0; y < hrSizeY; y++)
+                    {
+                        upscaledData[x, y] = (float)upscaled[x, y];
+                    }
+                }
+
+                pcImages.Add(upscaledData);                
+
+                var matched = HistogramMatching.Match((double[,])pan, upscaled, 1000);
+
+                //var gfpc = GuidedFilter(matched, upscaled, 2, 0.1);
+                //for (int x = 0; x < hrSizeX; x++)
+                //{
+                //    for (int y = 0; y < hrSizeY; y++)
+                //    {
+                //        pcs[x * hrSizeY + y, i] = upscaled[x, y];
+                //        //upsampledMatrix[x * hrSizeY + y, i] = gfpc[x, y];
+                //        upsampledMatrix[x * hrSizeY + y, i] = matched[x, y];
+                //    }
+                //}
+
+                if (i == pcIndex)
+                {
+                    for (int x = 0; x < hrSizeX; x++)
+                    {
+                        for (int y = 0; y < hrSizeY; y++)
+                        {
+                            pcs[x * hrSizeY + y, i] = upscaled[x, y];
+
+                            if (pcIsNeg)
+                            {
+                                upscaled[x, y] = -matched[x, y];
+                            }
+                            else upscaled[x, y] = matched[x, y];
+
+                        }
+                    }
+                }
+
+                for (int x = 0; x < hrSizeX; x++)
+                {
+                    for (int y = 0; y < hrSizeY; y++)
+                    {
+                        pcs[x * hrSizeY + y, i] = upscaled[x, y];
+                        upsampledMatrix[x * hrSizeY + y, i] = upscaled[x, y];
+                    }
+                }
+            });
+
+
+            //Parallel.For(0, numMasses, i =>
+            //{
+            //    double[,] pcReshaped = new double[lrSizeX, lrSizeY];
+            //    for (int x = 0; x < lrSizeX; x++)
+            //    {
+            //        for (int y = 0; y < lrSizeY; y++)
+            //        {
+            //            pcReshaped[x, y] = u[x * lrSizeY + y, i];
+            //        }
+            //    }
+
+            //    var upscaled = pcReshaped.Upscale(hrSizeX, hrSizeY, false);
+            //    double[] hrPc = new double[hrPixels];
+
+            //    if (i == 0)
+            //    {
+            //        for (int x = 0; x < hrSizeX; x++)
+            //        {
+            //            for (int y = 0; y < hrSizeY; y++)
+            //            {
+            //                hrPc[x * hrSizeY + y] = (pan[x, y] + upscaled[x, y]) / 2;
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        for (int x = 0; x < hrSizeX; x++)
+            //        {
+            //            for (int y = 0; y < hrSizeY; y++)
+            //            {
+            //                hrPc[x * hrSizeY + y] = upscaled[x, y];
+            //            }
+            //        }
+            //    }
+
+
+            //    for (int j = 0; j < hrPixels; j++)
+            //    {
+            //        upsampledMatrix[j, i] = hrPc[j];
+            //    }
+
+            //});
+
+            var reverted = upsampledMatrix.Dot(svd.DiagonalMatrix).DotWithTransposed(svd.RightSingularVectors);
+
+            // Revert mean centering
+            for (int i = 0; i < hrPixels; i++)
+            {
+                for (int j = 0; j < numMasses; j++)
+                {
+                    reverted[i, j] += means[j];
+                }
+            }
+
+            List<Data2D> fused = new List<Data2D>();
+            for (int i = 0; i < numMasses; i++)
+            {
+                Data2D f = new Data2D(hrSizeX, hrSizeY)
+                {
+                    DataName = masses[i].DataName + "-Fused"
+                };
+
+                for (int x = 0; x < hrSizeX; x++)
+                {
+                    for (int y = 0; y < hrSizeY; y++)
+                    {
+                        f[x, y] = (float)reverted[x * hrSizeY + y, i];
+                    }
+                }
+
+                fused.Add(f);
+            }
+
+            //List<Data2D> pcImages = new List<Data2D>();
+            //for (int i = 0; i < numMasses; i++)
+            //{
+            //    Data2D pc = new Data2D(hrSizeX, hrSizeY)
+            //    {
+            //        DataName = $"PC {i}"
+            //    };
+
+            //    for (int x = 0; x < hrSizeX; x++)
+            //    {
+            //        for (int y = 0; y < hrSizeY; y++)
+            //        {
+            //            pc[x, y] = (float)pcs[x * hrSizeY + y, i];
+            //        }
+            //    }
+
+            //    pcImages.Add(pc);
+            //}
+
+            AvailableHost.AvailableTablesSource.AddTables(fused);
+            AvailableHost.AvailableTablesSource.AddTables(pcImages);
+
+            var dt = new DataDisplayTab();
+            var cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "GFPCA", true);
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+            foreach (var f in fused)
+            {
+                await dt.AddDataSourceAsync(f);
+            }
+            
         }
+
+        // GFPCA:
+        //double[,] pcResahped = new double[lrSizeX, lrSizeY];
+        //for (int x = 0; x<lrSizeX; x++)
+        //{
+        //    for (int y = 0; y<lrSizeY; y++)
+        //    {
+        //        int index = x * lrSizeY + y;
+        //pcResahped[x, y] = u[index, i];
+        //    }
+        //}
+
+        //var upscaled = pcResahped.Upscale(hrSizeX, hrSizeY, false);
+        //double[] hrPc = new double[hrPixels];
+
+        //// If PC number is less than p, upscale and do guided filter
+        //if (i <= p)
+        //{
+        //    // Do guided filter
+        //    var gfpc = GuidedFilter(panArray, upscaled, 2, 0.5);
+        //    for (int x = 0; x<hrSizeX; x++)
+        //    {
+        //        for (int y = 0; y<hrSizeY; y++)
+        //        {
+        //            int index = x * hrSizeY + y;
+        //hrPc[index] = gfpc[x, y];
+        //        }
+        //    }
+        //}
+
+        //// Otherwise just upscale and threshold
+        //else
+        //{
+        //    for (int x = 0; x<hrSizeX; x++)
+        //    {
+        //        for (int y = 0; y<hrSizeY; y++)
+        //        {
+        //            int index = x * hrSizeY + y;
+        //hrPc[index] = upscaled[x, y];
+        //        }
+        //    }
+
+        //    //hrPc = SoftThreshold(hrPc, 0.01);
+        //}
+
+        //// Place into matrix
+        //for (int j = 0; j<hrPixels; j++)
+        //{
+        //    upsampledMatrix[j, i] = hrPc[j];
+        //}
+
         private async void test7_Click(object sender, RoutedEventArgs e)
         {
             var bsHighRes = ImageHelper.BitmapSourceFromFile(@"D:\Data\10-01-12\1e.bmp");
@@ -4996,89 +5307,58 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test8_Click(object sender, RoutedEventArgs e)
         {
-            FusionTab ft = tabMain.SelectedContent as FusionTab;
+            int width = 752;
+            int height = 240;
 
-            var panImage = ImageHelper.ConvertToData2D(ft.HighResImage.ImageSource);
-            var msImage = ImageHelper.ConvertToData3D(ft.LowResImage.ImageSource);
-
-            // var matched = HistogramMatching.Match(panImage, msImage, 1000);
-            var linearLength = panImage.Width * panImage.Height;
-            msImage = ImageHelper.Upscale(msImage, panImage.Width, panImage.Height);
-
-            var panLinear = new double[linearLength];
-            var msLinear = new double[linearLength, 3];
-            var msIhs = new double[linearLength, 3];
-
-            for (int x = 0; x < panImage.Width; x++)
+            var filesToLoad = Directory.GetFiles(@"Y:\VUV Shape 1-6-17")
+                .Where(f => Path.GetExtension(f).Contains("asc"))
+                .Where(f => !Path.GetFileNameWithoutExtension(f).Contains("center"))
+                .ToList();
+            filesToLoad.Sort((x, y) =>
             {
-                for (int y = 0; y < panImage.Height; y++)
-                {
-                    int index = x * panImage.Height + y;
+                int x1 = int.Parse(Path.GetFileNameWithoutExtension(x).Split('-')[0]);
+                int y1 = int.Parse(Path.GetFileNameWithoutExtension(y).Split('-')[0]);
+                return x1.CompareTo(y1);
+            });
+            filesToLoad.Reverse();
 
-                    var rgb = new RGB(msImage.Layers[2][x, y], msImage.Layers[1][x, y], msImage.Layers[0][x, y]);
-                    rgb = rgb.Normalize();
-
-                    msLinear[index, 0] = rgb.R;
-                    msLinear[index, 1] = rgb.G;
-                    msLinear[index, 2] = rgb.B;
-
-                    panLinear[index] = panImage[x, y];
-
-                    var ihs = ColorConversion.RGBtoIHS(rgb);
-
-                    msIhs[index, 0] = ihs.I;
-                    msIhs[index, 1] = ihs.H;
-                    msIhs[index, 2] = ihs.S;
-                }
-            }
-
-            var svd = new SingularValueDecomposition(msIhs, true, true, false, false);
-            var u = svd.LeftSingularVectors;
-
-            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalWarm);
-            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
-            tabMain.Items.Add(cti);
-            tabMain.SelectedItem = cti;
-
-            for (int i = 0; i < svd.Ordering.Length; i++)
+            foreach (var fileToLoad in filesToLoad)
             {
-                Data2D pc = new Data2D(panImage.Width, panImage.Height);
-                pc.DataName = svd.Ordering[i].ToString();
-
-                for (int x = 0; x < panImage.Width; x++)
+                Data2D loaded = new Data2D(width, height)
                 {
-                    for (int y = 0; y < panImage.Height; y++)
+                    DataName = Path.GetFileNameWithoutExtension(fileToLoad)
+                };
+
+                using (var sr = new StreamReader(fileToLoad))
+                {
+                    for (int y = 0; y < height; y++)
                     {
-                        int index = x * panImage.Height + y;
-                        pc[x, y] = (float)u[index, i] * 1000f;
+                        StringBuilder sb = new StringBuilder();
+                        string line = sr.ReadLine();
+                        sb.Append(line);
+                        while (!line.EndsWith(","))
+                        {
+                            line = sr.ReadLine();
+                            sb.Append(line);
+                        }
+
+                        var splits = sb.ToString().Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        for (int x = 0; x < width; x++)
+                        {
+                            int sum = 0;
+                            for (int i = 0; i < 3; i++)
+                            {
+                                sum += int.Parse(splits[x * 3 + i]);
+                            }
+                            loaded[x, y] = sum / 3f;
+                        }
                     }
                 }
 
-                await dt.AddDataSourceAsync(pc, ColorScaleTypes.RedBlackGreen);
+                AvailableHost.AvailableTablesSource.AddTable(loaded);
             }
-
-            var pc1 = new double[linearLength];
-            for (int i = 0; i < linearLength; i++)
-            {
-                pc1[i] = u[i, 0];
-            }
-
-            var matched = HistogramMatching.Match(panLinear, pc1, 1000);
-            Data2D panMatched = new Data2D(panImage.Width, panImage.Height);
-
-            for (int x = 0; x < panImage.Width; x++)
-            {
-                for (int y = 0; y < panImage.Height; y++)
-                {
-                    int index = x * panImage.Height + y;
-                    panMatched[x, y] = (float)matched[index] * 1000f;
-                }
-            }
-
-            await dt.AddDataSourceAsync(panMatched, ColorScaleTypes.ThermalCold);
-            //dt.AddDataSource(panImage);
-            //dt.AddDataSource(msImage);
-            //dt.AddDataSource(matched);
+            
         }
         private async void test9_Click(object sender, RoutedEventArgs e)
         {
