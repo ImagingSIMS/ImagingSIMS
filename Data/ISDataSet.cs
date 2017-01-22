@@ -77,7 +77,8 @@ namespace ImagingSIMS.Data
 
         static readonly char[] _delimiters = new char[] { ',', '\t' };
         FlatArray<float> _matrix;
-        float _max;
+        float _max = float.MinValue;
+        float _min = float.MaxValue;
 
         public float this[int x, int y]
         {
@@ -86,6 +87,7 @@ namespace ImagingSIMS.Data
             {
                 _matrix[x, y] = value;
                 if (value > _max) _max = value;
+                if (value < _min) _min = value;
             }
         }
         public float Maximum
@@ -96,17 +98,7 @@ namespace ImagingSIMS.Data
         {
             get
             {
-                if (_matrix == null)
-                    return 0;
-                float min = _matrix[0, 0];
-                for (int x = 0; x < Width; x++)
-                {
-                    for (int y = 0; y < Height; y++)
-                    {
-                        if (_matrix[x, y] < min) min = _matrix[x, y];
-                    }
-                }
-                return min;
+                return _min;
             }
         }
 
@@ -746,7 +738,7 @@ namespace ImagingSIMS.Data
                     string line = "";
                     for (int x = 0; x < Width; x++)
                     {
-                        line += _matrix[x, y].ToString("0.00000") + ",";
+                        line += _matrix[x, y].ToString() + ",";
                     }
                     line = line.Remove(line.Length - 1);
                     sw.WriteLine(line);
@@ -1846,6 +1838,19 @@ namespace ImagingSIMS.Data
         public Data2D[] Layers
         {
             get { return _layers.ToArray<Data2D>(); }
+        }
+        public float SingularMinimum
+        {
+            get
+            {
+                if (_layers == null || _layers.Count == 0) throw new ArgumentException("No data loaded.");
+                float min = float.MaxValue;
+                for (int i = 0; i < _layers.Count; i++)
+                {
+                    if (_layers[i].Minimum < min) min = _layers[i].Minimum;
+                }
+                return min;
+            }
         }
 
         public string DataName

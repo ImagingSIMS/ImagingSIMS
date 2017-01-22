@@ -298,6 +298,7 @@ namespace ImagingSIMS.Controls.BaseControls
         private void contentButtonResetSaturation_Click(object sender, RoutedEventArgs e)
         {
             DisplayItem.Saturation = DisplayItem.InitialSaturation;
+            DisplayItem.Threshold = DisplayItem.InitialThreshold;
         }
 
     }
