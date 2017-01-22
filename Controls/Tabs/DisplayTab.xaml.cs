@@ -28,7 +28,7 @@ namespace ImagingSIMS.Controls.Tabs
     /// <summary>
     /// Interaction logic for DisplayTab.xaml
     /// </summary>
-    public partial class DisplayTab : UserControl, IHistory
+    public partial class DisplayTab : UserControl, IHistory, IDroppableTab
     {
         ProgressWindow pw;
 
@@ -904,6 +904,29 @@ namespace ImagingSIMS.Controls.Tabs
             return series;
         }
 
+        public void HandleDragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.Bitmap))
+            {
+                var bs = e.Data.GetData(DataFormats.Bitmap) as BitmapSource;
+                if (bs == null) return;
+
+                CurrentSeries.Images.Add(new DisplayImage(bs, "Titie"));
+
+                e.Handled = true;
+            }
+            else if (e.Data.GetDataPresent("DisplayImage"))
+            {
+                if (e.Source is DisplayTab && (DisplayTab)e.Source == this) return;
+
+                var image = e.Data.GetData("DisplayImage") as DisplayImage;
+                if (image == null) return;
+
+                CurrentSeries.Images.Add(image.Clone());
+
+                e.Handled = true;
+            }
+        }
     }
 
     public enum ImageTabEvent

@@ -27,7 +27,7 @@ namespace ImagingSIMS.Controls.Tabs
     /// <summary>
     /// Interaction logic for DataRegistrationTab.xaml
     /// </summary>
-    public partial class DataRegistrationTab : UserControl
+    public partial class DataRegistrationTab : UserControl, IDroppableTab
     {
         public static readonly DependencyProperty TransformParametersProperty = DependencyProperty.Register("TransformParameters",
             typeof(TransformParameters), typeof(DataRegistrationTab));
@@ -512,6 +512,72 @@ namespace ImagingSIMS.Controls.Tabs
             else FixedImage = bs;
 
             e.Handled = true;
+        }
+
+        public void HandleDragDrop(object sender, DragEventArgs e)
+        {
+            var rdb = new RegistrationDropBox();
+            if (rdb.ShowDialog() != true) return;
+
+            var result = rdb.DropResult;
+
+            if (e.Data.GetDataPresent(DataFormats.Bitmap))
+            {
+                var bs = e.Data.GetData(DataFormats.Bitmap) as BitmapSource;
+                if (bs == null) return;
+
+                if (result == RegistrationDropResult.Moving)
+                {
+                    SetMovingImage(bs);
+                }
+                else if (result == RegistrationDropResult.Fixed)
+                {
+                    SetFixedImage(bs);
+                }
+
+                e.Handled = true;
+            }
+            else if (e.Data.GetDataPresent("DisplayImage"))
+            {
+                var image = e.Data.GetData("DisplayImage") as DisplayImage;
+                if (image == null) return;
+
+                BitmapSource bs = (BitmapSource)image.Source;
+                if (bs == null) return;
+
+                if (result == RegistrationDropResult.Moving)
+                {
+                    SetMovingImage(bs);
+                }
+                else if (result == RegistrationDropResult.Fixed)
+                {
+                    SetFixedImage(bs);
+                }
+
+                e.Handled = true;
+            }
+            else if (e.Data.GetDataPresent("Data2D"))
+            {
+                var d = e.Data.GetData("Data2D") as Data2D;
+                if (d == null) return;
+
+                var bs = ImageHelper.CreateColorScaleImage(d, Data.Imaging.ColorScaleTypes.ThermalWarm);
+
+                if (result == RegistrationDropResult.Moving)
+                {
+                    SetMovingImage(bs);
+                }
+                else if (result == RegistrationDropResult.Fixed)
+                {
+                    SetFixedImage(bs);
+                }
+
+                e.Handled = true;
+            }
+            else if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Handled = false;
+            }
         }
     }    
 }

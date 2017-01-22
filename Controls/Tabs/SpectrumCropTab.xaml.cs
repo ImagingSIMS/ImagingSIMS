@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using ImagingSIMS.Common;
 using ImagingSIMS.Common.Dialogs;
 using ImagingSIMS.Data;
+using ImagingSIMS.Data.ClusterIdentification;
 using ImagingSIMS.Data.Spectra;
 
 namespace ImagingSIMS.Controls.Tabs
@@ -25,7 +26,7 @@ namespace ImagingSIMS.Controls.Tabs
     /// <summary>
     /// Interaction logic for SpectrumCropTab.xaml
     /// </summary>
-    public partial class SpectrumCropTab : UserControl
+    public partial class SpectrumCropTab : UserControl, IDroppableTab
     {
         bool _isHighlighting;
         double scale;
@@ -669,6 +670,30 @@ namespace ImagingSIMS.Controls.Tabs
             {
                 DialogBox.Show("Could not drop mask data.", ex.Message, "Mask Drop", DialogIcon.Error);
                 return false;
+            }
+        }
+
+        public void HandleDragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent("boolArray"))
+            {
+                var maskData = e.Data.GetData("boolArray") as bool[,];
+                if (maskData == null) return;
+
+                if (DropMask(maskData))
+                {
+                    e.Handled = true;
+                }
+            }
+
+            else if (e.Data.GetDataPresent("FoundClusters"))
+            {
+                var foundClusters = e.Data.GetData("FoundClusters") as FoundClusters;
+                if (foundClusters == null) return;
+
+                DropMask(foundClusters.MaskArray);
+
+                e.Handled = true;
             }
         }
     }

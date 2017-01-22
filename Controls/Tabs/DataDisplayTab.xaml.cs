@@ -31,7 +31,7 @@ using ImagingSIMS.Common.Math;
 
 namespace ImagingSIMS.Controls.Tabs
 {
-    public partial class DataDisplayTab : UserControl
+    public partial class DataDisplayTab : UserControl, IDroppableTab
     {
         public static readonly DependencyProperty BatchApplyProperty = DependencyProperty.Register("BatchApply",
             typeof(DataDisplayBatchApplyViewModel), typeof(DataDisplayTab));
@@ -748,6 +748,19 @@ namespace ImagingSIMS.Controls.Tabs
             }
 
             pw.Close();
+        }
+
+        public void HandleDragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent("Data2D"))
+            {
+                var data = e.Data.GetData("Data2D") as Data2D;
+                if (data == null) return;
+
+                AddDataSource(data);
+
+                e.Handled = true;
+            }
         }
     }
 }

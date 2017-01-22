@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using ImagingSIMS.Common.Dialogs;
 using ImagingSIMS.Data;
 using ImagingSIMS.Data.Imaging;
 
@@ -21,7 +21,7 @@ namespace ImagingSIMS.Controls.Tabs
     /// <summary>
     /// Interaction logic for HeightMapTab.xaml
     /// </summary>
-    public partial class HeightMapTab : UserControl
+    public partial class HeightMapTab : UserControl, IDroppableTab
     {
         public static readonly DependencyProperty HeightDataImageSourceProperty = DependencyProperty.Register("HeightDataImageSource",
             typeof(BitmapSource), typeof(HeightMapTab));
@@ -69,5 +69,83 @@ namespace ImagingSIMS.Controls.Tabs
             ColorData = ImageHelper.ConvertToData3D(bs);
         }
 
+        public void HandleDragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.Bitmap))
+            {
+                var bs = e.Data.GetData(DataFormats.Bitmap) as BitmapSource;
+                if (bs == null) return;
+
+                var hmdb = new HeightMapDropBox();
+                if (hmdb.ShowDialog() != true) return;
+
+                HeightMapDropResult dropResult = hmdb.DropResult;
+                if (dropResult == HeightMapDropResult.Height)
+                {
+                    HeightDataImageSource = bs;
+                    HeightData = ImageHelper.ConvertToData2D(bs);
+                }
+                else if (dropResult == HeightMapDropResult.Color)
+                {
+                    ColorDataImageSource = bs;
+                    ColorData = ImageHelper.ConvertToData3D(bs);
+                }
+
+                e.Handled = true;
+            }
+            else if (e.Data.GetDataPresent("BitmapSource"))
+            {
+                var bs = e.Data.GetData("BitmapSource") as BitmapSource;
+                if (bs == null) return;
+
+                var hmdb = new HeightMapDropBox();
+                if (hmdb.ShowDialog() != true) return;
+
+                HeightMapDropResult dropResult = hmdb.DropResult;
+                if (dropResult == HeightMapDropResult.Height)
+                {
+                    HeightDataImageSource = bs;
+                    HeightData = ImageHelper.ConvertToData2D(bs);
+                }
+                else if (dropResult == HeightMapDropResult.Color)
+                {
+                    ColorDataImageSource = bs;
+                    ColorData = ImageHelper.ConvertToData3D(bs);
+                }
+
+                e.Handled = true;
+            }
+
+            else if (e.Data.GetDataPresent("DisplayImage"))
+            {
+                var image = e.Data.GetData("DisplayImage") as DisplayImage;
+                if (image == null) return;
+
+                var bs = image.Source as BitmapSource;
+                if (bs == null) return;
+
+                HeightMapDropBox hmdb = new HeightMapDropBox();
+                if (hmdb.ShowDialog() != true) return;
+
+                HeightMapDropResult dropResult = hmdb.DropResult;
+                if (dropResult == HeightMapDropResult.Height)
+                {
+                    HeightDataImageSource = bs;
+                    HeightData = ImageHelper.ConvertToData2D(bs);
+                }
+                else if (dropResult == HeightMapDropResult.Color)
+                {
+                    ColorDataImageSource = bs;
+                    ColorData = ImageHelper.ConvertToData3D(bs);
+                }
+
+                e.Handled = true;
+            }
+
+            else if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Handled = false;
+            }
+        }
     }
 }

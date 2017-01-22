@@ -28,7 +28,7 @@ namespace ImagingSIMS.Controls.Tabs
     /// <summary>
     /// Interaction logic for FusionTab.xaml
     /// </summary>
-    public partial class FusionTab : UserControl, IDisposable
+    public partial class FusionTab : UserControl, IDisposable, IDroppableTab
     {
         public static readonly DependencyProperty LowResImageProperty = DependencyProperty.Register("LowResImage",
             typeof(FusionImageViewModel), typeof(FusionTab), new FrameworkPropertyMetadata(new FusionImageViewModel(FusionImageType.LowRes)));
@@ -1067,6 +1067,51 @@ namespace ImagingSIMS.Controls.Tabs
                 }
             }
             disposed = true;
+        }
+
+        public void HandleDragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.Bitmap))
+            {
+                var bs = e.Data.GetData(DataFormats.Bitmap) as BitmapSource;
+                if (bs == null) return;
+
+                var fdp = new FusionDropBox();
+                if (fdp.ShowDialog() != true) return;
+
+                var result = fdp.DropResult;
+                if (result == FusionDropResult.SEM)
+                    SetHighRes(bs);
+                else if (result == FusionDropResult.SIMS)
+                    SetLowRes(bs);
+
+                e.Handled = true;
+            }
+
+            else if (e.Data.GetDataPresent("DisplayImage"))
+            {
+                var image = e.Data.GetData("DisplayImage") as DisplayImage;
+                if (image == null) return;
+
+                var bs = image.Source as BitmapSource;
+                if (bs == null) return;
+
+                var fdp = new FusionDropBox();
+                if (fdp.ShowDialog() != true) return;
+
+                var result = fdp.DropResult;
+                if (result == FusionDropResult.SEM)
+                    SetHighRes(bs);
+                else if (result == FusionDropResult.SIMS)
+                    SetLowRes(bs);
+
+                e.Handled = true;
+            }
+
+            else if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Handled = false;
+            }
         }
     }
 
