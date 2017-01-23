@@ -39,6 +39,8 @@ using Accord.Math.Decompositions;
 using System.Threading.Tasks;
 
 using Matrix = Accord.Math.Matrix;
+using Accord.Statistics.Analysis;
+using Accord.Statistics.Kernels;
 
 namespace ImagingSIMS.MainApplication
 {
@@ -4981,7 +4983,6 @@ namespace ImagingSIMS.MainApplication
             }
 
             double[,] pcs = new double[hrPixels, numMasses];
-            double[,] pcToReplace = new double[hrSizeX, hrSizeY];
 
             List<Data2D> pcImages = new List<Data2D>();
 
@@ -5010,9 +5011,7 @@ namespace ImagingSIMS.MainApplication
                     }
                 }
 
-                pcImages.Add(upscaledData);                
-
-                var matched = HistogramMatching.Match((double[,])pan, upscaled, 1000);
+                pcImages.Add(upscaledData);                  
 
                 //var gfpc = GuidedFilter(matched, upscaled, 2, 0.1);
                 //for (int x = 0; x < hrSizeX; x++)
@@ -5026,19 +5025,19 @@ namespace ImagingSIMS.MainApplication
                 //}
 
                 if (i == pcIndex)
+                //if(i <= p)
                 {
+                    var matched = HistogramMatching.Match((double[,])pan, upscaled, 1000);
+
+                    //bool isNeg = crossCorrelations[i] < 0;
                     for (int x = 0; x < hrSizeX; x++)
                     {
                         for (int y = 0; y < hrSizeY; y++)
                         {
                             pcs[x * hrSizeY + y, i] = upscaled[x, y];
 
-                            if (pcIsNeg)
-                            {
-                                upscaled[x, y] = -matched[x, y];
-                            }
-                            else upscaled[x, y] = matched[x, y];
-
+                            upscaled[x, y] = pcIsNeg ? -matched[x, y] : matched[x, y];
+                            //upscaled[x, y] = isNeg ? -matched[x, y] : matched[x, y];
                         }
                     }
                 }
@@ -5146,8 +5145,10 @@ namespace ImagingSIMS.MainApplication
             //    pcImages.Add(pc);
             //}
 
+            var sortedPcs = pcImages.OrderBy(pc => pc.DataName);
+
             AvailableHost.AvailableTablesSource.AddTables(fused);
-            AvailableHost.AvailableTablesSource.AddTables(pcImages);
+            AvailableHost.AvailableTablesSource.AddTables(sortedPcs);
 
             var dt = new DataDisplayTab();
             var cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "GFPCA", true);
