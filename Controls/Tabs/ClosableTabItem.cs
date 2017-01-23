@@ -66,6 +66,15 @@ namespace ImagingSIMS.Controls.Tabs
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ClosableTabItem), new FrameworkPropertyMetadata(typeof(ClosableTabItem)));
         }
 
+        public static readonly DependencyProperty IsCurrentDragTargetProperty = DependencyProperty.Register("IsCurrentDragTarget",
+            typeof(bool), typeof(ClosableTabItem));
+
+        public bool IsCurrentDragTarget
+        {
+            get { return (bool)GetValue(IsCurrentDragTargetProperty); }
+            set { SetValue(IsCurrentDragTargetProperty, value); }
+        }
+
         public ClosableTabItem()
             : this(TabType.Startup)
         {
@@ -76,6 +85,8 @@ namespace ImagingSIMS.Controls.Tabs
 
             AllowDrop = true;
             Drop += ClosableTabItem_Drop;
+            DragEnter += ClosableTabItem_DragEnter;
+            DragLeave += ClosableTabItem_DragLeave;
         }
 
         public override void OnApplyTemplate()
@@ -139,6 +150,9 @@ namespace ImagingSIMS.Controls.Tabs
                 {
                     closeButton.Click -= new RoutedEventHandler(closeButton_Click);
                 }
+
+                DragEnter -= ClosableTabItem_DragEnter;
+                DragLeave -= ClosableTabItem_DragLeave;
             }
         }
 
@@ -165,8 +179,10 @@ namespace ImagingSIMS.Controls.Tabs
             remove { RemoveHandler(CloseMultipleTabsEvent, value); }
         }
 
-        void ClosableTabItem_Drop(object sender, DragEventArgs e)
+        private void ClosableTabItem_Drop(object sender, DragEventArgs e)
         {
+            IsCurrentDragTarget = false;
+
             var tab = Content as IDroppableTab;
             if (tab == null) return;
 
@@ -180,6 +196,14 @@ namespace ImagingSIMS.Controls.Tabs
                     tc.SelectedItem = this;
                 }
             }
+        }
+        private void ClosableTabItem_DragEnter(object sender, DragEventArgs e)
+        {
+            IsCurrentDragTarget = true;
+        }
+        private void ClosableTabItem_DragLeave(object sender, DragEventArgs e)
+        {
+            IsCurrentDragTarget = false;
         }
 
         public bool CanUndo
