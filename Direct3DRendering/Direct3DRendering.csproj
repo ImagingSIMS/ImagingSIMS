@@ -144,6 +144,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Imaging\ColorScaleDrawer.cs" />
+    <Compile Include="Imaging\ImageComputeShader.cs" />
     <Compile Include="Renderers\CombinedVolumeRenderer.cs" />
     <Compile Include="SceneObjects\Axes.cs" />
     <Compile Include="SceneObjects\BoundingBox.cs" />
@@ -257,6 +259,7 @@
     <Content Include="Shaders\HeightMap.vso.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Shaders\Imaging.hlsl" />
     <Content Include="Shaders\Isosurface.gso.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

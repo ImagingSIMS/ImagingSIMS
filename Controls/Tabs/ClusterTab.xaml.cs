@@ -25,7 +25,7 @@ namespace ImagingSIMS.Controls.Tabs
     /// <summary>
     /// Interaction logic for ClusterTab.xaml
     /// </summary>
-    public partial class ClusterTab : UserControl
+    public partial class ClusterTab : UserControl, IDroppableTab
     {
         CancellationTokenSource _cancellationTokenSource;
 
@@ -478,6 +478,29 @@ namespace ImagingSIMS.Controls.Tabs
                 X = imageCoordinates.X * FoundClusters.ColorMask.Width / imageOutput.ActualWidth,
                 Y = imageCoordinates.Y * FoundClusters.ColorMask.Height / imageOutput.ActualHeight
             };
+        }
+
+        public void HandleDragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent("Data2D"))
+            {
+                var data = e.Data.GetData("Data2D") as Data2D;
+                if (data == null) return;
+
+                Parameters.InputImageSource = ImageHelper.CreateColorScaleImage(data, ColorScaleTypes.Gray);
+
+                e.Handled = true;
+            }
+            else if (e.Data.GetDataPresent("DisplayImage"))
+            {
+                var bs = e.Data.GetData(DataFormats.Bitmap) as BitmapSource;
+                if (bs == null) return;
+
+                var data = ImageHelper.ConvertToData2D(bs);
+                Parameters.InputImageSource = ImageHelper.CreateColorScaleImage(data, ColorScaleTypes.Gray);
+
+                e.Handled = true;
+            }
         }
     }
 }

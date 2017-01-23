@@ -94,7 +94,18 @@
       "Revision": 8
     },
     "Updates": [
-      "Patched an issue with adding new data tables to the DataDisplayTab"
+      "Patched an issue with adding new data tables to the DataDisplayTab."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 9
+    },
+    "Updates": [
+      "Added visual effects when dragging and dropping data and tabs."
     ]
   }
 ]

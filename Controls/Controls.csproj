@@ -112,6 +112,8 @@
     <Compile Include="BaseControls\Data3DDisplay.xaml.cs">
       <DependentUpon>Data3DDisplay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TabControls\MovableTabControl.cs" />
+    <Compile Include="TabControls\MovableTabItem.cs" />
     <Compile Include="BaseControls\GridAware.cs" />
     <Compile Include="BaseControls\MoveThumb.cs" />
     <Compile Include="BaseControls\RatiosDataGrid.xaml.cs">
@@ -167,6 +169,8 @@
       <DependentUpon>ImageStitchTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="BaseControls\MaskedTextBox.cs" />
+    <Compile Include="Tabs\IClosableTab.cs" />
+    <Compile Include="Tabs\IDroppableTab.cs" />
     <Compile Include="Tabs\PCATab.xaml.cs">
       <DependentUpon>PCATab.xaml</DependentUpon>
     </Compile>

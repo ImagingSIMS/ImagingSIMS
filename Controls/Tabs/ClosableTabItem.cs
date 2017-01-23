@@ -66,45 +66,27 @@ namespace ImagingSIMS.Controls.Tabs
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ClosableTabItem), new FrameworkPropertyMetadata(typeof(ClosableTabItem)));
         }
 
-        public ClosableTabItem()
+        public static readonly DependencyProperty IsCurrentDragTargetProperty = DependencyProperty.Register("IsCurrentDragTarget",
+            typeof(bool), typeof(ClosableTabItem));
+
+        public bool IsCurrentDragTarget
         {
-            _tabType = TabType.Startup;
+            get { return (bool)GetValue(IsCurrentDragTargetProperty); }
+            set { SetValue(IsCurrentDragTargetProperty, value); }
+        }
 
-            if (TabType == TabType.Display || TabType == TabType.Fusion ||
-                TabType == TabType.HeightMap || TabType == TabType.DataRegistration ||
-                TabType == TabType.SpectrumCrop || TabType == TabType.DataDisplay ||
-                TabType == TabType.Cluster)
-            {
-                this.AllowDrop = true;
-                this.Drop += ClosableTabItem_Drop;
-            }
-
-            // Keep this separate since this appears only in PNNL version
-            if (TabType == TabType.Ratio || TabType == TabType.ImageStitch)
-            {
-                this.AllowDrop = true;
-                this.Drop += ClosableTabItem_Drop;
-            }
+        public ClosableTabItem()
+            : this(TabType.Startup)
+        {
         }
         public ClosableTabItem(TabType TabType)
         {
             _tabType = TabType;
 
-            if (TabType == TabType.Display || TabType == TabType.Fusion ||
-                TabType == TabType.HeightMap || TabType == TabType.DataRegistration ||
-                TabType == TabType.SpectrumCrop || TabType == TabType.DataDisplay || 
-                TabType == TabType.Cluster)
-            {
-                this.AllowDrop = true;
-                this.Drop += ClosableTabItem_Drop;
-            }
-
-            // Keep this separate since this appears only in PNNL version
-            if (TabType == TabType.Ratio || TabType == TabType.ImageStitch)
-            {
-                this.AllowDrop = true;
-                this.Drop += ClosableTabItem_Drop;
-            }
+            AllowDrop = true;
+            Drop += ClosableTabItem_Drop;
+            DragEnter += ClosableTabItem_DragEnter;
+            DragLeave += ClosableTabItem_DragLeave;
         }
 
         public override void OnApplyTemplate()
@@ -168,6 +150,9 @@ namespace ImagingSIMS.Controls.Tabs
                 {
                     closeButton.Click -= new RoutedEventHandler(closeButton_Click);
                 }
+
+                DragEnter -= ClosableTabItem_DragEnter;
+                DragLeave -= ClosableTabItem_DragLeave;
             }
         }
 
@@ -194,305 +179,31 @@ namespace ImagingSIMS.Controls.Tabs
             remove { RemoveHandler(CloseMultipleTabsEvent, value); }
         }
 
-        void ClosableTabItem_Drop(object sender, DragEventArgs e)
+        private void ClosableTabItem_Drop(object sender, DragEventArgs e)
         {
-            bool didDrop = false;
+            IsCurrentDragTarget = false;
 
-            if (_tabType == TabType.DataDisplay)
+            var tab = Content as IDroppableTab;
+            if (tab == null) return;
+
+            tab.HandleDragDrop(sender, e);
+
+            if(e.Handled)
             {
-                DataDisplayTab d2dt = this.Content as DataDisplayTab;
-                if (d2dt == null) return;
-
-                else if (e.Data.GetDataPresent("Data2D"))
+                var tc = Parent as TabControl;
+                if (tc != null)
                 {
-                    ImagingSIMS.Data.Data2D d = e.Data.GetData("Data2D") as ImagingSIMS.Data.Data2D;
-                    if (d == null) return;
-
-                    d2dt.AddDataSource(d);
-
-                    didDrop = true;
+                    tc.SelectedItem = this;
                 }
             }
-            if (_tabType == TabType.Cluster)
-            {
-                ClusterTab ct = this.Content as ClusterTab;
-                if (ct == null) return;
-
-                if (e.Data.GetDataPresent("Data2D"))
-                {
-                    ImagingSIMS.Data.Data2D d = e.Data.GetData("Data2D") as ImagingSIMS.Data.Data2D;
-                    if (d == null) return;
-
-                    ct.DropData(d);
-                    didDrop = true;
-                }
-                else if (e.Data.GetDataPresent("DisplayImage"))
-                {
-                    ImagingSIMS.Data.Imaging.DisplayImage di = e.Data.GetData("DisplayImage") as ImagingSIMS.Data.Imaging.DisplayImage;
-                    if (di == null) return;
-
-                    ct.DropImage(di);
-                    didDrop = true;
-                }
-            }
-            if (_tabType == TabType.Display)
-            {
-                DisplayTab ot = this.Content as DisplayTab;
-                if (ot == null) return;
-
-                if (e.Data.GetDataPresent(DataFormats.Bitmap))
-                {
-                    BitmapSource bs = (BitmapSource)e.Data.GetData(DataFormats.Bitmap);
-                    if (bs == null) return;
-
-                    ot.AddImage(new ImagingSIMS.Data.Imaging.DisplayImage(bs, "Title"));
-                    didDrop = true;
-                }
-                else if (e.Data.GetDataPresent("DisplayImage"))
-                {
-                    if (e.Source is DisplayTab && (DisplayTab)e.Source == ot) return;
-                    ImagingSIMS.Data.Imaging.DisplayImage image = (ImagingSIMS.Data.Imaging.DisplayImage)e.Data.GetData("DisplayImage");
-                    ot.AddImage(image.Clone());
-                    didDrop = true;
-                }
-                
-            }
-            if (_tabType == TabType.Fusion)
-            {
-                FusionTab ft = this.Content as FusionTab;
-                if (ft == null) return;
-
-                if (e.Data.GetDataPresent(DataFormats.Bitmap))
-                {
-                    BitmapSource bs = (BitmapSource)e.Data.GetData(DataFormats.Bitmap);
-                    if (bs == null) return;
-
-                    FusionDropBox fdb = new FusionDropBox();
-                    Nullable<bool> dialogResult = fdb.ShowDialog();
-                    if (dialogResult == true)
-                    {
-                        FusionDropResult dropResult = fdb.DropResult;
-                        if (dropResult == FusionDropResult.SEM)
-                        {
-                            ft.SetHighRes(bs);
-                        }
-                        else if (dropResult == FusionDropResult.SIMS)
-                        {
-                            ft.SetLowRes(bs);
-                        }
-                        didDrop = true;
-                    }
-                }
-                else if (e.Data.GetDataPresent("DisplayImage"))
-                {
-                    ImagingSIMS.Data.Imaging.DisplayImage image = (ImagingSIMS.Data.Imaging.DisplayImage)e.Data.GetData("DisplayImage");
-                    BitmapSource bs = (BitmapSource)image.Source;
-                    if (bs == null) return;
-
-                    FusionDropBox fdb = new FusionDropBox();
-                    Nullable<bool> dialogResult = fdb.ShowDialog();
-                    if (dialogResult == true)
-                    {
-                        FusionDropResult dropResult = fdb.DropResult;
-                        if (dropResult == FusionDropResult.SEM)
-                        {
-                            ft.SetHighRes(bs);
-                        }
-                        else if (dropResult == FusionDropResult.SIMS)
-                        {
-                            ft.SetLowRes(bs);
-                        }
-                        didDrop = true;
-                    }
-                }
-                else if(e.Data.GetDataPresent(DataFormats.FileDrop))
-                {
-                    didDrop = false;
-                    e.Handled = false;
-                    return;
-                }
-            }
-            if (_tabType == TabType.HeightMap)
-            {
-                HeightMapTab hmt = this.Content as HeightMapTab;
-                if (hmt == null) return;
-
-                if (e.Data.GetDataPresent(DataFormats.Bitmap))
-                {
-                    BitmapSource bs = (BitmapSource)e.Data.GetData(DataFormats.Bitmap);
-                    if (bs == null) return;
-
-                    HeightMapDropBox hmdb = new HeightMapDropBox();
-                    Nullable<bool> dialogResult = hmdb.ShowDialog();
-                    if (dialogResult == true)
-                    {
-                        HeightMapDropResult dropResult = hmdb.DropResult;
-                        if (dropResult == HeightMapDropResult.Height)
-                        {
-                            hmt.SetHeight(bs);
-                        }
-                        else if (dropResult == HeightMapDropResult.Color)
-                        {
-                            hmt.SetColor(bs);
-                        }
-                        didDrop = true;
-                    }
-                }
-                else if (e.Data.GetDataPresent("BitmapSource"))
-                {
-                    BitmapSource bs = (BitmapSource)e.Data.GetData("BitmapSource");
-                    if (bs == null) return;
-
-                    HeightMapDropBox hmdb = new HeightMapDropBox();
-                    Nullable<bool> dialogResult = hmdb.ShowDialog();
-                    if (dialogResult == true)
-                    {
-                        HeightMapDropResult dropResult = hmdb.DropResult;
-                        if (dropResult == HeightMapDropResult.Height)
-                        {
-                            hmt.SetHeight(bs);
-                        }
-                        else if (dropResult == HeightMapDropResult.Color)
-                        {
-                            hmt.SetColor(bs);
-                        }
-                        didDrop = true;
-                    }
-                }
-
-                else if (e.Data.GetDataPresent("DisplayImage"))
-                {
-                    ImagingSIMS.Data.Imaging.DisplayImage image = (ImagingSIMS.Data.Imaging.DisplayImage)e.Data.GetData("DisplayImage");
-                    BitmapSource bs = (BitmapSource)image.Source;
-                    if (bs == null) return;
-
-                    HeightMapDropBox hmdb = new HeightMapDropBox();
-                    Nullable<bool> dialogResult = hmdb.ShowDialog();
-                    if (dialogResult == true)
-                    {
-                        HeightMapDropResult dropResult = hmdb.DropResult;
-                        if (dropResult == HeightMapDropResult.Height)
-                        {
-                            hmt.SetHeight(bs);
-                        }
-                        else if (dropResult == HeightMapDropResult.Color)
-                        {
-                            hmt.SetColor(bs);
-                        }
-                        didDrop = true;
-                    }
-                }
-                else if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                {
-                    didDrop = false;
-                    e.Handled = false;
-                    return;
-                }
-
-            }
-            if (_tabType == TabType.DataRegistration)
-            {
-                DataRegistrationTab drt = this.Content as DataRegistrationTab;
-                if (drt == null) return;
-
-                RegistrationDropBox rdb = new RegistrationDropBox();
-                Nullable<bool> dialogResult = rdb.ShowDialog();
-                if (dialogResult != true) return;
-
-                RegistrationDropResult result = rdb.DropResult;
-
-                if (e.Data.GetDataPresent(DataFormats.Bitmap))
-                {
-                    BitmapSource bs = (BitmapSource)e.Data.GetData(DataFormats.Bitmap);
-                    if (bs == null) return;
-
-                    if (result == RegistrationDropResult.Moving)
-                    {
-                        drt.SetMovingImage(bs);
-                        didDrop = true;
-                    }
-                    else if (result == RegistrationDropResult.Fixed)
-                    {
-                        drt.SetFixedImage(bs);
-                        didDrop = true;
-                    }
-                }
-                else if (e.Data.GetDataPresent("DisplayImage"))
-                {
-                    ImagingSIMS.Data.Imaging.DisplayImage image = (ImagingSIMS.Data.Imaging.DisplayImage)e.Data.GetData("DisplayImage");
-                    BitmapSource bs = (BitmapSource)image.Source;
-                    if (bs == null) return;
-
-                    if (result == RegistrationDropResult.Moving)
-                    {
-                        drt.SetMovingImage(bs);
-                        didDrop = true;
-                    }
-                    else if (result == RegistrationDropResult.Fixed)
-                    {
-                        drt.SetFixedImage(bs);
-                        didDrop = true;
-                    }
-                }
-                else if (e.Data.GetDataPresent("Data2D"))
-                {
-                    ImagingSIMS.Data.Data2D d = (ImagingSIMS.Data.Data2D)e.Data.GetData("Data2D");
-                    BitmapSource bs = ImagingSIMS.Data.Imaging.ImageHelper.CreateColorScaleImage(d, Data.Imaging.ColorScaleTypes.ThermalWarm);
-
-                    if (result == RegistrationDropResult.Moving)
-                    {
-                        drt.SetMovingImage(bs);
-                        didDrop = true;
-                    }
-                    else if (result == RegistrationDropResult.Fixed)
-                    {
-                        drt.SetFixedImage(bs);
-                        didDrop = true;
-                    }
-                }
-                else if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                {
-                    didDrop = false;
-                    e.Handled = false;
-                    return;
-                }                
-            }
-            if (TabType == TabType.SpectrumCrop)
-            {
-                SpectrumCropTab sct = this.Content as SpectrumCropTab;
-                if (sct == null) return;
-
-                if (e.Data.GetDataPresent("boolArray"))
-                {
-                    bool[,] maskData = e.Data.GetData("boolArray") as bool[,];
-                    if (maskData == null) return;
-
-                    if (sct.DropMask(maskData))
-                    {
-                        didDrop = true;
-                        e.Handled = true;
-                    }
-                }
-
-                else if (e.Data.GetDataPresent("FoundClusters"))
-                {
-                    ImagingSIMS.Data.ClusterIdentification.FoundClusters foundClusters =
-                        e.Data.GetData("FoundClusters") as ImagingSIMS.Data.ClusterIdentification.FoundClusters;
-                    if (foundClusters == null) return;
-
-                    sct.DropMask(foundClusters.MaskArray);
-
-                    didDrop = true;
-                }
-            }
-
-            if (didDrop)
-            {
-                TabControl tc = this.Parent as TabControl;
-                if (tc == null) return;
-
-                tc.SelectedItem = this;
-            }
+        }
+        private void ClosableTabItem_DragEnter(object sender, DragEventArgs e)
+        {
+            IsCurrentDragTarget = true;
+        }
+        private void ClosableTabItem_DragLeave(object sender, DragEventArgs e)
+        {
+            IsCurrentDragTarget = false;
         }
 
         public bool CanUndo
