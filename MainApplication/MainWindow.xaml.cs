@@ -5036,7 +5036,8 @@ namespace ImagingSIMS.MainApplication
                         {
                             pcs[x * hrSizeY + y, i] = upscaled[x, y];
 
-                            upscaled[x, y] = pcIsNeg ? -matched[x, y] : matched[x, y];
+                            upscaled[x, y] = pcIsNeg ? upscaled[x, y] - matched[x, y] : upscaled[x, y] + matched[x, y];
+                            //upscaled[x, y] = pcIsNeg ? -matched[x, y] : matched[x, y];
                             //upscaled[x, y] = isNeg ? -matched[x, y] : matched[x, y];
                         }
                     }
