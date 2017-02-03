@@ -105,7 +105,10 @@
       "Revision": 9
     },
     "Updates": [
-      "Added visual effects when dragging and dropping data and tabs."
+      "Added visual effects when dragging and dropping data and tabs.",
+      "Added viridis color scale.",
+      "Inlcude support for color scales in range of [-1, +1].",
+      "Minor improvement in image rendering speed."
     ]
   }
 ]

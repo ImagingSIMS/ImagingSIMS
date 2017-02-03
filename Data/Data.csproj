@@ -82,6 +82,14 @@
       <HintPath>..\packages\SharpDX.3.0.2\lib\net45\SharpDX.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SharpDX.Direct3D11, Version=3.0.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D11.3.0.2\lib\net45\SharpDX.Direct3D11.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=3.0.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DXGI.3.0.2\lib\net45\SharpDX.DXGI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="SharpDX.Mathematics, Version=3.0.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.Mathematics.3.0.2\lib\net45\SharpDX.Mathematics.dll</HintPath>
       <Private>True</Private>
@@ -118,6 +126,10 @@
     <Compile Include="Fusion.cs" />
     <Compile Include="HeightMap.cs" />
     <Compile Include="Imaging.cs" />
+    <Compile Include="Imaging\CPUImageGenerator.cs" />
+    <Compile Include="Imaging\GPUImageGenerator.cs" />
+    <Compile Include="Imaging\IImageGenerator.cs" />
+    <Compile Include="Imaging\ImageGenerator.cs" />
     <Compile Include="ISDataSet.cs" />
     <Compile Include="Isosurfcaing.cs" />
     <Compile Include="PCA.cs" />
