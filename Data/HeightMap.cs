@@ -79,11 +79,11 @@ namespace ImagingSIMS.Data.Rendering
         {
             if (colorDataWidth < heightDataWidth && colorDataHeight < heightDataHeight)
             {
-                _colorData = ImageHelper.Upscale(_colorData, heightDataWidth, heightDataHeight);
+                _colorData = _colorData.Upscale(heightDataWidth, heightDataHeight);
             }
             else if(colorDataWidth > heightDataWidth && colorDataHeight > heightDataHeight)
             {
-                _heightData = ImageHelper.Upscale(_heightData, colorDataWidth, colorDataHeight);
+                _heightData = _heightData.Upscale(colorDataWidth, colorDataHeight);
             }
             else if(colorDataWidth != heightDataWidth && colorDataHeight != heightDataHeight)
             {

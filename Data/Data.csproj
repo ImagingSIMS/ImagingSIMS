@@ -128,8 +128,10 @@
     <Compile Include="Imaging.cs" />
     <Compile Include="Imaging\CPUImageGenerator.cs" />
     <Compile Include="Imaging\GPUImageGenerator.cs" />
-    <Compile Include="Imaging\IImageGenerator.cs" />
+    <Compile Include="Imaging\BaseImageGenerator.cs" />
     <Compile Include="Imaging\ImageGenerator.cs" />
+    <Compile Include="Imaging\ImagingExtensions.cs" />
+    <Compile Include="Imaging\ImagingParameters.cs" />
     <Compile Include="ISDataSet.cs" />
     <Compile Include="Isosurfcaing.cs" />
     <Compile Include="PCA.cs" />
@@ -141,7 +143,7 @@
     <Compile Include="Savable.cs" />
     <Compile Include="SEM.cs" />
     <Compile Include="Spectra.cs" />
-    <Compile Include="ColorScales.cs" />
+    <Compile Include="Imaging\ColorScales.cs" />
     <Compile Include="StackedImage.cs" />
     <Compile Include="Volume.cs" />
     <Compile Include="Workspace.cs" />

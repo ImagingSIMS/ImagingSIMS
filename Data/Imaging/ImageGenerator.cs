@@ -11,13 +11,21 @@ namespace ImagingSIMS.Data.Imaging
 {
     public static class ImageGenerator
     {
-        static IImageGenerator _generator;
+        static BaseImageGenerator _generator;
+
+        public static BaseImageGenerator Instance
+        {
+            get { return _generator; }
+        }
 
         static ImageGenerator()
         {
-            if (SupportsComputShader())
-                _generator = new GPUImageGenerator();
-            else _generator = new CPUImageGenerator();
+            // Uncomment when GPU is fully implemented
+            //if (SupportsComputShader())
+            //    _generator = new GPUImageGenerator();
+            //else _generator = new CPUImageGenerator();
+
+            _generator = new CPUImageGenerator();
         }
 
         static bool SupportsComputShader()

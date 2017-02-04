@@ -486,7 +486,7 @@ namespace ImagingSIMS.Controls.Tabs
 
                 if (moving)
                 {
-                    bs = ImageHelper.CreateColorScaleImage(data, ColorScaleTypes.ThermalWarm);
+                    bs = ImageGenerator.Instance.Create(data, ColorScaleTypes.ThermalWarm);
                     if (!SelectedTablesMoving.Contains(data))
                     {
                         SelectedTablesMoving.Add(data);
@@ -494,7 +494,7 @@ namespace ImagingSIMS.Controls.Tabs
                 }
                 else
                 {
-                    bs = ImageHelper.CreateColorScaleImage(data, ColorScaleTypes.ThermalCold);
+                    bs = ImageGenerator.Instance.Create(data, ColorScaleTypes.ThermalCold);
                     if (!SelectedTablesFixed.Contains(data))
                     {
                         SelectedTablesFixed.Add(data);
@@ -561,7 +561,7 @@ namespace ImagingSIMS.Controls.Tabs
                 var d = e.Data.GetData("Data2D") as Data2D;
                 if (d == null) return;
 
-                var bs = ImageHelper.CreateColorScaleImage(d, Data.Imaging.ColorScaleTypes.ThermalWarm);
+                var bs = ImageGenerator.Instance.Create(d, Data.Imaging.ColorScaleTypes.ThermalWarm);
 
                 if (result == RegistrationDropResult.Moving)
                 {

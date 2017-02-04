@@ -18,1041 +18,1041 @@ using ImagingSIMS.Data.Converters;
 
 namespace ImagingSIMS.Data.Imaging
 {
-    public static class ImageHelper
-    {
-        const float Zero = 0.0f;
-        const float OneThird = 0.333333f;
-        const float TwoThirds = 0.666666f;
-        const float One = 1.0f;
+    //public static class ImageHelper
+    //{
+    //    const float Zero = 0.0f;
+    //    const float OneThird = 0.333333f;
+    //    const float TwoThirds = 0.666666f;
+    //    const float One = 1.0f;
 
-        /// <summary>
-        /// Creates a series of images from the specified image components.
-        /// </summary>
-        /// <param name="Components">Array of image components to generate images.</param>
-        /// <param name="Parameters">Image parameters.</param>
-        /// <returns></returns>
-        public static BitmapSource[] CreateImage(ImageComponent[] Components, ImageParameters Parameters)
-        {
-            int numComps = Components.Length;
-            int numLayers = Components[0].NumberTables;
-            int sizeX = Components[0].Width;
-            int sizeY = Components[0].Height;
+    //    /// <summary>
+    //    /// Creates a series of images from the specified image components.
+    //    /// </summary>
+    //    /// <param name="Components">Array of image components to generate images.</param>
+    //    /// <param name="Parameters">Image parameters.</param>
+    //    /// <returns></returns>
+    //    public static BitmapSource[] CreateImage(ImageComponent[] Components, ImageParameters Parameters)
+    //    {
+    //        int numComps = Components.Length;
+    //        int numLayers = Components[0].NumberTables;
+    //        int sizeX = Components[0].Width;
+    //        int sizeY = Components[0].Height;
 
-            int numReturnImages = numLayers;
-            if (Parameters.TotalIon) numReturnImages++;
-            BitmapSource[] result = new BitmapSource[numReturnImages];
+    //        int numReturnImages = numLayers;
+    //        if (Parameters.TotalIon) numReturnImages++;
+    //        BitmapSource[] result = new BitmapSource[numReturnImages];
 
-            float[,] normValues = new float[numLayers, numComps];
-            float[,] totalIon = new float[sizeX, sizeY];
-            switch (Parameters.NormalizationMethod)
-            {
-                case NormalizationMethod.Both:
-                    for (int x = 0; x < numLayers; x++)
-                    {
-                        for (int y = 0; y < numComps; y++)
-                        {
-                            normValues[x, y] = Components[y].LayerMaximum(x);
-                        }
-                    }
-                    break;
-                case NormalizationMethod.Layered:
-                    for (int i = 0; i < numLayers; i++)
-                    {
-                        float max2 = 0;
-                        for (int j = 0; j < numComps; j++)
-                        {
-                            if (Components[j].LayerMaximum(i) > max2)
-                                max2 = Components[j].LayerMaximum(i);
-                        }
-                        for (int y = 0; y < numComps; y++)
-                        {
-                            normValues[i, y] = max2;
-                        }
-                    }
-                    break;
-                case NormalizationMethod.Single:
-                    float max3 = 0;
-                    foreach (ImageComponent c in Components)
-                    {
-                        if (c.Maximum > max3) max3 = c.Maximum;
-                    }
-                    for (int x = 0; x < numLayers; x++)
-                    {
-                        for (int y = 0; y < numComps; y++)
-                        {
-                            normValues[x, y] = max3;
-                        }
-                    }
-                    break;
-            }
+    //        float[,] normValues = new float[numLayers, numComps];
+    //        float[,] totalIon = new float[sizeX, sizeY];
+    //        switch (Parameters.NormalizationMethod)
+    //        {
+    //            case NormalizationMethod.Both:
+    //                for (int x = 0; x < numLayers; x++)
+    //                {
+    //                    for (int y = 0; y < numComps; y++)
+    //                    {
+    //                        normValues[x, y] = Components[y].LayerMaximum(x);
+    //                    }
+    //                }
+    //                break;
+    //            case NormalizationMethod.Layered:
+    //                for (int i = 0; i < numLayers; i++)
+    //                {
+    //                    float max2 = 0;
+    //                    for (int j = 0; j < numComps; j++)
+    //                    {
+    //                        if (Components[j].LayerMaximum(i) > max2)
+    //                            max2 = Components[j].LayerMaximum(i);
+    //                    }
+    //                    for (int y = 0; y < numComps; y++)
+    //                    {
+    //                        normValues[i, y] = max2;
+    //                    }
+    //                }
+    //                break;
+    //            case NormalizationMethod.Single:
+    //                float max3 = 0;
+    //                foreach (ImageComponent c in Components)
+    //                {
+    //                    if (c.Maximum > max3) max3 = c.Maximum;
+    //                }
+    //                for (int x = 0; x < numLayers; x++)
+    //                {
+    //                    for (int y = 0; y < numComps; y++)
+    //                    {
+    //                        normValues[x, y] = max3;
+    //                    }
+    //                }
+    //                break;
+    //        }
             
-            for (int i = 0; i < numLayers; i++)
-            {
-                int pos = 0;
+    //        for (int i = 0; i < numLayers; i++)
+    //        {
+    //            int pos = 0;
 
-                PixelFormat pf = PixelFormats.Bgr32;
+    //            PixelFormat pf = PixelFormats.Bgr32;
 
-                int rawStride = (sizeX * pf.BitsPerPixel) / 8;
-                rawStride = rawStride + (rawStride % 4) * 4;
-                byte[] rawImage = new byte[rawStride * sizeY];
+    //            int rawStride = (sizeX * pf.BitsPerPixel) / 8;
+    //            rawStride = rawStride + (rawStride % 4) * 4;
+    //            byte[] rawImage = new byte[rawStride * sizeY];
 
-                for (int y = 0; y < sizeY; y++)
-                {
-                    for (int x = 0; x < sizeX; x++)
-                    {
-                        float sum = 0;
-                        for (int z = 0; z < numComps; z++)
-                        {
-                            sum += (Components[z].Data[i][x, y] * 255f) / normValues[i, z];
-                        }
+    //            for (int y = 0; y < sizeY; y++)
+    //            {
+    //                for (int x = 0; x < sizeX; x++)
+    //                {
+    //                    float sum = 0;
+    //                    for (int z = 0; z < numComps; z++)
+    //                    {
+    //                        sum += (Components[z].Data[i][x, y] * 255f) / normValues[i, z];
+    //                    }
 
-                        totalIon[x, y] += sum;
+    //                    totalIon[x, y] += sum;
 
-                        if (sum == 0)
-                        {
-                            pos += 4;
-                            continue;
-                        }
+    //                    if (sum == 0)
+    //                    {
+    //                        pos += 4;
+    //                        continue;
+    //                    }
 
-                        byte r = 0;
-                        byte g = 0;
-                        byte b = 0;
-                        for (int z = 0; z < numComps; z++)
-                        {
-                            float value = (Components[z].Data[i][x, y] * 255f) / normValues[i, z];
-                            float weight = (value / sum);
-
-
-                            r += (byte)((weight * value * Components[z].PixelColor.R) / 255f);
-                            g += (byte)((weight * value * Components[z].PixelColor.G) / 255f);
-                            b += (byte)((weight * value * Components[z].PixelColor.B) / 255f);
-                        }
+    //                    byte r = 0;
+    //                    byte g = 0;
+    //                    byte b = 0;
+    //                    for (int z = 0; z < numComps; z++)
+    //                    {
+    //                        float value = (Components[z].Data[i][x, y] * 255f) / normValues[i, z];
+    //                        float weight = (value / sum);
 
 
-                        if (Parameters.SqrtEnhance)
-                        {
-                            rawImage[pos + 0] = (byte)((Math.Sqrt(b)) * (Math.Sqrt(255)));
-                            rawImage[pos + 1] = (byte)((Math.Sqrt(g)) * (Math.Sqrt(255)));
-                            rawImage[pos + 2] = (byte)((Math.Sqrt(r)) * (Math.Sqrt(255)));
-                        }
-                        else
-                        {
-                            rawImage[pos + 0] = b;
-                            rawImage[pos + 1] = g;
-                            rawImage[pos + 2] = r;
-                        }
+    //                        r += (byte)((weight * value * Components[z].PixelColor.R) / 255f);
+    //                        g += (byte)((weight * value * Components[z].PixelColor.G) / 255f);
+    //                        b += (byte)((weight * value * Components[z].PixelColor.B) / 255f);
+    //                    }
 
-                        pos += 4;
-                    }
-                }
-                result[i] = BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
-            }
 
-            if (Parameters.TotalIon)
-            {
-                Data2D d = new Data2D(totalIon);
-                result[result.Length - 1] = ImageHelper.CreateColorScaleImage(d, ColorScaleTypes.Gray);
-            }
-            return result;
-        }
-        public static Task<BitmapSource[]> CreateImageAsync(ImageComponent[] components, ImageParameters parameters)
-        {
-            return Task.Run(() => CreateImage(components, parameters));
-        }
-        /// <summary>
-        /// Converts the specified BitmapSource to a Data2D array which is the equivalent of the grayscale image.
-        /// </summary>
-        /// <param name="BitmapSource">BitmapSource to convert.</param>
-        /// <returns>Data2D array which is the grayscale values if the input image is RGB or the alpha values if the image is ARGB.</returns>
-        public static Data2D ConvertToData2D(BitmapSource BitmapSource)
-        {
-            PixelFormat pf = BitmapSource.Format;
+    //                    if (Parameters.SqrtEnhance)
+    //                    {
+    //                        rawImage[pos + 0] = (byte)((Math.Sqrt(b)) * (Math.Sqrt(255)));
+    //                        rawImage[pos + 1] = (byte)((Math.Sqrt(g)) * (Math.Sqrt(255)));
+    //                        rawImage[pos + 2] = (byte)((Math.Sqrt(r)) * (Math.Sqrt(255)));
+    //                    }
+    //                    else
+    //                    {
+    //                        rawImage[pos + 0] = b;
+    //                        rawImage[pos + 1] = g;
+    //                        rawImage[pos + 2] = r;
+    //                    }
 
-            int sizeX = BitmapSource.PixelWidth;
-            int sizeY = BitmapSource.PixelHeight;
+    //                    pos += 4;
+    //                }
+    //            }
+    //            result[i] = BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+    //        }
 
-            int stride = (sizeX * pf.BitsPerPixel) / 8;
-            int size = sizeY * stride;
-            byte[] pixels = new byte[size];
-            BitmapSource.CopyPixels(pixels, stride, 0);
+    //        if (Parameters.TotalIon)
+    //        {
+    //            Data2D d = new Data2D(totalIon);
+    //            result[result.Length - 1] = ImageHelper.CreateColorScaleImage(d, ColorScaleTypes.Gray);
+    //        }
+    //        return result;
+    //    }
+    //    public static Task<BitmapSource[]> CreateImageAsync(ImageComponent[] components, ImageParameters parameters)
+    //    {
+    //        return Task.Run(() => CreateImage(components, parameters));
+    //    }
+    //    /// <summary>
+    //    /// Converts the specified BitmapSource to a Data2D array which is the equivalent of the grayscale image.
+    //    /// </summary>
+    //    /// <param name="BitmapSource">BitmapSource to convert.</param>
+    //    /// <returns>Data2D array which is the grayscale values if the input image is RGB or the alpha values if the image is ARGB.</returns>
+    //    public static Data2D ConvertToData2D(BitmapSource BitmapSource)
+    //    {
+    //        PixelFormat pf = BitmapSource.Format;
 
-            Data2D array = new Data2D(sizeX, sizeY);
+    //        int sizeX = BitmapSource.PixelWidth;
+    //        int sizeY = BitmapSource.PixelHeight;
 
-            int pos = 0;
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int x = 0; x < sizeX; x++)
-                {
-                    if(pf == PixelFormats.Indexed8)
-                    {
-                        Color c = BitmapSource.Palette.Colors[pixels[pos]];
+    //        int stride = (sizeX * pf.BitsPerPixel) / 8;
+    //        int size = sizeY * stride;
+    //        byte[] pixels = new byte[size];
+    //        BitmapSource.CopyPixels(pixels, stride, 0);
 
-                        array[x, y] = MathEx.Average(c.R, c.G, c.B);
+    //        Data2D array = new Data2D(sizeX, sizeY);
 
-                        pos += 1;
-                    }
-                    else if (pf == PixelFormats.Gray8)
-                    {
-                        array[x, y] = pixels[pos];
+    //        int pos = 0;
+    //        for (int y = 0; y < sizeY; y++)
+    //        {
+    //            for (int x = 0; x < sizeX; x++)
+    //            {
+    //                if(pf == PixelFormats.Indexed8)
+    //                {
+    //                    Color c = BitmapSource.Palette.Colors[pixels[pos]];
 
-                        pos += 1;
-                    }
-                    else if (pf == PixelFormats.Bgr24)
-                    {
-                        byte b = pixels[pos + 0];      //Blue
-                        byte g = pixels[pos + 1];      //Green
-                        byte r = pixels[pos + 2];      //Red
+    //                    array[x, y] = MathEx.Average(c.R, c.G, c.B);
 
-                        array[x, y] = MathEx.Average(r, g, b);
+    //                    pos += 1;
+    //                }
+    //                else if (pf == PixelFormats.Gray8)
+    //                {
+    //                    array[x, y] = pixels[pos];
 
-                        pos += 3;
-                    }
-                    else if (pf == PixelFormats.Bgr32)
-                    {
-                        byte b = pixels[pos + 0];      //Blue
-                        byte g = pixels[pos + 1];      //Green
-                        byte r = pixels[pos + 2];      //Red
+    //                    pos += 1;
+    //                }
+    //                else if (pf == PixelFormats.Bgr24)
+    //                {
+    //                    byte b = pixels[pos + 0];      //Blue
+    //                    byte g = pixels[pos + 1];      //Green
+    //                    byte r = pixels[pos + 2];      //Red
 
-                        array[x, y] = MathEx.Average(r, g, b);
+    //                    array[x, y] = MathEx.Average(r, g, b);
 
-                        pos += 4;
-                    }
-                    else if (pf == PixelFormats.Bgra32)
-                    {
-                        //byte a = pixels[pos + 3];      //Alpha
+    //                    pos += 3;
+    //                }
+    //                else if (pf == PixelFormats.Bgr32)
+    //                {
+    //                    byte b = pixels[pos + 0];      //Blue
+    //                    byte g = pixels[pos + 1];      //Green
+    //                    byte r = pixels[pos + 2];      //Red
 
-                        //array[x, y] = a;
-                        byte b = pixels[pos + 0];      //Blue
-                        byte g = pixels[pos + 1];      //Green
-                        byte r = pixels[pos + 2];      //Red
+    //                    array[x, y] = MathEx.Average(r, g, b);
 
-                        array[x, y] = MathEx.Average(r, g, b);
+    //                    pos += 4;
+    //                }
+    //                else if (pf == PixelFormats.Bgra32)
+    //                {
+    //                    //byte a = pixels[pos + 3];      //Alpha
 
-                        pos += 4;
-                    }
+    //                    //array[x, y] = a;
+    //                    byte b = pixels[pos + 0];      //Blue
+    //                    byte g = pixels[pos + 1];      //Green
+    //                    byte r = pixels[pos + 2];      //Red
 
-                    else throw new FormatException($"Invalid image format type: {pf.ToString()}.");
-                }
-            }
+    //                    array[x, y] = MathEx.Average(r, g, b);
 
-            return array;
-        }
-        public static Task<Data2D> ConvertToData2DAsync(BitmapSource bitmapSource)
-        {
-            return Task.Run(() => ConvertToData2D(bitmapSource));
-        }
-        /// <summary>
-        /// Converts the specified BitmapSource to a Data2D array based on the specified parameters.
-        /// </summary>
-        /// <param name="BitmapSource">BitmapSource to convert.</param>
-        /// <param name="Conversion">Conversion type to implement.</param>
-        /// <param name="Color">If the conversion parameter is Data2DConversionType.Color, this is the base color to compare to.</param>
-        /// <returns>Data2D array.</returns>
-        public static Data2D ConvertToData2D(BitmapSource BitmapSource, Data2DConverionType Conversion, Color? Color = null)
-        {
-            PixelFormat pf = BitmapSource.Format;
+    //                    pos += 4;
+    //                }
 
-            int sizeX = BitmapSource.PixelWidth;
-            int sizeY = BitmapSource.PixelHeight;
+    //                else throw new FormatException($"Invalid image format type: {pf.ToString()}.");
+    //            }
+    //        }
 
-            int stride = (sizeX * pf.BitsPerPixel) / 8;
-            int size = sizeY * stride;
-            byte[] pixels = new byte[size];
-            BitmapSource.CopyPixels(pixels, stride, 0);
+    //        return array;
+    //    }
+    //    public static Task<Data2D> ConvertToData2DAsync(BitmapSource bitmapSource)
+    //    {
+    //        return Task.Run(() => ConvertToData2D(bitmapSource));
+    //    }
+    //    /// <summary>
+    //    /// Converts the specified BitmapSource to a Data2D array based on the specified parameters.
+    //    /// </summary>
+    //    /// <param name="BitmapSource">BitmapSource to convert.</param>
+    //    /// <param name="Conversion">Conversion type to implement.</param>
+    //    /// <param name="Color">If the conversion parameter is Data2DConversionType.Color, this is the base color to compare to.</param>
+    //    /// <returns>Data2D array.</returns>
+    //    public static Data2D ConvertToData2D(BitmapSource BitmapSource, Data2DConverionType Conversion, Color? Color = null)
+    //    {
+    //        PixelFormat pf = BitmapSource.Format;
 
-            Data2D array = new Data2D(sizeX, sizeY);
+    //        int sizeX = BitmapSource.PixelWidth;
+    //        int sizeY = BitmapSource.PixelHeight;
 
-            Color color = new Color();
-            if (Color.HasValue)
-            {
-                color = Color.Value;
-            }
+    //        int stride = (sizeX * pf.BitsPerPixel) / 8;
+    //        int size = sizeY * stride;
+    //        byte[] pixels = new byte[size];
+    //        BitmapSource.CopyPixels(pixels, stride, 0);
 
-            int pos = 0;
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int x = 0; x < sizeX; x++)
-                {
-                    byte b = 0;
-                    byte g = 0;
-                    byte r = 0;
+    //        Data2D array = new Data2D(sizeX, sizeY);
 
-                    if (pf == PixelFormats.Indexed8)
-                    {
-                        Color c = BitmapSource.Palette.Colors[pixels[pos]];
-                        b = c.B;
-                        g = c.G;
-                        r = c.R;
+    //        Color color = new Color();
+    //        if (Color.HasValue)
+    //        {
+    //            color = Color.Value;
+    //        }
 
-                        pos += 1;
-                    }
-                    else if (pf == PixelFormats.Gray8)
-                    {
-                        b = pixels[pos];
-                        g = pixels[pos];
-                        r = pixels[pos];
+    //        int pos = 0;
+    //        for (int y = 0; y < sizeY; y++)
+    //        {
+    //            for (int x = 0; x < sizeX; x++)
+    //            {
+    //                byte b = 0;
+    //                byte g = 0;
+    //                byte r = 0;
 
-                        pos += 1;
-                    }
-                    else if (pf == PixelFormats.Bgr24)
-                    {
-                        b = pixels[pos + 0];      //Blue
-                        g = pixels[pos + 1];      //Green
-                        r = pixels[pos + 2];      //Red
+    //                if (pf == PixelFormats.Indexed8)
+    //                {
+    //                    Color c = BitmapSource.Palette.Colors[pixels[pos]];
+    //                    b = c.B;
+    //                    g = c.G;
+    //                    r = c.R;
 
-                        pos += 3;
-                    }
-                    else if (pf == PixelFormats.Bgr32)
-                    {
-                        b = pixels[pos + 0];      //Blue
-                        g = pixels[pos + 1];      //Green
-                        r = pixels[pos + 2];      //Red
+    //                    pos += 1;
+    //                }
+    //                else if (pf == PixelFormats.Gray8)
+    //                {
+    //                    b = pixels[pos];
+    //                    g = pixels[pos];
+    //                    r = pixels[pos];
 
-                        pos += 4;
-                    }
-                    else if (pf == PixelFormats.Bgra32)
-                    {
-                        b = pixels[pos + 0];      //Blue
-                        g = pixels[pos + 1];      //Green
-                        r = pixels[pos + 2];      //Red
+    //                    pos += 1;
+    //                }
+    //                else if (pf == PixelFormats.Bgr24)
+    //                {
+    //                    b = pixels[pos + 0];      //Blue
+    //                    g = pixels[pos + 1];      //Green
+    //                    r = pixels[pos + 2];      //Red
 
-                        pos += 4;
-                    }
+    //                    pos += 3;
+    //                }
+    //                else if (pf == PixelFormats.Bgr32)
+    //                {
+    //                    b = pixels[pos + 0];      //Blue
+    //                    g = pixels[pos + 1];      //Green
+    //                    r = pixels[pos + 2];      //Red
 
-                    else throw new FormatException($"Invalid image format type: {pf.ToString()}.");
+    //                    pos += 4;
+    //                }
+    //                else if (pf == PixelFormats.Bgra32)
+    //                {
+    //                    b = pixels[pos + 0];      //Blue
+    //                    g = pixels[pos + 1];      //Green
+    //                    r = pixels[pos + 2];      //Red
 
-                    switch (Conversion)
-                    {
-                        case Data2DConverionType.Color:
-                            array[x, y] = GetFromColor(new byte[3] { b, g, r }, color);
-                            break;
-                        case Data2DConverionType.Grayscale:
-                            array[x, y] = GetFromGray(new byte[3] { b, g, r });
-                            break;
-                        case Data2DConverionType.Thermal:
-                            array[x, y] = GetFromThermal(new byte[3] { b, g, r });
-                            break;
-                    }
-                }
-            }
+    //                    pos += 4;
+    //                }
 
-            return array;
-        }
-        public static Task<Data2D> ConvertToData2DAsync(BitmapSource bitmapSource, Data2DConverionType conversion, Color? color = null)
-        {
-            return Task.Run(() => ConvertToData2D(bitmapSource, conversion, color));
-        }
-        /// <summary>
-        /// Converts a Data3D representing image data to a Data2D grayscale image.
-        /// </summary>
-        /// <param name="Source">Data3D object containing color channel data.</param>
-        /// <returns>Grayscale version of the Data3D image.</returns>
-        public static Data2D ConvertToData2D(Data3D Source)
-        {
-            int sizeX = Source.Width;
-            int sizeY = Source.Height;
+    //                else throw new FormatException($"Invalid image format type: {pf.ToString()}.");
 
-            Data2D array = new Data2D(sizeX, sizeY);
+    //                switch (Conversion)
+    //                {
+    //                    case Data2DConverionType.Color:
+    //                        array[x, y] = GetFromColor(new byte[3] { b, g, r }, color);
+    //                        break;
+    //                    case Data2DConverionType.Grayscale:
+    //                        array[x, y] = GetFromGray(new byte[3] { b, g, r });
+    //                        break;
+    //                    case Data2DConverionType.Thermal:
+    //                        array[x, y] = GetFromThermal(new byte[3] { b, g, r });
+    //                        break;
+    //                }
+    //            }
+    //        }
 
-            if (Source.Depth == 3 || Source.Depth == 4)
-            {
-                for (int x = 0; x < sizeX; x++)
-                {
-                    for (int y = 0; y < sizeY; y++)
-                    {
-                        array[x, y] = GetFromGray(new byte[3] 
-                        { (byte)Source[x, y, 0], (byte)Source[x, y, 1], (byte)Source[sizeY, y, 2] });
-                    }
-                }
+    //        return array;
+    //    }
+    //    public static Task<Data2D> ConvertToData2DAsync(BitmapSource bitmapSource, Data2DConverionType conversion, Color? color = null)
+    //    {
+    //        return Task.Run(() => ConvertToData2D(bitmapSource, conversion, color));
+    //    }
+    //    /// <summary>
+    //    /// Converts a Data3D representing image data to a Data2D grayscale image.
+    //    /// </summary>
+    //    /// <param name="Source">Data3D object containing color channel data.</param>
+    //    /// <returns>Grayscale version of the Data3D image.</returns>
+    //    public static Data2D ConvertToData2D(Data3D Source)
+    //    {
+    //        int sizeX = Source.Width;
+    //        int sizeY = Source.Height;
 
-                return array;
-            }
+    //        Data2D array = new Data2D(sizeX, sizeY);
 
-            else throw new ArgumentException("Invalid number of color channels.");           
-        }
-        public static Task<Data2D> ConvertToData2DAsync(Data3D source)
-        {
-            return Task.Run(() => ConvertToData2D(source));
-        }
+    //        if (Source.Depth == 3 || Source.Depth == 4)
+    //        {
+    //            for (int x = 0; x < sizeX; x++)
+    //            {
+    //                for (int y = 0; y < sizeY; y++)
+    //                {
+    //                    array[x, y] = GetFromGray(new byte[3] 
+    //                    { (byte)Source[x, y, 0], (byte)Source[x, y, 1], (byte)Source[sizeY, y, 2] });
+    //                }
+    //            }
 
-        /// <summary>
-        /// Converts a thermal color value to a single byte value.
-        /// </summary>
-        /// <param name="b">3 byte array representing the thermal color.</param>
-        /// <returns>Byte value of color.</returns>
-        private static byte GetFromThermal(byte[] b)
-        {
-            return (MathEx.Average(b[0], b[1], b[2]));
-        }
-        /// <summary>
-        /// Converts a gray color value to a single byte value.
-        /// </summary>
-        /// <param name="b">3 byte array representing the gray color.</param>
-        /// <returns>Byte value of color.</returns>
-        private static byte GetFromGray(byte[] b)
-        {
-            return (byte)((.299f * b[2]) + (.587f * b[1]) + (.114f * b[0]));
-        }
-        /// <summary>
-        /// Converts a color value to a single byte value.
-        /// </summary>
-        /// <param name="b">3 byte array representing the color.</param>
-        /// <param name="c">The color representing the maximum color (c = 255).</param>
-        /// <returns>Byte value of color.</returns>
-        private static byte GetFromColor(byte[] b, Color c)
-        {
-            List<float> ratios = new List<float>();
+    //            return array;
+    //        }
 
-            if (c.B > 0) ratios.Add(b[0] / (float)c.B);
-            if (c.G > 0) ratios.Add(b[1] / (float)c.G);
-            if (c.R > 0) ratios.Add(b[2] / (float)c.R);
+    //        else throw new ArgumentException("Invalid number of color channels.");           
+    //    }
+    //    public static Task<Data2D> ConvertToData2DAsync(Data3D source)
+    //    {
+    //        return Task.Run(() => ConvertToData2D(source));
+    //    }
 
-            return (byte)(MathEx.Average(ratios.ToArray<float>()) * 255f);
-        }
-        /// <summary>
-        /// Converts the specified BitmapSource to a set of Data2D arrays, one for each color channel.
-        /// </summary>
-        /// <param name="BitmapSource">BitmapSource to convert.</param>
-        /// <returns>Data3D which is a set of 4 Data2D arrays. Data3D[0] = blue, Data3D[1] = green, Data[2] = red, Data3D[3] = alpha. 
-        /// If the original BitmapSource is RGB32, the Data3D[3] will be initialized but have a value of 0 at each pixel.</returns>
-        public static Data3D ConvertToData3D(BitmapSource BitmapSource)
-        {
-            PixelFormat pf = BitmapSource.Format;
+    //    /// <summary>
+    //    /// Converts a thermal color value to a single byte value.
+    //    /// </summary>
+    //    /// <param name="b">3 byte array representing the thermal color.</param>
+    //    /// <returns>Byte value of color.</returns>
+    //    private static byte GetFromThermal(byte[] b)
+    //    {
+    //        return (MathEx.Average(b[0], b[1], b[2]));
+    //    }
+    //    /// <summary>
+    //    /// Converts a gray color value to a single byte value.
+    //    /// </summary>
+    //    /// <param name="b">3 byte array representing the gray color.</param>
+    //    /// <returns>Byte value of color.</returns>
+    //    private static byte GetFromGray(byte[] b)
+    //    {
+    //        return (byte)((.299f * b[2]) + (.587f * b[1]) + (.114f * b[0]));
+    //    }
+    //    /// <summary>
+    //    /// Converts a color value to a single byte value.
+    //    /// </summary>
+    //    /// <param name="b">3 byte array representing the color.</param>
+    //    /// <param name="c">The color representing the maximum color (c = 255).</param>
+    //    /// <returns>Byte value of color.</returns>
+    //    private static byte GetFromColor(byte[] b, Color c)
+    //    {
+    //        List<float> ratios = new List<float>();
 
-            int sizeX = BitmapSource.PixelWidth;
-            int sizeY = BitmapSource.PixelHeight;
+    //        if (c.B > 0) ratios.Add(b[0] / (float)c.B);
+    //        if (c.G > 0) ratios.Add(b[1] / (float)c.G);
+    //        if (c.R > 0) ratios.Add(b[2] / (float)c.R);
 
-            int stride = (sizeX * pf.BitsPerPixel) / 8;
-            int size = sizeY * stride;
-            byte[] pixels = new byte[size];
-            BitmapSource.CopyPixels(pixels, stride, 0);
+    //        return (byte)(MathEx.Average(ratios.ToArray<float>()) * 255f);
+    //    }
+    //    /// <summary>
+    //    /// Converts the specified BitmapSource to a set of Data2D arrays, one for each color channel.
+    //    /// </summary>
+    //    /// <param name="BitmapSource">BitmapSource to convert.</param>
+    //    /// <returns>Data3D which is a set of 4 Data2D arrays. Data3D[0] = blue, Data3D[1] = green, Data[2] = red, Data3D[3] = alpha. 
+    //    /// If the original BitmapSource is RGB32, the Data3D[3] will be initialized but have a value of 0 at each pixel.</returns>
+    //    public static Data3D ConvertToData3D(BitmapSource BitmapSource)
+    //    {
+    //        PixelFormat pf = BitmapSource.Format;
+
+    //        int sizeX = BitmapSource.PixelWidth;
+    //        int sizeY = BitmapSource.PixelHeight;
+
+    //        int stride = (sizeX * pf.BitsPerPixel) / 8;
+    //        int size = sizeY * stride;
+    //        byte[] pixels = new byte[size];
+    //        BitmapSource.CopyPixels(pixels, stride, 0);
             
-            Data2D[] arrays = new Data2D[4];
-            for (int i = 0; i < 4; i++)
-            {
-                arrays[i] = new Data2D(sizeX, sizeY);
-            }
+    //        Data2D[] arrays = new Data2D[4];
+    //        for (int i = 0; i < 4; i++)
+    //        {
+    //            arrays[i] = new Data2D(sizeX, sizeY);
+    //        }
 
-            int pos = 0;
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int x = 0; x < sizeX; x++)
-                {
-                    if (pf == PixelFormats.Indexed8)
-                    {
-                        Color c = BitmapSource.Palette.Colors[pixels[pos]];
+    //        int pos = 0;
+    //        for (int y = 0; y < sizeY; y++)
+    //        {
+    //            for (int x = 0; x < sizeX; x++)
+    //            {
+    //                if (pf == PixelFormats.Indexed8)
+    //                {
+    //                    Color c = BitmapSource.Palette.Colors[pixels[pos]];
 
-                        arrays[0][x, y] = c.B;
-                        arrays[1][x, y] = c.G;
-                        arrays[2][x, y] = c.R;
+    //                    arrays[0][x, y] = c.B;
+    //                    arrays[1][x, y] = c.G;
+    //                    arrays[2][x, y] = c.R;
 
-                        pos += 1;
-                    }
-                    else if (pf == PixelFormats.Gray8)
-                    {
-                        Color c = BitmapSource.Palette.Colors[pixels[pos]];
+    //                    pos += 1;
+    //                }
+    //                else if (pf == PixelFormats.Gray8)
+    //                {
+    //                    Color c = BitmapSource.Palette.Colors[pixels[pos]];
 
-                        arrays[0][x, y] = c.B;
-                        arrays[1][x, y] = c.G;
-                        arrays[2][x, y] = c.R;
+    //                    arrays[0][x, y] = c.B;
+    //                    arrays[1][x, y] = c.G;
+    //                    arrays[2][x, y] = c.R;
 
-                        pos += 1;
-                    }
-                    else if (pf == PixelFormats.Bgr24)
-                    {
-                        arrays[0][x, y] = pixels[pos + 0];      //Blue
-                        arrays[1][x, y] = pixels[pos + 1];      //Green
-                        arrays[2][x, y] = pixels[pos + 2];      //Red
-                        arrays[3][x, y] = 255f;                 //Alpha
+    //                    pos += 1;
+    //                }
+    //                else if (pf == PixelFormats.Bgr24)
+    //                {
+    //                    arrays[0][x, y] = pixels[pos + 0];      //Blue
+    //                    arrays[1][x, y] = pixels[pos + 1];      //Green
+    //                    arrays[2][x, y] = pixels[pos + 2];      //Red
+    //                    arrays[3][x, y] = 255f;                 //Alpha
 
-                        pos += 3;
-                    }
-                    else if (pf == PixelFormats.Bgr32)
-                    {
-                        arrays[0][x, y] = pixels[pos + 0];      //Blue
-                        arrays[1][x, y] = pixels[pos + 1];      //Green
-                        arrays[2][x, y] = pixels[pos + 2];      //Red
-                        arrays[3][x, y] = 255f;                 //Alpha
+    //                    pos += 3;
+    //                }
+    //                else if (pf == PixelFormats.Bgr32)
+    //                {
+    //                    arrays[0][x, y] = pixels[pos + 0];      //Blue
+    //                    arrays[1][x, y] = pixels[pos + 1];      //Green
+    //                    arrays[2][x, y] = pixels[pos + 2];      //Red
+    //                    arrays[3][x, y] = 255f;                 //Alpha
 
-                        pos += 4;
-                    }
-                    else if (pf == PixelFormats.Bgra32)
-                    {
-                        arrays[0][x, y] = pixels[pos + 0];      //Blue
-                        arrays[1][x, y] = pixels[pos + 1];      //Green
-                        arrays[2][x, y] = pixels[pos + 2];      //Red
-                        arrays[3][x, y] = pixels[pos + 3];      //Alpha
+    //                    pos += 4;
+    //                }
+    //                else if (pf == PixelFormats.Bgra32)
+    //                {
+    //                    arrays[0][x, y] = pixels[pos + 0];      //Blue
+    //                    arrays[1][x, y] = pixels[pos + 1];      //Green
+    //                    arrays[2][x, y] = pixels[pos + 2];      //Red
+    //                    arrays[3][x, y] = pixels[pos + 3];      //Alpha
 
-                        pos += 4;
-                    }
+    //                    pos += 4;
+    //                }
 
-                    else throw new FormatException($"Invalid image format type: {pf.ToString()}.");
-                }
-            }
-            //int pos = 0;
-            //for (int y = 0; y < sizeY; y++)
-            //{
-            //    for (int x = 0; x < sizeX; x++)
-            //    {
-            //        arrays[0][x, y] = pixels[pos + 0];      //Blue
-            //        arrays[1][x, y] = pixels[pos + 1];      //Green
-            //        arrays[2][x, y] = pixels[pos + 2];      //Red
+    //                else throw new FormatException($"Invalid image format type: {pf.ToString()}.");
+    //            }
+    //        }
+    //        //int pos = 0;
+    //        //for (int y = 0; y < sizeY; y++)
+    //        //{
+    //        //    for (int x = 0; x < sizeX; x++)
+    //        //    {
+    //        //        arrays[0][x, y] = pixels[pos + 0];      //Blue
+    //        //        arrays[1][x, y] = pixels[pos + 1];      //Green
+    //        //        arrays[2][x, y] = pixels[pos + 2];      //Red
 
-            //        if (pf == PixelFormats.Bgr24)
-            //        {
-            //            arrays[3][x, y] = 255f;
-            //            pos += 3;
-            //        }
-            //        else if (pf == PixelFormats.Bgr32)
-            //        {
-            //            arrays[3][x, y] = 255f;
-            //            pos += 4;
-            //        }
-            //        else if (pf == PixelFormats.Bgra32)
-            //        {
-            //            arrays[3][x, y] = pixels[pos + 3];  //Alpha
-            //            pos += 4;
-            //        }
-            //    }
-            //}
+    //        //        if (pf == PixelFormats.Bgr24)
+    //        //        {
+    //        //            arrays[3][x, y] = 255f;
+    //        //            pos += 3;
+    //        //        }
+    //        //        else if (pf == PixelFormats.Bgr32)
+    //        //        {
+    //        //            arrays[3][x, y] = 255f;
+    //        //            pos += 4;
+    //        //        }
+    //        //        else if (pf == PixelFormats.Bgra32)
+    //        //        {
+    //        //            arrays[3][x, y] = pixels[pos + 3];  //Alpha
+    //        //            pos += 4;
+    //        //        }
+    //        //    }
+    //        //}
 
-            return new Data3D(arrays);
-        }
-        public static Task<Data3D>ConvertToData3DAsync(BitmapSource bitmapSource)
-        {
-            return Task.Run(() => ConvertToData3D(bitmapSource));
-        }
-        /// <summary>
-        /// Creates an image from color channel data in the form of a Data3D object. If the alpha channel (Data3D[3]) is blank, 
-        /// the image will be PixelFormats.BGR32 and PixelFormats.BGRA32 if not.
-        /// </summary>
-        /// <param name="ChannelData">Color channel data.</param>
-        /// <returns>A BitmapSource from the specified data.</returns>
-        public static BitmapSource CreateImage(Data3D ChannelData)
-        {
-            int sizeX = ChannelData.Width;
-            int sizeY = ChannelData.Height;
+    //        return new Data3D(arrays);
+    //    }
+    //    public static Task<Data3D>ConvertToData3DAsync(BitmapSource bitmapSource)
+    //    {
+    //        return Task.Run(() => ConvertToData3D(bitmapSource));
+    //    }
+    //    /// <summary>
+    //    /// Creates an image from color channel data in the form of a Data3D object. If the alpha channel (Data3D[3]) is blank, 
+    //    /// the image will be PixelFormats.BGR32 and PixelFormats.BGRA32 if not.
+    //    /// </summary>
+    //    /// <param name="ChannelData">Color channel data.</param>
+    //    /// <returns>A BitmapSource from the specified data.</returns>
+    //    public static BitmapSource CreateImage(Data3D ChannelData)
+    //    {
+    //        int sizeX = ChannelData.Width;
+    //        int sizeY = ChannelData.Height;
 
-            int pos = 0;            
+    //        int pos = 0;            
 
-            PixelFormat pf = PixelFormats.Bgr32;
-            int byteStride = 4;
-            if (ChannelData.LayerMaximum(3) != float.MinValue) 
-            { 
-                pf = PixelFormats.Bgra32;
-                byteStride = 4;
-            }
+    //        PixelFormat pf = PixelFormats.Bgr32;
+    //        int byteStride = 4;
+    //        if (ChannelData.LayerMaximum(3) != float.MinValue) 
+    //        { 
+    //            pf = PixelFormats.Bgra32;
+    //            byteStride = 4;
+    //        }
 
-            int rawStride = (sizeX * pf.BitsPerPixel) / 8;
-            byte[] rawImage = new byte[rawStride * sizeY];
+    //        int rawStride = (sizeX * pf.BitsPerPixel) / 8;
+    //        byte[] rawImage = new byte[rawStride * sizeY];
 
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int x = 0; x < sizeX; x++)
-                {
-                    for (int i = 0; i < byteStride; i++)
-                    {
-                        rawImage[pos + i] = (byte)ChannelData[x, y, i];
-                    }
-                    pos += byteStride;
-                }
-            }
+    //        for (int y = 0; y < sizeY; y++)
+    //        {
+    //            for (int x = 0; x < sizeX; x++)
+    //            {
+    //                for (int i = 0; i < byteStride; i++)
+    //                {
+    //                    rawImage[pos + i] = (byte)ChannelData[x, y, i];
+    //                }
+    //                pos += byteStride;
+    //            }
+    //        }
 
-            return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
-        }
-        public static Task<BitmapSource> CreateImageAsync(Data3D channelData)
-        {
-            return Task.Run(() => CreateImage(channelData));
-        }
-        /// <summary>
-        /// Converts a Data2D matrix into an image using the specified color scale.
-        /// </summary>
-        /// <param name="Data">Intensity matrix to create image with.</param>
-        /// <param name="Scale">Color scale type.</param>
-        /// <returns></returns>
-        public static BitmapSource CreateColorScaleImage(Data2D Data, ColorScaleTypes Scale)
-        {
-            int sizeX = Data.Width;
-            int sizeY = Data.Height;
+    //        return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+    //    }
+    //    public static Task<BitmapSource> CreateImageAsync(Data3D channelData)
+    //    {
+    //        return Task.Run(() => CreateImage(channelData));
+    //    }
+    //    /// <summary>
+    //    /// Converts a Data2D matrix into an image using the specified color scale.
+    //    /// </summary>
+    //    /// <param name="Data">Intensity matrix to create image with.</param>
+    //    /// <param name="Scale">Color scale type.</param>
+    //    /// <returns></returns>
+    //    public static BitmapSource CreateColorScaleImage(Data2D Data, ColorScaleTypes Scale)
+    //    {
+    //        int sizeX = Data.Width;
+    //        int sizeY = Data.Height;
 
-            int pos = 0;
+    //        int pos = 0;
 
-            PixelFormat pf = PixelFormats.Bgr32;
+    //        PixelFormat pf = PixelFormats.Bgr32;
 
-            int rawStride = (sizeX * pf.BitsPerPixel) / 8;
-            rawStride = rawStride + (rawStride % 4) * 4;
-            byte[] rawImage = new byte[rawStride * sizeY];
+    //        int rawStride = (sizeX * pf.BitsPerPixel) / 8;
+    //        rawStride = rawStride + (rawStride % 4) * 4;
+    //        byte[] rawImage = new byte[rawStride * sizeY];
 
-            float max = Data.Maximum;
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int x = 0; x < sizeX; x++)
-                {
-                    Color c = ColorScales.FromScale(Data[x, y], max, Scale);
+    //        float max = Data.Maximum;
+    //        for (int y = 0; y < sizeY; y++)
+    //        {
+    //            for (int x = 0; x < sizeX; x++)
+    //            {
+    //                Color c = ColorScales.FromScale(Data[x, y], max, Scale);
 
-                    rawImage[pos + 0] = c.B;
-                    rawImage[pos + 1] = c.G;
-                    rawImage[pos + 2] = c.R;
+    //                rawImage[pos + 0] = c.B;
+    //                rawImage[pos + 1] = c.G;
+    //                rawImage[pos + 2] = c.R;
 
-                    pos += 4;
-                }
-            }
-            return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
-        }
-        public static Task<BitmapSource> CreateColorScaleImageAsync(Data2D data, ColorScaleTypes scale)
-        {
-            return Task.Run(() => CreateColorScaleImage(data, scale));
-        }
-        public static BitmapSource CreateColorScaleImage(Data2D Data, ColorScaleTypes Scale, float Saturation)
-        {
-            int sizeX = Data.Width;
-            int sizeY = Data.Height;
+    //                pos += 4;
+    //            }
+    //        }
+    //        return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+    //    }
+    //    public static Task<BitmapSource> CreateColorScaleImageAsync(Data2D data, ColorScaleTypes scale)
+    //    {
+    //        return Task.Run(() => CreateColorScaleImage(data, scale));
+    //    }
+    //    public static BitmapSource CreateColorScaleImage(Data2D Data, ColorScaleTypes Scale, float Saturation)
+    //    {
+    //        int sizeX = Data.Width;
+    //        int sizeY = Data.Height;
 
-            int pos = 0;
+    //        int pos = 0;
 
-            PixelFormat pf = PixelFormats.Bgr32;
+    //        PixelFormat pf = PixelFormats.Bgr32;
 
-            int rawStride = (sizeX * pf.BitsPerPixel) / 8;
-            rawStride = rawStride + (rawStride % 4) * 4;
-            byte[] rawImage = new byte[rawStride * sizeY];
+    //        int rawStride = (sizeX * pf.BitsPerPixel) / 8;
+    //        rawStride = rawStride + (rawStride % 4) * 4;
+    //        byte[] rawImage = new byte[rawStride * sizeY];
 
-            float max = Saturation;
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int x = 0; x < sizeX; x++)
-                {
-                    Color c = ColorScales.FromScale(Data[x, y], max, Scale);
+    //        float max = Saturation;
+    //        for (int y = 0; y < sizeY; y++)
+    //        {
+    //            for (int x = 0; x < sizeX; x++)
+    //            {
+    //                Color c = ColorScales.FromScale(Data[x, y], max, Scale);
 
-                    rawImage[pos + 0] = c.B;
-                    rawImage[pos + 1] = c.G;
-                    rawImage[pos + 2] = c.R;
+    //                rawImage[pos + 0] = c.B;
+    //                rawImage[pos + 1] = c.G;
+    //                rawImage[pos + 2] = c.R;
 
-                    pos += 4;
-                }
-            }
-            return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
-        }
-        public static Task<BitmapSource>CreateColorScaleImageAsync(Data2D data, ColorScaleTypes scale, float saturation)
-        {
-            return Task.Run(() => CreateColorScaleImage(data, scale, saturation));
-        }
-        public static BitmapSource CreateColorScaleImage(Data2D data, ColorScaleTypes scale, float saturation, float threshold)
-        {
-            int sizeX = data.Width;
-            int sizeY = data.Height;
+    //                pos += 4;
+    //            }
+    //        }
+    //        return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+    //    }
+    //    public static Task<BitmapSource>CreateColorScaleImageAsync(Data2D data, ColorScaleTypes scale, float saturation)
+    //    {
+    //        return Task.Run(() => CreateColorScaleImage(data, scale, saturation));
+    //    }
+    //    public static BitmapSource CreateColorScaleImage(Data2D data, ColorScaleTypes scale, float saturation, float threshold)
+    //    {
+    //        int sizeX = data.Width;
+    //        int sizeY = data.Height;
 
-            int pos = 0;
+    //        int pos = 0;
 
-            PixelFormat pf = PixelFormats.Bgr32;
+    //        PixelFormat pf = PixelFormats.Bgr32;
 
-            int rawStride = (sizeX * pf.BitsPerPixel) / 8;
-            rawStride = rawStride + (rawStride % 4) * 4;
-            byte[] rawImage = new byte[rawStride * sizeY];
+    //        int rawStride = (sizeX * pf.BitsPerPixel) / 8;
+    //        rawStride = rawStride + (rawStride % 4) * 4;
+    //        byte[] rawImage = new byte[rawStride * sizeY];
 
-            float max = saturation;
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int x = 0; x < sizeX; x++)
-                {
-                    float value = data[x, y] >= threshold ? data[x, y] : 0;
+    //        float max = saturation;
+    //        for (int y = 0; y < sizeY; y++)
+    //        {
+    //            for (int x = 0; x < sizeX; x++)
+    //            {
+    //                float value = data[x, y] >= threshold ? data[x, y] : 0;
 
-                    Color c = ColorScales.FromScale(value, max, scale);
+    //                Color c = ColorScales.FromScale(value, max, scale);
 
-                    rawImage[pos + 0] = c.B;
-                    rawImage[pos + 1] = c.G;
-                    rawImage[pos + 2] = c.R;
+    //                rawImage[pos + 0] = c.B;
+    //                rawImage[pos + 1] = c.G;
+    //                rawImage[pos + 2] = c.R;
 
-                    pos += 4;
-                }
-            }
-            return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
-        }
-        public static Task<BitmapSource> CreateColorScaleImageAsync(Data2D data, ColorScaleTypes scale, float saturation, float threshold)
-        {
-            return Task.Run(() => CreateColorScaleImage(data, scale, saturation, threshold));
-        }
-        public static BitmapSource CreateSolidColorImage(Data2D Data, Color SolidColor)
-        {
-            int sizeX = Data.Width;
-            int sizeY = Data.Height;
+    //                pos += 4;
+    //            }
+    //        }
+    //        return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+    //    }
+    //    public static Task<BitmapSource> CreateColorScaleImageAsync(Data2D data, ColorScaleTypes scale, float saturation, float threshold)
+    //    {
+    //        return Task.Run(() => CreateColorScaleImage(data, scale, saturation, threshold));
+    //    }
+    //    public static BitmapSource CreateSolidColorImage(Data2D Data, Color SolidColor)
+    //    {
+    //        int sizeX = Data.Width;
+    //        int sizeY = Data.Height;
 
-            int pos = 0;
+    //        int pos = 0;
 
-            PixelFormat pf = PixelFormats.Bgr32;
+    //        PixelFormat pf = PixelFormats.Bgr32;
 
-            int rawStride = (sizeX * pf.BitsPerPixel) / 8;
-            rawStride = rawStride + (rawStride % 4) * 4;
-            byte[] rawImage = new byte[rawStride * sizeY];
+    //        int rawStride = (sizeX * pf.BitsPerPixel) / 8;
+    //        rawStride = rawStride + (rawStride % 4) * 4;
+    //        byte[] rawImage = new byte[rawStride * sizeY];
 
-            float max = Data.Maximum;
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int x = 0; x < sizeX; x++)
-                {
-                    Color c = ColorScales.Solid(Data[x, y], max, SolidColor);
+    //        float max = Data.Maximum;
+    //        for (int y = 0; y < sizeY; y++)
+    //        {
+    //            for (int x = 0; x < sizeX; x++)
+    //            {
+    //                Color c = ColorScales.Solid(Data[x, y], max, SolidColor);
 
-                    rawImage[pos + 0] = c.B;
-                    rawImage[pos + 1] = c.G;
-                    rawImage[pos + 2] = c.R;
+    //                rawImage[pos + 0] = c.B;
+    //                rawImage[pos + 1] = c.G;
+    //                rawImage[pos + 2] = c.R;
 
-                    pos += 4;
-                }
-            }
-            return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
-        }
-        public static Task<BitmapSource> CreateSolidColorImageAsync(Data2D data, Color solidColor)
-        {
-            return Task.Run(() => CreateSolidColorImage(data, solidColor));
-        }
-        public static BitmapSource CreateSolidColorImage(Data2D Data, Color SolidColor, float Saturation)
-        {
-            int sizeX = Data.Width;
-            int sizeY = Data.Height;
+    //                pos += 4;
+    //            }
+    //        }
+    //        return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+    //    }
+    //    public static Task<BitmapSource> CreateSolidColorImageAsync(Data2D data, Color solidColor)
+    //    {
+    //        return Task.Run(() => CreateSolidColorImage(data, solidColor));
+    //    }
+    //    public static BitmapSource CreateSolidColorImage(Data2D Data, Color SolidColor, float Saturation)
+    //    {
+    //        int sizeX = Data.Width;
+    //        int sizeY = Data.Height;
 
-            int pos = 0;
+    //        int pos = 0;
 
-            PixelFormat pf = PixelFormats.Bgr32;
+    //        PixelFormat pf = PixelFormats.Bgr32;
 
-            int rawStride = (sizeX * pf.BitsPerPixel) / 8;
-            rawStride = rawStride + (rawStride % 4) * 4;
-            byte[] rawImage = new byte[rawStride * sizeY];
+    //        int rawStride = (sizeX * pf.BitsPerPixel) / 8;
+    //        rawStride = rawStride + (rawStride % 4) * 4;
+    //        byte[] rawImage = new byte[rawStride * sizeY];
 
-            float max = Saturation;
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int x = 0; x < sizeX; x++)
-                {
-                    Color c = ColorScales.Solid(Data[x, y], max, SolidColor);
+    //        float max = Saturation;
+    //        for (int y = 0; y < sizeY; y++)
+    //        {
+    //            for (int x = 0; x < sizeX; x++)
+    //            {
+    //                Color c = ColorScales.Solid(Data[x, y], max, SolidColor);
 
-                    rawImage[pos + 0] = c.B;
-                    rawImage[pos + 1] = c.G;
-                    rawImage[pos + 2] = c.R;
+    //                rawImage[pos + 0] = c.B;
+    //                rawImage[pos + 1] = c.G;
+    //                rawImage[pos + 2] = c.R;
 
-                    pos += 4;
-                }
-            }
-            return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
-        }
-        public static Task<BitmapSource> CreateSolidColorImageAsync(Data2D data, Color solidColor, float saturation)
-        {
-            return Task.Run(() => CreateSolidColorImage(data, solidColor, saturation));
-        }
-        public static BitmapSource CreateSolidColorImage(Data2D data, Color solidColor, float saturation, float threshold)
-        {
-            int sizeX = data.Width;
-            int sizeY = data.Height;
+    //                pos += 4;
+    //            }
+    //        }
+    //        return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+    //    }
+    //    public static Task<BitmapSource> CreateSolidColorImageAsync(Data2D data, Color solidColor, float saturation)
+    //    {
+    //        return Task.Run(() => CreateSolidColorImage(data, solidColor, saturation));
+    //    }
+    //    public static BitmapSource CreateSolidColorImage(Data2D data, Color solidColor, float saturation, float threshold)
+    //    {
+    //        int sizeX = data.Width;
+    //        int sizeY = data.Height;
 
-            int pos = 0;
+    //        int pos = 0;
 
-            PixelFormat pf = PixelFormats.Bgr32;
+    //        PixelFormat pf = PixelFormats.Bgr32;
 
-            int rawStride = (sizeX * pf.BitsPerPixel) / 8;
-            rawStride = rawStride + (rawStride % 4) * 4;
-            byte[] rawImage = new byte[rawStride * sizeY];
+    //        int rawStride = (sizeX * pf.BitsPerPixel) / 8;
+    //        rawStride = rawStride + (rawStride % 4) * 4;
+    //        byte[] rawImage = new byte[rawStride * sizeY];
 
-            float max = saturation;
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int x = 0; x < sizeX; x++)
-                {
-                    float value = data[x, y] >= threshold ? data[x, y] : 0;
+    //        float max = saturation;
+    //        for (int y = 0; y < sizeY; y++)
+    //        {
+    //            for (int x = 0; x < sizeX; x++)
+    //            {
+    //                float value = data[x, y] >= threshold ? data[x, y] : 0;
 
-                    Color c = ColorScales.FromScale(value, max, ColorScaleTypes.Solid, solidColor);
+    //                Color c = ColorScales.FromScale(value, max, ColorScaleTypes.Solid, solidColor);
 
-                    rawImage[pos + 0] = c.B;
-                    rawImage[pos + 1] = c.G;
-                    rawImage[pos + 2] = c.R;
+    //                rawImage[pos + 0] = c.B;
+    //                rawImage[pos + 1] = c.G;
+    //                rawImage[pos + 2] = c.R;
                     
 
-                    pos += 4;
-                }
-            }
-            return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
-        }
-        public static Task<BitmapSource> CreateSolidColorImageAsync(Data2D data, Color solidColor, float saturation, float threshold)
-        {
-            return Task.Run(() => CreateSolidColorImage(data, solidColor, saturation, threshold));
-        }
+    //                pos += 4;
+    //            }
+    //        }
+    //        return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
+    //    }
+    //    public static Task<BitmapSource> CreateSolidColorImageAsync(Data2D data, Color solidColor, float saturation, float threshold)
+    //    {
+    //        return Task.Run(() => CreateSolidColorImage(data, solidColor, saturation, threshold));
+    //    }
 
-        public static BitmapSource GetXZ(BitmapSource[] Images, int YCoord)
-        {
-            int sizeX = (int)Images[0].Width;
-            int sizeY = (int)Images[0].Height;
-            int sizeZ = Images.Length;
+    //    public static BitmapSource GetXZ(BitmapSource[] Images, int YCoord)
+    //    {
+    //        int sizeX = (int)Images[0].Width;
+    //        int sizeY = (int)Images[0].Height;
+    //        int sizeZ = Images.Length;
 
-            Data3D[] images = new Data3D[sizeZ];
-            for (int i = 0; i < sizeZ; i++)
-            {
-                images[i] = ConvertToData3D(Images[i]);
-            }
+    //        Data3D[] images = new Data3D[sizeZ];
+    //        for (int i = 0; i < sizeZ; i++)
+    //        {
+    //            images[i] = ConvertToData3D(Images[i]);
+    //        }
 
-            Data2D[] result = new Data2D[4];
-            for (int i = 0; i < 4; i++)
-            {
-                result[i] = new Data2D(sizeX, sizeZ);
-            }
+    //        Data2D[] result = new Data2D[4];
+    //        for (int i = 0; i < 4; i++)
+    //        {
+    //            result[i] = new Data2D(sizeX, sizeZ);
+    //        }
 
-            for (int x = 0; x < sizeX; x++)
-            {
-                for (int z = 0; z < sizeZ; z++)
-                {
-                    for (int i = 0; i < 4; i++)
-                    {
-                        result[i][x, z] = images[z][x, YCoord, i];
-                    }
-                }
-            }
+    //        for (int x = 0; x < sizeX; x++)
+    //        {
+    //            for (int z = 0; z < sizeZ; z++)
+    //            {
+    //                for (int i = 0; i < 4; i++)
+    //                {
+    //                    result[i][x, z] = images[z][x, YCoord, i];
+    //                }
+    //            }
+    //        }
 
-            return CreateImage(new Data3D(result));
-        }
-        public static BitmapSource GetYZ(BitmapSource[] Images, int XCoord)
-        {
-            int sizeX = (int)Images[0].Width;
-            int sizeY = (int)Images[0].Height;
-            int sizeZ = Images.Length;
+    //        return CreateImage(new Data3D(result));
+    //    }
+    //    public static BitmapSource GetYZ(BitmapSource[] Images, int XCoord)
+    //    {
+    //        int sizeX = (int)Images[0].Width;
+    //        int sizeY = (int)Images[0].Height;
+    //        int sizeZ = Images.Length;
 
-            Data3D[] images = new Data3D[sizeZ];
-            for (int i = 0; i < sizeZ; i++)
-            {
-                images[i] = ConvertToData3D(Images[i]);
-            }
+    //        Data3D[] images = new Data3D[sizeZ];
+    //        for (int i = 0; i < sizeZ; i++)
+    //        {
+    //            images[i] = ConvertToData3D(Images[i]);
+    //        }
 
-            Data2D[] result = new Data2D[4];
-            for (int i = 0; i < 4; i++)
-            {
-                result[i] = new Data2D(sizeX, sizeZ);
-            }
+    //        Data2D[] result = new Data2D[4];
+    //        for (int i = 0; i < 4; i++)
+    //        {
+    //            result[i] = new Data2D(sizeX, sizeZ);
+    //        }
 
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int z = 0; z < sizeZ; z++)
-                {
-                    for (int i = 0; i < 4; i++)
-                    {
-                        result[i][y, z] = images[z][XCoord, y, z];
-                    }
-                }
-            }
+    //        for (int y = 0; y < sizeY; y++)
+    //        {
+    //            for (int z = 0; z < sizeZ; z++)
+    //            {
+    //                for (int i = 0; i < 4; i++)
+    //                {
+    //                    result[i][y, z] = images[z][XCoord, y, z];
+    //                }
+    //            }
+    //        }
 
-            return CreateImage(new Data3D(result));
-        }
+    //        return CreateImage(new Data3D(result));
+    //    }
 
-        public static Data3D Upscale(Data3D ToResize, int TargetWidth, int TargetHeight)
-        {
-            int lowResSizeX = ToResize.Width;
-            int lowResSizeY = ToResize.Height;
-            int highResSizeX = TargetWidth;
-            int highResSizeY = TargetHeight;
+    //    public static Data3D Upscale(Data3D ToResize, int TargetWidth, int TargetHeight)
+    //    {
+    //        int lowResSizeX = ToResize.Width;
+    //        int lowResSizeY = ToResize.Height;
+    //        int highResSizeX = TargetWidth;
+    //        int highResSizeY = TargetHeight;
 
-            if (lowResSizeX > highResSizeX || lowResSizeY > highResSizeY)
-                throw new ArgumentException("Cannot downscale data using this function.");
+    //        if (lowResSizeX > highResSizeX || lowResSizeY > highResSizeY)
+    //            throw new ArgumentException("Cannot downscale data using this function.");
 
-            Data2D[] resized = new Data2D[4];
-            for (int i = 0; i < 4; i++)
-            {
-                resized[i] = new Data2D(highResSizeX, highResSizeY);
-            }
+    //        Data2D[] resized = new Data2D[4];
+    //        for (int i = 0; i < 4; i++)
+    //        {
+    //            resized[i] = new Data2D(highResSizeX, highResSizeY);
+    //        }
 
-            float A, B, C, D;
-            int x, y;
-            float xRatio = ((float)lowResSizeX - 1f) / (float)highResSizeX;
-            float yRatio = ((float)lowResSizeY - 1f) / (float)highResSizeY;
-            float xDiff, yDiff;
+    //        float A, B, C, D;
+    //        int x, y;
+    //        float xRatio = ((float)lowResSizeX - 1f) / (float)highResSizeX;
+    //        float yRatio = ((float)lowResSizeY - 1f) / (float)highResSizeY;
+    //        float xDiff, yDiff;
 
-            for (int i = 0; i < highResSizeX; i++)
-            {
-                for (int j = 0; j < highResSizeY; j++)
-                {
-                    x = (int)(xRatio * i);
-                    y = (int)(yRatio * j);
-                    xDiff = (xRatio * i) - x;
-                    yDiff = (yRatio * j) - y;
+    //        for (int i = 0; i < highResSizeX; i++)
+    //        {
+    //            for (int j = 0; j < highResSizeY; j++)
+    //            {
+    //                x = (int)(xRatio * i);
+    //                y = (int)(yRatio * j);
+    //                xDiff = (xRatio * i) - x;
+    //                yDiff = (yRatio * j) - y;
 
-                    for (int k = 0; k < 4; k++)
-                    {
-                        int x1 = x + 1;
-                        if (x1 >= highResSizeX) x1 = x;
-                        int y1 = y + 1;
-                        if (y1 >= highResSizeY) y1 = y;
+    //                for (int k = 0; k < 4; k++)
+    //                {
+    //                    int x1 = x + 1;
+    //                    if (x1 >= highResSizeX) x1 = x;
+    //                    int y1 = y + 1;
+    //                    if (y1 >= highResSizeY) y1 = y;
 
-                        A = ToResize[x, y, k];
-                        B = ToResize[x + 1, y, k];
-                        C = ToResize[x, y + 1, k];
-                        D = ToResize[x + 1, y + 1, k];
+    //                    A = ToResize[x, y, k];
+    //                    B = ToResize[x + 1, y, k];
+    //                    C = ToResize[x, y + 1, k];
+    //                    D = ToResize[x + 1, y + 1, k];
 
-                        resized[k][i, j] = (A * (1f - xDiff) * (1f - yDiff)) + (B * (xDiff) * (1f - yDiff)) +
-                            (C * (yDiff) * (1f - xDiff)) + (D * (xDiff) * (yDiff));
-                    }
-                }
-            }
+    //                    resized[k][i, j] = (A * (1f - xDiff) * (1f - yDiff)) + (B * (xDiff) * (1f - yDiff)) +
+    //                        (C * (yDiff) * (1f - xDiff)) + (D * (xDiff) * (yDiff));
+    //                }
+    //            }
+    //        }
 
-            return new Data3D(resized);
-        }
-        public static Data2D Upscale(Data2D ToResize, int TargetWidth, int TargetHeight)
-        {
-            int lowResSizeX = ToResize.Width;
-            int lowResSizeY = ToResize.Height;
-            int highResSizeX = TargetWidth;
-            int highResSizeY = TargetHeight;
+    //        return new Data3D(resized);
+    //    }
+    //    public static Data2D Upscale(Data2D ToResize, int TargetWidth, int TargetHeight)
+    //    {
+    //        int lowResSizeX = ToResize.Width;
+    //        int lowResSizeY = ToResize.Height;
+    //        int highResSizeX = TargetWidth;
+    //        int highResSizeY = TargetHeight;
 
-            if (lowResSizeX > highResSizeX || lowResSizeY > highResSizeY)
-                throw new ArgumentException("Cannot downscale data using this function.");
+    //        if (lowResSizeX > highResSizeX || lowResSizeY > highResSizeY)
+    //            throw new ArgumentException("Cannot downscale data using this function.");
 
-            Data2D resized = new Data2D(highResSizeX, highResSizeY);
+    //        Data2D resized = new Data2D(highResSizeX, highResSizeY);
 
-            float A, B, C, D;
-            int x, y;
-            float xRatio = ((float)lowResSizeX - 1f) / (float)highResSizeX;
-            float yRatio = ((float)lowResSizeY - 1f) / (float)highResSizeY;
-            float xDiff, yDiff;
+    //        float A, B, C, D;
+    //        int x, y;
+    //        float xRatio = ((float)lowResSizeX - 1f) / (float)highResSizeX;
+    //        float yRatio = ((float)lowResSizeY - 1f) / (float)highResSizeY;
+    //        float xDiff, yDiff;
 
-            for (int i = 0; i < highResSizeX; i++)
-            {
-                for (int j = 0; j < highResSizeY; j++)
-                {
-                    x = (int)(xRatio * i);
-                    y = (int)(yRatio * j);
-                    xDiff = (xRatio * i) - x;
-                    yDiff = (yRatio * j) - y;
+    //        for (int i = 0; i < highResSizeX; i++)
+    //        {
+    //            for (int j = 0; j < highResSizeY; j++)
+    //            {
+    //                x = (int)(xRatio * i);
+    //                y = (int)(yRatio * j);
+    //                xDiff = (xRatio * i) - x;
+    //                yDiff = (yRatio * j) - y;
 
 
-                    int x1 = x + 1;
-                    if (x1 >= highResSizeX) x1 = x;
-                    int y1 = y + 1;
-                    if (y1 >= highResSizeY) y1 = y;
+    //                int x1 = x + 1;
+    //                if (x1 >= highResSizeX) x1 = x;
+    //                int y1 = y + 1;
+    //                if (y1 >= highResSizeY) y1 = y;
 
-                    A = ToResize[x, y];
-                    B = ToResize[x + 1, y];
-                    C = ToResize[x, y + 1];
-                    D = ToResize[x + 1, y + 1];
+    //                A = ToResize[x, y];
+    //                B = ToResize[x + 1, y];
+    //                C = ToResize[x, y + 1];
+    //                D = ToResize[x + 1, y + 1];
 
-                    resized[i, j] = (A * (1f - xDiff) * (1f - yDiff)) + (B * (xDiff) * (1f - yDiff)) +
-                        (C * (yDiff) * (1f - xDiff)) + (D * (xDiff) * (yDiff));
-                }
-            }
+    //                resized[i, j] = (A * (1f - xDiff) * (1f - yDiff)) + (B * (xDiff) * (1f - yDiff)) +
+    //                    (C * (yDiff) * (1f - xDiff)) + (D * (xDiff) * (yDiff));
+    //            }
+    //        }
 
-            return resized;
-        }
-        public static Color[,] Upscale(Color[,] ToResize, int TargetWidth, int TargetHeight)
-        {
-            int lowResSizeX = ToResize.GetLength(0);
-            int lowResSizeY = ToResize.GetLength(1);
-            int highResSizeX = TargetWidth;
-            int highResSizeY = TargetHeight;
+    //        return resized;
+    //    }
+    //    public static Color[,] Upscale(Color[,] ToResize, int TargetWidth, int TargetHeight)
+    //    {
+    //        int lowResSizeX = ToResize.GetLength(0);
+    //        int lowResSizeY = ToResize.GetLength(1);
+    //        int highResSizeX = TargetWidth;
+    //        int highResSizeY = TargetHeight;
 
-            if (lowResSizeX > highResSizeX || lowResSizeY > highResSizeY)
-                throw new ArgumentException("Cannot downscale data using this function.");
+    //        if (lowResSizeX > highResSizeX || lowResSizeY > highResSizeY)
+    //            throw new ArgumentException("Cannot downscale data using this function.");
 
-            Color[,] resized = new Color[highResSizeX, highResSizeY];
+    //        Color[,] resized = new Color[highResSizeX, highResSizeY];
 
-            Color A, B, C, D;
-            int x, y;
-            float xRatio = ((float)lowResSizeX - 1f) / (float)highResSizeX;
-            float yRatio = ((float)lowResSizeY - 1f) / (float)highResSizeY;
-            float xDiff, yDiff;
+    //        Color A, B, C, D;
+    //        int x, y;
+    //        float xRatio = ((float)lowResSizeX - 1f) / (float)highResSizeX;
+    //        float yRatio = ((float)lowResSizeY - 1f) / (float)highResSizeY;
+    //        float xDiff, yDiff;
 
-            for (int i = 0; i < highResSizeX; i++)
-            {
-                for (int j = 0; j < highResSizeY; j++)
-                {
-                    x = (int)(xRatio * i);
-                    y = (int)(yRatio * j);
-                    xDiff = (xRatio * i) - x;
-                    yDiff = (yRatio * j) - y;
+    //        for (int i = 0; i < highResSizeX; i++)
+    //        {
+    //            for (int j = 0; j < highResSizeY; j++)
+    //            {
+    //                x = (int)(xRatio * i);
+    //                y = (int)(yRatio * j);
+    //                xDiff = (xRatio * i) - x;
+    //                yDiff = (yRatio * j) - y;
 
-                    int x1 = x + 1;
-                    if (x1 >= highResSizeX) x1 = x;
-                    int y1 = y + 1;
-                    if (y1 >= highResSizeY) y1 = y;
+    //                int x1 = x + 1;
+    //                if (x1 >= highResSizeX) x1 = x;
+    //                int y1 = y + 1;
+    //                if (y1 >= highResSizeY) y1 = y;
 
-                    A = ToResize[x, y];
-                    B = ToResize[x + 1, y];
-                    C = ToResize[x, y + 1];
-                    D = ToResize[x + 1, y + 1];
+    //                A = ToResize[x, y];
+    //                B = ToResize[x + 1, y];
+    //                C = ToResize[x, y + 1];
+    //                D = ToResize[x + 1, y + 1];
 
-                    resized[i, j] = (A * (1f - xDiff) * (1f - yDiff)) + (B * (xDiff) * (1f - yDiff)) +
-                        (C * (yDiff) * (1f - xDiff)) + (D * (xDiff) * (yDiff));
+    //                resized[i, j] = (A * (1f - xDiff) * (1f - yDiff)) + (B * (xDiff) * (1f - yDiff)) +
+    //                    (C * (yDiff) * (1f - xDiff)) + (D * (xDiff) * (yDiff));
                     
-                }
-            }
+    //            }
+    //        }
 
-            return resized;
-        }
-        public static SharpDX.Color[,] Upscale(SharpDX.Color[,] ToResize, int TargetWidth, int TargetHeight)
-        {
-            int lowResSizeX = ToResize.GetLength(0);
-            int lowResSizeY = ToResize.GetLength(1);
-            int highResSizeX = TargetWidth;
-            int highResSizeY = TargetHeight;
+    //        return resized;
+    //    }
+    //    public static SharpDX.Color[,] Upscale(SharpDX.Color[,] ToResize, int TargetWidth, int TargetHeight)
+    //    {
+    //        int lowResSizeX = ToResize.GetLength(0);
+    //        int lowResSizeY = ToResize.GetLength(1);
+    //        int highResSizeX = TargetWidth;
+    //        int highResSizeY = TargetHeight;
 
-            if (lowResSizeX > highResSizeX || lowResSizeY > highResSizeY)
-                throw new ArgumentException("Cannot downscale data using this function.");
+    //        if (lowResSizeX > highResSizeX || lowResSizeY > highResSizeY)
+    //            throw new ArgumentException("Cannot downscale data using this function.");
 
-            SharpDX.Color[,] resized = new SharpDX.Color[highResSizeX, highResSizeY];
+    //        SharpDX.Color[,] resized = new SharpDX.Color[highResSizeX, highResSizeY];
 
-            SharpDX.Color A, B, C, D;
-            int x, y;
-            float xRatio = ((float)lowResSizeX - 1f) / (float)highResSizeX;
-            float yRatio = ((float)lowResSizeY - 1f) / (float)highResSizeY;
-            float xDiff, yDiff;
+    //        SharpDX.Color A, B, C, D;
+    //        int x, y;
+    //        float xRatio = ((float)lowResSizeX - 1f) / (float)highResSizeX;
+    //        float yRatio = ((float)lowResSizeY - 1f) / (float)highResSizeY;
+    //        float xDiff, yDiff;
 
-            for (int i = 0; i < highResSizeX; i++)
-            {
-                for (int j = 0; j < highResSizeY; j++)
-                {
-                    x = (int)(xRatio * i);
-                    y = (int)(yRatio * j);
-                    xDiff = (xRatio * i) - x;
-                    yDiff = (yRatio * j) - y;
+    //        for (int i = 0; i < highResSizeX; i++)
+    //        {
+    //            for (int j = 0; j < highResSizeY; j++)
+    //            {
+    //                x = (int)(xRatio * i);
+    //                y = (int)(yRatio * j);
+    //                xDiff = (xRatio * i) - x;
+    //                yDiff = (yRatio * j) - y;
 
-                    int x1 = x + 1;
-                    if (x1 >= highResSizeX) x1 = x;
-                    int y1 = y + 1;
-                    if (y1 >= highResSizeY) y1 = y;
+    //                int x1 = x + 1;
+    //                if (x1 >= highResSizeX) x1 = x;
+    //                int y1 = y + 1;
+    //                if (y1 >= highResSizeY) y1 = y;
 
-                    A = ToResize[x, y];
-                    B = ToResize[x + 1, y];
-                    C = ToResize[x, y + 1];
-                    D = ToResize[x + 1, y + 1];
+    //                A = ToResize[x, y];
+    //                B = ToResize[x + 1, y];
+    //                C = ToResize[x, y + 1];
+    //                D = ToResize[x + 1, y + 1];
 
-                    float a, r, g, b;
-                    a = (A.A * (1f - xDiff) * (1f - yDiff)) + (B.A * (xDiff) * (1f - yDiff)) +
-                        (C.A * (yDiff) * (1f - xDiff)) + (D.A * (xDiff) * (yDiff));
-                    r = (A.R * (1f - xDiff) * (1f - yDiff)) + (B.R * (xDiff) * (1f - yDiff)) +
-                        (C.R * (yDiff) * (1f - xDiff)) + (D.R * (xDiff) * (yDiff));
-                    g = (A.G * (1f - xDiff) * (1f - yDiff)) + (B.G * (xDiff) * (1f - yDiff)) +
-                        (C.G * (yDiff) * (1f - xDiff)) + (D.G * (xDiff) * (yDiff));
-                    b = (A.B * (1f - xDiff) * (1f - yDiff)) + (B.B * (xDiff) * (1f - yDiff)) +
-                        (C.B * (yDiff) * (1f - xDiff)) + (D.B * (xDiff) * (yDiff));
+    //                float a, r, g, b;
+    //                a = (A.A * (1f - xDiff) * (1f - yDiff)) + (B.A * (xDiff) * (1f - yDiff)) +
+    //                    (C.A * (yDiff) * (1f - xDiff)) + (D.A * (xDiff) * (yDiff));
+    //                r = (A.R * (1f - xDiff) * (1f - yDiff)) + (B.R * (xDiff) * (1f - yDiff)) +
+    //                    (C.R * (yDiff) * (1f - xDiff)) + (D.R * (xDiff) * (yDiff));
+    //                g = (A.G * (1f - xDiff) * (1f - yDiff)) + (B.G * (xDiff) * (1f - yDiff)) +
+    //                    (C.G * (yDiff) * (1f - xDiff)) + (D.G * (xDiff) * (yDiff));
+    //                b = (A.B * (1f - xDiff) * (1f - yDiff)) + (B.B * (xDiff) * (1f - yDiff)) +
+    //                    (C.B * (yDiff) * (1f - xDiff)) + (D.B * (xDiff) * (yDiff));
 
-                    resized[i, j] = new SharpDX.Color((byte)r, (byte)g, (byte)b, (byte)a);
+    //                resized[i, j] = new SharpDX.Color((byte)r, (byte)g, (byte)b, (byte)a);
 
-                }
-            }
+    //            }
+    //        }
 
-            return resized;
-        }      
+    //        return resized;
+    //    }      
 
-        public static BitmapSource BitmapSourceFromFile(string fileName)
-        {
-            BitmapImage src = new BitmapImage();
+    //    public static BitmapSource BitmapSourceFromFile(string fileName)
+    //    {
+    //        BitmapImage src = new BitmapImage();
 
-            src.BeginInit();
-            src.UriSource = new Uri(fileName, UriKind.Absolute);
-            src.CacheOption = BitmapCacheOption.OnLoad;
-            src.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-            src.EndInit();
+    //        src.BeginInit();
+    //        src.UriSource = new Uri(fileName, UriKind.Absolute);
+    //        src.CacheOption = BitmapCacheOption.OnLoad;
+    //        src.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+    //        src.EndInit();
 
-            return src;
-        }
-    }
+    //        return src;
+    //    }
+    //}
 
-    public struct ImageParameters
-    {
-        public bool SqrtEnhance { get; set; }
-        public bool TotalIon { get; set; }
-        public NormalizationMethod NormalizationMethod { get; set; }
-    }
+    //public struct ImageParameters
+    //{
+    //    public bool SqrtEnhance { get; set; }
+    //    public bool TotalIon { get; set; }
+    //    public NormalizationMethod NormalizationMethod { get; set; }
+    //}
     public class DisplayImage : Image
     {
         public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title",
@@ -1231,7 +1231,7 @@ namespace ImagingSIMS.Data.Imaging
                     bw.Write(image.Title);
                     bw.Write(image.Description);
 
-                    Data3D d = Imaging.ImageHelper.ConvertToData3D(image.Source as BitmapSource);
+                    Data3D d = ImageGenerator.Instance.ConvertToData3D(image.Source as BitmapSource);
 
                     bw.Write(d.Width);
                     bw.Write(d.Height);
@@ -1300,7 +1300,7 @@ namespace ImagingSIMS.Data.Imaging
                         }
                     }
 
-                    BitmapSource bs = ImageHelper.CreateImage(d);
+                    BitmapSource bs = ImageGenerator.Instance.Create(d);
                     DisplayImage image = new DisplayImage(bs, title);
                     image.Description = description;
                     _images.Add(image);
@@ -1411,7 +1411,7 @@ namespace ImagingSIMS.Data.Imaging
             Data3D[] _data = new Data3D[ImageArray.Length];
             for (int i = 0; i < ImageArray.Length; i++)
             {
-                _data[i] = ImageHelper.ConvertToData3D(ImageArray[i]);
+                _data[i] = ImageGenerator.Instance.ConvertToData3D(ImageArray[i]);
             }
 
             int sizeX = _data[0].Width;
@@ -1435,14 +1435,14 @@ namespace ImagingSIMS.Data.Imaging
                 }
             }
 
-            return ImageHelper.CreateImage(new Data3D(data));
+            return ImageGenerator.Instance.Create(new Data3D(data));
         }
         public static BitmapSource GetYZ(BitmapSource[] ImageArray, int XCoord)
         {
             Data3D[] _data = new Data3D[ImageArray.Length];
             for (int i = 0; i < ImageArray.Length; i++)
             {
-                _data[i] = ImageHelper.ConvertToData3D(ImageArray[i]);
+                _data[i] = ImageGenerator.Instance.ConvertToData3D(ImageArray[i]);
             }
 
             int sizeX = _data[0].Width;
@@ -1466,7 +1466,7 @@ namespace ImagingSIMS.Data.Imaging
                 }
             }
 
-            return ImageHelper.CreateImage(new Data3D(data));
+            return ImageGenerator.Instance.Create(new Data3D(data));
         }
     }
 
@@ -1497,7 +1497,7 @@ namespace ImagingSIMS.Data.Imaging
             Data3D[] images = new Data3D[Images.Length];
             for (int i = 0; i < Images.Length; i++)
             {
-                images[i] = ImageHelper.ConvertToData3D(Images[i]);
+                images[i] = ImageGenerator.Instance.ConvertToData3D(Images[i]);
             }
 
             int width = Images[0].PixelWidth;
@@ -1528,12 +1528,12 @@ namespace ImagingSIMS.Data.Imaging
                 }
             }
 
-            return ImageHelper.CreateImage(new Data3D(overlay));
+            return ImageGenerator.Instance.Create(new Data3D(overlay));
         }
         public static BitmapSource CreateFalseColorOverlay(BitmapSource image1, BitmapSource image2, FalseColorOverlayMode colorMode)
         {
-            var gray1 = ImageHelper.ConvertToData2D(image1, Data2DConverionType.Grayscale);
-            var gray2 = ImageHelper.ConvertToData2D(image2, Data2DConverionType.Grayscale);
+            var gray1 = ImageGenerator.Instance.ConvertToData2D(image1, Data2DConverionType.Grayscale);
+            var gray2 = ImageGenerator.Instance.ConvertToData2D(image2, Data2DConverionType.Grayscale);
 
             if (gray1.Width != gray2.Width || gray1.Height != gray2.Height)
                 throw new ArgumentException("Image dimensions do not match");
@@ -1588,7 +1588,7 @@ namespace ImagingSIMS.Data.Imaging
                 }
             }
 
-            return ImageHelper.CreateImage(overlay);
+            return ImageGenerator.Instance.Create(overlay);
         }
 
         public static Color OverlayColors(Color[] colors)
@@ -1788,9 +1788,9 @@ namespace ImagingSIMS.Data.Imaging
 
         private BitmapSource UpdateImage()
         {
-            BitmapSource bs = ImageHelper.CreateColorScaleImage(DataSource, ColorScaleTypes.ThermalWarm);
+            BitmapSource bs = ImageGenerator.Instance.Create(DataSource, ColorScaleTypes.ThermalWarm);
 
-            _visibleData = ImageHelper.ConvertToData3D(bs);
+            _visibleData = ImageGenerator.Instance.ConvertToData3D(bs);
 
             return bs;
         }
@@ -1810,7 +1810,7 @@ namespace ImagingSIMS.Data.Imaging
             }
             _history.Clear();
 
-            Source = ImageHelper.CreateImage(_visibleData);
+            Source = ImageGenerator.Instance.Create(_visibleData);
         }
         public void CommitChanges(CorrectionOperation Operation, int Iterations = 1)
         {
@@ -1829,8 +1829,8 @@ namespace ImagingSIMS.Data.Imaging
 
             _history.Clear();
 
-            BitmapSource bs = ImageHelper.CreateColorScaleImage(DataSource, ColorScaleTypes.ThermalWarm);
-            _visibleData = ImageHelper.ConvertToData3D(bs);
+            BitmapSource bs = ImageGenerator.Instance.Create(DataSource, ColorScaleTypes.ThermalWarm);
+            _visibleData = ImageGenerator.Instance.ConvertToData3D(bs);
 
             Source = bs;
         }
@@ -1865,7 +1865,7 @@ namespace ImagingSIMS.Data.Imaging
 
                 doHighlight(x, y);
 
-                Source = ImageHelper.CreateImage(_visibleData);
+                Source = ImageGenerator.Instance.Create(_visibleData);
             }
         }
         public void Highlight(int x, int y, int BrushSize)
@@ -1891,7 +1891,7 @@ namespace ImagingSIMS.Data.Imaging
                     }
                 }
             }
-            Source = ImageHelper.CreateImage(_visibleData);   
+            Source = ImageGenerator.Instance.Create(_visibleData);   
         }
         private void doHighlight(int x, int y)
         {
@@ -1921,7 +1921,7 @@ namespace ImagingSIMS.Data.Imaging
                     }
                 }
             }
-            Source = ImageHelper.CreateImage(_visibleData);   
+            Source = ImageGenerator.Instance.Create(_visibleData);   
         }
         private void unHighlight(Point location, float value)
         {
@@ -1941,7 +1941,7 @@ namespace ImagingSIMS.Data.Imaging
 
             if (_visibleData != null)
             {
-                Source = ImageHelper.CreateImage(_visibleData);
+                Source = ImageGenerator.Instance.Create(_visibleData);
             }
         }
 
@@ -1975,7 +1975,7 @@ namespace ImagingSIMS.Data.Imaging
                 }
             }
 
-            Source = ImageHelper.CreateImage(_visibleData);
+            Source = ImageGenerator.Instance.Create(_visibleData);
         }
     }
     public delegate float CorrectionOperation(int x, int y, Data2D data);

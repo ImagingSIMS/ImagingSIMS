@@ -400,13 +400,13 @@ namespace ImagingSIMS.Controls.ViewModels
 
             if (ColorScale == ColorScaleTypes.Solid)
             {
-                BitmapSource bs = ImageHelper.CreateSolidColorImage(ViewableDataSource, SolidColorScale, (float)Saturation, (float)Threshold);
+                BitmapSource bs = ImageGenerator.Instance.Create(ViewableDataSource, SolidColorScale, (float)Saturation, (float)Threshold);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
             else
             {
-                BitmapSource bs = ImageHelper.CreateColorScaleImage(ViewableDataSource, ColorScale, (float)Saturation, (float)Threshold);
+                BitmapSource bs = ImageGenerator.Instance.Create(ViewableDataSource, ColorScale, (float)Saturation, (float)Threshold);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
@@ -433,13 +433,13 @@ namespace ImagingSIMS.Controls.ViewModels
 
             if (ColorScale == ColorScaleTypes.Solid)
             {
-                BitmapSource bs = ImageHelper.CreateSolidColorImage(ViewableDataSource, SolidColorScale, (float)Saturation, (float)Threshold);
+                BitmapSource bs = ImageGenerator.Instance.Create(ViewableDataSource, SolidColorScale, (float)Saturation, (float)Threshold);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
             else
             {
-                BitmapSource bs = ImageHelper.CreateColorScaleImage(ViewableDataSource, ColorScale, (float)Saturation, (float)Threshold);
+                BitmapSource bs = ImageGenerator.Instance.Create(ViewableDataSource, ColorScale, (float)Saturation, (float)Threshold);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
@@ -474,13 +474,13 @@ namespace ImagingSIMS.Controls.ViewModels
 
             if (ColorScale == ColorScaleTypes.Solid)
             {
-                BitmapSource bs = ImageHelper.CreateSolidColorImage(ViewableDataSource, SolidColorScale, (float)Saturation);
+                BitmapSource bs = ImageGenerator.Instance.Create(ViewableDataSource, SolidColorScale, (float)Saturation);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
             else
             {
-                BitmapSource bs = ImageHelper.CreateColorScaleImage(ViewableDataSource, ColorScale, (float)Saturation);
+                BitmapSource bs = ImageGenerator.Instance.Create(ViewableDataSource, ColorScale, (float)Saturation);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }

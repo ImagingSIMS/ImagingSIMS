@@ -210,7 +210,7 @@ namespace ImagingSIMS.Controls.BaseControls
                 }
             }
 
-            PointsOverlayImageSource = ImageHelper.CreateImage(imagePreview);
+            PointsOverlayImageSource = ImageGenerator.Instance.Create(imagePreview);
         }
         public static void originalImageChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
@@ -225,7 +225,7 @@ namespace ImagingSIMS.Controls.BaseControls
 
             if (clearPoints) this.ClearPoints();
 
-            _dataSource = ImageHelper.ConvertToData3D(image);
+            _dataSource = ImageGenerator.Instance.ConvertToData3D(image);
 
         }
         public static void isPointBasedChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)

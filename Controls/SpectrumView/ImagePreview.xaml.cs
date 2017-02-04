@@ -60,7 +60,7 @@ namespace ImagingSIMS.Controls.BaseControls.SpectrumView
 
             imageDisplay.Dispatcher.Invoke(() =>
                 {
-                    imageDisplay.Source = ImageHelper.CreateColorScaleImage(d, ColorScaleTypes.ThermalWarm);
+                    imageDisplay.Source = ImageGenerator.Instance.Create(d, ColorScaleTypes.ThermalWarm);
                 });
         }
 

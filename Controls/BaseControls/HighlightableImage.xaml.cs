@@ -130,7 +130,7 @@ namespace ImagingSIMS.Controls.BaseControls
                 }
             }
 
-            DisplayImage = ImageHelper.CreateImage(colorChannel);
+            DisplayImage = ImageGenerator.Instance.Create(colorChannel);
         }
 
         private void buttonShowColor_MouseEnter(object sender, RoutedEventArgs e)

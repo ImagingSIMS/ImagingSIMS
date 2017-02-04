@@ -172,7 +172,7 @@ namespace ImagingSIMS.MainApplication
                 Data2D d = (Data2D)value;
                 if (d == null) return null;
 
-                return ImageHelper.CreateColorScaleImage(d, ColorScaleTypes.ThermalWarm);
+                return ImageGenerator.Instance.Create(d, ColorScaleTypes.ThermalWarm);
             }
             catch (Exception)
             {

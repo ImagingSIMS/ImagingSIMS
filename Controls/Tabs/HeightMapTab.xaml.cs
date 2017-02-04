@@ -61,12 +61,12 @@ namespace ImagingSIMS.Controls.Tabs
         public void SetHeight(BitmapSource bs)
         {
             HeightDataImageSource = bs;
-            HeightData = ImageHelper.ConvertToData2D(bs);
+            HeightData = ImageGenerator.Instance.ConvertToData2D(bs);
         }
         public void SetColor(BitmapSource bs)
         {
             ColorDataImageSource = bs;
-            ColorData = ImageHelper.ConvertToData3D(bs);
+            ColorData = ImageGenerator.Instance.ConvertToData3D(bs);
         }
 
         public void HandleDragDrop(object sender, DragEventArgs e)
@@ -83,12 +83,12 @@ namespace ImagingSIMS.Controls.Tabs
                 if (dropResult == HeightMapDropResult.Height)
                 {
                     HeightDataImageSource = bs;
-                    HeightData = ImageHelper.ConvertToData2D(bs);
+                    HeightData = ImageGenerator.Instance.ConvertToData2D(bs);
                 }
                 else if (dropResult == HeightMapDropResult.Color)
                 {
                     ColorDataImageSource = bs;
-                    ColorData = ImageHelper.ConvertToData3D(bs);
+                    ColorData = ImageGenerator.Instance.ConvertToData3D(bs);
                 }
 
                 e.Handled = true;
@@ -105,12 +105,12 @@ namespace ImagingSIMS.Controls.Tabs
                 if (dropResult == HeightMapDropResult.Height)
                 {
                     HeightDataImageSource = bs;
-                    HeightData = ImageHelper.ConvertToData2D(bs);
+                    HeightData = ImageGenerator.Instance.ConvertToData2D(bs);
                 }
                 else if (dropResult == HeightMapDropResult.Color)
                 {
                     ColorDataImageSource = bs;
-                    ColorData = ImageHelper.ConvertToData3D(bs);
+                    ColorData = ImageGenerator.Instance.ConvertToData3D(bs);
                 }
 
                 e.Handled = true;
@@ -131,12 +131,12 @@ namespace ImagingSIMS.Controls.Tabs
                 if (dropResult == HeightMapDropResult.Height)
                 {
                     HeightDataImageSource = bs;
-                    HeightData = ImageHelper.ConvertToData2D(bs);
+                    HeightData = ImageGenerator.Instance.ConvertToData2D(bs);
                 }
                 else if (dropResult == HeightMapDropResult.Color)
                 {
                     ColorDataImageSource = bs;
-                    ColorData = ImageHelper.ConvertToData3D(bs);
+                    ColorData = ImageGenerator.Instance.ConvertToData3D(bs);
                 }
 
                 e.Handled = true;

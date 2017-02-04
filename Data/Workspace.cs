@@ -1637,7 +1637,7 @@ namespace ImagingSIMS.Data
             for (int i = 0; i < 3; i++)
             {
                 ImageComponent c = w.Components[i];
-                System.Windows.Media.Imaging.BitmapSource[] bitmapSources = ImageHelper.CreateImage(new ImageComponent[] { c }, new ImageParameters()
+                System.Windows.Media.Imaging.BitmapSource[] bitmapSources = ImageGenerator.Instance.Create(new ImageComponent[] { c }, new ImagingParameters()
                 {
                     NormalizationMethod = NormalizationMethod.Single,
                     SqrtEnhance = false,
