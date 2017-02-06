@@ -3261,6 +3261,93 @@ namespace ImagingSIMS.Data.Spectra
         }
     }
 
+    public class CamecaNanoSIMSSpectrum : Spectrum
+    {
+        public CamecaNanoSIMSSpectrum(string Name) : base(Name)
+        {
+        }
+
+        public override void FromByteArray(byte[] array)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Data2D FromMassRange(MassRangePair MassRange, BackgroundWorker bw = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Data2D FromMassRange(MassRangePair MassRange, out float Max, BackgroundWorker bw = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Data2D FromMassRange(MassRangePair MassRange, int Layer, BackgroundWorker bw = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override List<Data2D> FromMassRange(MassRangePair MassRange, string TableBaseName, bool OmitNumbering, BackgroundWorker bw = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Data2D FromMassRange(MassRangePair MassRange, int Layer, string TableBaseName, bool OmitNumbering, BackgroundWorker bw = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override double[,] GetPxMMatrix()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override double[,] GetPxMMatrix(double[] binCenters, double[] binWidths)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override double[,] GetPxMMatrix(double[] binCenters, double[] binWidths, double startMass, double endMass)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override uint[] GetSpectrum(out float[] Masses)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void LoadFromFile(string[] FilePaths, BackgroundWorker bw)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void LoadFromFile(string FilePath, BackgroundWorker bw)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SaveText(string filePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SaveText(string filePath, int binSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override byte[] ToByteArray()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override double[,] ToDoubleArray()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class FlightTimeArray
     {
         int[] _flightTimes;
