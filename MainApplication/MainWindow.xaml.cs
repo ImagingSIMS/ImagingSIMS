@@ -41,6 +41,7 @@ using System.Threading.Tasks;
 using Matrix = Accord.Math.Matrix;
 using Accord.Statistics.Analysis;
 using Accord.Statistics.Kernels;
+using System.Globalization;
 
 namespace ImagingSIMS.MainApplication
 {
@@ -5362,80 +5363,409 @@ namespace ImagingSIMS.MainApplication
             }
             
         }
+
+        internal abstract class CamecaNanoSIMSHeaderPart
+        {
+            public static DateTime ParseDateAndTimeStrings(string date, string time)
+            {
+                string formatted = $"{date} - {time}";
+                return DateTime.ParseExact(formatted, "dd.MM.yy - H:m", CultureInfo.InvariantCulture);
+            }
+            public static string RemovePadCharacters(string padded)
+            {
+                return padded.Replace("\0", "");
+            }
+        }
+        internal class CamecaNanoSIMSHeader
+        {
+            public int Realease { get; set; }
+            public int AnalysisType { get; set; }
+            public int HeaderSize { get; set; }
+            public int SampleType { get; set; }
+            public int DataInlcuded { get; set; }
+            public int PositionX { get; set; }
+            public int PositionY { get; set; }
+            public string AnalysisName { get; set; }
+            public string UserName { get; set; }
+            public int PositionZ { get; set; }
+            public DateTime AnalysisTime { get; set; }
+
+            // AnalysisType:    MIMS_IMAGE = 27
+            //                  MIMS_LINE_SCAN_IMAGE = 39
+            //                  MIMS_SAMPLE_STAGE_IMAGE = 41
+
+            // v7 Meta Data:
+            public int NumberPolyatomics { get; set; }
+            public int NumberMagneticFields { get; set; }
+            public int MagneticField { get; set; }
+            public double[] Radii { get; set; }
+            public string Radius { get; set; }
+            public string Comments { get; set; }
+            public int PrimaryCurrentT0 { get; set; }
+            public int PrimaryCurrentEnd { get; set; }
+            public int PrimaryL1 { get; set; }
+            public int PositionD1 { get; set; }
+            public int PrimaryL0 { get; set; }
+            public int CsHV { get; set; }
+            public int PositionES { get; set; }
+            public int PositionAS { get; set; }
+        }
+
+        internal class CamecaNanoSIMSMaskImage
+        {
+            public string FileName { get; set; }
+            public int AnalysisDuration { get; set; }
+            public int CycleNumber { get; set; }
+            public int ScanType { get; set; }
+            public short Magnification { get; set; }
+            public short SizeType { get; set; }
+            public short SizeDetector { get; set; }
+            public int BeamBlanking { get; set; }
+            public int Sputtering { get; set; }
+            public int SputteringDuration { get; set; }
+            public int AutoCalibrationInAnalysis { get; set; }
+            public CamecaNanoSIMSAutoCal AutoCal { get; set; }
+            public int SigReference { get; set; }
+            public CamecaNanoSIMSSigRef SigRef { get; set; }
+            public int NumberMasses { get; set; }
+        }
+
+        internal class CamecaNanoSIMSAutoCal
+        {
+            public string Mass { get; set; }
+            public int Begin { get; set; }
+            public int Period { get; set; }
+        }
+
+        internal class CamecaNanoSIMSSigRef
+        {
+            public CamecaNanoSIMSPolyatomic Polyatomic { get; set; }
+            public int Detector { get; set; }
+            public int Offset { get; set; }
+            public int Quantity { get; set; }
+        }
+
+        internal class CamecaNanoSIMSPolyatomic
+        {
+            public int FlagNumeric { get; set; }
+            public int NumericValue { get; set; }
+            public int NumberElements { get; set; }
+            public int NumberCharges { get; set; }
+            public string Charge { get; set; }
+            public string MassLabel { get; set; }
+            public CamecaNanoSIMSTablets[] Tablets { get; set; }
+        }
+
+        internal class CamecaNanoSIMSTablets
+        {
+            public int NumberElements { get; set; }
+            public int NumberIsotopes { get; set; }
+            public int Quantity { get; set; }
+        }
+
+        internal class CamecaNanoSIMSTabMass
+        {
+            public double Amu { get; set; }
+            public int MatrixOrTrace { get; set; }
+            public int Detector { get; set; }
+            public double WaitingTime { get; set; }
+            public double CountingTime { get; set; }
+            public int Offset { get; set; }
+            public int MagField { get; set; }
+            public CamecaNanoSIMSPolyatomic Polyatomic { get; set; }
+        }
+
+        internal class CamecaNanoSIMSHeaderImage
+        {
+            public const int STRUCT_SIZE = 84;
+
+            public int SizeSelf { get; set; }
+            public short Type { get; set; }
+            public short Width { get; set; }
+            public short Height { get; set; }
+            public short PixelDepth { get; set; }
+            public short NumberMasses { get; set; }
+            public short Depth { get; set; }
+            public int Raster { get; set; }
+            public string Nickname { get; set; }
+        }
         private async void test9_Click(object sender, RoutedEventArgs e)
         {
+            List<Data3D> readIn = new List<Data3D>();
 
-            List<Cameca1280Spectrum> spectra = new List<Cameca1280Spectrum>();
-            foreach (var item in listViewSpectra.SelectedItems)
+            string filePath = @"D:\Data\NanoSIMS\20141230_HL_Pilot_8_2.im";
+            using (Stream stream = File.OpenRead(filePath))
             {
-                var spec = item as Cameca1280Spectrum;
-                if (spec != null)
+                BinaryReader br = new BinaryReader(stream);
+
+                string tempString = string.Empty;
+
+                CamecaNanoSIMSHeader header = new CamecaNanoSIMSHeader();
+
+                header.Realease = br.ReadInt32();
+                header.AnalysisType = br.ReadInt32();
+                header.HeaderSize = br.ReadInt32();
+                header.SampleType = br.ReadInt32();
+                header.DataInlcuded = br.ReadInt32();
+                header.PositionX = br.ReadInt32();
+                header.PositionY = br.ReadInt32();
+                tempString = new string(br.ReadChars(32));
+                header.AnalysisName = CamecaNanoSIMSHeaderPart.RemovePadCharacters(tempString);
+                tempString = new string(br.ReadChars(16));
+                header.UserName = CamecaNanoSIMSHeaderPart.RemovePadCharacters(tempString);
+                header.PositionZ = br.ReadInt32();
+
+                int unusedInt = br.ReadInt32();
+                unusedInt = br.ReadInt32();
+                unusedInt = br.ReadInt32();
+
+                tempString = new string(br.ReadChars(16));
+                string date = CamecaNanoSIMSHeaderPart.RemovePadCharacters(tempString);
+                tempString = new string(br.ReadChars(16));
+                string time = CamecaNanoSIMSHeaderPart.RemovePadCharacters(tempString);
+
+                header.AnalysisTime = CamecaNanoSIMSHeaderPart.ParseDateAndTimeStrings(date, time);
+
+                CamecaNanoSIMSMaskImage mask = new CamecaNanoSIMSMaskImage();
+
+                tempString = new string(br.ReadChars(16));
+                mask.FileName = CamecaNanoSIMSHeaderPart.RemovePadCharacters(tempString);
+                mask.AnalysisDuration = br.ReadInt32();
+                mask.CycleNumber = br.ReadInt32();
+                mask.ScanType = br.ReadInt32();
+                mask.Magnification = br.ReadInt16();
+                mask.SizeType = br.ReadInt16();
+                mask.SizeDetector = br.ReadInt16();
+
+                short unusedShort = br.ReadInt16();
+                mask.BeamBlanking = br.ReadInt32();
+                mask.Sputtering = br.ReadInt32();
+                mask.SputteringDuration = br.ReadInt32();
+                mask.AutoCalibrationInAnalysis = br.ReadInt32();
+
+                CamecaNanoSIMSAutoCal autoCal = new CamecaNanoSIMSAutoCal();
+                tempString = new string(br.ReadChars(64));
+                autoCal.Mass = CamecaNanoSIMSHeaderPart.RemovePadCharacters(tempString);
+                autoCal.Begin = br.ReadInt32();
+                autoCal.Period = br.ReadInt32();
+                mask.AutoCal = autoCal;
+
+                mask.SigReference = br.ReadInt32();
+
+                CamecaNanoSIMSSigRef sigRef = new CamecaNanoSIMSSigRef();
+                CamecaNanoSIMSPolyatomic polyatomic = new CamecaNanoSIMSPolyatomic();
+                polyatomic.FlagNumeric = br.ReadInt32();
+                polyatomic.NumericValue = br.ReadInt32();
+                polyatomic.NumberElements = br.ReadInt32();
+                polyatomic.NumberCharges = br.ReadInt32();
+                polyatomic.Charge = new string(br.ReadChars(1));
+                tempString = new string(br.ReadChars(64));
+                polyatomic.MassLabel = CamecaNanoSIMSHeaderPart.RemovePadCharacters(tempString);
+                polyatomic.Tablets = new CamecaNanoSIMSTablets[5];
+                for (int i = 0; i < 5; i++)
                 {
-                    spectra.Add(spec);
+                    polyatomic.Tablets[i] = new CamecaNanoSIMSTablets()
+                    {
+                        NumberElements = br.ReadInt32(),
+                        NumberIsotopes = br.ReadInt32(),
+                        Quantity = br.ReadInt32()
+                    };
                 }
-            }
 
-            if(spectra.Count == 0)
-            {
-                DialogBox.Show("No spectra selected.", "Selecte one or more Cameca1280 spectra and try again.", "Combined", DialogIcon.Stop);
-                return;
-            }
+                string unusedString = new string(br.ReadChars(3));
 
-            var species = spectra[0].Species;
+                sigRef.Polyatomic = polyatomic;
+                sigRef.Detector = br.ReadInt32();
+                sigRef.Offset = br.ReadInt32();
+                sigRef.Quantity = br.ReadInt32();
 
-            List<Data3D> combinedMasses = new List<Data3D>();
+                mask.SigRef = sigRef;
+                mask.NumberMasses = br.ReadInt32();
 
-            try
-            {
-                foreach (var sp in species)
+                int tabMassPointer = 0;
+                int numberTabMasses = 10;
+                if (header.Realease >= 4108)
                 {
-                    List<Data3D> individual = new List<Data3D>();
+                    numberTabMasses = 60;
+                }
 
-                    foreach (var spec in spectra)
+                for (int i = 0; i < numberTabMasses; i++)
+                {
+                    tabMassPointer = br.ReadInt32();
+                    if (tabMassPointer > 0)
                     {
-                        Data3D d = await spec.FromSpeciesAsync(sp, spec.Name + " - " + sp.Mass.ToString("0.00"));
-                        individual.Add(d);
+                        Console.WriteLine($"i {i}: {tabMassPointer}");
                     }
+                }
 
-                    int sizeX = individual[0].Width * individual.Count;
-                    int sizeY = individual[0].Height;
-                    int sizeZ = individual[0].Depth;
+                string[] massNames = new string[mask.NumberMasses];
+                string[] massSymbols = new string[mask.NumberMasses];
+                CamecaNanoSIMSTabMass[] masses = new CamecaNanoSIMSTabMass[mask.NumberMasses];
+                for (int i = 0; i < mask.NumberMasses; i++)
+                {
+                    CamecaNanoSIMSTabMass mass = new CamecaNanoSIMSTabMass();
+                    unusedInt = br.ReadInt32();
+                    unusedInt = br.ReadInt32();
+                    mass.Amu = br.ReadDouble();
+                    mass.MatrixOrTrace = br.ReadInt32();
+                    mass.Detector = br.ReadInt32();
+                    mass.WaitingTime = br.ReadDouble();
+                    mass.CountingTime = br.ReadDouble();
+                    mass.Offset = br.ReadInt32();
+                    mass.MagField = br.ReadInt32();
 
-                    Data3D combined = new Data3D(sizeX, sizeY, sizeZ);
-
-                    for (int i = 0; i < individual.Count; i++)
+                    CamecaNanoSIMSPolyatomic poly = new CamecaNanoSIMSPolyatomic();
+                    poly.FlagNumeric = br.ReadInt32();
+                    poly.NumericValue = br.ReadInt32();
+                    poly.NumberElements = br.ReadInt32();
+                    poly.NumberCharges = br.ReadInt32();
+                    poly.Charge = new string(br.ReadChars(1));
+                    tempString = new string(br.ReadChars(64));
+                    poly.MassLabel = CamecaNanoSIMSHeaderPart.RemovePadCharacters(tempString);
+                    poly.Tablets = new CamecaNanoSIMSTablets[5];
+                    for (int j = 0; j < 5; j++)
                     {
-                        Data3D d = individual[i];
-                        for (int x = 0; x < d.Width; x++)
+                        poly.Tablets[j] = new CamecaNanoSIMSTablets()
                         {
-                            for (int y = 0; y < d.Height; y++)
+                            NumberElements = br.ReadInt32(),
+                            NumberIsotopes = br.ReadInt32(),
+                            Quantity = br.ReadInt32()
+                        };
+                    }
+                    unusedString = new string(br.ReadChars(3));
+                    mass.Polyatomic = poly;
+
+                    massNames[i] = mass.Amu.ToString("0.00");
+                    massSymbols[i] = string.IsNullOrEmpty(mass.Polyatomic.MassLabel) ? "-" : mass.Polyatomic.MassLabel;
+
+                    masses[i] = mass;
+                }
+
+                if (header.Realease >= 4018)
+                {
+                    // Read metadata v7
+                    long posPolyList = 652 + 288 * mask.NumberMasses;
+                    long posNbPoly = posPolyList + 16;
+                    br.BaseStream.Seek(posNbPoly, SeekOrigin.Begin);
+                    header.NumberPolyatomics = br.ReadInt32();
+
+                    long posMaskNano = 676 + 288 * mask.NumberMasses + 144 * header.NumberPolyatomics;
+                    long posNbField = posNbPoly + 4 * 24;
+                    br.BaseStream.Seek(posNbField, SeekOrigin.Begin);
+                    header.NumberMagneticFields = br.ReadInt32();
+
+                    long posBFieldNano = 2228 + 288 * mask.NumberMasses + 144 * header.NumberPolyatomics;
+                    long posnNbField = posBFieldNano + 4;
+                    br.BaseStream.Seek(posnNbField, SeekOrigin.Begin);
+                    header.MagneticField = br.ReadInt32();
+
+                    long posTabTrolley = posBFieldNano + 10 * 4 + 2 * 8;
+                    header.Radii = new double[12];
+                    for (int i = 0; i < header.Radii.Length; i++)
+                    {
+                        long posRadius = posTabTrolley + i * 208 + 64 + 8;
+                        br.BaseStream.Seek(posRadius, SeekOrigin.Begin);
+                        header.Radii[i] = br.ReadDouble();
+                    }
+                    // header.Radius = concat
+
+                    long posAnalParam = 2228 + 288 * mask.NumberMasses + 144 * header.NumberPolyatomics + 2840 * header.NumberMagneticFields;
+                    long posComment = posAnalParam + 16 + 4 + 4 + 4 + 4;
+                    br.BaseStream.Seek(posComment, SeekOrigin.Begin);
+                    tempString = new string(br.ReadChars(256));
+                    header.Comments = CamecaNanoSIMSHeaderPart.RemovePadCharacters(tempString);
+
+                    long posAnalPrimary = posAnalParam + 16 + 4 + 4 + 4 + 4 + 256;
+                    long posPrimCurrentT0 = posAnalPrimary + 8;
+                    br.BaseStream.Seek(posPrimCurrentT0, SeekOrigin.Begin);
+                    header.PrimaryCurrentT0 = br.ReadInt32();
+                    header.PrimaryCurrentEnd = br.ReadInt32();
+
+                    long posPrimL1 = posAnalPrimary + 8 + 4 + 4 + 4;
+                    br.BaseStream.Seek(posPrimL1, SeekOrigin.Begin);
+                    header.PrimaryL1 = br.ReadInt32();
+
+                    long posD1Pos = posAnalPrimary + 8 + 4 + 4 + 4 + 4 + 4 + 4 * 10 + 4 + 4 * 10;
+                    br.BaseStream.Seek(posD1Pos, SeekOrigin.Begin);
+                    header.PositionD1 = br.ReadInt32();
+
+                    long sizeApPrimary = 552;
+                    long posApSecondary = posAnalPrimary + sizeApPrimary;
+                    long posPrimL0 = posApSecondary - (67 * 4 + 4 * 10 + 4 + 4 + 4 + 4);
+                    br.BaseStream.Seek(posPrimL0, SeekOrigin.Begin);
+                    header.PrimaryL0 = br.ReadInt32();
+                    header.CsHV = br.ReadInt32();
+
+                    long posESPos = posApSecondary + 8;
+                    br.BaseStream.Seek(posESPos, SeekOrigin.Begin);
+                    header.PositionES = br.ReadInt32();
+
+                    long posASPos = posESPos + 4 + 40 + 40;
+                    br.BaseStream.Seek(posASPos, SeekOrigin.Begin);
+                    header.PositionAS = br.ReadInt32();
+                }
+
+                long offset = header.HeaderSize - CamecaNanoSIMSHeaderImage.STRUCT_SIZE;
+                br.BaseStream.Seek(offset, SeekOrigin.Begin);
+
+                CamecaNanoSIMSHeaderImage headerImage = new CamecaNanoSIMSHeaderImage();
+                headerImage.SizeSelf = br.ReadInt32();
+                headerImage.Type = br.ReadInt16();
+                headerImage.Width = br.ReadInt16();
+                headerImage.Height = br.ReadInt16();
+                headerImage.PixelDepth = br.ReadInt16();
+
+                headerImage.NumberMasses = br.ReadInt16();
+                if (headerImage.NumberMasses < 1) headerImage.NumberMasses = 1;
+
+                headerImage.Depth = br.ReadInt16();
+                headerImage.Raster = br.ReadInt32();
+                tempString = new string(br.ReadChars(64));
+                headerImage.Nickname = CamecaNanoSIMSHeaderPart.RemovePadCharacters(tempString);
+
+                int numMasses = headerImage.NumberMasses;
+                int numImages = headerImage.Depth;
+
+                for (int j = 0; j < numMasses; j++)
+                {
+                    readIn.Add(new Data3D(headerImage.Width, headerImage.Height, headerImage.Depth));
+                }
+
+                bool is16bit = headerImage.PixelDepth == 2;
+
+                long theoreticalSize = headerImage.Width * headerImage.Height * headerImage.Depth * headerImage.NumberMasses * headerImage.PixelDepth + header.HeaderSize;
+                long fileSize = br.BaseStream.Length;
+
+                bool isOk = theoreticalSize == fileSize;
+
+                for (int i = 0; i < numImages; i++)
+                {
+                    for (int j = 0; j < numMasses; j++)
+                    {
+                        for (int x = 0; x < headerImage.Width; x++)
+                        {
+                            for (int y = 0; y < headerImage.Height; y++)
                             {
-                                for (int z = 0; z < d.Depth; z++)
-                                {
-                                    combined[i * d.Width + x, y, z] = d[x, y, z];
-                                }
+                                if (is16bit)
+                                    readIn[j][x, y, i] = br.ReadInt16();
+                                else readIn[j][x, y, i] = br.ReadInt32();
                             }
                         }
                     }
-
-                    combinedMasses.Add(combined);
                 }
-            }
-            catch (Exception ex)
-            {
-                Dialog.Show("Could not generate masses", ex.Message, "Combine", DialogIcon.Stop);
-                return;
-            }
 
-            DataDisplayTab dt = new DataDisplayTab();
-            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Combined", true);
-            tabMain.Items.Add(cti);
-            tabMain.SelectedItem = cti;
+                DataDisplayTab dt = new DataDisplayTab();
+                var cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
+                AddTabItemAndNavigate(cti);
 
-            foreach (var d in combinedMasses)
-            {
-                await dt.AddDataSourceAsync(d);
-            }            
+                for (int i = 0; i < numMasses; i++)
+                {
+                    var mass = readIn[i];
+                    mass.DataName = massNames[i];
+
+                    await dt.AddDataSourceAsync(mass);
+                }           
+            }
         }
         private async void test10_Click(object sender, RoutedEventArgs e)
         {

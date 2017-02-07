@@ -2358,6 +2358,49 @@ namespace ImagingSIMS.Data.Spectra
         #endregion
     }
 
+    public interface ICamecaSpectrum
+    {
+        Data2D FromSpecies(CamecaSpecies species, BackgroundWorker bw = null);
+        Task<Data2D> FromSpeciesAsync(CamecaSpecies species);
+        Data2D FromSpecies(CamecaSpecies species, out float max, BackgroundWorker bw = null);
+        Data2D FromSpecies(CamecaSpecies species, string tableBaseName, bool omitNumbering, BackgroundWorker bw = null);
+        Task<Data2D> FromSpeciesAsync(CamecaSpecies species, string tableBaseName, bool omitNumbering);
+        Data2D FromSpecies(CamecaSpecies species, int layer, string tableBaseName, bool omitNumbering, BackgroundWorker bw = null);
+        Task<Data2D> FromSpeciesAsync(CamecaSpecies species, int layer, string tableBaseName, bool omitNumbering);
+        Data3D FromSpecies(CamecaSpecies species, string tableName, BackgroundWorker bw = null);
+        Task<Data3D> FromSpeciesAsync(CamecaSpecies species, string tableName);
+    }
+
+    public abstract class CamecaSpectrum : Spectrum, ICamecaSpectrum
+    {
+        public CamecaSpectrum(string Name) : base(Name)
+        {
+        }
+
+        public abstract Data2D FromSpecies(CamecaSpecies species, BackgroundWorker bw = null);
+        public abstract Data3D FromSpecies(CamecaSpecies species, string tableName, BackgroundWorker bw = null);
+        public abstract Data2D FromSpecies(CamecaSpecies species, out float max, BackgroundWorker bw = null);
+        public abstract Data2D FromSpecies(CamecaSpecies species, string tableBaseName, bool omitNumbering, BackgroundWorker bw = null);
+        public abstract Data2D FromSpecies(CamecaSpecies species, int layer, string tableBaseName, bool omitNumbering, BackgroundWorker bw = null);
+
+        public async Task<Data2D> FromSpeciesAsync(CamecaSpecies species)
+        {
+            return await Task.Run(() => FromSpecies(species));
+        }
+        public async Task<Data3D> FromSpeciesAsync(CamecaSpecies species, string tableName)
+        {
+            return await Task.Run(() => FromSpecies(species, tableName));
+        }
+        public async Task<Data2D> FromSpeciesAsync(CamecaSpecies species, string tableBaseName, bool omitNumbering)
+        {
+            return await Task.Run(() => FromSpecies(species, tableBaseName, omitNumbering));
+        }
+        public async Task<Data2D> FromSpeciesAsync(CamecaSpecies species, int layer, string tableBaseName, bool omitNumbering)
+        {
+            return await Task.Run(() => FromSpecies(species, layer, tableBaseName, omitNumbering));
+        }
+    }
+
     public class Cameca1280Spectrum : Spectrum
     {
         protected List<CamecaSpecies> _species;
@@ -3276,22 +3319,18 @@ namespace ImagingSIMS.Data.Spectra
         {
             throw new NotImplementedException();
         }
-
         public override Data2D FromMassRange(MassRangePair MassRange, out float Max, BackgroundWorker bw = null)
         {
             throw new NotImplementedException();
         }
-
         public override Data2D FromMassRange(MassRangePair MassRange, int Layer, BackgroundWorker bw = null)
         {
             throw new NotImplementedException();
         }
-
         public override List<Data2D> FromMassRange(MassRangePair MassRange, string TableBaseName, bool OmitNumbering, BackgroundWorker bw = null)
         {
             throw new NotImplementedException();
         }
-
         public override Data2D FromMassRange(MassRangePair MassRange, int Layer, string TableBaseName, bool OmitNumbering, BackgroundWorker bw = null)
         {
             throw new NotImplementedException();
@@ -3301,12 +3340,10 @@ namespace ImagingSIMS.Data.Spectra
         {
             throw new NotImplementedException();
         }
-
         public override double[,] GetPxMMatrix(double[] binCenters, double[] binWidths)
         {
             throw new NotImplementedException();
         }
-
         public override double[,] GetPxMMatrix(double[] binCenters, double[] binWidths, double startMass, double endMass)
         {
             throw new NotImplementedException();
@@ -3321,17 +3358,20 @@ namespace ImagingSIMS.Data.Spectra
         {
             throw new NotImplementedException();
         }
-
         public override void LoadFromFile(string FilePath, BackgroundWorker bw)
         {
             throw new NotImplementedException();
+        }
+
+        private void doLoad()
+        {
+
         }
 
         public override void SaveText(string filePath)
         {
             throw new NotImplementedException();
         }
-
         public override void SaveText(string filePath, int binSize)
         {
             throw new NotImplementedException();
@@ -3341,7 +3381,6 @@ namespace ImagingSIMS.Data.Spectra
         {
             throw new NotImplementedException();
         }
-
         public override double[,] ToDoubleArray()
         {
             throw new NotImplementedException();
