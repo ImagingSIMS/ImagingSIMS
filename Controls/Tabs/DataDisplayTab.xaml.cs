@@ -407,7 +407,7 @@ namespace ImagingSIMS.Controls.Tabs
                     d.SolidColorScale = solid;
                 }
 
-                d.SetLayers(BatchApply.LayerStart, BatchApply.LayerEnd);
+                d.SetLayers(d.LayerStart, d.LayerEnd);
             }
         }
         private void applyColorScaleSelected()
@@ -426,7 +426,7 @@ namespace ImagingSIMS.Controls.Tabs
                     d.SolidColorScale = solid;
                 }
 
-                d.SetLayers(BatchApply.LayerStart, BatchApply.LayerEnd);
+                d.SetLayers(d.LayerStart, d.LayerEnd);
             }
         }
 
