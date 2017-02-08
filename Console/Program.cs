@@ -193,7 +193,7 @@ namespace ConsoleApp
                     header.NumberPolyatomics = br.ReadInt32();
 
                     long posMaskNano = 676 + 288 * mask.NumberMasses + 144 * header.NumberPolyatomics;
-                    long posNbField = posNbPoly + 4 * 24;
+                    long posNbField = posMaskNano + 4 * 24;
                     br.BaseStream.Seek(posNbField, SeekOrigin.Begin);
                     header.NumberMagneticFields = br.ReadInt32();
 
@@ -204,17 +204,22 @@ namespace ConsoleApp
 
                     long posTabTrolley = posBFieldNano + 10 * 4 + 2 * 8;
                     header.Radii = new double[12];
+                    StringBuilder sbRadius = new StringBuilder();
                     for (int i = 0; i < header.Radii.Length; i++)
                     {
                         long posRadius = posTabTrolley + i * 208 + 64 + 8;
                         br.BaseStream.Seek(posRadius, SeekOrigin.Begin);
                         header.Radii[i] = br.ReadDouble();
+                        sbRadius.Append($"{header.Radii[i].ToString("0.00")} - ");
                     }
-                    // header.Radius = concat
+                    sbRadius = sbRadius.Remove(sbRadius.Length - 2, 2);
+                    header.Radius = sbRadius.ToString();
 
                     long posAnalParam = 2228 + 288 * mask.NumberMasses + 144 * header.NumberPolyatomics + 2840 * header.NumberMagneticFields;
                     long posComment = posAnalParam + 16 + 4 + 4 + 4 + 4;
                     br.BaseStream.Seek(posComment, SeekOrigin.Begin);
+
+                    var bytes = br.ReadBytes(256);
                     tempString = new string(br.ReadChars(256));
                     header.Comments = CamecaNanoSIMSHeaderPart.RemovePadCharacters(tempString);
 
