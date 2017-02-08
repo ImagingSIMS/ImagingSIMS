@@ -3288,7 +3288,11 @@ namespace ImagingSIMS.Data.Spectra
 
     public class CamecaNanoSIMSSpectrum : CamecaSpectrum
     {
+        protected readonly float DeadTime = (float)44e-9;
+        protected readonly float Csc = (float)((1 / 1.6f) * Math.Pow(10, 7));
+
         bool _isDeadTimeCorrected;
+        CamecaNanoSIMSParameters _headerInfo;
 
         public bool IsDeadTimeCorrected
         {
@@ -3397,11 +3401,30 @@ namespace ImagingSIMS.Data.Spectra
 
             _startMass = (float)_species.Min(s => s.Mass);
             _endMass = (float)_species.Max(s => s.Mass);
+
+            _headerInfo = headerInfo;
         }
 
         public void DeadTimeCorrect()
         {
+            float dwellTime = (float)_headerInfo.Masses.First().CountingTime / (_sizeX * _sizeY);
+            dwellTime /= 1000;
 
+            for (int z = 0; z < _sizeZ; z++)
+            {
+                for (int i = 0; i < NumberSpecies; i++)
+                {
+                    for (int x = 0; x < _sizeX; x++)
+                    {
+                        for (int y = 0; y < _sizeY; y++)
+                        {
+                            _matrix[z][i][x, y] /= ((1 - _matrix[z][i][x, y] * DeadTime) / dwellTime);
+                        }
+                    }
+                }
+            }
+
+            IsDeadTimeCorrected = true;
         }
 
         private CamecaNanoSIMSParameters ParseSpectrumParameters(string filePath)
