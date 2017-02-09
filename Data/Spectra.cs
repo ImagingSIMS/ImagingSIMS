@@ -3072,7 +3072,7 @@ namespace ImagingSIMS.Data.Spectra
 
             _matrix = new List<Data2D[]>();
 
-            int totalSteps = filePaths.Length * 2;
+            int totalSteps = filePaths.Length;
             if (bw != null)
                 bw.ReportProgress(0);
 
@@ -3161,8 +3161,14 @@ namespace ImagingSIMS.Data.Spectra
                 }
 
                 if (bw != null)
-                    bw.ReportProgress(i * 100 / totalSteps);
+                    bw.ReportProgress((i + 1) * 100 / totalSteps);
             }
+
+            // Reset progress and start counting layers read in
+            if (bw != null) bw.ReportProgress(0);
+
+            totalSteps = numCyclesForFile.Sum();
+            int cycleCounter = 0;
 
             // Read in binary data for files and populate matrices
             for (int i = 0; i < filePaths.Length; i++)
@@ -3240,10 +3246,11 @@ namespace ImagingSIMS.Data.Spectra
                         else layer[r] = new Data2D(imageSize, imageSize);
                     }
                     _matrix.Add(layer);
-                }
 
-                if (bw != null)
-                    bw.ReportProgress((filePaths.Length + i) * 100 / totalSteps);
+                    cycleCounter++;
+                    if (bw != null)
+                        bw.ReportProgress(cycleCounter * 100 / totalSteps);
+                }
             }
 
             _sizeX = imageSize;
@@ -3319,13 +3326,20 @@ namespace ImagingSIMS.Data.Spectra
 
         protected override void DoLoad(string[] filePaths, BackgroundWorker bw)
         {
-            // TODO: Multiple files... append layers to end for each file
-
             List<CamecaNanoSIMSParameters> parameters = new List<CamecaNanoSIMSParameters>();
 
-            foreach (var filePath in filePaths)
+            int totalSteps = filePaths.Length;
+            int[] numLayersPerFile = new int[filePaths.Length];
+
+            for (int i = 0; i < filePaths.Length; i++)
             {
-                parameters.Add(ParseSpectrumParameters(filePath));
+                parameters.Add(ParseSpectrumParameters(filePaths[i]));
+
+                numLayersPerFile[i] = parameters[i].SizeZ;
+
+                if (bw != null)
+                    bw.ReportProgress((i + 1) * 100 / totalSteps);
+
             }
 
             if (parameters.Count == 0) throw new ArgumentNullException("No header information loaded");
@@ -3356,6 +3370,13 @@ namespace ImagingSIMS.Data.Spectra
                 };
                 _species.Add(species);
             }
+
+            // Reset progress and count each layer read in
+            totalSteps = numLayersPerFile.Sum();
+            int posCounter = 0;
+
+            if (bw != null)
+                bw.ReportProgress(0);
 
             // Load data
             _matrix = new List<Data2D[]>();
@@ -3389,6 +3410,11 @@ namespace ImagingSIMS.Data.Spectra
                             layer[r] = layerSpecies;
                         }
                         _matrix.Add(layer);
+
+                        posCounter++;
+
+                        if (bw != null)
+                            bw.ReportProgress(posCounter * 100 / totalSteps);
                     }
                 }
             }
