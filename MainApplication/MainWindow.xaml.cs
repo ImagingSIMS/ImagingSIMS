@@ -3070,6 +3070,90 @@ namespace ImagingSIMS.MainApplication
 
             s.SaveText(sfd.FileName, binSize);
         }
+
+        private void SpecDeadTimeCorrect_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            var canCorrect = GetAvailableSpectra().Where(s => s.SpectrumType == SpectrumType.CamecaNanoSIMS);
+
+            e.CanExecute = canCorrect.Count() > 0;
+        }
+        private void SpecDeadTimeCorrect_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            bool isCorrect = true;
+            try
+            {
+                string param = (string)e.Parameter;
+                if (param.ToLower() == "revert") isCorrect = false;                
+            }
+            catch (Exception)
+            {
+                isCorrect = true;
+            }
+
+
+            var toProcess = GetSelectedSpectra()
+                .Where(s => s.SpectrumType == SpectrumType.CamecaNanoSIMS)
+                .Select(s => s as CamecaNanoSIMSSpectrum);
+
+            if(toProcess.Count() == 0)
+            {
+                DialogBox.Show("No spectra selected.", "Only Cameca NanoSIMS spectra can be corrected.", "Dead Time Correction", DialogIcon.Warning);
+                return;
+            }
+
+            Dictionary<CamecaNanoSIMSSpectrum, string> notProcessed = new Dictionary<CamecaNanoSIMSSpectrum, string>();
+            foreach (var spec in toProcess)
+            {
+                try
+                {
+                    if (isCorrect)
+                    {
+                        if (spec.IsDeadTimeCorrected)
+                        {
+                            notProcessed.Add(spec, "Already dead time corrected");
+                        }
+                        else spec.DeadTimeCorrect();
+                    }
+                    else
+                    {
+                        if (!spec.IsDeadTimeCorrected)
+                        {
+                            notProcessed.Add(spec, "Not dead time corrected");
+                        }
+                        else spec.RemoveDeadTimeCorrection();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    notProcessed.Add(spec, ex.Message);
+                }
+            }
+
+            if (notProcessed.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (var item in notProcessed)
+                {
+                    sb.Append($"{item.Key.Name}: {item.Value}\n");
+                }
+
+                string list = sb.Remove(sb.Length - 1, 1).ToString();
+
+                DialogBox.Show("The following spectra could not be processed. Spectra not listed below were processed succesfully", 
+                    list, "Dead Time Correction", DialogIcon.Error);
+            }
+            else
+            {
+                string message = string.Empty;
+                if (isCorrect)
+                {
+                    message = "Selected spectra were dead time corrected successfully.";
+                }
+                else message = "Dead time correction revered successfully for the selected spectra.";
+
+                DialogBox.Show(message, "", "Dead Time Correction", DialogIcon.Ok);
+            }
+        }
         #endregion
 
         #region Images Tab

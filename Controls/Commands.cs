@@ -63,6 +63,8 @@ namespace ImagingSIMS.Controls
 
     public static class SpectrumCommands
     {
+        private static RoutedUICommand _deadTimeCorrect = new RoutedUICommand("Dead Time Correct", "DeadTimeCorrect", typeof(SpectrumCommands));
 
+        public static RoutedUICommand DeadTimeCorrect { get { return _deadTimeCorrect; } }
     }
 }

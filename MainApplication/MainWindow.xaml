@@ -13,6 +13,7 @@
         xmlns:commonctrls="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
         xmlns:ec="clr-namespace:ImagingSIMS.MainApplication.ExternalCode"
         xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+        xmlns:commands="clr-namespace:ImagingSIMS.Controls;assembly=Controls"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Icon="Images\PaintPalette.ico" 
         Width="1200" Height="900" WindowState="Maximized" MinWidth="600" MinHeight="480" 
@@ -37,6 +38,9 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </RibbonWindow.Resources>
+    <RibbonWindow.CommandBindings>
+        <CommandBinding x:Name="CommandSpecDeadTimeCorrect" Command="commands:SpectrumCommands.DeadTimeCorrect" CanExecute="SpecDeadTimeCorrect_CanExecute" Executed="SpecDeadTimeCorrect_Executed"/>
+    </RibbonWindow.CommandBindings>
     <Grid PreviewKeyDown="Grid_PreviewKeyDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -649,6 +653,34 @@
                                   ToolTipTitle="Hide"
                                   ToolTipDescription="Hide preview image."
                                   ToolTipImageSource="Images\Close.png"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Dead Time Correction">
+
+                    <RibbonButton Label="Correct" Command="commands:SpectrumCommands.DeadTimeCorrect" CommandParameter="Correct"
+                                  LargeImageSource="Images\Output.ico"
+                                  ToolTipTitle="Dead Time Correct"
+                                  ToolTipDescription="Performs a dead time correction on the selected CamecaNanoSIMS spectra"
+                                  ToolTipImageSource="Images\Output.ico"/>
+                    
+                    <RibbonButton Label="Revert" Command="commands:SpectrumCommands.DeadTimeCorrect" CommandParameter="Revert"
+                                  ToolTipTitle="Dead Time Correct"
+                                  ToolTipDescription="Performs a dead time correction on the selected CamecaNanoSIMS spectra">
+                        <RibbonButton.LargeImageSource>
+                            <TransformedBitmap Source="Images\Output.ico">
+                                <TransformedBitmap.Transform>
+                                    <RotateTransform Angle="180"/>
+                                </TransformedBitmap.Transform>
+                            </TransformedBitmap>
+                        </RibbonButton.LargeImageSource>
+                        <RibbonButton.ToolTipImageSource>
+                            <TransformedBitmap Source="Images\Output.ico">
+                                <TransformedBitmap.Transform>
+                                    <RotateTransform Angle="180"/>
+                                </TransformedBitmap.Transform>
+                            </TransformedBitmap>
+                        </RibbonButton.ToolTipImageSource>
+                    </RibbonButton>
+                    
                 </RibbonGroup>
                 <RibbonGroup Header="Export" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
                                 Converter={StaticResource TabBoolConverter}, ConverterParameter=Spectrum}">

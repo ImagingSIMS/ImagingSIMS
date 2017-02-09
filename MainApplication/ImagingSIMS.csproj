@@ -407,6 +407,8 @@
     <Content Include="Icons\Workspace.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Images\MarkupTag.ico" />
+    <Resource Include="Images\Output.ico" />
     <Content Include="Redist\Files.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
