@@ -4841,32 +4841,6 @@ namespace ImagingSIMS.MainApplication
             AvailableHost.AvailableTablesSource.AddTable(upscaled);
         }
 
-        public class SimulatedCameca1280Spectrum : Cameca1280Spectrum
-        {
-            public SimulatedCameca1280Spectrum()
-                : base("Simulated")
-            {
-                _species = new List<CamecaSpecies>();
-            }
-
-            public void SetMatrixData(List<Data2D> data)
-            {
-                _matrix = new List<Data2D[]>()
-                {
-                    data.ToArray()
-                };
-
-                _sizeX = data[0].Width;
-                _sizeY = data[0].Height;
-                _sizeZ = 1;
-
-                _intensities = GetSpectrum(out _masses);
-
-                _startMass = (float)_species.Min(s => s.Mass);
-                _endMass = (float)_species.Max(s => s.Mass);
-            }
-        }
-
         private double[,] GuidedFilter(double[,] guide, double[,] matrix, int r = 2, double eps = 0.05)
         {
             int sizeX = guide.GetLength(0);
@@ -5270,7 +5244,6 @@ namespace ImagingSIMS.MainApplication
             }
             
         }
-
         // GFPCA:
         //double[,] pcResahped = new double[lrSizeX, lrSizeY];
         //for (int x = 0; x<lrSizeX; x++)
@@ -5471,132 +5444,6 @@ namespace ImagingSIMS.MainApplication
             }
             
         }
-
-        internal abstract class CamecaNanoSIMSHeaderPart
-        {
-            public static DateTime ParseDateAndTimeStrings(string date, string time)
-            {
-                string formatted = $"{date} - {time}";
-                return DateTime.ParseExact(formatted, "dd.MM.yy - H:m", CultureInfo.InvariantCulture);
-            }
-            public static string RemovePadCharacters(string padded)
-            {
-                return padded.Replace("\0", "");
-            }
-        }
-        internal class CamecaNanoSIMSHeader
-        {
-            public int Realease { get; set; }
-            public int AnalysisType { get; set; }
-            public int HeaderSize { get; set; }
-            public int SampleType { get; set; }
-            public int DataInlcuded { get; set; }
-            public int PositionX { get; set; }
-            public int PositionY { get; set; }
-            public string AnalysisName { get; set; }
-            public string UserName { get; set; }
-            public int PositionZ { get; set; }
-            public DateTime AnalysisTime { get; set; }
-
-            // AnalysisType:    MIMS_IMAGE = 27
-            //                  MIMS_LINE_SCAN_IMAGE = 39
-            //                  MIMS_SAMPLE_STAGE_IMAGE = 41
-
-            // v7 Meta Data:
-            public int NumberPolyatomics { get; set; }
-            public int NumberMagneticFields { get; set; }
-            public int MagneticField { get; set; }
-            public double[] Radii { get; set; }
-            public string Radius { get; set; }
-            public string Comments { get; set; }
-            public int PrimaryCurrentT0 { get; set; }
-            public int PrimaryCurrentEnd { get; set; }
-            public int PrimaryL1 { get; set; }
-            public int PositionD1 { get; set; }
-            public int PrimaryL0 { get; set; }
-            public int CsHV { get; set; }
-            public int PositionES { get; set; }
-            public int PositionAS { get; set; }
-        }
-
-        internal class CamecaNanoSIMSMaskImage
-        {
-            public string FileName { get; set; }
-            public int AnalysisDuration { get; set; }
-            public int CycleNumber { get; set; }
-            public int ScanType { get; set; }
-            public short Magnification { get; set; }
-            public short SizeType { get; set; }
-            public short SizeDetector { get; set; }
-            public int BeamBlanking { get; set; }
-            public int Sputtering { get; set; }
-            public int SputteringDuration { get; set; }
-            public int AutoCalibrationInAnalysis { get; set; }
-            public CamecaNanoSIMSAutoCal AutoCal { get; set; }
-            public int SigReference { get; set; }
-            public CamecaNanoSIMSSigRef SigRef { get; set; }
-            public int NumberMasses { get; set; }
-        }
-
-        internal class CamecaNanoSIMSAutoCal
-        {
-            public string Mass { get; set; }
-            public int Begin { get; set; }
-            public int Period { get; set; }
-        }
-
-        internal class CamecaNanoSIMSSigRef
-        {
-            public CamecaNanoSIMSPolyatomic Polyatomic { get; set; }
-            public int Detector { get; set; }
-            public int Offset { get; set; }
-            public int Quantity { get; set; }
-        }
-
-        internal class CamecaNanoSIMSPolyatomic
-        {
-            public int FlagNumeric { get; set; }
-            public int NumericValue { get; set; }
-            public int NumberElements { get; set; }
-            public int NumberCharges { get; set; }
-            public string Charge { get; set; }
-            public string MassLabel { get; set; }
-            public CamecaNanoSIMSTablets[] Tablets { get; set; }
-        }
-
-        internal class CamecaNanoSIMSTablets
-        {
-            public int NumberElements { get; set; }
-            public int NumberIsotopes { get; set; }
-            public int Quantity { get; set; }
-        }
-
-        internal class CamecaNanoSIMSTabMass
-        {
-            public double Amu { get; set; }
-            public int MatrixOrTrace { get; set; }
-            public int Detector { get; set; }
-            public double WaitingTime { get; set; }
-            public double CountingTime { get; set; }
-            public int Offset { get; set; }
-            public int MagField { get; set; }
-            public CamecaNanoSIMSPolyatomic Polyatomic { get; set; }
-        }
-
-        internal class CamecaNanoSIMSHeaderImage
-        {
-            public const int STRUCT_SIZE = 84;
-
-            public int SizeSelf { get; set; }
-            public short Type { get; set; }
-            public short Width { get; set; }
-            public short Height { get; set; }
-            public short PixelDepth { get; set; }
-            public short NumberMasses { get; set; }
-            public short Depth { get; set; }
-            public int Raster { get; set; }
-            public string Nickname { get; set; }
-        }
         private async void test9_Click(object sender, RoutedEventArgs e)
         {
             List<Data3D> readIn = new List<Data3D>();
@@ -5717,21 +5564,6 @@ namespace ImagingSIMS.MainApplication
                         }
                     }
                 }
-            }
-        }
-        internal struct VolumeCoords
-        {
-            internal int X;
-            internal int Y;
-            internal Volume Volume;
-            internal string Name;
-
-            internal VolumeCoords(Volume volume)
-            {
-                Volume = volume;
-                Y = int.Parse(Volume.VolumeName.Substring(1, 1));
-                X = int.Parse(Volume.VolumeName.Substring(3, 1));
-                Name = Volume.VolumeName.Substring(5);
             }
         }
 #pragma warning restore 1998
