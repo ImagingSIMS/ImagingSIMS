@@ -337,7 +337,7 @@ namespace ImagingSIMS.Controls.Tabs
             if(CropAllLayers)
             {
                 float max = 0;
-                d = s.FromMassRange(new MassRangePair(s.StartMass, s.EndMass), out max);
+                d = s.FromMassRange(new MassRange(s.StartMass, s.EndMass), out max);
             }
             else
             {
@@ -348,7 +348,7 @@ namespace ImagingSIMS.Controls.Tabs
                     ActiveLayer = 1;
                     layer = ActiveLayer - 1;
                 }
-                d = s.FromMassRange(new MassRangePair(s.StartMass, s.EndMass), ActiveLayer - 1, "Preview", true);
+                d = s.FromMassRange(new MassRange(s.StartMass, s.EndMass), ActiveLayer - 1, "Preview", true);
             }
             imagePreview.ChangeDataSource(d);
             Text3 = string.Format("Pixels highlighted: {0}", imagePreview.HighlightedPoints.Count);

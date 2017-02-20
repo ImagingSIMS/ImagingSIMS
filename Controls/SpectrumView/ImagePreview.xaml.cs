@@ -55,7 +55,7 @@ namespace ImagingSIMS.Controls.BaseControls.SpectrumView
             Data2D d = await Task<Data2D>.Run(() =>
                 {
                     float max = 0;
-                    return spectrum.FromMassRange(new MassRangePair(StartMass, EndMass), out max);
+                    return spectrum.FromMassRange(new MassRange(StartMass, EndMass), out max);
                 });
 
             imageDisplay.Dispatcher.Invoke(() =>

@@ -2593,10 +2593,10 @@ namespace ImagingSIMS.MainApplication
                 // Text clears does not clear ranges
                 try
                 {
-                    List<MassRangePair> ranges = MassRangePair.ParseString(currentRange);
-                    ranges.Add(new MassRangePair(e.MassStart, e.MassEnd));
+                    List<MassRange> ranges = MassRange.ParseString(currentRange);
+                    ranges.Add(new MassRange(e.MassStart, e.MassEnd));
                     ranges.Sort();
-                    currentRange = MassRangePair.CreateString(ranges);
+                    currentRange = MassRange.CreateString(ranges);
                 }
                 finally
                 {
@@ -2622,11 +2622,11 @@ namespace ImagingSIMS.MainApplication
             // [2]: (bool)              Omit data numbering
             // [2]: (MassRangePair[])   Mass ranges   
 
-            MassRangePair[] massRanges = new MassRangePair[1];
+            MassRange[] massRanges = new MassRange[1];
 
             if (radioSpecSingleRange.IsChecked == true)
             {
-                massRanges[0] = new MassRangePair()
+                massRanges[0] = new MassRange()
                 {
                     StartMass = Workspace.SpectraMassStart,
                     EndMass = Workspace.SpectraMassEnd
@@ -2637,7 +2637,7 @@ namespace ImagingSIMS.MainApplication
             {
                 try
                 {
-                    massRanges = MassRangePair.ParseString(Workspace.SpectraCustomRange).ToArray();
+                    massRanges = MassRange.ParseString(Workspace.SpectraCustomRange).ToArray();
                 }
                 catch (ArgumentException ARex)
                 {
@@ -2689,7 +2689,7 @@ namespace ImagingSIMS.MainApplication
             // Validate all mass ranges
             try
             {
-                foreach (MassRangePair range in massRanges)
+                foreach (MassRange range in massRanges)
                 {
                     double start = range.StartMass;
                     double end = range.EndMass;
@@ -2748,11 +2748,11 @@ namespace ImagingSIMS.MainApplication
             // [1]: (string)            Output base name
             // [2]: (MassRangePair[])   Mass ranges        
 
-            MassRangePair[] massRanges = new MassRangePair[1];
+            MassRange[] massRanges = new MassRange[1];
 
             if (radioSpecSingleRange.IsChecked == true)
             {
-                massRanges[0] = new MassRangePair()
+                massRanges[0] = new MassRange()
                 {
                     StartMass = Workspace.SpectraMassStart,
                     EndMass = Workspace.SpectraMassEnd
@@ -2763,7 +2763,7 @@ namespace ImagingSIMS.MainApplication
             {
                 try
                 {
-                    massRanges = MassRangePair.ParseString(Workspace.SpectraCustomRange).ToArray();
+                    massRanges = MassRange.ParseString(Workspace.SpectraCustomRange).ToArray();
                 }
                 catch (ArgumentException ARex)
                 {
@@ -2808,7 +2808,7 @@ namespace ImagingSIMS.MainApplication
             // Validate all mass ranges
             try
             {
-                foreach (MassRangePair range in massRanges)
+                foreach (MassRange range in massRanges)
                 {
                     double start = range.StartMass;
                     double end = range.EndMass;
@@ -2871,7 +2871,7 @@ namespace ImagingSIMS.MainApplication
             Spectrum spectrum = (Spectrum)args[0];
             string baseName = (string)args[1];
             bool omitNumbering = (bool)args[2];
-            MassRangePair[] ranges = (MassRangePair[])args[3];
+            MassRange[] ranges = (MassRange[])args[3];
 
             List<Data2D> tables = new List<Data2D>();
 
@@ -2879,7 +2879,7 @@ namespace ImagingSIMS.MainApplication
 
             for (int i = 0; i < ranges.Length; i++)
             {
-                MassRangePair range = ranges[i];
+                MassRange range = ranges[i];
                 double startMass = range.StartMass;
                 double endMass = range.EndMass;
 
@@ -2889,7 +2889,7 @@ namespace ImagingSIMS.MainApplication
                         (i + 1).ToString(), numberRanges, startMass, endMass))
                 );
 
-                tables.AddRange(spectrum.FromMassRange(new MassRangePair(range.StartMass, range.EndMass),
+                tables.AddRange(spectrum.FromMassRange(new MassRange(range.StartMass, range.EndMass),
                     baseName, omitNumbering, sender as BackgroundWorker));
             }
 
@@ -2936,14 +2936,14 @@ namespace ImagingSIMS.MainApplication
 
             Spectrum spectrum = (Spectrum)args[0];
             string baseSavePath = (string)args[1];
-            MassRangePair[] ranges = (MassRangePair[])args[2];
+            MassRange[] ranges = (MassRange[])args[2];
 
             int numberRanges = ranges.Length;
 
             List<string> savedPaths = new List<string>();
             for (int i = 0; i < ranges.Length; i++)
             {
-                MassRangePair range = ranges[i];
+                MassRange range = ranges[i];
                 double startMass = range.StartMass;
                 double endMass = range.EndMass;
 
@@ -2952,7 +2952,7 @@ namespace ImagingSIMS.MainApplication
                         (i + 1).ToString(), numberRanges, startMass, endMass))
                 );
 
-                double[] depthProfile = spectrum.CreateDepthProfile(new MassRangePair(startMass, endMass), sender as BackgroundWorker);
+                double[] depthProfile = spectrum.CreateDepthProfile(new MassRange(startMass, endMass), sender as BackgroundWorker);
 
                 string rangeString = startMass.ToString("0.000") + "-" + endMass.ToString("0.000");
                 string savePath = baseSavePath.Insert(baseSavePath.Length - 4, rangeString);
