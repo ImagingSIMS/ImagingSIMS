@@ -11,6 +11,12 @@ namespace ImagingSIMS.Data.Spectra
 
         Generic,
 
-        None
+        None,
+
+        [Description("CAMECA 1280")]
+        Cameca1280,
+
+        [Description("CAMECA NanoSIMS")]
+        CamecaNanoSIMS
     }
 }

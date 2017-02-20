@@ -148,7 +148,13 @@
     <Compile Include="ColorScales.cs" />
     <Compile Include="Spectra\BioToFParameters.cs" />
     <Compile Include="Spectra\BioToFSpectrum.cs" />
+    <Compile Include="Spectra\Cameca1280Spectrum.cs" />
+    <Compile Include="Spectra\CamecaHeaders.cs" />
+    <Compile Include="Spectra\CamecaNanoSIMSSpectrum.cs" />
+    <Compile Include="Spectra\CamecaSpecies.cs" />
+    <Compile Include="Spectra\CamecaSpectrum.cs" />
     <Compile Include="Spectra\Events.cs" />
+    <Compile Include="Spectra\ICamecaSpectrum.cs" />
     <Compile Include="Spectra\J105DataParameters.cs" />
     <Compile Include="Spectra\J105Spectrum.cs" />
     <Compile Include="Spectra\J105Stream.cs" />
