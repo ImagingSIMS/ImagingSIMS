@@ -144,7 +144,6 @@
     <Compile Include="SampleData.cs" />
     <Compile Include="Savable.cs" />
     <Compile Include="SEM.cs" />
-    <Compile Include="Spectra.cs" />
     <Compile Include="ColorScales.cs" />
     <Compile Include="Spectra\BioToFParameters.cs" />
     <Compile Include="Spectra\BioToFSpectrum.cs" />
