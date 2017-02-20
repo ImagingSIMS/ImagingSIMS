@@ -142,6 +142,17 @@
     <Compile Include="SEM.cs" />
     <Compile Include="Spectra.cs" />
     <Compile Include="ColorScales.cs" />
+    <Compile Include="Spectra\BioToFParameters.cs" />
+    <Compile Include="Spectra\BioToFSpectrum.cs" />
+    <Compile Include="Spectra\Events.cs" />
+    <Compile Include="Spectra\J105DataParameters.cs" />
+    <Compile Include="Spectra\J105Spectrum.cs" />
+    <Compile Include="Spectra\J105Stream.cs" />
+    <Compile Include="Spectra\MassCalibrationException.cs" />
+    <Compile Include="Spectra\IndexRange.cs" />
+    <Compile Include="Spectra\MassRange.cs" />
+    <Compile Include="Spectra\Spectrum.cs" />
+    <Compile Include="Spectra\SpectrumType.cs" />
     <Compile Include="StackedImage.cs" />
     <Compile Include="Volume.cs" />
     <Compile Include="Workspace.cs" />
