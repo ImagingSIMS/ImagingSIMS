@@ -708,7 +708,7 @@ namespace ImagingSIMS.MainApplication
                 ofd.Title = "Open J105 Data";
                 ofd.Filter = "Text Files (.txt)|*.txt|All Files|*.*";
             }
-            else if(sender == ribbonButtonDataCamecaAPM)
+            else if (sender == ribbonButtonDataCamecaAPM)
             {
                 fileType = FileType.CamecaAPM;
                 ofd.Title = "Open Cameca APM Data";
@@ -730,6 +730,12 @@ namespace ImagingSIMS.MainApplication
                 fileType = FileType.CSV;
                 ofd.Title = "Open CSV Data";
                 ofd.Filter = "Comma Separated Values Files (.csv)|*.csv|Text Files (.txt)|*.txt|All Files|*.*";
+            }
+            else if (sender == ribbonButtonDataSeeker)
+            {
+                fileType = FileType.SmartSeekerData;
+                ofd.Title = "Open SmartSeeker Data";
+                ofd.Filter = "Test File (.txt)|*.txt";
             }
             else return;
 
@@ -4840,7 +4846,31 @@ namespace ImagingSIMS.MainApplication
             AvailableHost.AvailableTablesSource.AddTable(enhanced);
             AvailableHost.AvailableTablesSource.AddTable(upscaled);
         }
+        public class SimulatedCameca1280Spectrum : Cameca1280Spectrum
+        {
+            public SimulatedCameca1280Spectrum()
+                : base("Simulated")
+            {
+                _species = new List<CamecaSpecies>();
+            }
 
+            public void SetMatrixData(List<Data2D> data)
+            {
+                _matrix = new List<Data2D[]>()
+                {
+                    data.ToArray()
+                };
+
+                _sizeX = data[0].Width;
+                _sizeY = data[0].Height;
+                _sizeZ = 1;
+
+                _intensities = GetSpectrum(out _masses);
+
+                _startMass = (float)_species.Min(s => s.Mass);
+                _endMass = (float)_species.Max(s => s.Mass);
+            }
+        }
         private double[,] GuidedFilter(double[,] guide, double[,] matrix, int r = 2, double eps = 0.05)
         {
             int sizeX = guide.GetLength(0);

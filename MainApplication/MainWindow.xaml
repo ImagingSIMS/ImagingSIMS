@@ -252,6 +252,8 @@
                         <RibbonSplitMenuItem x:Name="ribbonButtonDataCSV"
                                                     Header="From CSV" Click="LoadDataTable" 
                                              ToolTipTitle="Open CSV" ToolTipDescription="Opens an ASCII comma separated values (CSV) data table."/>
+                        <RibbonSplitMenuItem x:Name="ribbonButtonDataSeeker" Click="LoadDataTable"
+                                             Header="From SmartSeeker" ToolTipDescription="Load a SmartSeeker data file."/>
                     </RibbonMenuButton>
                     <RibbonButton x:Name="ribbonDataNewRetro"
                                             LargeImageSource="Images\Spec.ico"

@@ -143,6 +143,9 @@
       <HintPath>..\packages\SharpDX.Mathematics.3.1.1\lib\net45\SharpDX.Mathematics.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SmartSeeker.DataWinForms">
+      <HintPath>..\References\SmartSeeker.DataWinForms.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
