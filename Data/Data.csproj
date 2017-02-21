@@ -136,6 +136,7 @@
     <Compile Include="Imaging\ImageGenerator.cs" />
     <Compile Include="ISDataSet.cs" />
     <Compile Include="Isosurfcaing.cs" />
+    <Compile Include="MathOperations.cs" />
     <Compile Include="PCA.cs" />
     <Compile Include="Peaks.cs" />
     <Compile Include="PointSet.cs" />

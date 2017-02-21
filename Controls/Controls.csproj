@@ -124,6 +124,9 @@
     <Compile Include="IAvailableImageSeries.cs" />
     <Compile Include="IAvailableSpectra.cs" />
     <Compile Include="IAvailableVolumes.cs" />
+    <Compile Include="Tabs\DataMathTab.xaml.cs">
+      <DependentUpon>DataMathTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tabs\RatioTab.xaml.cs">
       <DependentUpon>RatioTab.xaml</DependentUpon>
     </Compile>
@@ -268,6 +271,7 @@
     <Compile Include="ViewModels\DataDisplayBatchApplyViewModel.cs" />
     <Compile Include="ViewModels\Data2DDisplayViewModel.cs" />
     <Compile Include="ViewModels\Data3DDisplayViewModel.cs" />
+    <Compile Include="ViewModels\DataMathViewModel.cs" />
     <Compile Include="ViewModels\FusionImageViewModel.cs" />
     <Compile Include="ViewModels\ImageStitchViewModel.cs" />
     <Compile Include="ViewModels\PeakPreviewViewModel.cs" />
@@ -386,6 +390,10 @@
     <Page Include="Simple Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Tabs\DataMathTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Tabs\RatioTab.xaml">
       <Generator>MSBuild:Compile</Generator>

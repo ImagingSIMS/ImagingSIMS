@@ -67,4 +67,17 @@ namespace ImagingSIMS.Controls
 
         public static RoutedUICommand DeadTimeCorrect { get { return _deadTimeCorrect; } }
     }
+
+    public static class DataMathCommands
+    {
+        private static RoutedUICommand _performOperation = new RoutedUICommand("Perform Math Operation", "PerformOperation", typeof(DataMathCommands));
+        private static RoutedUICommand _addResultToWorkspace = new RoutedUICommand("Add Result To Workspace", "AddResultToWorkspace", typeof(DataMathCommands));
+        private static RoutedUICommand _assignVariable = new RoutedUICommand("Assign Variable", "AssignVariable", typeof(DataMathCommands));
+        private static RoutedUICommand _clearVariable = new RoutedUICommand("Clear Variable", "ClearVariable", typeof(DataMathCommands));
+
+        public static RoutedUICommand PerformOperation { get { return _performOperation; } }
+        public static RoutedUICommand AddResultToWorkspace { get { return _addResultToWorkspace; } }
+        public static RoutedUICommand AssignVariable { get { return _assignVariable; } }
+        public static RoutedUICommand ClearVariable { get { return _clearVariable; } }
+    }
 }

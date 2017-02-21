@@ -26,8 +26,13 @@
 			<x:Type TypeName="fusion:FusionType"/>
 		</ObjectDataProvider.MethodParameters>
 	</ObjectDataProvider>
+    <ObjectDataProvider x:Key="mathOpsFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="data:MathOperations"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
 
-	<!-- Fill Brushes -->
+    <!-- Fill Brushes -->
     <SolidColorBrush x:Key="ToolTipBackground" Color="#FF292929"/>
     <SolidColorBrush x:Key="ToolTipBorderBrush" Color="#FF007ACC"/>
 

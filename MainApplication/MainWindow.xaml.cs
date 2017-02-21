@@ -5476,63 +5476,10 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test9_Click(object sender, RoutedEventArgs e)
         {
-            List<Data3D> readIn = new List<Data3D>();
+            var dmt = new DataMathTab();
+            var cti = ClosableTabItem.Create(dmt, TabType.DataMath, "Data Math", true);
 
-            string filePath = @"D:\Data\NanoSIMS\20141230_HL_Pilot_8_2.im";
-
-            CamecaNanoSIMSSpectrum spec = new CamecaNanoSIMSSpectrum("NanoSIMS");
-            spec.LoadFromFile(filePath, null);
-
-            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalCold);
-            var cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
-            AddTabItemAndNavigate(cti);
-
-            foreach (var species in spec.Species)
-            {
-                var data = await spec.FromSpeciesAsync(species, $"{species.Label} - {species.Mass.ToString("0.00")}");
-                await dt.AddDataSourceAsync(data);
-            }
-           
-
-            //for (int j = 0; j < numMasses; j++)
-            //{
-            //    readIn.Add(new Data3D(headerImage.Width, headerImage.Height, headerImage.Depth));
-            //}
-
-            //bool is16bit = headerImage.PixelDepth == 2;
-
-            //long theoreticalSize = headerImage.Width * headerImage.Height * headerImage.Depth * headerImage.NumberMasses * headerImage.PixelDepth + header.HeaderSize;
-            //long fileSize = br.BaseStream.Length;
-
-            //bool isOk = theoreticalSize == fileSize;
-
-            //for (int i = 0; i < numImages; i++)
-            //{
-            //    for (int j = 0; j < numMasses; j++)
-            //    {
-            //        for (int x = 0; x < headerImage.Width; x++)
-            //        {
-            //            for (int y = 0; y < headerImage.Height; y++)
-            //            {
-            //                if (is16bit)
-            //                    readIn[j][x, y, i] = br.ReadInt16();
-            //                else readIn[j][x, y, i] = br.ReadInt32();
-            //            }
-            //        }
-            //    }
-            //}
-
-            //DataDisplayTab dt = new DataDisplayTab();
-            //var cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
-            //AddTabItemAndNavigate(cti);
-
-            //for (int i = 0; i < numMasses; i++)
-            //{
-            //    var mass = readIn[i];
-            //    mass.DataName = massNames[i];
-
-            //    await dt.AddDataSourceAsync(mass);
-            //}           
+            AddTabItemAndNavigate(cti);     
         }
         private async void test10_Click(object sender, RoutedEventArgs e)
         {
