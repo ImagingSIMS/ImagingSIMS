@@ -64,6 +64,20 @@ namespace ImagingSIMS.Data
             }
             return array;
         }
+
+        public override bool Equals(object obj)
+        {
+            FlatArray<T> f = obj as FlatArray<T>;
+            if (f == null) return false;
+
+            var sizesEqual = Enumerable.SequenceEqual(f._sizes, _sizes);
+            var arraysEqual = Enumerable.SequenceEqual(f._array, _array);
+            return sizesEqual && arraysEqual;
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     public sealed class Data2D : Data, ISavable
@@ -233,6 +247,17 @@ namespace ImagingSIMS.Data
                 }
             }
             return nonSparse;
+        }
+
+        public static Data2D Empty
+        {
+            get
+            {
+                return new Data2D(0, 0)
+                {
+                    DataName = "Empty"
+                };
+            }
         }
 
         public Data2D()
@@ -498,7 +523,7 @@ namespace ImagingSIMS.Data
             Data2D d = obj as Data2D;
             if (d == null) return false;
 
-            return d.DataName == DataName && d._matrix == _matrix;
+            return d.DataName == DataName && d._matrix.Equals(_matrix);
         }
         public override int GetHashCode()
         {
