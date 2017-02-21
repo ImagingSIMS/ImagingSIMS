@@ -18,8 +18,5 @@ namespace ImagingSIMS.Data
 
         [Description("^")]
         Power,
-
-        [Description("1/x")]
-        OneOver,
     }
 }

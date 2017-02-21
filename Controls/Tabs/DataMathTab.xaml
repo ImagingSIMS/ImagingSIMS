@@ -33,7 +33,7 @@
             </Style>
             <Style TargetType="{x:Type ComboBox}">
                 <Setter Property="Margin" Value="4"/>
-                <Setter Property="Width" Value="75"/>
+                <Setter Property="Width" Value="100"/>
                 <Setter Property="Height" Value="23"/>
             </Style>
         </ResourceDictionary>
@@ -306,7 +306,9 @@
             </StackPanel>
             <!-- Result -->
             <Grid Grid.Row="1">
-                <!--<bc:Data3DDisplay DisplayItem="{Binding}"-->
+                <Image Source="{Binding Result, Converter={StaticResource data2DToBitmapSourceConverter}}"
+                       HorizontalAlignment="Left" Margin="4"
+                       Stretch="UniformToFill"/>
             </Grid>
             <!-- Add Result -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">

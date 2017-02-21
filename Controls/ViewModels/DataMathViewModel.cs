@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using ImagingSIMS.Data;
+using ImagingSIMS.Data.Imaging;
 
 namespace ImagingSIMS.Controls.ViewModels
 {

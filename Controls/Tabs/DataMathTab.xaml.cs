@@ -85,7 +85,91 @@ namespace ImagingSIMS.Controls.Tabs
         }
         private void PerformOperation_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            int leftIndex = GetTermIndex(ViewModel.LeftTerm);
+            int rightIndex = GetTermIndex(ViewModel.RightTerm);
+            TermType leftTermType = GetTermType(ViewModel.LeftTerm);
+            TermType rightTermType = GetTermType(ViewModel.RightTerm);
 
+            MathOperations op = ViewModel.Operation;
+
+            var result = Data2D.Empty;
+
+            if (leftTermType == TermType.Data && rightTermType == TermType.Data)
+            {
+                var leftData = ViewModel.DataVariables[leftIndex];
+                var rightData = ViewModel.DataVariables[rightIndex];
+
+                if (op == MathOperations.Power)
+                {
+                    DialogBox.Show("Operation not supported for given input.",
+                        "1/x must be used with left data and right scalar inputs.", "Data Math", DialogIcon.Error);
+                    return;
+                }
+
+                switch (op)
+                {
+                    case MathOperations.Add:
+                        result = leftData + rightData;
+                        break;
+                    case MathOperations.Divide:
+                        result = leftData / rightData;
+                        break;
+                    case MathOperations.Multiply:
+                        result = leftData * rightData;
+                        break;
+                    case MathOperations.Subtract:
+                        result = leftData - rightData;
+                        break;
+                }
+            }
+            else if (leftTermType == TermType.Data && rightTermType == TermType.Scalar)
+            {
+                var leftData = ViewModel.DataVariables[leftIndex];
+                var rightScalar = ViewModel.ScalarFactors[rightIndex];
+
+                switch (op)
+                {
+                    case MathOperations.Add:
+                        result = leftData + rightScalar;
+                        break;
+                    case MathOperations.Divide:
+                        result = leftData + rightScalar;
+                        break;
+                    case MathOperations.Multiply:
+                        result = leftData * rightScalar;
+                        break;
+                    case MathOperations.Power:
+                        result = leftData ^ rightScalar;
+                        break;
+                    case MathOperations.Subtract:
+                        break;
+                }
+            }
+            else if (leftTermType == TermType.Scalar && rightTermType == TermType.Data)
+            {
+                var leftScalar = ViewModel.ScalarFactors[leftIndex];
+                var rightData = ViewModel.DataVariables[rightIndex];
+
+                switch (op)
+                {
+                    case MathOperations.Add:
+                        break;
+                    case MathOperations.Divide:
+                        break;
+                    case MathOperations.Multiply:
+                        break;
+                    case MathOperations.Power:
+                        break;
+                    case MathOperations.Subtract:
+                        break;
+                }
+            }
+            else
+            {
+                DialogBox.Show("Cannot perform scalar-scalar operation in this context.", 
+                    "Choose a data table to perform the math operation on.", "Data Math", DialogIcon.Error);
+                return;
+            }
         }
         private void AddResultToWorkspace_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
