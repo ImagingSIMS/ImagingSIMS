@@ -8,6 +8,7 @@
              xmlns:local="clr-namespace:ImagingSIMS.Controls.Tabs"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:ctl="clr-namespace:ImagingSIMS.Controls"
+             xmlns:bc="clr-namespace:ImagingSIMS.Controls.BaseControls"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="1000">
     <UserControl.Resources>
@@ -15,7 +16,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\Themes\Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <ObjectDataProvider x:Key="mathOpsFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider x:Key="termIdentityFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
                 <ObjectDataProvider.MethodParameters>
                     <x:Type TypeName="vm:TermIdentity"/>
                 </ObjectDataProvider.MethodParameters>
@@ -25,6 +26,16 @@
                 <Setter Property="Width" Value="50"/>
                 <Setter Property="Height" Value="23"/>
             </Style>
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="Height" Value="23"/>
+                <Setter Property="Width" Value="50"/>
+            </Style>
+            <Style TargetType="{x:Type ComboBox}">
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="Width" Value="75"/>
+                <Setter Property="Height" Value="23"/>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.CommandBindings>
@@ -32,20 +43,36 @@
         <CommandBinding Command="ctl:DataMathCommands.AddResultToWorkspace" CanExecute="AddResultToWorkspace_CanExecute" Executed="AddResultToWorkspace_Executed"/>
         <CommandBinding Command="ctl:DataMathCommands.AssignVariable" Executed="AssignVariable_Executed"/>
         <CommandBinding Command="ctl:DataMathCommands.ClearVariable" Executed="ClearVariable_Executed"/>
+        <CommandBinding Command="ctl:DataMathCommands.ClearHistory" CanExecute="ClearHistory_CanExecute" Executed="ClearHistory_Executed"/>
     </UserControl.CommandBindings>
     <Grid d:DataContext="{d:DesignInstance Type=vm:DataMathViewModel}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300"/>
-            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="500"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        
-        <!-- Variables -->
-        <StackPanel Orientation="Vertical">
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Variables -->
             <!-- 0 -->
-            <StackPanel Orientation="Vertical">
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="0" Index="0" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">                
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock>1:</TextBlock>
+                    <TextBlock>Table 1:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[0].DataName}"/>
                     <TextBlock Text="{Binding DataVariables[0].Width, StringFormat=W:{0}}"/>
                     <TextBlock Text="{Binding DataVariables[0].Height, StringFormat=H:{0}}"/>
@@ -54,15 +81,16 @@
                     <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="0">
                         <Image Source="..\Images\Next.ico"/>
                     </Button>
-                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="0">
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="0">
                         <Image Source="..\Images\Remove24.png"/>
                     </Button>
                 </StackPanel>
-            </StackPanel>
+            </bc:IndexedStackPanel>
             <!-- 1 -->
-            <StackPanel Orientation="Vertical">
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="1" Index="1" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock>2:</TextBlock>
+                    <TextBlock>Table 2:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[1].DataName}"/>
                     <TextBlock Text="{Binding DataVariables[1].Width, StringFormat=W:{0}}"/>
                     <TextBlock Text="{Binding DataVariables[1].Height, StringFormat=H:{0}}"/>
@@ -71,15 +99,16 @@
                     <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="1">
                         <Image Source="..\Images\Next.ico"/>
                     </Button>
-                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="1">
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="1">
                         <Image Source="..\Images\Remove24.png"/>
                     </Button>
                 </StackPanel>
-            </StackPanel>
+            </bc:IndexedStackPanel>
             <!-- 2 -->
-            <StackPanel Orientation="Vertical">
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="2" Index="2" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock>3:</TextBlock>
+                    <TextBlock>Table 3:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[2].DataName}"/>
                     <TextBlock Text="{Binding DataVariables[2].Width, StringFormat=W:{0}}"/>
                     <TextBlock Text="{Binding DataVariables[2].Height, StringFormat=H:{0}}"/>
@@ -88,15 +117,16 @@
                     <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="2">
                         <Image Source="..\Images\Next.ico"/>
                     </Button>
-                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="2">
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="2">
                         <Image Source="..\Images\Remove24.png"/>
                     </Button>
                 </StackPanel>
-            </StackPanel>
+            </bc:IndexedStackPanel>
             <!-- 3 -->
-            <StackPanel Orientation="Vertical">
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="3" Index="3" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock>4:</TextBlock>
+                    <TextBlock>Table 4:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[3].DataName}"/>
                     <TextBlock Text="{Binding DataVariables[3].Width, StringFormat=W:{0}}"/>
                     <TextBlock Text="{Binding DataVariables[3].Height, StringFormat=H:{0}}"/>
@@ -105,15 +135,16 @@
                     <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="3">
                         <Image Source="..\Images\Next.ico"/>
                     </Button>
-                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="3">
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="3">
                         <Image Source="..\Images\Remove24.png"/>
                     </Button>
                 </StackPanel>
-            </StackPanel>
+            </bc:IndexedStackPanel>
             <!-- 4 -->
-            <StackPanel Orientation="Vertical">
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="4" Index="4" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock>5:</TextBlock>
+                    <TextBlock>Table 5:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[4].DataName}"/>
                     <TextBlock Text="{Binding DataVariables[4].Width, StringFormat=W:{0}}"/>
                     <TextBlock Text="{Binding DataVariables[4].Height, StringFormat=H:{0}}"/>
@@ -122,15 +153,16 @@
                     <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="4">
                         <Image Source="..\Images\Next.ico"/>
                     </Button>
-                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="4">
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="4">
                         <Image Source="..\Images\Remove24.png"/>
                     </Button>
                 </StackPanel>
-            </StackPanel>
+            </bc:IndexedStackPanel>
             <!-- 5 -->
-            <StackPanel Orientation="Vertical">
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="5" Index="5" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock>6:</TextBlock>
+                    <TextBlock>Table 6:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[5].DataName}"/>
                     <TextBlock Text="{Binding DataVariables[5].Width, StringFormat=W:{0}}"/>
                     <TextBlock Text="{Binding DataVariables[5].Height, StringFormat=H:{0}}"/>
@@ -139,15 +171,16 @@
                     <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="5">
                         <Image Source="..\Images\Next.ico"/>
                     </Button>
-                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="5">
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="5">
                         <Image Source="..\Images\Remove24.png"/>
                     </Button>
                 </StackPanel>
-            </StackPanel>
+            </bc:IndexedStackPanel>
             <!-- 6 -->
-            <StackPanel Orientation="Vertical">
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="6" Index="6" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock>7:</TextBlock>
+                    <TextBlock>Table 7:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[6].DataName}"/>
                     <TextBlock Text="{Binding DataVariables[6].Width, StringFormat=W:{0}}"/>
                     <TextBlock Text="{Binding DataVariables[6].Height, StringFormat=H:{0}}"/>
@@ -156,15 +189,16 @@
                     <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="6">
                         <Image Source="..\Images\Next.ico"/>
                     </Button>
-                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="6">
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="6">
                         <Image Source="..\Images\Remove24.png"/>
                     </Button>
                 </StackPanel>
-            </StackPanel>
+            </bc:IndexedStackPanel>
             <!-- 7 -->
-            <StackPanel Orientation="Vertical">
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="7" Index="7" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock>8:</TextBlock>
+                    <TextBlock>Table 8:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[7].DataName}"/>
                     <TextBlock Text="{Binding DataVariables[7].Width, StringFormat=W:{0}}"/>
                     <TextBlock Text="{Binding DataVariables[7].Height, StringFormat=H:{0}}"/>
@@ -173,23 +207,133 @@
                     <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="7">
                         <Image Source="..\Images\Next.ico"/>
                     </Button>
-                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="7">
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="7">
                         <Image Source="..\Images\Remove24.png"/>
                     </Button>
                 </StackPanel>
-            </StackPanel>
-        </StackPanel>
-        
-        <!-- Scalars -->
-        
-        <!-- 0 -->
-        <!-- 1 -->
-        <!-- 2 -->
-        <!-- 3 -->
-        <!-- 4 -->
-        <!-- 5 -->
-        <!-- 0 -->
-        <!-- 7 -->
+            </bc:IndexedStackPanel>
+
+            <!-- Scalars -->
+
+            <!-- 0 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="0" Index="0"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 1:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[0]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 1 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="1" Index="1"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 2:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[1]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 2 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="2" Index="2"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 3:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[2]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 3 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="3" Index="3"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 4:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[3]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 4 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="4" Index="4"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 5:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[4]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 5 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="5" Index="5"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 6:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[7]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 6 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="6" Index="6"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 7:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[6]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 7 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="7" Index="7"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 8:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[7]}"/>
+            </bc:IndexedStackPanel>
+        </Grid>
+
         <!-- Opearation and Result -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="AUto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Parameters -->
+            <StackPanel Orientation="Vertical" Grid.Row="0">
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox ItemsSource="{Binding Source={StaticResource termIdentityFromEnum}}"
+                              SelectedItem="{Binding LeftTerm}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox Width="40" ItemsSource="{Binding Source={StaticResource mathOpsFromEnum}}"
+                              SelectedItem="{Binding Operation}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox ItemsSource="{Binding Source={StaticResource termIdentityFromEnum}}"
+                              SelectedItem="{Binding RightTerm}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <Button Width="75" Command="ctl:DataMathCommands.PerformOperation">Execute</Button>                    
+                </StackPanel>
+            </StackPanel>
+            <!-- Result -->
+            <Grid Grid.Row="1">
+                <!--<bc:Data3DDisplay DisplayItem="{Binding}"-->
+            </Grid>
+            <!-- Add Result -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button Command="ctl:DataMathCommands.AddResultToWorkspace"
+                        ToolTip="Add result to workspace">
+                    <Image Source="..\Images\Last.ico"/>
+                </Button>
+            </StackPanel>
+            <!-- History -->
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBox Grid.Column="0" TextWrapping="Wrap" 
+                     HorizontalAlignment="Left"
+                     Width="300" Height="Auto" 
+                     Text="{Binding OperationHistory}"
+                     IsReadOnly="True" Background="Transparent" Foreground="White"/>
+
+                <Button Grid.Column="1" Width="75" 
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom"
+                        Command="ctl:DataMathCommands.ClearHistory">Clear History</Button>                
+            </Grid>          
+
+        </Grid>
     </Grid>
 </UserControl>

@@ -112,6 +112,7 @@
     <Compile Include="BaseControls\Data3DDisplay.xaml.cs">
       <DependentUpon>Data3DDisplay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BaseControls\IndexedStackPanel.cs" />
     <Compile Include="TabControls\MovableTabControl.cs" />
     <Compile Include="TabControls\MovableTabItem.cs" />
     <Compile Include="BaseControls\GridAware.cs" />

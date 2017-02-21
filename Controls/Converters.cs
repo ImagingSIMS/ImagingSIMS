@@ -942,4 +942,18 @@ namespace ImagingSIMS.Controls.Converters
             throw new NotImplementedException();
         }
     }
+    public class Data2DToData3DDisplayViewModel : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var d = value as Data2D;
+            if (d == null) return null;
+
+            return new Data3DDisplayViewModel(new Data3D(new Data2D[] { d }), ColorScaleTypes.ThermalCold);
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
