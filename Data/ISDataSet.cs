@@ -1309,6 +1309,20 @@ namespace ImagingSIMS.Data
 
             return d;
         }
+        public static Data2D Pow(Data2D a, float s)
+        {
+            Data2D d = new Data2D(a.Width, a.Height);
+
+            for (int x = 0; x < a.Width; x++)
+            {
+                for (int y = 0; y < a.Height; y++)
+                {
+                    d[x, y] = (float)Math.Pow(a[x, y], s);
+                }
+            }
+
+            return d;
+        }
         public static Data2D Ones(int Width, int Height)
         {
             return new Data2D(Width, Height, 1f);
