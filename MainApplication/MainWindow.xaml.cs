@@ -5336,7 +5336,7 @@ namespace ImagingSIMS.MainApplication
             for (int i = (int)spec.StartMass; i < spec.EndMass; i++)
             {
                 float max = 0;
-                var m = spec.FromMassRange(new MassRangePair(i - 0.5d, i + 0.5d), out max, null);
+                var m = spec.FromMassRange(new MassRange(i - 0.5d, i + 0.5d), out max, null);
                 masses.Add(m.Upscale(pan.Width, pan.Height));
             }
 
