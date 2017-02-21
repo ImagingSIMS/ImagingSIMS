@@ -139,7 +139,7 @@ namespace ImagingSIMS.Controls.Tabs
                         result = leftData * rightScalar;
                         break;
                     case MathOperations.Power:
-                        result = leftData ^ rightScalar;
+                        
                         break;
                     case MathOperations.Subtract:
                         break;
