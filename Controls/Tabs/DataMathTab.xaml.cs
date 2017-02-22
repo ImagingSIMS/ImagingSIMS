@@ -65,6 +65,23 @@ namespace ImagingSIMS.Controls.Tabs
                 return;
             }
 
+            if (leftTermType == TermType.None && rightTermType == TermType.None)
+            {
+                e.CanExecute = false;
+                return;
+            }
+
+            if(leftTermType == TermType.None && rightTermType != TermType.Data)
+            {
+                e.CanExecute = false;
+                return;
+            }
+            if(rightTermType == TermType.None &&  leftTermType!= TermType.Data)
+            {
+                e.CanExecute = false;
+                return;
+            }
+
             bool leftIsOk = false;
             bool rightIsOk = false;
 
@@ -94,82 +111,224 @@ namespace ImagingSIMS.Controls.Tabs
 
             var result = Data2D.Empty;
 
-            if (leftTermType == TermType.Data && rightTermType == TermType.Data)
+            if (leftTermType == TermType.Unknown || rightTermType == TermType.Unknown)
             {
-                var leftData = ViewModel.DataVariables[leftIndex];
-                var rightData = ViewModel.DataVariables[rightIndex];
-
-                if (op == MathOperations.Power)
-                {
-                    DialogBox.Show("Operation not supported for given input.",
-                        "1/x must be used with left data and right scalar inputs.", "Data Math", DialogIcon.Error);
-                    return;
-                }
-
-                switch (op)
-                {
-                    case MathOperations.Add:
-                        result = leftData + rightData;
-                        break;
-                    case MathOperations.Divide:
-                        result = leftData / rightData;
-                        break;
-                    case MathOperations.Multiply:
-                        result = leftData * rightData;
-                        break;
-                    case MathOperations.Subtract:
-                        result = leftData - rightData;
-                        break;
-                }
-            }
-            else if (leftTermType == TermType.Data && rightTermType == TermType.Scalar)
-            {
-                var leftData = ViewModel.DataVariables[leftIndex];
-                var rightScalar = ViewModel.ScalarFactors[rightIndex];
-
-                switch (op)
-                {
-                    case MathOperations.Add:
-                        result = leftData + rightScalar;
-                        break;
-                    case MathOperations.Divide:
-                        result = leftData + rightScalar;
-                        break;
-                    case MathOperations.Multiply:
-                        result = leftData * rightScalar;
-                        break;
-                    case MathOperations.Power:
-                        
-                        break;
-                    case MathOperations.Subtract:
-                        break;
-                }
-            }
-            else if (leftTermType == TermType.Scalar && rightTermType == TermType.Data)
-            {
-                var leftScalar = ViewModel.ScalarFactors[leftIndex];
-                var rightData = ViewModel.DataVariables[rightIndex];
-
-                switch (op)
-                {
-                    case MathOperations.Add:
-                        break;
-                    case MathOperations.Divide:
-                        break;
-                    case MathOperations.Multiply:
-                        break;
-                    case MathOperations.Power:
-                        break;
-                    case MathOperations.Subtract:
-                        break;
-                }
-            }
-            else
-            {
-                DialogBox.Show("Cannot perform scalar-scalar operation in this context.", 
-                    "Choose a data table to perform the math operation on.", "Data Math", DialogIcon.Error);
+                DialogBox.Show("Could not determine the type of the input variables.",
+                    "Check the variable selections.", "Data Math", DialogIcon.Error);
                 return;
             }
+            if (leftTermType == TermType.None)
+            {
+                DialogBox.Show("Left term cannot be None type.",
+                    "Select either a data or scalar variable for the left term.", "Data Math", DialogIcon.Error);
+                return;
+            }
+
+            if (leftTermType == TermType.Data)
+            {
+                var leftData = ViewModel.DataVariables[leftIndex];
+                if (rightTermType == TermType.Data)
+                {
+                    var rightData = ViewModel.DataVariables[rightIndex];
+                    switch (op)
+                    {
+                        case MathOperations.Add:
+                            result = leftData + rightData;
+                            break;
+                        case MathOperations.Divide:
+                            result = leftData / rightData;
+                            break;
+                        case MathOperations.Multiply:
+                            result = leftData * rightData;
+                            break;
+                        case MathOperations.Subtract:
+                            result = leftData - rightData;
+                            break;
+                        case MathOperations.Abs:
+                            DialogBox.Show("Cannot perform |x| operation.",
+                                "A None type must be specified for the right term.", "Data Math", DialogIcon.Error);
+                            return;
+                        case MathOperations.OneOver:
+                            DialogBox.Show("Cannot perform 1/x operation.",
+                                "A None type must be specified for the right term.", "Data Math", DialogIcon.Error);
+                            return;
+                        case MathOperations.Power:
+                            DialogBox.Show("Cannot perform x^y operation.",
+                                "A scalar type must be specified for the right term.", "Data Math", DialogIcon.Error);
+                            return;
+                        case MathOperations.Sqrt:
+                            DialogBox.Show("Cannot perform \u229Ax operation.",
+                                "A None type must be specified for the right term.", "Data Math", DialogIcon.Error);
+                            return;
+                    }
+                }
+                else if (rightTermType == TermType.Scalar)
+                {
+                    var rightScalar = ViewModel.ScalarFactors[rightIndex];
+                    switch (op)
+                    {
+                        case MathOperations.Add:
+                            result = leftData + rightScalar;
+                            break;
+                        case MathOperations.Divide:
+                            result = leftData / rightScalar;
+                            break;
+                        case MathOperations.Multiply:
+                            result = leftData * rightScalar;
+                            break;
+                        case MathOperations.Subtract:
+                            result = leftData - rightScalar;
+                            break;
+                        case MathOperations.Abs:
+                            DialogBox.Show("Cannot perform |x| operation.",
+                                "A None type must be specified for the right term.", "Data Math", DialogIcon.Error);
+                            return;
+                        case MathOperations.OneOver:
+                            DialogBox.Show("Cannot perform 1/x operation.",
+                                "A None type must be specified for the right term.", "Data Math", DialogIcon.Error);
+                            return;
+                        case MathOperations.Power:
+                            result = Data2D.Pow(leftData, (float)rightScalar);
+                            break;
+                        case MathOperations.Sqrt:
+                            DialogBox.Show("Cannot perform \u229Ax operation.",
+                                "A None type must be specified for the right term.", "Data Math", DialogIcon.Error);
+                            return;
+                    }
+                }
+                else if (rightTermType == TermType.None)
+                {
+                    switch (op)
+                    {
+                        case MathOperations.Add:
+                            DialogBox.Show("Cannot perform x+y operation.",
+                                "A data or scalar type must be specified for the right term.", "Data Math", DialogIcon.Error);
+                            return;
+                        case MathOperations.Divide:
+                            DialogBox.Show("Cannot perform x/y operation.",
+                                "A data or scalar type must be specified for the right term.", "Data Math", DialogIcon.Error);
+                            return;
+                        case MathOperations.Multiply:
+                            DialogBox.Show("Cannot perform x*y operation.",
+                                "A data or scalar type must be specified for the right term.", "Data Math", DialogIcon.Error);
+                            return;
+                        case MathOperations.Subtract:
+                            DialogBox.Show("Cannot perform x-y operation.",
+                                "A data or scalar type must be specified for the right term.", "Data Math", DialogIcon.Error);
+                            return;
+                        case MathOperations.Abs:
+                            result = Data2D.Abs(leftData);
+                            break;
+                        case MathOperations.OneOver:
+                            result = Data2D.OneOver(leftData);
+                            break;
+                        case MathOperations.Power:
+                            DialogBox.Show("Cannot perform x^y operation.",
+                                "A data or scalar type must be specified for the right term.", "Data Math", DialogIcon.Error);
+                            return;
+                        case MathOperations.Sqrt:
+                            result = Data2D.Sqrt(leftData);
+                            break;
+                    }
+                }
+            }
+            else if (leftTermType == TermType.Scalar)
+            {
+                var leftScalar = ViewModel.ScalarFactors[leftIndex];
+                if (rightTermType == TermType.Data)
+                {
+                    var rightData = ViewModel.DataVariables[rightIndex];
+                    switch (op)
+                    {
+                        case MathOperations.Add:
+                            result = rightData + leftScalar;
+                            break;
+                        case MathOperations.Divide:
+                            result = leftScalar / rightData;
+                            break;
+                        case MathOperations.Multiply:
+                            result = rightData * leftScalar;
+                            break;
+                        case MathOperations.Subtract:
+                            result = leftScalar - rightData;
+                            break;
+                        case MathOperations.Abs:
+                            DialogBox.Show("Cannot perform |x| operation.",
+                                "A data type must be specified for the left term.", "Data Math", DialogIcon.Error);
+                            return;
+                        case MathOperations.OneOver:
+                            DialogBox.Show("Cannot perform 1/x operation.",
+                                "A data type must be specified for the left term.", "Data Math", DialogIcon.Error);
+                            return;
+                        case MathOperations.Power:
+                            DialogBox.Show("Cannot perform x^y operation.",
+                                "A data type must be specified for the left term.", "Data Math", DialogIcon.Error);
+                            return;
+                        case MathOperations.Sqrt:
+                            DialogBox.Show("Cannot perform \u229Ax operation.",
+                                "A data type must be specified for the left term.", "Data Math", DialogIcon.Error);
+                            return;
+                    }
+                }
+                else if (rightTermType == TermType.Scalar)
+                {
+                    DialogBox.Show("Cannot perform scalar-scalar operation in this context.",
+                        "Choose a data table to perform the math operation on.", "Data Math", DialogIcon.Error);
+                    return;
+                }
+                else if (rightTermType == TermType.None)
+                {
+                    DialogBox.Show("Cannot perform scalar-none operation in this context.",
+                        "Choose a data table to perform the math operation on.", "Data Math", DialogIcon.Error);
+                }
+            }                       
+
+            StringBuilder sb = new StringBuilder();
+
+            if (ViewModel.Operation == MathOperations.Sqrt)
+            {
+                sb.Append($"\u229A({ViewModel.DataVariables[leftIndex].DataName})");
+            }
+
+            else if (ViewModel.Operation == MathOperations.OneOver)
+            {
+                sb.Append($"1/({ViewModel.DataVariables[leftIndex].DataName})");
+            }
+
+            else if(ViewModel.Operation == MathOperations.Abs)
+            {
+                sb.Append($"|{ViewModel.DataVariables[leftIndex].DataName}|");
+            }
+
+            else
+            {
+                if (leftTermType == TermType.Data)
+                {
+                    sb.Append($"{ViewModel.DataVariables[leftIndex].DataName} ");
+                }
+                else if (leftTermType == TermType.Scalar)
+                {
+                    sb.Append($"{ViewModel.ScalarFactors[leftIndex]} ");
+                }
+
+                sb.Append($"{ViewModel.Operation} ");
+
+                if(rightTermType == TermType.Data)
+                {
+                    sb.Append($"{ViewModel.DataVariables[rightIndex].DataName} ");
+                }
+                else if(rightTermType == TermType.Scalar)
+                {
+                    sb.Append($"{ViewModel.ScalarFactors[rightIndex]} ");
+                }
+            }
+
+            result.DataName = sb.ToString();
+
+            ViewModel.Result = result;
+
+            sb.Append("\n");
+            ViewModel.OperationHistory = ViewModel.OperationHistory + sb.ToString();           
         }
         private void AddResultToWorkspace_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -254,6 +413,15 @@ namespace ImagingSIMS.Controls.Tabs
         private void ClearHistory_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             ViewModel.OperationHistory = string.Empty;
+        }
+
+        private void ResultImage_MouseMove(object sender, MouseEventArgs e)
+        {
+            if(e.LeftButton == MouseButtonState.Pressed)
+            {
+                var dataObj = new DataObject("Data2D", ViewModel.Result);
+                DragDrop.DoDragDrop(sender as DependencyObject, dataObj, DragDropEffects.Copy);
+            }
         }
     }
 }

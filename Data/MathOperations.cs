@@ -24,5 +24,8 @@ namespace ImagingSIMS.Data
 
         [Description("\u221A")]
         Sqrt,
+
+        [Description("|x|")]
+        Abs,
     }
 }

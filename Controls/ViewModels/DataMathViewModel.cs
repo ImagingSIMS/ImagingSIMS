@@ -6,6 +6,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
+using ImagingSIMS.Common.Controls;
 using ImagingSIMS.Data;
 using ImagingSIMS.Data.Imaging;
 
@@ -20,6 +22,9 @@ namespace ImagingSIMS.Controls.ViewModels
         MathOperations _operation;
         string _operationHistory;
         Data2D _result;
+        ColorScaleTypes _resultColorScale;
+        NotifiableColor _resultSolidColorScale;
+        BitmapSource _resultPreview;
 
         public ObservableCollection<Data2D> DataVariables
         {
@@ -102,6 +107,45 @@ namespace ImagingSIMS.Controls.ViewModels
                 {
                     _result = value;
                     NotifyPropertyChanged();
+                    redraw();
+                }
+            }
+        }
+        public ColorScaleTypes ResultColorScale
+        {
+            get { return _resultColorScale; }
+            set
+            {
+                if (_resultColorScale != value)
+                {
+                    _resultColorScale = value;
+                    NotifyPropertyChanged();
+                    redraw();
+                }
+            }
+        }
+        public NotifiableColor ResultSolidColorScale
+        {
+            get { return _resultSolidColorScale; }
+            set
+            {
+                if (_resultSolidColorScale != value)
+                {
+                    _resultSolidColorScale = value;
+                    NotifyPropertyChanged();
+                    redraw();
+                }
+            }
+        }
+        public BitmapSource ResultPreview
+        {
+            get { return _resultPreview; }
+            set
+            {
+                if (_resultPreview != value)
+                {
+                    _resultPreview = value;
+                    NotifyPropertyChanged();
                 }
             }
         }
@@ -113,13 +157,34 @@ namespace ImagingSIMS.Controls.ViewModels
                 Data2D.Empty, Data2D.Empty, Data2D.Empty, Data2D.Empty,
                 Data2D.Empty, Data2D.Empty, Data2D.Empty, Data2D.Empty
             };
-            ScalarFactors = new ObservableCollection<double>();
+            ScalarFactors = new ObservableCollection<double>()
+            {
+                0d, 0d, 0d, 0d,
+                0d, 0d, 0d, 0d,
+            };
+            ResultColorScale = ColorScaleTypes.ThermalCold;
+            ResultSolidColorScale = NotifiableColor.White;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void redraw()
+        {
+            if (Result == null) return;
+
+            if (ResultColorScale == ColorScaleTypes.Solid)
+            {
+
+                ResultPreview = ImageHelper.CreateSolidColorImage(Result, ResultSolidColorScale);
+            }
+            else
+            {
+                ResultPreview = ImageHelper.CreateColorScaleImage(Result, ResultColorScale);
+            }
         }
     }
 
@@ -150,47 +215,54 @@ namespace ImagingSIMS.Controls.ViewModels
 
         Scalar,
 
+        None,
+
         Unknown,
     }
 
     public enum TermIdentity
     {
+        [Description("None")]
+        [MathTermType(TermType.None)]
+        [MathTermIndex(-1)]
+        None,
+
         [Description("Variable 1")]
         [MathTermType(TermType.Data)]
         [MathTermIndex(0)]
         Variable1,
 
-        [Description("Variable 1")]
+        [Description("Variable 2")]
         [MathTermType(TermType.Data)]
         [MathTermIndex(1)]
         Variable2,
 
-        [Description("Variable 1")]
+        [Description("Variable 3")]
         [MathTermType(TermType.Data)]
         [MathTermIndex(2)]
         Variable3,
 
-        [Description("Variable 1")]
+        [Description("Variable 4")]
         [MathTermType(TermType.Data)]
         [MathTermIndex(3)]
         Variable4,
 
-        [Description("Variable 1")]
+        [Description("Variable 5")]
         [MathTermType(TermType.Data)]
         [MathTermIndex(4)]
         Variable5,
 
-        [Description("Variable 1")]
+        [Description("Variable 6")]
         [MathTermType(TermType.Data)]
         [MathTermIndex(5)]
         Variable6,
 
-        [Description("Variable 1")]
+        [Description("Variable 7")]
         [MathTermType(TermType.Data)]
         [MathTermIndex(6)]
         Variable7,
 
-        [Description("Variable 1")]
+        [Description("Variable 8")]
         [MathTermType(TermType.Data)]
         [MathTermIndex(7)]
         Variable8,

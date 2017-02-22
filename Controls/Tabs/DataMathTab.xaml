@@ -9,6 +9,9 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:ctl="clr-namespace:ImagingSIMS.Controls"
              xmlns:bc="clr-namespace:ImagingSIMS.Controls.BaseControls"
+             xmlns:img="clr-namespace:ImagingSIMS.Data.Imaging;assembly=Data"
+             xmlns:common="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             xmlns:cnvt="clr-namespace:ImagingSIMS.Controls.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="1000">
     <UserControl.Resources>
@@ -16,9 +19,15 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\Themes\Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <cnvt:ColorScaleToBoolConverter x:Key="colorScaleToBoolConverter"/>
             <ObjectDataProvider x:Key="termIdentityFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
                 <ObjectDataProvider.MethodParameters>
                     <x:Type TypeName="vm:TermIdentity"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            <ObjectDataProvider x:Key="colorScaleFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="img:ColorScaleTypes"/>
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
             <Style TargetType="{x:Type Button}">
@@ -306,9 +315,38 @@
             </StackPanel>
             <!-- Result -->
             <Grid Grid.Row="1">
-                <Image Source="{Binding Result, Converter={StaticResource data2DToBitmapSourceConverter}}"
-                       HorizontalAlignment="Left" Margin="4"
-                       Stretch="UniformToFill"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Image Source="{Binding ResultPreview}"
+                       HorizontalAlignment="Left"
+                       Margin="4"
+                       Stretch="Uniform"
+                       MouseMove="ResultImage_MouseMove">
+                    <Image.ToolTip>
+                        <ToolTip>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="{Binding Result.Maximum, StringFormat=Max:{0}}"/>
+                                <TextBlock Text="{Binding Result.Minimum, StringFormat=Min:{0}}"/>
+                            </StackPanel>
+                        </ToolTip>
+                    </Image.ToolTip>
+                </Image>
+
+                <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left">
+
+                    <ComboBox Width="200" ItemsSource="{Binding Source={StaticResource colorScaleFromEnum}}" SelectedItem="{Binding ResultColorScale}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    
+                </StackPanel>
+                
             </Grid>
             <!-- Add Result -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
@@ -325,10 +363,12 @@
                 </Grid.ColumnDefinitions>
                 
                 <TextBox Grid.Column="0" TextWrapping="Wrap" 
-                     HorizontalAlignment="Left"
-                     Width="300" Height="Auto" 
-                     Text="{Binding OperationHistory}"
-                     IsReadOnly="True" Background="Transparent" Foreground="White"/>
+                            HorizontalAlignment="Stretch"
+                            VerticalScrollBarVisibility="Auto"
+                            MaxHeight="200"
+                            Width="Auto" Height="Auto" 
+                            Text="{Binding OperationHistory}"
+                            IsReadOnly="True" Background="Transparent" Foreground="White"/>
 
                 <Button Grid.Column="1" Width="75" 
                         HorizontalAlignment="Left"
