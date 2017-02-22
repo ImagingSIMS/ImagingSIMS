@@ -45,6 +45,14 @@
                 <Setter Property="Width" Value="100"/>
                 <Setter Property="Height" Value="23"/>
             </Style>
+            <Style TargetType="{x:Type bc:IndexedStackPanel}">
+                <Setter Property="Background" Value="Transparent"/>
+                <Style.Triggers>
+                    <Trigger Property="IsDragTarget" Value="True">
+                        <Setter Property="Background" Value="{StaticResource ThemeBlueAltBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.CommandBindings>
@@ -62,14 +70,14 @@
 
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -79,7 +87,8 @@
             <!-- Variables -->
             <!-- 0 -->
             <bc:IndexedStackPanel Grid.Column="0" Grid.Row="0" Index="0" 
-                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">                
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">                
                 <StackPanel Orientation="Horizontal">
                     <TextBlock>Table 1:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[0].DataName}"/>
@@ -97,7 +106,8 @@
             </bc:IndexedStackPanel>
             <!-- 1 -->
             <bc:IndexedStackPanel Grid.Column="0" Grid.Row="1" Index="1" 
-                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock>Table 2:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[1].DataName}"/>
@@ -115,7 +125,8 @@
             </bc:IndexedStackPanel>
             <!-- 2 -->
             <bc:IndexedStackPanel Grid.Column="0" Grid.Row="2" Index="2" 
-                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock>Table 3:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[2].DataName}"/>
@@ -133,7 +144,8 @@
             </bc:IndexedStackPanel>
             <!-- 3 -->
             <bc:IndexedStackPanel Grid.Column="0" Grid.Row="3" Index="3" 
-                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock>Table 4:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[3].DataName}"/>
@@ -151,7 +163,8 @@
             </bc:IndexedStackPanel>
             <!-- 4 -->
             <bc:IndexedStackPanel Grid.Column="0" Grid.Row="4" Index="4" 
-                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock>Table 5:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[4].DataName}"/>
@@ -169,7 +182,8 @@
             </bc:IndexedStackPanel>
             <!-- 5 -->
             <bc:IndexedStackPanel Grid.Column="0" Grid.Row="5" Index="5" 
-                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock>Table 6:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[5].DataName}"/>
@@ -187,7 +201,8 @@
             </bc:IndexedStackPanel>
             <!-- 6 -->
             <bc:IndexedStackPanel Grid.Column="0" Grid.Row="6" Index="6" 
-                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock>Table 7:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[6].DataName}"/>
@@ -205,7 +220,8 @@
             </bc:IndexedStackPanel>
             <!-- 7 -->
             <bc:IndexedStackPanel Grid.Column="0" Grid.Row="7" Index="7" 
-                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop">
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock>Table 8:</TextBlock>
                     <TextBlock Text="{Binding DataVariables[7].DataName}"/>

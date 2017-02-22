@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ImagingSIMS.Common;
 using ImagingSIMS.Common.Dialogs;
 using ImagingSIMS.Controls.BaseControls;
 using ImagingSIMS.Controls.ViewModels;
@@ -58,25 +59,7 @@ namespace ImagingSIMS.Controls.Tabs
             TermType leftTermType = GetTermType(ViewModel.LeftTerm);
             TermType rightTermType = GetTermType(ViewModel.RightTerm);
 
-            if (leftTermType == TermType.Unknown || rightTermType == TermType.Unknown ||
-                leftIndex == -1 || rightIndex == -1)
-            {
-                e.CanExecute = false;
-                return;
-            }
-
-            if (leftTermType == TermType.None && rightTermType == TermType.None)
-            {
-                e.CanExecute = false;
-                return;
-            }
-
-            if(leftTermType == TermType.None && rightTermType != TermType.Data)
-            {
-                e.CanExecute = false;
-                return;
-            }
-            if(rightTermType == TermType.None &&  leftTermType!= TermType.Data)
+            if (!GetIsOpValid(leftTermType, rightTermType, ViewModel.Operation))
             {
                 e.CanExecute = false;
                 return;
@@ -88,13 +71,17 @@ namespace ImagingSIMS.Controls.Tabs
             // Only need to perform check on data table since scalar can be 0 for maybe some odd calculation
             if (leftTermType == TermType.Data)
             {
-                leftIsOk = !ViewModel.DataVariables[leftIndex].Equals(Data2D.Empty);
+                if (leftIndex == -1) leftIsOk = false;
+                else
+                    leftIsOk = !ViewModel.DataVariables[leftIndex].Equals(Data2D.Empty);
             }
             else leftIsOk = true;
 
             if (rightTermType == TermType.Data)
             {
-                rightIsOk = !ViewModel.DataVariables[rightIndex].Equals(Data2D.Empty);
+                if (rightIndex == -1) rightIsOk = false;
+                else
+                    rightIsOk = !ViewModel.DataVariables[rightIndex].Equals(Data2D.Empty);
             }
             else rightIsOk = true;
 
@@ -241,13 +228,13 @@ namespace ImagingSIMS.Controls.Tabs
                     switch (op)
                     {
                         case MathOperations.Add:
-                            result = rightData + leftScalar;
+                            result = leftScalar + rightData;
                             break;
                         case MathOperations.Divide:
                             result = leftScalar / rightData;
                             break;
                         case MathOperations.Multiply:
-                            result = rightData * leftScalar;
+                            result = leftScalar * rightData;
                             break;
                         case MathOperations.Subtract:
                             result = leftScalar - rightData;
@@ -311,7 +298,7 @@ namespace ImagingSIMS.Controls.Tabs
                     sb.Append($"{ViewModel.ScalarFactors[leftIndex]} ");
                 }
 
-                sb.Append($"{ViewModel.Operation} ");
+                sb.Append($"{EnumEx.Get(ViewModel.Operation)} ");
 
                 if(rightTermType == TermType.Data)
                 {
@@ -329,6 +316,45 @@ namespace ImagingSIMS.Controls.Tabs
 
             sb.Append("\n");
             ViewModel.OperationHistory = ViewModel.OperationHistory + sb.ToString();           
+        }
+        private bool GetIsOpValid(TermType leftTerm, TermType rightTerm, MathOperations op)
+        {
+            // These will never pass check
+            if (leftTerm == TermType.Unknown || rightTerm == TermType.Unknown) return false;
+            if (leftTerm == TermType.None) return false;
+            if (leftTerm == TermType.None && rightTerm == TermType.None) return false;
+
+            if (leftTerm == TermType.Data)
+            {
+                if (rightTerm == TermType.Data)
+                {
+                    return op == MathOperations.Add || op == MathOperations.Divide ||
+                        op == MathOperations.Multiply || op == MathOperations.Subtract;
+                }
+                else if (rightTerm == TermType.Scalar)
+                {
+                    return op == MathOperations.Add || op == MathOperations.Divide ||
+                        op == MathOperations.Multiply || op == MathOperations.Subtract ||
+                        op == MathOperations.Power;
+                }
+                else if (rightTerm == TermType.None)
+                {
+                    return op == MathOperations.Abs || op == MathOperations.OneOver ||
+                        op == MathOperations.Sqrt;
+                }
+            }
+            else if (leftTerm == TermType.Scalar)
+            {
+                if (rightTerm == TermType.Data)
+                {
+                    return op == MathOperations.Add || op == MathOperations.Divide ||
+                        op == MathOperations.Multiply || op == MathOperations.Subtract;
+                }
+                else if (rightTerm == TermType.Scalar) return false;
+                else if (rightTerm == TermType.None) return false;
+            }
+
+            return false;
         }
         private void AddResultToWorkspace_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
