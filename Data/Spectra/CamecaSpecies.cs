@@ -85,6 +85,11 @@ namespace ImagingSIMS.Data.Spectra
             return values.ToArray();
         }
 
+        public override string ToString()
+        {
+            return $"{Label} - {Mass.ToString("0.00")}";
+        }
+
         // Layout:
         // (int)    Cycles
         // (int)    SizeInBytes
