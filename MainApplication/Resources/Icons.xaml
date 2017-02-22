@@ -78,4 +78,15 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+    <DrawingImage x:Key="Calculator" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Children>
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M8.172,-0.000399999999999068L5,3.1726 5,28.8286 8.172,31.9996 23.828,31.9996 27,28.8286 27,3.1726 23.828,-0.000399999999999068z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M21,26L19,26 19,20 21,20z M21,18L19,18 19,16 21,16z M21,14L19,14 19,12 21,12z M17,26L15,26 15,24 17,24z M13,26L11,26 11,24 13,24z M17,22L15,22 15,20 17,20z M13,22L11,22 11,20 13,20z M17,18L15,18 15,16 17,16z M13,18L11,18 11,16 13,16z M17,14L15,14 15,12 17,12z M13,14L11,14 11,12 13,12z M21,10L11,10 11,6 21,6z M23,27.172L22.172,28 9.828,28 9,27.172 9,4.829 9.828,4 22.172,4 23,4.829z M23,2L9,2 7,4 7,28 9,30 23,30 25,28 25,4z" />
+                    <GeometryDrawing Brush="#FFF0EFF1" Geometry="F1M21,10L11,10 11,6 21,6z M21,14L19,14 19,12 21,12z M21,18L19,18 19,16 21,16z M21,26L19,26 19,20 21,20z M17,14L15,14 15,12 17,12z M17,18L15,18 15,16 17,16z M17,22L15,22 15,20 17,20z M17,26L15,26 15,24 17,24z M13,14L11,14 11,12 13,12z M13,18L11,18 11,16 13,16z M13,22L11,22 11,20 13,20z M13,26L11,26 11,24 13,24z M22.172,4L9.828,4 9,4.829 9,27.172 9.828,28 22.172,28 23,27.172 23,4.829z" />
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 </ResourceDictionary>

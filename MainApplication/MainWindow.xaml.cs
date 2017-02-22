@@ -1597,6 +1597,12 @@ namespace ImagingSIMS.MainApplication
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
+        private void ribbonOpenDataMathTab_Click(object sender, RoutedEventArgs e)
+        {
+            var dmt = new DataMathTab();
+            var cti = ClosableTabItem.Create(dmt, TabType.DataMath, "Data Math", true);
+            AddTabItemAndNavigate(cti);
+        }
         private void NewSampleData(object sender, RoutedEventArgs e)
         {
             SampleData sd = new SampleData(Workspace.SampleXDimension, Workspace.SampleYDimension, Workspace.SampleZDimension);

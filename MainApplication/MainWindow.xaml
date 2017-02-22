@@ -294,6 +294,10 @@
                                   LargeImageSource="Images\DepthProfile.ico" Click="ribbonOpenDepthProfileTab_Click"
                                   ToolTipTitle="Depth Profile" 
                                   ToolTipDescription="Opens a tab to select tables to generate a depth profile."/>
+                    <RibbonButton Label="Math"
+                                  LargeImageSource="{StaticResource Calculator}" Click="ribbonOpenDataMathTab_Click"
+                                  ToolTipTitle="Open Data Math Tab"
+                                  ToolTipDescription="Opens a tab which allows to add, subtract, divide, multiply, etc. tables and scalars."/>
                 </RibbonGroup>
                 <RibbonGroup Header="Spectra">
                     <RibbonButton LargeImageSource="Images\Crop.ico" Label="Crop" ToolTipTitle="Crop Spectrum"
