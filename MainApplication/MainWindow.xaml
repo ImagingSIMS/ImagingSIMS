@@ -976,13 +976,15 @@
                 </RibbonGroup>
                 <RibbonGroup Header="Layers">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="4" MinWidth="20" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"/>
+                        <xctk:IntegerUpDown Margin="4" Width="50"
+                                            Minimum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerMinimum}"
+                                            Maximum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerEnd}"
+                                            Value="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"/>
                         <xctk:RangeSlider Margin="4"  Width="150" Step="1"
                                       LowerValue="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"
                                       HigherValue="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerEnd}"
                                       Minimum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerMinimum}"
                                       Maximum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerMaximum}"/>
-                        
                         <xctk:IntegerUpDown Margin="4" Width="50"
                                             Minimum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerStart}"
                                             Maximum="{Binding ElementName=tabMain, Path=SelectedContent.BatchApply.LayerMaximum}"
