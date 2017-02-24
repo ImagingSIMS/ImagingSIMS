@@ -200,7 +200,7 @@ namespace ImagingSIMS.Data.Spectra
             {
                 BinaryReader reader = new BinaryReader(stream);
 
-                List<CamecaNanoSIMSTabMass> masses = new List<CamecaNanoSIMSTabMass>();
+                CamecaNanoSIMSTabMassCollection masses = new CamecaNanoSIMSTabMassCollection();
 
                 var header = new CamecaNanoSIMSHeader();
                 header.ParseFromStream(reader);
@@ -265,7 +265,7 @@ namespace ImagingSIMS.Data.Spectra
             bool isEqual = false;
 
             isEqual = x.SizeX == y.SizeX && x.SizeY == y.SizeY
-                && x.Masses == y.Masses && x.AnalysisType == y.AnalysisType;
+                && x.Masses.Equals(y.Masses) && x.AnalysisType == y.AnalysisType;
 
             if (!equateSizeZ) return isEqual;
 
