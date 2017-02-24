@@ -6,11 +6,38 @@ using System.Text;
 
 namespace ImagingSIMS.Data.Spectra.CamecaHeaders
 {
+    internal class CamecaNanoSIMSTabMassCollection : List<CamecaNanoSIMSTabMass>
+    {
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            CamecaNanoSIMSTabMassCollection collection = obj as CamecaNanoSIMSTabMassCollection;
+            if (collection == null) return false;
+
+            return CheckEquality(collection);
+        }
+        internal bool CheckEquality(CamecaNanoSIMSTabMassCollection collection)
+        {
+            if (Count != collection.Count) return false;
+
+            for (int i = 0; i < Count; i++)
+            {
+                if (!this[i].Equals(collection[i])) return false;
+            }
+
+            return true;
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+    }
     internal class CamecaNanoSIMSTabMassIdentityComparer : IEqualityComparer<CamecaNanoSIMSTabMass>
     {
         public bool Equals(CamecaNanoSIMSTabMass x, CamecaNanoSIMSTabMass y)
         {
-            return x.Amu == y.Amu && x.Polyatomic.MassLabel == y.Polyatomic.MassLabel && x.Polyatomic.Charge == y.Polyatomic.Charge;
+            return Math.Abs(x.Amu - y.Amu) < 0.01d && x.Polyatomic.MassLabel == y.Polyatomic.MassLabel && x.Polyatomic.Charge == y.Polyatomic.Charge;
         }
 
         public int GetHashCode(CamecaNanoSIMSTabMass obj)
@@ -61,7 +88,7 @@ namespace ImagingSIMS.Data.Spectra.CamecaHeaders
         public CamecaNanoSIMSHeader Header { get; set; }
         public CamecaNanoSIMSHeaderImage HeaderImage { get; set; }
         public CamecaNanoSIMSMaskImage MaskImage { get; set; }
-        public ICollection<CamecaNanoSIMSTabMass> Masses { get; set; }
+        public CamecaNanoSIMSTabMassCollection Masses { get; set; }
 
         public int Release { get { return Header.Release; } }
         public CamecaNanoSIMSAnalysisType AnalysisType { get { return Header.AnalysisType; } }
@@ -85,7 +112,7 @@ namespace ImagingSIMS.Data.Spectra.CamecaHeaders
 
             Header.Release = -1;
 
-            Masses = new List<CamecaNanoSIMSTabMass>();
+            Masses = new CamecaNanoSIMSTabMassCollection();
         }
     }
 
@@ -395,6 +422,18 @@ namespace ImagingSIMS.Data.Spectra.CamecaHeaders
 
             Polyatomic = new CamecaNanoSIMSPolyatomic();
             Polyatomic.ParseFromStream(reader);
+        }
+
+        public override bool Equals(object obj)
+        {
+            CamecaNanoSIMSTabMass tm = obj as CamecaNanoSIMSTabMass;
+            if (tm == null) return false;
+
+            return Math.Abs(Amu - tm.Amu) < 0.01d && Polyatomic.MassLabel == tm.Polyatomic.MassLabel && Polyatomic.Charge == tm.Polyatomic.Charge;
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
     internal class CamecaNanoSIMSHeaderImage : CamecaNanoSIMSHeaderPart
