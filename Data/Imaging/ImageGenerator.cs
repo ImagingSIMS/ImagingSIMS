@@ -11,6 +11,24 @@ namespace ImagingSIMS.Data.Imaging
 {
     public static class ImageGenerator
     {
+        // TODO:
+        //else if (pf == PixelFormats.Gray16)
+        //{
+        //    byte pixelVal = (byte)(BitConverter.ToInt16(pixels, pos) / 2);
+
+        //    b = pixelVal;
+        //    g = pixelVal;
+        //    r = pixelVal;
+        //    pos += 2;
+        //}
+
+        //else if (pf == PixelFormats.Gray16)
+        //{
+        //    array[x, y] = BitConverter.ToUInt16(pixels, pos);
+
+        //    pos += 2;
+        //}
+
         static IImageGenerator _generator;
 
         static ImageGenerator()

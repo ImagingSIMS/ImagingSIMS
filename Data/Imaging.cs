@@ -197,6 +197,12 @@ namespace ImagingSIMS.Data.Imaging
 
                         pos += 1;
                     }
+                    else if (pf == PixelFormats.Gray16)
+                    {
+                        array[x, y] = BitConverter.ToUInt16(pixels, pos);
+
+                        pos += 2;
+                    }
                     else if (pf == PixelFormats.Bgr24)
                     {
                         byte b = pixels[pos + 0];      //Blue
@@ -293,6 +299,15 @@ namespace ImagingSIMS.Data.Imaging
                         r = pixels[pos];
 
                         pos += 1;
+                    }
+                    else if (pf == PixelFormats.Gray16)
+                    {
+                        byte pixelVal = (byte)(BitConverter.ToInt16(pixels, pos) / 2);
+
+                        b = pixelVal;
+                        g = pixelVal;
+                        r = pixelVal;
+                        pos += 2;
                     }
                     else if (pf == PixelFormats.Bgr24)
                     {
