@@ -1385,33 +1385,15 @@ namespace ImagingSIMS.Data
         {
             Data2D resized = new Data2D(highResSizeX, highResSizeY);
 
-            float A, B, C, D;
-            int x, y;
             float xRatio = (lowResSizeX - 1f) / highResSizeX;
             float yRatio = (lowResSizeY - 1f) / highResSizeY;
-            float xDiff, yDiff;
 
             for (int i = 0; i < highResSizeX; i++)
             {
                 for (int j = 0; j < highResSizeY; j++)
                 {
-                    x = (int)(xRatio * i);
-                    y = (int)(yRatio * j);
-                    xDiff = (xRatio * i) - x;
-                    yDiff = (yRatio * j) - y;
 
-                    int x1 = x + 1;
-                    if (x1 >= highResSizeX) x1 = x;
-                    int y1 = y + 1;
-                    if (y1 >= highResSizeY) y1 = y;
-
-                    A = _matrix[x, y];
-                    B = _matrix[x + 1, y];
-                    C = _matrix[x, y + 1];
-                    D = _matrix[x + 1, y + 1];
-
-                    resized[i, j] = (A * (1f - xDiff) * (1f - yDiff)) + (B * (xDiff) * (1f - yDiff)) +
-                        (C * (yDiff) * (1f - xDiff)) + (D * (xDiff) * (yDiff));
+                    resized[i, j] = Sample(xRatio * i, yRatio * j);
                 }
             }
 
@@ -1461,6 +1443,32 @@ namespace ImagingSIMS.Data
             float d = v1;
 
             return d + frac * (c + frac * (b + frac * a));
+        }
+
+        /// <summary>
+        /// Uses bilinear interpolation to get matrix value and non-integer locations at the specified double-precision location.
+        /// </summary>
+        /// <param name="positionX">X location</param>
+        /// <param name="positionY">Y location</param>
+        /// <returns>Value from the matrix at the specified location.</returns>
+        public float Sample(double positionX, double positionY)
+        {
+            int x = (int)positionX;
+            int y = (int)positionY;
+
+            double xDiff = positionX - x;
+            double yDiff = positionY - y;
+
+            int x1 = x + 1 >= Width ? x : x + 1;
+            int y1 = y + 1 >= Height ? y : y + 1;
+
+            float a = _matrix[x, y];
+            float b = _matrix[x1, y];
+            float c = _matrix[x, y1];
+            float d = _matrix[x1, y1];
+
+            return (float)((a * (1 - xDiff) * (1 - yDiff)) + 
+                (b * xDiff * (1 - yDiff)) + (c * yDiff * (1 - xDiff)) + (d * xDiff * yDiff));
         }
 
         #region Operator Overloads
