@@ -38,7 +38,7 @@ namespace ImagingSIMS.Controls.BaseControls
         public static readonly DependencyProperty IsPointBasedProperty = DependencyProperty.Register("IsPointBased",
             typeof(bool), typeof(RegistrationInputImage), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.None, isPointBasedChanged));
         public static readonly DependencyProperty SelectionColorProperty = DependencyProperty.Register("SelectionColor",
-            typeof(NotifiableColor), typeof(RegistrationInputImage), new FrameworkPropertyMetadata(NotifiableColor.FromArgb(255, 0, 255, 0), FrameworkPropertyMetadataOptions.None, updateOverlayImage));
+            typeof(NotifiableColor), typeof(RegistrationInputImage), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.None, updateOverlayImage));
         public static readonly DependencyProperty PointSourceProperty = DependencyProperty.Register("PointSource",
             typeof(PointSource), typeof(RegistrationInputImage), new FrameworkPropertyMetadata(PointSource.Selection));
         public static readonly DependencyProperty CanSelectROIProperty = DependencyProperty.Register("CanSelectROI",
@@ -147,6 +147,8 @@ namespace ImagingSIMS.Controls.BaseControls
         {
             _selectedPoints = new ObservableCollection<Point>();
             _selectedPoints.CollectionChanged += _selectedPoints_CollectionChanged;
+
+            SelectionColor = NotifiableColor.FromArgb(255, 0, 255, 0);
 
             InitializeComponent();
         }

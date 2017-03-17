@@ -268,6 +268,18 @@ namespace ImagingSIMS.Common.Controls
                 };
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            var c = obj as NotifiableColor;
+            if (c == null) return false;
+
+            return c.A == A && c.R == R && c.G == G && c.B == B;
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     public delegate void NotifiableColorChangedEventHandler(object sender, NotifiableColorChangedEventArgs e);
