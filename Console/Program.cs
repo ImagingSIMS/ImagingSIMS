@@ -39,6 +39,7 @@ namespace ConsoleApp
             //Console.WriteLine("Press Enter to begin...");
             //Console.ReadLine();
 
+            // https://www.codeproject.com/articles/95453/automatic-image-stitching-with-accord-net
             var inputFixedImage = ImageHelper.BitmapSourceFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputFixedImage.bmp");
             var inputMovingImage = ImageHelper.BitmapSourceFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputMovingImage.bmp");
             var fixedPointList = PointSet.PointSetFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\fixedPointList.pts");
@@ -142,6 +143,7 @@ namespace ConsoleApp
                 movingPoints[i, 1] = movingPointList[i].Y * matrixMovingImage.Height;
             }
 
+            // http://math.stackexchange.com/questions/296794/finding-the-transform-matrix-from-4-projected-points-with-javascript
             // [row, col]
 
             var numPoints = fixedPointList.Count;
