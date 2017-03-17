@@ -12,10 +12,9 @@ using ImagingSIMS.Data.Imaging;
 
 using Matrix = DotNumerics.LinearAlgebra.Matrix;
 
-using Accord.Statistics.Analysis;
-using Accord.Math;
-using Accord.Statistics;
-using Accord.Math.Decompositions;
+//using Accord.Math;
+//using Accord.Statistics;
+//using Accord.Math.Decompositions;
 using ImagingSIMS.Data.Colors;
 using ImagingSIMS.Data.Spectra;
 
@@ -926,157 +925,159 @@ namespace ImagingSIMS.Data.Fusion
         {
             // 1. The resampled multi-spectral image is transformed with PCA
 
-            int linearLength = _highResSizeX * _highResSizeY;
+            //int linearLength = _highResSizeX * _highResSizeY;
 
-            double[,] msLinearData = new double[linearLength, 3];
-            double[,] msIhsData = new double[linearLength, 3];
-            double[] panLinearData = new double[linearLength];
-            double[] intensityBand = new double[linearLength];
+            //double[,] msLinearData = new double[linearLength, 3];
+            //double[,] msIhsData = new double[linearLength, 3];
+            //double[] panLinearData = new double[linearLength];
+            //double[] intensityBand = new double[linearLength];
 
-            for (int x = 0; x < _highResSizeX; x++)
-            {
-                for (int y = 0; y < _highResSizeY; y++)
-                {
-                    int index = x * _highResSizeY + y;
-
-                    var rgb = new RGB(_color.Layers[2][x, y], _color.Layers[1][x, y], _color.Layers[0][x, y]);
-                    rgb = rgb.Normalize();
-
-                    msLinearData[index, 0] = rgb.R;
-                    msLinearData[index, 1] = rgb.G;
-                    msLinearData[index, 2] = rgb.B;
-
-                    panLinearData[index] = _gray[x, y];
-
-                    var ihs = ColorConversion.RGBtoIHS(rgb);                    
-
-                    // Normalize each band
-                    msIhsData[index, 0] = ihs.I / 3d;
-                    msIhsData[index, 1] = ihs.H / 3d;
-                    msIhsData[index, 2] = ihs.S / 1d;
-
-                    intensityBand[index] = ihs.I;
-                }
-            }
-
-            var bandMeans = new double[3];
-            for (int j = 0; j < 3; j++)
-            {
-                var band = new double[linearLength];
-                for (int i = 0; i < linearLength; i++)
-                {
-                    band[i] = msIhsData[i, j];
-                }
-                bandMeans[j] = band.Mean();
-                for (int i = 0; i < linearLength; i++)
-                {
-                    msIhsData[i, j] -= bandMeans[j];
-                }
-            }            
-
-            var svd = new SingularValueDecomposition(msIhsData, true, true, false, false);
-            var u = svd.LeftSingularVectors;
-
-            //int indexPc1 = svd.Ordering.IndexOf(0);
-            var indexPc1 = 0;
-
-            // 2. The panchromatic image is smoothed by a Gaussian filter. 
-            Data2D smoothed = Filter.DoFilter(_gray, FilterType.LowPass);
-
-            // 3.  The high spatial detail of panchromatic image is extracted
-            //      as the difference between the original panchromatic
-            //      image and the smoothed one. 
-
-            //double[] highSpatialDetail = new double[linearLength];
             //for (int x = 0; x < _highResSizeX; x++)
             //{
             //    for (int y = 0; y < _highResSizeY; y++)
             //    {
             //        int index = x * _highResSizeY + y;
 
-            //        highSpatialDetail[index] = _gray[x, y] - smoothed[x, y];
-            //        //highSpatialDetail[index] = _gray[x, y];
+            //        var rgb = new RGB(_color.Layers[2][x, y], _color.Layers[1][x, y], _color.Layers[0][x, y]);
+            //        rgb = rgb.Normalize();
+
+            //        msLinearData[index, 0] = rgb.R;
+            //        msLinearData[index, 1] = rgb.G;
+            //        msLinearData[index, 2] = rgb.B;
+
+            //        panLinearData[index] = _gray[x, y];
+
+            //        var ihs = ColorConversion.RGBtoIHS(rgb);                    
+
+            //        // Normalize each band
+            //        msIhsData[index, 0] = ihs.I / 3d;
+            //        msIhsData[index, 1] = ihs.H / 3d;
+            //        msIhsData[index, 2] = ihs.S / 1d;
+
+            //        intensityBand[index] = ihs.I;
             //    }
             //}
 
-            // 4. A linear combination of the extracted high spatial detail
-            //      of the panchromatic image into the first principal
-            //      component using a gain parameter as the ratio of standard
-            //      deviation of pc1 to standard deviation of panchromatic
-            //      image.
+            //var bandMeans = new double[3];
+            //for (int j = 0; j < 3; j++)
+            //{
+            //    var band = new double[linearLength];
+            //    for (int i = 0; i < linearLength; i++)
+            //    {
+            //        band[i] = msIhsData[i, j];
+            //    }
+            //    bandMeans[j] = band.Mean();
+            //    for (int i = 0; i < linearLength; i++)
+            //    {
+            //        msIhsData[i, j] -= bandMeans[j];
+            //    }
+            //}            
 
-            double[] pc1 = new double[linearLength];
-            for (int i = 0; i < linearLength; i++)
-            {
-                pc1[i] = u[i, indexPc1];
-            }
+            //var svd = new SingularValueDecomposition(msIhsData, true, true, false, false);
+            //var u = svd.LeftSingularVectors;
 
-            //var matched = HistogramMatching.Match(highSpatialDetail, pc1, 1000);
-            var matched = HistogramMatching.Match(panLinearData, pc1, 1000);
+            ////int indexPc1 = svd.Ordering.IndexOf(0);
+            //var indexPc1 = 0;
 
-            double origMin = panLinearData.Min();
-            double origMax = panLinearData.Max();
-            double pcMin = pc1.Min();
-            double pcMax = pc1.Max();
-            double pcMean = pc1.Mean();
-            double pcStDev = pc1.StandardDeviation();
-            double panMin = matched.Min();
-            double panMax = matched.Max();
-            double panMean = matched.Mean();
-            double panStDev = matched.StandardDeviation();
+            //// 2. The panchromatic image is smoothed by a Gaussian filter. 
+            //Data2D smoothed = Filter.DoFilter(_gray, FilterType.LowPass);
 
-            Random rand = new Random();
+            //// 3.  The high spatial detail of panchromatic image is extracted
+            ////      as the difference between the original panchromatic
+            ////      image and the smoothed one. 
 
-            for (int i = 0; i < linearLength; i++)
-            {
-                //u[i, indexPc1] = ((matched[i] - panMin) / (panMax - panMin)) * (pcMax - pcMax) + pcMin;
-                u[i, indexPc1] = matched[i];
-                //u[i, indexPc1] = rand.NextDouble() * pcMax + pcMin;
-            }
+            ////double[] highSpatialDetail = new double[linearLength];
+            ////for (int x = 0; x < _highResSizeX; x++)
+            ////{
+            ////    for (int y = 0; y < _highResSizeY; y++)
+            ////    {
+            ////        int index = x * _highResSizeY + y;
 
-            double[] pc1New = new double[linearLength];
-            for (int i = 0; i < linearLength; i++)
-            {
-                pc1New[i] = u[i, indexPc1];
-            }
-            double pcNewMin = pc1New.Min();
-            double pcNewMax = pc1New.Max();
-            double pcNewMean = pc1New.Mean();
-            double pcNewStDev = pc1New.StandardDeviation();
+            ////        highSpatialDetail[index] = _gray[x, y] - smoothed[x, y];
+            ////        //highSpatialDetail[index] = _gray[x, y];
+            ////    }
+            ////}
 
-            var reverted = svd.Reverse();
-            var fused = new Data3D(_highResSizeX, _highResSizeY, 4);
+            //// 4. A linear combination of the extracted high spatial detail
+            ////      of the panchromatic image into the first principal
+            ////      component using a gain parameter as the ratio of standard
+            ////      deviation of pc1 to standard deviation of panchromatic
+            ////      image.
 
-            //int numFailed = 0;
+            //double[] pc1 = new double[linearLength];
+            //for (int i = 0; i < linearLength; i++)
+            //{
+            //    pc1[i] = u[i, indexPc1];
+            //}
 
-            for (int x = 0; x < _highResSizeX; x++)
-            {
-                for (int y = 0; y < _highResSizeY; y++)
-                {
-                    int index = x * _highResSizeY + y;
+            ////var matched = HistogramMatching.Match(highSpatialDetail, pc1, 1000);
+            //var matched = HistogramMatching.Match(panLinearData, pc1, 1000);
 
-                    //try
-                    //{
-                    var ihs = new IHS(reverted[index, 0] * 3d + bandMeans[0], reverted[index, 1] * 3d + bandMeans[1], reverted[index, 2] * 1d + bandMeans[2]);
-                    //var ihs = new IHS(reverted[index, 0] * 3d, reverted[index, 1] * 3d, reverted[index, 2] * 1d);
-                    var rgb = ColorConversion.IHStoRGB(ihs);
+            //double origMin = panLinearData.Min();
+            //double origMax = panLinearData.Max();
+            //double pcMin = pc1.Min();
+            //double pcMax = pc1.Max();
+            //double pcMean = pc1.Mean();
+            //double pcStDev = pc1.StandardDeviation();
+            //double panMin = matched.Min();
+            //double panMax = matched.Max();
+            //double panMean = matched.Mean();
+            //double panStDev = matched.StandardDeviation();
 
-                        fused.Layers[2][x, y] = (float)rgb.R;
-                        fused.Layers[1][x, y] = (float)rgb.G;
-                        fused.Layers[0][x, y] = (float)rgb.B;
-                    //}
-                    //catch (ArgumentException)
-                    //{
-                    //    numFailed++;
+            //Random rand = new Random();
 
-                    //    fused.Layers[2][x, y] = 64;
-                    //    fused.Layers[1][x, y] = 128;
-                    //    fused.Layers[0][x, y] = 255;
-                    //}
-                }
-            }
+            //for (int i = 0; i < linearLength; i++)
+            //{
+            //    //u[i, indexPc1] = ((matched[i] - panMin) / (panMax - panMin)) * (pcMax - pcMax) + pcMin;
+            //    u[i, indexPc1] = matched[i];
+            //    //u[i, indexPc1] = rand.NextDouble() * pcMax + pcMin;
+            //}
 
-            return fused;
+            //double[] pc1New = new double[linearLength];
+            //for (int i = 0; i < linearLength; i++)
+            //{
+            //    pc1New[i] = u[i, indexPc1];
+            //}
+            //double pcNewMin = pc1New.Min();
+            //double pcNewMax = pc1New.Max();
+            //double pcNewMean = pc1New.Mean();
+            //double pcNewStDev = pc1New.StandardDeviation();
+
+            //var reverted = svd.Reverse();
+            //var fused = new Data3D(_highResSizeX, _highResSizeY, 4);
+
+            ////int numFailed = 0;
+
+            //for (int x = 0; x < _highResSizeX; x++)
+            //{
+            //    for (int y = 0; y < _highResSizeY; y++)
+            //    {
+            //        int index = x * _highResSizeY + y;
+
+            //        //try
+            //        //{
+            //        var ihs = new IHS(reverted[index, 0] * 3d + bandMeans[0], reverted[index, 1] * 3d + bandMeans[1], reverted[index, 2] * 1d + bandMeans[2]);
+            //        //var ihs = new IHS(reverted[index, 0] * 3d, reverted[index, 1] * 3d, reverted[index, 2] * 1d);
+            //        var rgb = ColorConversion.IHStoRGB(ihs);
+
+            //            fused.Layers[2][x, y] = (float)rgb.R;
+            //            fused.Layers[1][x, y] = (float)rgb.G;
+            //            fused.Layers[0][x, y] = (float)rgb.B;
+            //        //}
+            //        //catch (ArgumentException)
+            //        //{
+            //        //    numFailed++;
+
+            //        //    fused.Layers[2][x, y] = 64;
+            //        //    fused.Layers[1][x, y] = 128;
+            //        //    fused.Layers[0][x, y] = 255;
+            //        //}
+            //    }
+            //}
+
+            //return fused;
+
+            throw new NotImplementedException();
         }
         public async override Task<Data3D> DoFusionAsync()
         {
