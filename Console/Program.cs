@@ -24,7 +24,10 @@ using Device = SharpDX.Direct3D11.Device;
 using ImagingSIMS.Common;
 using ImagingSIMS.Data.Imaging;
 
-using Accord.Math.Decompositions;
+using Accord;
+using Accord.Imaging;
+using Accord.Math;
+
 using System.Globalization;
 
 namespace ConsoleApp
@@ -36,6 +39,212 @@ namespace ConsoleApp
             //Console.WriteLine("Press Enter to begin...");
             //Console.ReadLine();
 
+            var inputFixedImage = ImageHelper.BitmapSourceFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputFixedImage.bmp");
+            var inputMovingImage = ImageHelper.BitmapSourceFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputMovingImage.bmp");
+            var fixedPointList = PointSet.PointSetFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\fixedPointList.pts");
+            var movingPointList = PointSet.PointSetFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\movingPointsList.pts");
+
+            var matrixFixedImage = ImageHelper.ConvertToData3D(inputFixedImage);
+            var matrixMovingImage = ImageHelper.ConvertToData3D(inputMovingImage);
+
+            int numPoints = fixedPointList.Count;
+
+            double[,] fixedPointsNorm = new double[fixedPointList.Count, 2];
+            double[,] movingPointsNorm = new double[movingPointList.Count, 2];
+
+            double[,] fixedPoints = new double[fixedPointList.Count, 2];
+            double[,] movingPoints = new double[movingPointList.Count, 2];
+
+            IntPoint[] fixedIntPoints = new IntPoint[numPoints];
+            IntPoint[] movingIntPoints = new IntPoint[numPoints];
+
+            for (int i = 0; i < fixedPointList.Count; i++)
+            {
+                fixedPointsNorm[i, 0] = fixedPointList[i].X;
+                fixedPointsNorm[i, 1] = fixedPointList[i].Y;
+
+                movingPointsNorm[i, 0] = movingPointList[i].X;
+                movingPointsNorm[i, 1] = movingPointList[i].Y;
+
+                fixedPoints[i, 0] = fixedPointList[i].X * matrixFixedImage.Width;
+                fixedPoints[i, 1] = fixedPointList[i].Y * matrixFixedImage.Height;
+
+                movingPoints[i, 0] = movingPointList[i].X * matrixMovingImage.Width;
+                movingPoints[i, 1] = movingPointList[i].Y * matrixMovingImage.Height;
+
+                fixedIntPoints[i] = new IntPoint((int)(fixedPointList[i].X * matrixFixedImage.Width), (int)(fixedPointList[i].Y * matrixFixedImage.Height));
+                movingIntPoints[i] = new IntPoint((int)(movingPointList[i].X * matrixMovingImage.Width), (int)(movingPointList[i].Y * matrixMovingImage.Height));
+            }
+
+            RansacHomographyEstimator ransac = new RansacHomographyEstimator(0.001, 0.99);
+            var transform = ransac.Estimate(fixedIntPoints, movingIntPoints).ToDoubleArray();
+
+            int transformedWidth = matrixFixedImage.Width;
+            int transformedHeight = matrixFixedImage.Height;
+
+            var matrixTransformed = new Data3D(transformedWidth, transformedHeight, 4);
+            for (int x = 0; x < transformedWidth; x++)
+            {
+                for (int y = 0; y < transformedHeight; y++)
+                {
+                    matrixTransformed[x, y, 3] = 255;
+
+                    var point = new double[] { x, y, 1 };
+
+                    var transformedPoint = transform.Dot(point);
+
+                    var hx = transformedPoint[0] / transformedPoint[2];
+                    var hy = transformedPoint[1] / transformedPoint[2];
+
+                    int xx = (int)(transformedPoint[0] / transformedPoint[2]);
+                    int yy = (int)(transformedPoint[1] / transformedPoint[2]);
+
+                    float diffX = (float)hx - xx;
+                    float diffY = (float)hy - yy;
+
+                    if (xx < 0 || xx >= transformedWidth || yy < 0 || yy >= transformedHeight) continue;
+
+                    int x1 = xx + 1;
+                    if (x1 >= transformedWidth) x1 = xx;
+                    int y1 = yy + 1;
+                    if (y1 >= transformedHeight) y1 = yy;
+
+                    for (int z = 0; z < 3; z++)
+                    {
+                        float a = matrixMovingImage[xx, yy, z];
+                        float b = matrixMovingImage[x1, yy, z];
+                        float c = matrixMovingImage[xx, y1, z];
+                        float d = matrixMovingImage[x1, y1, z];
+
+                        matrixTransformed[x, y, z] = (a * (1f - diffX) * (1f - diffY)) + (b * diffX * (1 - diffY)) +
+                            (c * diffY * (1 - diffX)) + (d * diffX * diffY);
+                    }
+                }
+            }
+
+            var bsTransformed = ImageHelper.CreateImage(matrixTransformed);
+            bsTransformed.Save(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\transformed.bmp");
+
+            Console.Write("Press Enter to exit.");
+            Console.ReadLine();
+        }
+
+        private static void main_MatrixMath()
+        {
+            var inputFixedImage = ImageHelper.BitmapSourceFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputFixedImage.bmp");
+            var inputMovingImage = ImageHelper.BitmapSourceFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputMovingImage.bmp");
+            var fixedPointList = PointSet.PointSetFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\fixedPointList.pts");
+            var movingPointList = PointSet.PointSetFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\movingPointsList.pts");
+
+            var matrixFixedImage = ImageHelper.ConvertToData3D(inputFixedImage);
+            var matrixMovingImage = ImageHelper.ConvertToData3D(inputMovingImage);
+
+            double[,] fixedPointsNorm = new double[fixedPointList.Count, 2];
+            double[,] movingPointsNorm = new double[movingPointList.Count, 2];
+
+            double[,] fixedPoints = new double[fixedPointList.Count, 2];
+            double[,] movingPoints = new double[movingPointList.Count, 2];
+            for (int i = 0; i < fixedPointList.Count; i++)
+            {
+                fixedPointsNorm[i, 0] = fixedPointList[i].X;
+                fixedPointsNorm[i, 1] = fixedPointList[i].Y;
+
+                movingPointsNorm[i, 0] = movingPointList[i].X;
+                movingPointsNorm[i, 1] = movingPointList[i].Y;
+
+                fixedPoints[i, 0] = fixedPointList[i].X * matrixFixedImage.Width;
+                fixedPoints[i, 1] = fixedPointList[i].Y * matrixFixedImage.Height;
+
+                movingPoints[i, 0] = movingPointList[i].X * matrixMovingImage.Width;
+                movingPoints[i, 1] = movingPointList[i].Y * matrixMovingImage.Height;
+            }
+
+            // [row, col]
+
+            var numPoints = fixedPointList.Count;
+
+            var uv_mat = new double[3, 3];
+            var uv_vec = new double[3];
+            var xy_mat = new double[3, 3];
+            var xy_vec = new double[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                xy_mat[0, i] = fixedPointList[i].X;
+                xy_mat[1, i] = fixedPointList[i].Y;
+                xy_mat[2, i] = 1;
+
+                uv_mat[0, i] = movingPointList[i].X;
+                uv_mat[1, i] = movingPointList[i].Y;
+                uv_mat[2, i] = 1;
+            }
+
+            xy_vec[0] = fixedPointList[3].X;
+            xy_vec[1] = fixedPointList[3].Y;
+            xy_vec[2] = 1;
+
+            uv_vec[0] = movingPointList[3].X;
+            uv_vec[1] = movingPointList[3].Y;
+            uv_vec[2] = 1;
+
+            // lambda, mu, tao
+            var xy_coeffs = xy_mat.Solve(xy_vec);
+            var uv_coeffs = uv_mat.Solve(uv_vec);
+
+            var xy_basisMat = new double[3, 3];
+            var uv_basisMat = new double[3, 3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    xy_basisMat[i, j] = xy_coeffs[j] * xy_mat[i, j];
+                    uv_basisMat[i, j] = uv_coeffs[j] * uv_mat[i, j];
+                }
+            }
+
+            var combined = uv_basisMat.DotWithTransposed(xy_basisMat);
+
+            var dFixed = ImageHelper.ConvertToData3D(inputFixedImage);
+            var dMoving = ImageHelper.ConvertToData3D(inputMovingImage);
+
+            var transformed = new Data3D(dFixed.Width, dFixed.Height, 4);
+            for (int x = 0; x < dFixed.Width; x++)
+            {
+                for (int y = 0; y < dFixed.Height; y++)
+                {
+                    var inputCoord = new double[] { x, y, 1 };
+                    var transformedCoord = combined.Dot(inputCoord);
+
+                    double tx = transformedCoord[0] * matrixFixedImage.Width / transformedCoord[2];
+                    double ty = transformedCoord[1] * matrixFixedImage.Height / transformedCoord[2];
+
+                    int xx = (int)tx;
+                    int yy = (int)ty;
+
+                    if (xx < 0 || xx >= dFixed.Width - 1 || yy < 0 || yy >= dFixed.Height)
+                        continue;
+
+                    for (int z = 0; z < 3; z++)
+                    {
+                        transformed[xx, yy, z] = dFixed[x, y, z];
+                    }
+
+                    //double xDiff = tx - xx;
+                    //double yDiff = ty - yy;
+
+                    //for (int z = 0; z < 4; z++)
+                    //{
+
+                    //}
+                }
+            }
+
+            var bsTransformed = ImageHelper.CreateImage(transformed);
+            bsTransformed.Save(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\transformed.bmp");
+        }
+        private static void main_loadNanoSIMS()
+        {
             string filePath = @"D:\Data\NanoSIMS\20141230_HL_Pilot_8_2.im";
             using (Stream stream = File.OpenRead(filePath))
             {
@@ -184,7 +393,7 @@ namespace ConsoleApp
                     masses[i] = mass;
                 }
 
-                if(header.Realease >= 4018)
+                if (header.Realease >= 4018)
                 {
                     // Read metadata v7
                     long posPolyList = 652 + 288 * mask.NumberMasses;
@@ -288,7 +497,7 @@ namespace ConsoleApp
                 bool isOk = theoreticalSize == fileSize;
 
                 for (int i = 0; i < numImages; i++)
-                {                    
+                {
                     for (int j = 0; j < numMasses; j++)
                     {
                         for (int x = 0; x < headerImage.Width; x++)
@@ -305,11 +514,7 @@ namespace ConsoleApp
 
                 int zzz = 0;
             }
-
-            Console.Write("Press Enter to exit.");
-            Console.ReadLine();
         }
-
         private static Data2D normalizeScorePlot(Data2D matrix)
         {
             var norm = new Data2D(matrix.Width, matrix.Height);

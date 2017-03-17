@@ -951,9 +951,16 @@ namespace ImagingSIMS.MainApplication
             }
             else if(args.Type == SpectrumType.CamecaNanoSIMS)
             {
-                CamecaNanoSIMSSpectrum nanosimsSpec = new CamecaNanoSIMSSpectrum(Path.GetFileNameWithoutExtension(args.FileName));
-                nanosimsSpec.LoadFromFile(args.FileNames, sender as BackgroundWorker);
-                e.Result = nanosimsSpec;
+                try
+                {
+                    CamecaNanoSIMSSpectrum nanosimsSpec = new CamecaNanoSIMSSpectrum(Path.GetFileNameWithoutExtension(args.FileName));
+                    nanosimsSpec.LoadFromFile(args.FileNames, sender as BackgroundWorker);
+                    e.Result = nanosimsSpec;
+                }
+                catch(Exception ex)
+                {
+                    e.Result = ex;
+                }
             }
         }
         private void bw_RunWorkerCompletedSpectra(object sender, RunWorkerCompletedEventArgs e)
