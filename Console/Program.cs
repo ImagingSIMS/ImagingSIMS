@@ -96,28 +96,11 @@ namespace ConsoleApp
                     var hx = transformedPoint[0] / transformedPoint[2];
                     var hy = transformedPoint[1] / transformedPoint[2];
 
-                    int xx = (int)(transformedPoint[0] / transformedPoint[2]);
-                    int yy = (int)(transformedPoint[1] / transformedPoint[2]);
-
-                    float diffX = (float)hx - xx;
-                    float diffY = (float)hy - yy;
-
-                    if (xx < 0 || xx >= transformedWidth || yy < 0 || yy >= transformedHeight) continue;
-
-                    int x1 = xx + 1;
-                    if (x1 >= transformedWidth) x1 = xx;
-                    int y1 = yy + 1;
-                    if (y1 >= transformedHeight) y1 = yy;
+                    if (hx < 0 || hx >= transformedWidth || hy < 0 || hy >= transformedHeight) continue;
 
                     for (int z = 0; z < 3; z++)
                     {
-                        float a = matrixMovingImage[xx, yy, z];
-                        float b = matrixMovingImage[x1, yy, z];
-                        float c = matrixMovingImage[xx, y1, z];
-                        float d = matrixMovingImage[x1, y1, z];
-
-                        matrixTransformed[x, y, z] = (a * (1f - diffX) * (1f - diffY)) + (b * diffX * (1 - diffY)) +
-                            (c * diffY * (1 - diffX)) + (d * diffX * diffY);
+                        matrixTransformed[x, y, z] = matrixMovingImage.Layers[z].Sample(hx, hy);
                     }
                 }
             }
