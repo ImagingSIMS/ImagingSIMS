@@ -102,8 +102,8 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
         bool _showBoundingBox;
         bool _showCoordinateBox;
         float _coordinateBoxTransparency;
-        NotifiableColor _backColor;
-        NotifiableColor[] _volumeColors;
+        Color _backColor;
+        Color[] _volumeColors;
         bool _targetYAxisOrbiting;
         float _heightMapHeight;
         bool _enableDepthBufering;
@@ -156,7 +156,7 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
                 }
             }
         }
-        public NotifiableColor BackColor
+        public Color BackColor
         {
             get { return _backColor; }
             set
@@ -168,7 +168,7 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
                 }
             }
         }
-        public NotifiableColor[] VolumeColors
+        public Color[] VolumeColors
         {
             get { return _volumeColors; }
             set
@@ -422,7 +422,7 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
         bool _enableAmbientLighting;
         bool _enablePointLighting;
         bool _enableSpecularLighting;
-        NotifiableColor _ambientLightColor;
+        Color _ambientLightColor;
         float _ambientLightIntensity;
         PointLightSource[] _pointLights;
 
@@ -462,7 +462,7 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
                 }
             }
         }
-        public NotifiableColor AmbientLightColor
+        public Color AmbientLightColor
         {
             get { return _ambientLightColor; }
             set
@@ -505,21 +505,21 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
 
             ShowCoordinateBox = false;
             CoordinateBoxTransparency = 1.0f;
-            VolumeColors = new NotifiableColor[8]
+            VolumeColors = new Color[8]
             {
-                NotifiableColor.Black,
-                NotifiableColor.Black,
-                NotifiableColor.Black,
-                NotifiableColor.Black,
-                NotifiableColor.Black,
-                NotifiableColor.Black,
-                NotifiableColor.Black,
-                NotifiableColor.Black
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
+                Color.Black,
             };
 
             HeightMapHeight = 1.0f;
 
-            BackColor = NotifiableColor.Black;
+            BackColor = Color.Black;
 
             IsRenderLoaded = false;
 
@@ -527,7 +527,7 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
             EnablePointLighting = false;
             EnableSpecularLighting = false;
 
-            AmbientLightColor = NotifiableColor.White;
+            AmbientLightColor = Color.White;
             AmbientLightIntensity = 0f;
 
             EnablePointLighting = true;
@@ -580,7 +580,7 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
                 return new RenderingViewModel()
                 {
                     EnableAmbientLighting = true,
-                    AmbientLightColor = NotifiableColor.White,
+                    AmbientLightColor = Color.White,
                     AmbientLightIntensity = 1.0f,
 
                     EnablePointLighting = false
@@ -594,7 +594,7 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
                 return new RenderingViewModel()
                 {
                     EnableAmbientLighting = true,
-                    AmbientLightColor = NotifiableColor.White,
+                    AmbientLightColor = Color.White,
                     AmbientLightIntensity = 0.5f,
 
                     EnablePointLighting = true,
@@ -619,7 +619,7 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
                 return new RenderingViewModel()
                 {
                     EnableAmbientLighting =  true,
-                    AmbientLightColor = NotifiableColor.White,
+                    AmbientLightColor = Color.White,
                     AmbientLightIntensity = 0.5f,
 
                     EnablePointLighting = true,

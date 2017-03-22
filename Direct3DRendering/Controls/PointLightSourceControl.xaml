@@ -35,6 +35,6 @@
         </Grid>
 
         <cc:CollapsedColorSelector Grid.Column="2" Grid.Row="1"  IsAlphaEnabled="False"
-                                                                                   SelectedColor="{Binding Color}"/>
+                    SelectedColor="{Binding Color, Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
     </Grid>
 </UserControl>

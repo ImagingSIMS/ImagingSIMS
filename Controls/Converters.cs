@@ -592,7 +592,7 @@ namespace ImagingSIMS.Controls.Converters
                     return null;
 
                 ColorScaleTypes colorScale = (ColorScaleTypes)values[0];
-                Color solidColorScale = ((NotifiableColor)values[1]).Color;
+                Color solidColorScale = (Color)values[1];
                 float dataMaximum = (float)values[2];
                 double saturation = (double)values[3];
 
@@ -867,33 +867,6 @@ namespace ImagingSIMS.Controls.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
-        }
-    }
-    public class ColorToNotifiableColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                Color c = (Color)value;
-                return (NotifiableColor)c;
-            }
-            catch (Exception)
-            {
-                return NotifiableColor.Black;
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                NotifiableColor c = (NotifiableColor)value;
-                return (Color)c;
-            }
-            catch (Exception)
-            {
-                return Color.FromArgb(255, 0, 0, 0);
-            }
         }
     }
 }
