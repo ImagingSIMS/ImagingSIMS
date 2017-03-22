@@ -60,4 +60,9 @@ namespace ImagingSIMS.Controls
             get { return _transformData; }
         }
     }
+
+    public static class SpectrumCommands
+    {
+
+    }
 }

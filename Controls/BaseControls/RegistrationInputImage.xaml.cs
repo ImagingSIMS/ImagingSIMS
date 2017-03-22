@@ -148,6 +148,8 @@ namespace ImagingSIMS.Controls.BaseControls
             _selectedPoints = new ObservableCollection<Point>();
             _selectedPoints.CollectionChanged += _selectedPoints_CollectionChanged;
 
+            SelectionColor = Color.FromArgb(255, 0, 255, 0);
+
             InitializeComponent();
         }
 

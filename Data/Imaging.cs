@@ -195,13 +195,19 @@ namespace ImagingSIMS.Data.Imaging
     //                {
     //                    array[x, y] = pixels[pos];
 
-    //                    pos += 1;
-    //                }
-    //                else if (pf == PixelFormats.Bgr24)
-    //                {
-    //                    byte b = pixels[pos + 0];      //Blue
-    //                    byte g = pixels[pos + 1];      //Green
-    //                    byte r = pixels[pos + 2];      //Red
+                    //    pos += 1;
+                    //}
+                    //else if (pf == PixelFormats.Gray16)
+                    //{
+                    //    array[x, y] = BitConverter.ToUInt16(pixels, pos);
+
+                    //    pos += 2;
+                    //}
+                    //else if (pf == PixelFormats.Bgr24)
+                    //{
+                    //    byte b = pixels[pos + 0];      //Blue
+                    //    byte g = pixels[pos + 1];      //Green
+                    //    byte r = pixels[pos + 2];      //Red
 
     //                    array[x, y] = MathEx.Average(r, g, b);
 
@@ -292,13 +298,22 @@ namespace ImagingSIMS.Data.Imaging
     //                    g = pixels[pos];
     //                    r = pixels[pos];
 
-    //                    pos += 1;
-    //                }
-    //                else if (pf == PixelFormats.Bgr24)
-    //                {
-    //                    b = pixels[pos + 0];      //Blue
-    //                    g = pixels[pos + 1];      //Green
-    //                    r = pixels[pos + 2];      //Red
+                    //    pos += 1;
+                    //}
+                    //else if (pf == PixelFormats.Gray16)
+                    //{
+                    //    byte pixelVal = (byte)(BitConverter.ToInt16(pixels, pos) / 2);
+
+                    //    b = pixelVal;
+                    //    g = pixelVal;
+                    //    r = pixelVal;
+                    //    pos += 2;
+                    //}
+                    //else if (pf == PixelFormats.Bgr24)
+                    //{
+                    //    b = pixels[pos + 0];      //Blue
+                    //    g = pixels[pos + 1];      //Green
+                    //    r = pixels[pos + 2];      //Red
 
     //                    pos += 3;
     //                }

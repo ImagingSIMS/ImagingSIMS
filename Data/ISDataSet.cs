@@ -64,6 +64,20 @@ namespace ImagingSIMS.Data
             }
             return array;
         }
+
+        public override bool Equals(object obj)
+        {
+            FlatArray<T> f = obj as FlatArray<T>;
+            if (f == null) return false;
+
+            var sizesEqual = Enumerable.SequenceEqual(f._sizes, _sizes);
+            var arraysEqual = Enumerable.SequenceEqual(f._array, _array);
+            return sizesEqual && arraysEqual;
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     public sealed class Data2D : Data, ISavable
@@ -233,6 +247,17 @@ namespace ImagingSIMS.Data
                 }
             }
             return nonSparse;
+        }
+
+        public static Data2D Empty
+        {
+            get
+            {
+                return new Data2D(0, 0)
+                {
+                    DataName = "Empty"
+                };
+            }
         }
 
         public Data2D()
@@ -498,7 +523,7 @@ namespace ImagingSIMS.Data
             Data2D d = obj as Data2D;
             if (d == null) return false;
 
-            return d.DataName == DataName && d._matrix == _matrix;
+            return d.DataName == DataName && d._matrix.Equals(_matrix);
         }
         public override int GetHashCode()
         {
@@ -1164,6 +1189,34 @@ namespace ImagingSIMS.Data
 
             return d;
         }
+        public static Data2D OneOver(Data2D a)
+        {
+            Data2D d = new Data2D(a.Width, a.Height);
+
+            for (int x = 0; x < a.Width; x++)
+            {
+                for (int y = 0; y < a.Height; y++)
+                {
+                    d[x, y] = 1f / a[x, y];
+                }
+            }
+
+            return d;
+        }
+        public static Data2D Pow(Data2D a, float s)
+        {
+            Data2D d = new Data2D(a.Width, a.Height);
+
+            for (int x = 0; x < a.Width; x++)
+            {
+                for (int y = 0; y < a.Height; y++)
+                {
+                    d[x, y] = (float)Math.Pow(a[x, y], s);
+                }
+            }
+
+            return d;
+        }
         public static Data2D Ones(int Width, int Height)
         {
             return new Data2D(Width, Height, 1f);
@@ -1332,33 +1385,15 @@ namespace ImagingSIMS.Data
         {
             Data2D resized = new Data2D(highResSizeX, highResSizeY);
 
-            float A, B, C, D;
-            int x, y;
             float xRatio = (lowResSizeX - 1f) / highResSizeX;
             float yRatio = (lowResSizeY - 1f) / highResSizeY;
-            float xDiff, yDiff;
 
             for (int i = 0; i < highResSizeX; i++)
             {
                 for (int j = 0; j < highResSizeY; j++)
                 {
-                    x = (int)(xRatio * i);
-                    y = (int)(yRatio * j);
-                    xDiff = (xRatio * i) - x;
-                    yDiff = (yRatio * j) - y;
 
-                    int x1 = x + 1;
-                    if (x1 >= highResSizeX) x1 = x;
-                    int y1 = y + 1;
-                    if (y1 >= highResSizeY) y1 = y;
-
-                    A = _matrix[x, y];
-                    B = _matrix[x + 1, y];
-                    C = _matrix[x, y + 1];
-                    D = _matrix[x + 1, y + 1];
-
-                    resized[i, j] = (A * (1f - xDiff) * (1f - yDiff)) + (B * (xDiff) * (1f - yDiff)) +
-                        (C * (yDiff) * (1f - xDiff)) + (D * (xDiff) * (yDiff));
+                    resized[i, j] = Sample(xRatio * i, yRatio * j);
                 }
             }
 
@@ -1410,6 +1445,32 @@ namespace ImagingSIMS.Data
             return d + frac * (c + frac * (b + frac * a));
         }
 
+        /// <summary>
+        /// Uses bilinear interpolation to get matrix value and non-integer locations at the specified double-precision location.
+        /// </summary>
+        /// <param name="positionX">X location</param>
+        /// <param name="positionY">Y location</param>
+        /// <returns>Value from the matrix at the specified location.</returns>
+        public float Sample(double positionX, double positionY)
+        {
+            int x = (int)positionX;
+            int y = (int)positionY;
+
+            double xDiff = positionX - x;
+            double yDiff = positionY - y;
+
+            int x1 = x + 1 >= Width ? x : x + 1;
+            int y1 = y + 1 >= Height ? y : y + 1;
+
+            float a = _matrix[x, y];
+            float b = _matrix[x1, y];
+            float c = _matrix[x, y1];
+            float d = _matrix[x1, y1];
+
+            return (float)((a * (1 - xDiff) * (1 - yDiff)) + 
+                (b * xDiff * (1 - yDiff)) + (c * yDiff * (1 - xDiff)) + (d * xDiff * yDiff));
+        }
+
         #region Operator Overloads
         public static Data2D operator +(Data2D a, Data2D b)
         {
@@ -1456,6 +1517,34 @@ namespace ImagingSIMS.Data
 
             return d;
         }
+        public static Data2D operator +(float s, Data2D a)
+        {
+            Data2D d = new Data2D(a.Width, a.Height);
+
+            for (int x = 0; x < a.Width; x++)
+            {
+                for (int y = 0; y < a.Height; y++)
+                {
+                    d[x, y] = s + a[x, y];
+                }
+            }
+
+            return d;
+        }
+        public static Data2D operator +(double s, Data2D a)
+        {
+            Data2D d = new Data2D(a.Width, a.Height);
+
+            for (int x = 0; x < a.Width; x++)
+            {
+                for (int y = 0; y < a.Height; y++)
+                {
+                    d[x, y] = (float)s + a[x, y];
+                }
+            }
+
+            return d;
+        }
         public static Data2D operator -(Data2D a, Data2D b)
         {
             if (a.Width != b.Width || a.Height != b.Height)
@@ -1481,13 +1570,41 @@ namespace ImagingSIMS.Data
             {
                 for (int y = 0; y < a.Height; y++)
                 {
-                    d[x, y] = s - a[x, y];
+                    d[x, y] = a[x, y] - s;
                 }
             }
 
             return d;
         }
         public static Data2D operator -(Data2D a, double s)
+        {
+            Data2D d = new Data2D(a.Width, a.Height);
+
+            for (int x = 0; x < a.Width; x++)
+            {
+                for (int y = 0; y < a.Height; y++)
+                {
+                    d[x, y] = a[x, y] - (float)s;
+                }
+            }
+
+            return d;
+        }
+        public static Data2D operator -(float s, Data2D a)
+        {
+            Data2D d = new Data2D(a.Width, a.Height);
+
+            for (int x = 0; x < a.Width; x++)
+            {
+                for (int y = 0; y < a.Height; y++)
+                {
+                    d[x, y] = s - a[x, y];
+                }
+            }
+
+            return d;
+        }
+        public static Data2D operator -(double s, Data2D a)
         {
             Data2D d = new Data2D(a.Width, a.Height);
 
@@ -1546,6 +1663,34 @@ namespace ImagingSIMS.Data
 
             return d;
         }
+        public static Data2D operator *(float s, Data2D a)
+        {
+            Data2D d = new Data2D(a.Width, a.Height);
+
+            for (int x = 0; x < a.Width; x++)
+            {
+                for (int y = 0; y < a.Height; y++)
+                {
+                    d[x, y] = s * a[x, y];
+                }
+            }
+
+            return d;
+        }
+        public static Data2D operator *(double s, Data2D a)
+        {
+            Data2D d = new Data2D(a.Width, a.Height);
+
+            for (int x = 0; x < a.Width; x++)
+            {
+                for (int y = 0; y < a.Height; y++)
+                {
+                    d[x, y] = (float)s * a[x, y];
+                }
+            }
+
+            return d;
+        }
         public static Data2D operator /(Data2D a, Data2D b)
         {
             if (a.Width != b.Width || a.Height != b.Height)
@@ -1586,6 +1731,34 @@ namespace ImagingSIMS.Data
                 for (int y = 0; y < a.Height; y++)
                 {
                     d[x, y] = a[x, y] / (float)s;
+                }
+            }
+
+            return d;
+        }
+        public static Data2D operator /(float s, Data2D a)
+        {
+            Data2D d = new Data2D(a.Width, a.Height);
+
+            for (int x = 0; x < a.Width; x++)
+            {
+                for (int y = 0; y < a.Height; y++)
+                {
+                    d[x, y] = s / a[x, y];
+                }
+            }
+
+            return d;
+        }
+        public static Data2D operator /(double s, Data2D a)
+        {
+            Data2D d = new Data2D(a.Width, a.Height);
+
+            for (int x = 0; x < a.Width; x++)
+            {
+                for (int y = 0; y < a.Height; y++)
+                {
+                    d[x, y] = (float)s / a[x, y];
                 }
             }
 
