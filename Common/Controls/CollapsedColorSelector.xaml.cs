@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,16 +24,23 @@ namespace ImagingSIMS.Common.Controls
     public partial class CollapsedColorSelector : UserControl
     {
         public static readonly DependencyProperty SelectedColorProperty = DependencyProperty.Register("SelectedColor",
-            typeof(NotifiableColor), typeof(CollapsedColorSelector));
+            typeof(Color), typeof(CollapsedColorSelector), new PropertyMetadata(new Color(), SelectedColorChanged_Callback));
+        public static readonly DependencyProperty ColorViewModelProperty = DependencyProperty.Register("ColorViewModel",
+            typeof(NotifiableColorViewModel), typeof(CollapsedColorSelector));
         public static readonly DependencyProperty ColorSlidersVisibleProperty = DependencyProperty.Register("ColorSlidersVisible",
             typeof(bool), typeof(CollapsedColorSelector));
         public static readonly DependencyProperty IsAlphaEnabledProperty = DependencyProperty.Register("IsAlphaEnabled",
             typeof(bool), typeof(CollapsedColorSelector));
 
-        public NotifiableColor SelectedColor
+        public Color SelectedColor
         {
-            get { return (NotifiableColor)GetValue(SelectedColorProperty); }
+            get { return (Color)GetValue(SelectedColorProperty); }
             set { SetValue(SelectedColorProperty, value); }
+        }
+        public NotifiableColorViewModel ColorViewModel
+        {
+            get { return (NotifiableColorViewModel)GetValue(ColorViewModelProperty); }
+            set { SetValue(ColorViewModelProperty, value); }
         }
         public bool ColorSlidersVisible
         {
@@ -45,22 +53,160 @@ namespace ImagingSIMS.Common.Controls
             set { SetValue(IsAlphaEnabledProperty, value); }
         }
 
+
         public CollapsedColorSelector()
         {
-            SelectedColor = NotifiableColor.FromArgb(255, 0, 0, 0);
-            SelectedColor.ColorChanged += SelectedColor_ColorChanged;
-
             IsAlphaEnabled = true;
+            ColorViewModel = new NotifiableColorViewModel();
+            ColorViewModel.ColorChanged += ColorViewModel_ColorChanged;
             
             InitializeComponent();
         }
 
-        private void SelectedColor_ColorChanged(object sender, NotifiableColorChangedEventArgs e)
+        private static void SelectedColorChanged_Callback(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if(e.OldColor != e.NewColor)
-                SelectedColor = e.NewColor;
+            var selector = sender as CollapsedColorSelector;
+            if (selector == null) return;
+
+            try
+            {
+                var newColor = (Color)e.NewValue;
+                selector.SelectedColorChanged_Callback(newColor);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
+        private void SelectedColorChanged_Callback(Color newColor)
+        {
+            if(newColor != ColorViewModel.Color)
+            {
+                ColorViewModel.A = newColor.A;
+                ColorViewModel.R = newColor.R;
+                ColorViewModel.G = newColor.G;
+                ColorViewModel.B = newColor.B;
+            }
+        }
+        private void ColorViewModel_ColorChanged(object sender, ColorChangedEventArgs e)
+        {
+            SelectedColor = e.NewColor;
         }
     }
+
+    public class NotifiableColorViewModel : INotifyPropertyChanged
+    {
+        byte _a;
+        byte _r;
+        byte _g;
+        byte _b;
+
+        Color _previousColor;
+
+        public byte A
+        {
+            get { return _a; }
+            set
+            {
+                if(_a != value)
+                {
+                    _a = value;
+                    NotifyPropertyChanged();
+                    NotifyColorChanged();
+                }
+            }
+        }
+        public byte R
+        {
+            get { return _r; }
+            set
+            {
+                if(_r != value)
+                {
+                    _r = value;
+                    NotifyPropertyChanged();
+                    NotifyColorChanged();
+
+                }
+            }
+        }
+        public byte G
+        {
+            get { return _g; }
+            set
+            {
+                if (_g != value)
+                {
+                    _g = value;
+                    NotifyPropertyChanged();
+                    NotifyColorChanged();
+
+                }
+            }
+        }
+        public byte B
+        {
+            get { return _b; }
+            set
+            {
+                if(_b != value)
+                {
+                    _b = value;
+                    NotifyPropertyChanged();
+                    NotifyColorChanged();
+
+                }
+            }
+        }
+
+        public Color Color
+        {
+            get { return Color.FromArgb(A, R, G, B); }
+        }
+
+        public NotifiableColorViewModel()
+        {
+            A = 255;
+            R = 0;
+            G = 0;
+            B = 0;
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public event ColorChangedEventHandler ColorChanged;
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void NotifyColorChanged()
+        {
+            var newColor = Color;
+            if (newColor == _previousColor) return;
+
+            ColorChanged?.Invoke(this, new ColorChangedEventArgs(_previousColor, newColor));
+
+            _previousColor = newColor;
+        }
+    }
+
+    public delegate void ColorChangedEventHandler(object sender, ColorChangedEventArgs e);
+    public class ColorChangedEventArgs : EventArgs
+    {
+        public Color OldColor { get; set; }
+        public Color NewColor { get; set; }
+
+        public ColorChangedEventArgs(Color oldColor, Color newColor)
+            : base()
+        {
+            OldColor = oldColor;
+            NewColor = newColor;
+        }
+    }
+
+
+
 
     public class ColorToComponentScaleConverter : IValueConverter
     {
@@ -121,178 +267,6 @@ namespace ImagingSIMS.Common.Controls
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public class NotifiableColor : INotifyPropertyChanged
-    {
-        byte _a;
-        byte _r;
-        byte _g;
-        byte _b;
-
-        public byte A
-        {
-            get { return _a; }
-            set
-            {
-                if(_a != value)
-                {
-                    NotifiableColor oldColor = Color;
-                    _a = value;
-                    NotifyPropertyChanged("A");
-                    NotifyPropertyChanged("Color");
-                    NotifyColorChanged(oldColor, Color);
-                }
-            }
-        }
-        public byte R
-        {
-            get { return _r; }
-            set
-            {
-                if (_r != value)
-                {
-                    NotifiableColor oldColor = Color;
-                    _r = value;
-                    NotifyPropertyChanged("R");
-                    NotifyPropertyChanged("Color");
-                    NotifyColorChanged(oldColor, Color);
-                }
-            }
-        }
-        public byte G
-        {
-            get { return _g; }
-            set
-            {
-                if (_g != value)
-                {
-                    NotifiableColor oldColor = Color;
-                    _g = value;
-                    NotifyPropertyChanged("G");
-                    NotifyPropertyChanged("Color");
-                    NotifyColorChanged(oldColor, Color);
-                }
-            }
-        }
-        public byte B
-        {
-            get { return _b; }
-            set
-            {
-                if (_b != value)
-                {
-                    NotifiableColor oldColor = Color;
-                    _b = value;
-                    NotifyPropertyChanged("B");
-                    NotifyPropertyChanged("Color");
-                    NotifyColorChanged(oldColor, Color);
-                }
-            }
-        }
-        public Color Color
-        {
-            get { return Color.FromArgb(_a, _r, _g, _b); }
-            set
-            {
-                if (value != Color)
-                {
-                    NotifiableColor oldColor = Color;
-                    A = value.A;
-                    R = value.R;
-                    G = value.G;
-                    B = value.B;
-                    NotifyPropertyChanged("Color");
-                    NotifyColorChanged(oldColor, value);
-                }
-
-            }
-        }
-
-        public NotifiableColor()
-        {
-            int i = 0;
-        }
-
-        public event NotifiableColorChangedEventHandler ColorChanged;
-        private void NotifyColorChanged(NotifiableColor oldColor, NotifiableColor newColor)
-        {
-            ColorChanged?.Invoke(this, new NotifiableColorChangedEventArgs(oldColor, newColor));
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public static NotifiableColor FromArgb(byte a, byte r, byte g, byte b)
-        {
-            return new NotifiableColor()
-            {
-                A = a,
-                R = r,
-                G = g,
-                B = b
-            };
-        }
-        public static implicit operator Color(NotifiableColor c)
-        {
-            return Color.FromArgb(c._a, c._r, c._g, c._b);
-        }
-        public static implicit operator NotifiableColor(Color c)
-        {
-            return new NotifiableColor()
-            {
-                _a = c.A,
-                _r = c.R,
-                _g = c.G,
-                _b = c.B
-            };
-        }
-
-        public static NotifiableColor Black
-        {
-            get { return FromArgb(255, 0, 0, 0); }
-        }
-        public static NotifiableColor White
-        {
-            get
-            {
-                return new NotifiableColor()
-                {
-                    R = 255,
-                    G = 255,
-                    B = 255,
-                    A = 255
-                };
-            }
-        }
-
-        public override bool Equals(object obj)
-        {
-            var c = obj as NotifiableColor;
-            if (c == null) return false;
-
-            return c.A == A && c.R == R && c.G == G && c.B == B;
-        }
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-    }
-
-    public delegate void NotifiableColorChangedEventHandler(object sender, NotifiableColorChangedEventArgs e);
-    public class NotifiableColorChangedEventArgs : EventArgs
-    {
-        public NotifiableColor OldColor { get; protected set; }
-        public NotifiableColor NewColor { get; protected set; }
-
-        public NotifiableColorChangedEventArgs(NotifiableColor oldColor, NotifiableColor newColor)
-            : base()
-        {
-            OldColor = oldColor;
-            NewColor = newColor;
         }
     }
 }

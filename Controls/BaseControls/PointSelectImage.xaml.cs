@@ -120,7 +120,7 @@ namespace ImagingSIMS.Controls.BaseControls
 
             if (Image == null) return;
 
-            _dataSource = ImageHelper.ConvertToData3D(Image);
+            _dataSource = ImageGenerator.Instance.ConvertToData3D(Image);
             updateImage();
         }
 
@@ -205,7 +205,7 @@ namespace ImagingSIMS.Controls.BaseControls
                 }
             }
 
-            ImageSource = ImageHelper.CreateImage(imagePreview);
+            ImageSource = ImageGenerator.Instance.Create(imagePreview);
         }
         public static void updateImage(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {

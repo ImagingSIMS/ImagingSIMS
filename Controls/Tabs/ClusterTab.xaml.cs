@@ -120,7 +120,7 @@ namespace ImagingSIMS.Controls.Tabs
                 return;
             }
 
-            Data2D d = ImageHelper.ConvertToData2D(Parameters.InputImageSource);
+            Data2D d = ImageGenerator.Instance.ConvertToData2D(Parameters.InputImageSource);
 
             Mouse.OverrideCursor = Cursors.Wait;
 
@@ -168,7 +168,7 @@ namespace ImagingSIMS.Controls.Tabs
                 if (sfd.ShowDialog() != null) return;
 
                 bool[,] mask = FoundClusters.MaskArray;
-                BitmapSource outputImage = ImageHelper.CreateColorScaleImage((Data2D)mask, ColorScaleTypes.Gray);
+                BitmapSource outputImage = ImageGenerator.Instance.Create((Data2D)mask, ColorScaleTypes.Gray);
 
                 outputImage.Save(sfd.FileName);
             }
@@ -352,12 +352,12 @@ namespace ImagingSIMS.Controls.Tabs
 
         public void DropImage(DisplayImage image)
         {
-            Data2D data = ImageHelper.ConvertToData2D(image.Source as BitmapSource);
-            Parameters.InputImageSource = ImageHelper.CreateColorScaleImage(data, ColorScaleTypes.Gray);
+            Data2D data = ImageGenerator.Instance.ConvertToData2D(image.Source as BitmapSource);
+            Parameters.InputImageSource = ImageGenerator.Instance.Create(data, ColorScaleTypes.Gray);
         }
         public void DropData(Data2D data)
         {
-            Parameters.InputImageSource = ImageHelper.CreateColorScaleImage(data, ColorScaleTypes.Gray);
+            Parameters.InputImageSource = ImageGenerator.Instance.Create(data, ColorScaleTypes.Gray);
         }
         private void imageInput_Drop(object sender, DragEventArgs e)
         {
@@ -487,7 +487,7 @@ namespace ImagingSIMS.Controls.Tabs
                 var data = e.Data.GetData("Data2D") as Data2D;
                 if (data == null) return;
 
-                Parameters.InputImageSource = ImageHelper.CreateColorScaleImage(data, ColorScaleTypes.Gray);
+                Parameters.InputImageSource = ImageGenerator.Instance.Create(data, ColorScaleTypes.Gray);
 
                 e.Handled = true;
             }
@@ -496,8 +496,8 @@ namespace ImagingSIMS.Controls.Tabs
                 var bs = e.Data.GetData(DataFormats.Bitmap) as BitmapSource;
                 if (bs == null) return;
 
-                var data = ImageHelper.ConvertToData2D(bs);
-                Parameters.InputImageSource = ImageHelper.CreateColorScaleImage(data, ColorScaleTypes.Gray);
+                var data = ImageGenerator.Instance.ConvertToData2D(bs);
+                Parameters.InputImageSource = ImageGenerator.Instance.Create(data, ColorScaleTypes.Gray);
 
                 e.Handled = true;
             }

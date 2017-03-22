@@ -66,7 +66,7 @@ namespace ImagingSIMS.Data
 
             Data3D cropped = originalData.Crop(startX, startY, width, height);
 
-            return ImageHelper.CreateImage(cropped);
+            return ImageGenerator.Instance.Create(cropped);
         }
 
         public static float[] ToFloatArray(this Color c)

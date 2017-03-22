@@ -491,10 +491,10 @@ namespace ImagingSIMS.Controls.Tabs
                     {
                         try
                         {
-                            Data3D original = ImageHelper.ConvertToData3D((BitmapSource)result.ImageToResize);
-                            Data3D resized = ImageHelper.Upscale(original, result.ResizedWidth, result.ResizedHeight);
+                            Data3D original = ImageGenerator.Instance.ConvertToData3D((BitmapSource)result.ImageToResize);
+                            Data3D resized = original.Upscale(result.ResizedWidth, result.ResizedHeight);
 
-                            BitmapSource resizedImage = ImageHelper.CreateImage(resized);
+                            BitmapSource resizedImage = ImageGenerator.Instance.Create(resized);
                             CurrentSeries.Images.Add(new DisplayImage(resizedImage, image.Title + " - Resized"));
                         }
                         catch (Exception ex)
@@ -695,11 +695,11 @@ namespace ImagingSIMS.Controls.Tabs
             {
                 if (dimension == ImageTabEvent.SliceXZ)
                 {
-                    slice = ImageHelper.GetXZ(selected, pixel);
+                    slice = ImageGenerator.Instance.SliceXZ(selected, pixel);
                 }
                 else if (dimension == ImageTabEvent.SliceYZ)
                 {
-                    slice = ImageHelper.GetYZ(selected, pixel);
+                    slice = ImageGenerator.Instance.SliceYZ(selected, pixel);
                 }
             }
             catch (NullReferenceException NRex)

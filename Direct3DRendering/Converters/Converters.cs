@@ -357,68 +357,68 @@ namespace ImagingSIMS.Direct3DRendering.Converters
             }
         }
     }
-    public class SharpDXColorToNotifiableColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                Color c = (Color)value;
+    //public class SharpDXColorToNotifiableColorConverter : IValueConverter
+    //{
+    //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        try
+    //        {
+    //            Color c = (Color)value;
 
-                return ImagingSIMS.Common.Controls.NotifiableColor.FromArgb(c.A, c.R, c.G, c.B);
-            }
-            catch (Exception)
-            {
-                return ImagingSIMS.Common.Controls.NotifiableColor.FromArgb(255, 0, 0, 0);
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                ImagingSIMS.Common.Controls.NotifiableColor c =
-                    (ImagingSIMS.Common.Controls.NotifiableColor)value;
+    //            return ImagingSIMS.Common.Controls.NotifiableColor.FromArgb(c.A, c.R, c.G, c.B);
+    //        }
+    //        catch (Exception)
+    //        {
+    //            return ImagingSIMS.Common.Controls.NotifiableColor.FromArgb(255, 0, 0, 0);
+    //        }
+    //    }
+    //    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        try
+    //        {
+    //            ImagingSIMS.Common.Controls.NotifiableColor c =
+    //                (ImagingSIMS.Common.Controls.NotifiableColor)value;
 
-                return new Color(c.R, c.G, c.B, c.A);
-            }
-            catch (Exception)
-            {
-                return new Color(0, 0, 0, 255);
-            }
-        }
-    }
-    public class NotifiableColorToBrushConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                NotifiableColor c = (NotifiableColor)value;
+    //            return new Color(c.R, c.G, c.B, c.A);
+    //        }
+    //        catch (Exception)
+    //        {
+    //            return new Color(0, 0, 0, 255);
+    //        }
+    //    }
+    //}
+    //public class NotifiableColorToBrushConverter : IValueConverter
+    //{
+    //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        try
+    //        {
+    //            NotifiableColor c = (NotifiableColor)value;
 
-                return new System.Windows.Media.SolidColorBrush(
-                    System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B));
-            }
-            catch (Exception)
-            {
-                return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 0, 0, 0));
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                System.Windows.Media.SolidColorBrush scb =
-                    (System.Windows.Media.SolidColorBrush)value;
+    //            return new System.Windows.Media.SolidColorBrush(
+    //                System.Windows.Media.Color.FromArgb(c.A, c.R, c.G, c.B));
+    //        }
+    //        catch (Exception)
+    //        {
+    //            return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 0, 0, 0));
+    //        }
+    //    }
+    //    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        try
+    //        {
+    //            System.Windows.Media.SolidColorBrush scb =
+    //                (System.Windows.Media.SolidColorBrush)value;
 
-                return NotifiableColor.FromArgb(scb.Color.A, scb.Color.R, scb.Color.G, scb.Color.B);
-            }
+    //            return NotifiableColor.FromArgb(scb.Color.A, scb.Color.R, scb.Color.G, scb.Color.B);
+    //        }
 
-            catch (Exception)
-            {
-                return NotifiableColor.FromArgb(0, 0, 0, 0);
-            }
-        }
-    }
+    //        catch (Exception)
+    //        {
+    //            return NotifiableColor.FromArgb(0, 0, 0, 0);
+    //        }
+    //    }
+    //}
     public class ArrayToIndexedValueConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

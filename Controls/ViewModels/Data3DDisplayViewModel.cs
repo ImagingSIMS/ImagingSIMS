@@ -24,7 +24,7 @@ namespace ImagingSIMS.Controls.ViewModels
         double _saturation;
         double _initialSaturation;
         ColorScaleTypes _colorScale;
-        NotifiableColor _solidColorScale;
+        Color _solidColorScale;
         double _imageTransformedWidth;
         double _imageTransformedHeight;
         int _layerStart;
@@ -110,20 +110,15 @@ namespace ImagingSIMS.Controls.ViewModels
                 }
             }
         }
-        public NotifiableColor SolidColorScale
+        public Color SolidColorScale
         {
             get { return _solidColorScale; }
             set
             {
                 if (_solidColorScale != value)
                 {
-                    if(_solidColorScale != null)
-                    {
-                        _solidColorScale.ColorChanged -= SolidColorScale_PropertyChanged;
-                    }
                     _solidColorScale = value;
                     NotifyPropertyChanged("SolidColorScale");
-                    _solidColorScale.ColorChanged += SolidColorScale_PropertyChanged;
                     redraw();
                 }
             }
@@ -248,14 +243,14 @@ namespace ImagingSIMS.Controls.ViewModels
 
         private Data3DDisplayViewModel()
         {
-            SolidColorScale = NotifiableColor.White;
+            SolidColorScale = Color.FromArgb(255, 255, 255, 255);
         }
         public Data3DDisplayViewModel(Data3D dataSource, ColorScaleTypes colorScale)
         {
             ImageTransformedWidth = 225;
             ImageTransformedHeight = 225;
 
-            SolidColorScale = NotifiableColor.White;
+            SolidColorScale = Color.FromArgb(255, 255, 255, 255);
 
             DataSource = dataSource;
             ColorScale = colorScale;
@@ -265,7 +260,7 @@ namespace ImagingSIMS.Controls.ViewModels
 
             Scale = 1;
         }
-        public Data3DDisplayViewModel(Data3D dataSource, NotifiableColor solidColorScale)
+        public Data3DDisplayViewModel(Data3D dataSource, Color solidColorScale)
         {
             ImageTransformedWidth = 225;
             ImageTransformedHeight = 225;
@@ -279,14 +274,6 @@ namespace ImagingSIMS.Controls.ViewModels
             LayerEnd = dataSource.Depth;
 
             Scale = 1;
-        }
-
-        private void SolidColorScale_PropertyChanged(object sender, NotifiableColorChangedEventArgs e)
-        {
-            if(e.OldColor != e.NewColor)
-            {
-                redraw();
-            }            
         }
 
         public async Task SetData3DDisplayItemAsync(Data3D dataSource, ColorScaleTypes colorScale)
@@ -311,7 +298,7 @@ namespace ImagingSIMS.Controls.ViewModels
 
             Scale = 1;
         }
-        private void setData3DDisplayItem(Data3D dataSource, NotifiableColor solidColorScale)
+        private void setData3DDisplayItem(Data3D dataSource, Color solidColorScale)
         {
             ImageTransformedWidth = 225;
             ImageTransformedHeight = 225;
@@ -400,13 +387,13 @@ namespace ImagingSIMS.Controls.ViewModels
 
             if (ColorScale == ColorScaleTypes.Solid)
             {
-                BitmapSource bs = ImageHelper.CreateSolidColorImage(ViewableDataSource, SolidColorScale, (float)Saturation, (float)Threshold);
+                BitmapSource bs = ImageGenerator.Instance.Create(ViewableDataSource, SolidColorScale, (float)Saturation, (float)Threshold);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
             else
             {
-                BitmapSource bs = ImageHelper.CreateColorScaleImage(ViewableDataSource, ColorScale, (float)Saturation, (float)Threshold);
+                BitmapSource bs = ImageGenerator.Instance.Create(ViewableDataSource, ColorScale, (float)Saturation, (float)Threshold);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
@@ -433,13 +420,13 @@ namespace ImagingSIMS.Controls.ViewModels
 
             if (ColorScale == ColorScaleTypes.Solid)
             {
-                BitmapSource bs = ImageHelper.CreateSolidColorImage(ViewableDataSource, SolidColorScale, (float)Saturation, (float)Threshold);
+                BitmapSource bs = ImageGenerator.Instance.Create(ViewableDataSource, SolidColorScale, (float)Saturation, (float)Threshold);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
             else
             {
-                BitmapSource bs = ImageHelper.CreateColorScaleImage(ViewableDataSource, ColorScale, (float)Saturation, (float)Threshold);
+                BitmapSource bs = ImageGenerator.Instance.Create(ViewableDataSource, ColorScale, (float)Saturation, (float)Threshold);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
@@ -474,13 +461,13 @@ namespace ImagingSIMS.Controls.ViewModels
 
             if (ColorScale == ColorScaleTypes.Solid)
             {
-                BitmapSource bs = ImageHelper.CreateSolidColorImage(ViewableDataSource, SolidColorScale, (float)Saturation);
+                BitmapSource bs = ImageGenerator.Instance.Create(ViewableDataSource, SolidColorScale, (float)Saturation);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }
             else
             {
-                BitmapSource bs = ImageHelper.CreateColorScaleImage(ViewableDataSource, ColorScale, (float)Saturation);
+                BitmapSource bs = ImageGenerator.Instance.Create(ViewableDataSource, ColorScale, (float)Saturation);
                 bs.Freeze();
                 DisplayImageSource = bs;
             }

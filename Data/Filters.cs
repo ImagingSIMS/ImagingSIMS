@@ -751,8 +751,8 @@ namespace ImagingSIMS.Data.Imaging
         }
         public static BitmapSource DoFilter(BitmapSource input, FilterType filter)
         {
-            Data3D filtered = DoFilter(ImageHelper.ConvertToData3D(input), filter);
-            return ImageHelper.CreateImage(filtered);
+            Data3D filtered = DoFilter(ImageGenerator.Instance.ConvertToData3D(input), filter);
+            return ImageGenerator.Instance.Create(filtered);
 
         }
         public static BitmapSource[] DoFilter(BitmapSource[] input, FilterType filter)
