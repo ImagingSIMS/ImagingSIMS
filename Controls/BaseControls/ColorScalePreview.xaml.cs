@@ -41,10 +41,10 @@ namespace ImagingSIMS.Controls.BaseControls
                 }
             }
 
-            previewScaleThermalWarm.Source = ImageHelper.CreateColorScaleImage(d, ColorScaleTypes.ThermalWarm);
-            previewScaleThermalCold.Source = ImageHelper.CreateColorScaleImage(d, ColorScaleTypes.ThermalCold);
-            previewScaleNeon.Source = ImageHelper.CreateColorScaleImage(d, ColorScaleTypes.Neon);
-            previewScaleRetro.Source = ImageHelper.CreateColorScaleImage(d, ColorScaleTypes.Retro);
+            previewScaleThermalWarm.Source = ImageGenerator.Instance.Create(d, ColorScaleTypes.ThermalWarm);
+            previewScaleThermalCold.Source = ImageGenerator.Instance.Create(d, ColorScaleTypes.ThermalCold);
+            previewScaleNeon.Source = ImageGenerator.Instance.Create(d, ColorScaleTypes.Neon);
+            previewScaleRetro.Source = ImageGenerator.Instance.Create(d, ColorScaleTypes.Retro);
         }
 
         private void menuItemWarm_Click(object sender, RoutedEventArgs e)

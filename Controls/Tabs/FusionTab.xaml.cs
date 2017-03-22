@@ -382,9 +382,10 @@ namespace ImagingSIMS.Controls.Tabs
                 int resizedWidth = (int)HighResImage.ImageSource.PixelWidth;
                 int resizedHeight = (int)HighResImage.ImageSource.PixelHeight;
 
-                BitmapSource resizedLowRes = ImageHelper.CreateImage(ImageHelper.Upscale(ImageHelper.ConvertToData3D(LowResImage.ImageSource),
-                    resizedWidth, resizedHeight));
+                var rescaled = ImageGenerator.Instance.ConvertToData3D(LowResImage.ImageSource);
+                rescaled = rescaled.Upscale(resizedWidth, resizedHeight);
 
+                BitmapSource resizedLowRes = ImageGenerator.Instance.Create(rescaled);
                 // If point based, resize normalized point selections to reflect resized dimensions.
                 if (RegistrationParameters.PointBased)
                 {
@@ -531,18 +532,18 @@ namespace ImagingSIMS.Controls.Tabs
             Data2D highRes = new Data2D();
             if (radioColor.IsChecked == true)
             {
-                highRes = ImageHelper.ConvertToData2D(HighResImage.ImageSource,
+                highRes = ImageGenerator.Instance.ConvertToData2D(HighResImage.ImageSource,
                     Data2DConverionType.Color, colorSelector.SelectedColor);
             }
             else if (radioGray.IsChecked == true)
             {
-                highRes = ImageHelper.ConvertToData2D(HighResImage.ImageSource, Data2DConverionType.Grayscale);
+                highRes = ImageGenerator.Instance.ConvertToData2D(HighResImage.ImageSource, Data2DConverionType.Grayscale);
             }
             else if (radioThermal.IsChecked == true)
             {
-                highRes = ImageHelper.ConvertToData2D(HighResImage.ImageSource, Data2DConverionType.Thermal);
+                highRes = ImageGenerator.Instance.ConvertToData2D(HighResImage.ImageSource, Data2DConverionType.Thermal);
             }
-            Data3D lowRes = ImageHelper.ConvertToData3D(LowResImage.ImageSource);
+            Data3D lowRes = ImageGenerator.Instance.ConvertToData3D(LowResImage.ImageSource);
 
             if (fusionType == FusionType.HSLShift && ShiftWindowSize <= 0)
             {
@@ -590,7 +591,7 @@ namespace ImagingSIMS.Controls.Tabs
                 Mouse.OverrideCursor = Cursors.Wait;
 
                 Data3D result = await fusion.DoFusionAsync();
-                FusedImage.ImageSource = ImageHelper.CreateImage(result);
+                FusedImage.ImageSource = ImageGenerator.Instance.Create(result);
 
                 AnalysisResults = "";
 

@@ -21,9 +21,8 @@
 	<converters:SharpDXColorToMediaColorConverter x:Key="sharpDXColorToMediaColorConverter"/>
 	<converters:RenderTypeToEnabledConverter x:Key="renderTypeToEnabledConverter"/>
 	<converters:RenderTypeToVisibilityConverter x:Key="renderTypeToVisbilityConverter"/>
-	<converters:RenderObjectToVisiblityConverter x:Key="renderObjectToEnabledConverter"/>
-	<converters:NotifiableColorToBrushConverter x:Key="notifiableColorToBrushConverter"/>
-	<converters:TrainglesToStringConverter x:Key="trainglesToStringConverter"/>
+    <converters:RenderObjectToVisiblityConverter x:Key="renderObjectToEnabledConverter"/>
+    <converters:TrainglesToStringConverter x:Key="trainglesToStringConverter"/>
 	<converters:BoolVisInvertedConverter x:Key="boolVisInvertedConverter"/>
 	<converters:BooleanToBrushConverter x:Key="booleanToBrushConverter"/>
 	<BooleanToVisibilityConverter x:Key="boolVisConverter"/>

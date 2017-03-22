@@ -238,7 +238,7 @@ namespace ImagingSIMS.Controls.Converters
                 Data2D d = (Data2D)value;
                 if (d == null) return null;
 
-                return ImageHelper.CreateColorScaleImage(d, ColorScaleTypes.ThermalWarm);
+                return ImageGenerator.Instance.Create(d, ColorScaleTypes.ThermalWarm);
             }
             catch (Exception)
             {
@@ -271,12 +271,12 @@ namespace ImagingSIMS.Controls.Converters
                 {
                     if (d.Depth != 4) return null;
 
-                    return ImageHelper.CreateImage(d);
+                    return ImageGenerator.Instance.Create(d);
                 }
 
                 else
                 {
-                    return ImageHelper.CreateColorScaleImage(d.Summed, ColorScaleTypes.ThermalWarm);
+                    return ImageGenerator.Instance.Create(d.Summed, ColorScaleTypes.ThermalWarm);
                 }
                 
             }
@@ -543,7 +543,7 @@ namespace ImagingSIMS.Controls.Converters
                 if (foundClusters == null) return null;
 
                 bool[,] mask = foundClusters.MaskArray;
-                return ImageHelper.CreateColorScaleImage((Data2D)mask, ColorScaleTypes.Gray);
+                return ImageGenerator.Instance.Create((Data2D)mask, ColorScaleTypes.Gray);
             }
             catch (Exception)
             {
@@ -567,7 +567,7 @@ namespace ImagingSIMS.Controls.Converters
                 if (foundClusters == null) return null;
 
                 Data3D d = foundClusters.ColorMask;
-                return ImageHelper.CreateImage(d);
+                return ImageGenerator.Instance.Create(d);
             }
             catch (Exception)
             {
@@ -593,7 +593,7 @@ namespace ImagingSIMS.Controls.Converters
                     return null;
 
                 ColorScaleTypes colorScale = (ColorScaleTypes)values[0];
-                Color solidColorScale = ((NotifiableColor)values[1]).Color;
+                Color solidColorScale = (Color)values[1];
                 float dataMaximum = (float)values[2];
                 double saturation = (double)values[3];
 
@@ -632,10 +632,10 @@ namespace ImagingSIMS.Controls.Converters
 
                 if (colorScale == ColorScaleTypes.Solid)
                 {
-                    return ImageHelper.CreateSolidColorImage(d, solidColorScale, (float)saturation);
+                    return ImageGenerator.Instance.Create(d, solidColorScale, (float)saturation);
                 }
                 else
-                    return ImageHelper.CreateColorScaleImage(d, colorScale, (float)saturation);
+                    return ImageGenerator.Instance.Create(d, colorScale, (float)saturation);
             }
             catch (Exception)
             {
@@ -791,7 +791,7 @@ namespace ImagingSIMS.Controls.Converters
             Data2D d = value as Data2D;
             if (d == null) return null;
 
-            return ImageHelper.CreateColorScaleImage(d, ColorScaleTypes.Gray);
+            return ImageGenerator.Instance.Create(d, ColorScaleTypes.Gray);
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -885,33 +885,6 @@ namespace ImagingSIMS.Controls.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
-        }
-    }
-    public class ColorToNotifiableColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                Color c = (Color)value;
-                return (NotifiableColor)c;
-            }
-            catch (Exception)
-            {
-                return NotifiableColor.Black;
-            }
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            try
-            {
-                NotifiableColor c = (NotifiableColor)value;
-                return (Color)c;
-            }
-            catch (Exception)
-            {
-                return Color.FromArgb(255, 0, 0, 0);
-            }
         }
     }
     public class Data3DDisplayViewModelToMinMaxConverter : IValueConverter

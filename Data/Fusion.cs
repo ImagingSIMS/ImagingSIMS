@@ -102,7 +102,7 @@ namespace ImagingSIMS.Data.Fusion
             //}
 
             _colorNotResized = _color;
-            _color = ImageHelper.Upscale(_color, _highResSizeX, _highResSizeY);
+            _color = _color.Upscale(_highResSizeX, _highResSizeY);
             _isResized = true;
         }
 
@@ -116,8 +116,8 @@ namespace ImagingSIMS.Data.Fusion
 
         public Pansharpening(BitmapSource HighRes, BitmapSource LowRes)
         {
-            _gray = ImageHelper.ConvertToData2D(HighRes);
-            _color = ImageHelper.ConvertToData3D(LowRes);
+            _gray = ImageGenerator.Instance.ConvertToData2D(HighRes);
+            _color = ImageGenerator.Instance.ConvertToData3D(LowRes);
 
             SetMeans();
 
@@ -1508,8 +1508,8 @@ namespace ImagingSIMS.Data.Fusion
         {
             public static CrossCorrelationResults Analyze(BitmapSource LowRes, BitmapSource HighRes, BackgroundWorker bw)
             {
-                Data3D lowRes = ImageHelper.ConvertToData3D(LowRes);
-                Data3D highRes = ImageHelper.ConvertToData3D(HighRes);
+                Data3D lowRes = ImageGenerator.Instance.ConvertToData3D(LowRes);
+                Data3D highRes = ImageGenerator.Instance.ConvertToData3D(HighRes);
 
                 double r = AnalyzeCC(lowRes.Layers[2], highRes.Layers[2]);
                 if (bw != null) bw.ReportProgress(Percentage.GetPercent(1, 3));
@@ -1608,8 +1608,8 @@ namespace ImagingSIMS.Data.Fusion
             }
             public static async Task<CrossCorrelationResults> AnalyzeAsync(BitmapSource LowRes, BitmapSource HighRes)
             {
-                Data3D lowRes = ImageHelper.ConvertToData3D(LowRes);
-                Data3D highRes = ImageHelper.ConvertToData3D(HighRes);
+                Data3D lowRes = ImageGenerator.Instance.ConvertToData3D(LowRes);
+                Data3D highRes = ImageGenerator.Instance.ConvertToData3D(HighRes);
 
                 double[] cc = await Task<double[]>.Run(() =>
                     {
@@ -1641,9 +1641,9 @@ namespace ImagingSIMS.Data.Fusion
             public static QPSResults Analyze(BitmapSource Panchromatic,
                 BitmapSource MultiSpectral, BitmapSource Sharpened, BackgroundWorker bw, int WindowSize = 1)
             {
-                Data2D panchromatic = ImageHelper.ConvertToData2D(Panchromatic);
-                Data3D ms = ImageHelper.ConvertToData3D(MultiSpectral);
-                Data3D sharp = ImageHelper.ConvertToData3D(Sharpened);
+                Data2D panchromatic = ImageGenerator.Instance.ConvertToData2D(Panchromatic);
+                Data3D ms = ImageGenerator.Instance.ConvertToData3D(MultiSpectral);
+                Data3D sharp = ImageGenerator.Instance.ConvertToData3D(Sharpened);
 
                 int highX = sharp.Width;
                 int highY = sharp.Height;

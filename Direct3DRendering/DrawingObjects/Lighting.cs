@@ -13,7 +13,7 @@ namespace ImagingSIMS.Direct3DRendering.DrawingObjects
     {
         bool _isEnabled;
         Vector4 _location;
-        NotifiableColor _color;
+        Color _color;
         float _intensity;
 
         public bool IsEnabled
@@ -40,7 +40,7 @@ namespace ImagingSIMS.Direct3DRendering.DrawingObjects
                 }
             }
         }
-        public NotifiableColor Color
+        public Color Color
         {
             get { return _color; }
             set
@@ -73,25 +73,27 @@ namespace ImagingSIMS.Direct3DRendering.DrawingObjects
         public PointLightSource()
         {
             Location = new Vector4(0);
-            Color = NotifiableColor.White;
+            Color = Color.White;
         }
         public PointLightSource(Vector4 location)
         {
             Location = location;
-            Color = NotifiableColor.White;
+            Color = Color.White;
         }
         public PointLightSource(Vector4 location, float intensity)
         {
             Location = location;
             Intensity = intensity;
-            Color = NotifiableColor.White;
+            Color = Color.White;
+
         }
         public PointLightSource(Vector4 location, float intensity, bool isEnabled)
         {
             IsEnabled = true;
             Location = location;
             Intensity = intensity;
-            Color = NotifiableColor.White;
+            Color = Color.White;
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

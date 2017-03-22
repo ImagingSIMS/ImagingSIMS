@@ -132,8 +132,10 @@
     <Compile Include="Imaging.cs" />
     <Compile Include="Imaging\CPUImageGenerator.cs" />
     <Compile Include="Imaging\GPUImageGenerator.cs" />
-    <Compile Include="Imaging\IImageGenerator.cs" />
+    <Compile Include="Imaging\BaseImageGenerator.cs" />
     <Compile Include="Imaging\ImageGenerator.cs" />
+    <Compile Include="Imaging\ImagingExtensions.cs" />
+    <Compile Include="Imaging\ImagingParameters.cs" />
     <Compile Include="ISDataSet.cs" />
     <Compile Include="Isosurfcaing.cs" />
     <Compile Include="MathOperations.cs" />
@@ -145,7 +147,6 @@
     <Compile Include="SampleData.cs" />
     <Compile Include="Savable.cs" />
     <Compile Include="SEM.cs" />
-    <Compile Include="ColorScales.cs" />
     <Compile Include="Spectra\BioToFParameters.cs" />
     <Compile Include="Spectra\BioToFSpectrum.cs" />
     <Compile Include="Spectra\Cameca1280Spectrum.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="Spectra\MassRange.cs" />
     <Compile Include="Spectra\Spectrum.cs" />
     <Compile Include="Spectra\SpectrumType.cs" />
+    <Compile Include="Imaging\ColorScales.cs" />
     <Compile Include="StackedImage.cs" />
     <Compile Include="Volume.cs" />
     <Compile Include="Workspace.cs" />

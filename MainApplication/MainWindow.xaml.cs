@@ -1797,7 +1797,7 @@ namespace ImagingSIMS.MainApplication
                 comps[i] = (ImageComponent)listBoxComponents.SelectedItems[i];
             }
 
-            BitmapSource[] bitmapSources = ImageHelper.CreateImage(comps, new ImageParameters()
+            BitmapSource[] bitmapSources = ImageGenerator.Instance.Create(comps, new ImagingParameters()
             {
                 NormalizationMethod = (NormalizationMethod)comboNorm.SelectedItem,
                 SqrtEnhance = checkSqrt.IsChecked == true,
@@ -3320,7 +3320,7 @@ namespace ImagingSIMS.MainApplication
 
             for (int i = 0; i < toConvert.Length; i++)
             {
-                Data2D converted = await ImageHelper.ConvertToData2DAsync(toConvert[i]);
+                Data2D converted = await ImageGenerator.Instance.ConvertToData2DAsync(toConvert[i]);
                 converted.DataName = titles[i];
                 Workspace.Data.Add(converted);
             }
@@ -4461,7 +4461,7 @@ namespace ImagingSIMS.MainApplication
             BitmapSource bs = (BitmapSource)di.Source;
             if (bs == null) return;
 
-            Data2D d = ImageHelper.ConvertToData2D(bs);
+            Data2D d = ImageGenerator.Instance.ConvertToData2D(bs);
             d.DataName = di.Title;
             Workspace.Data.Add(d);
         }

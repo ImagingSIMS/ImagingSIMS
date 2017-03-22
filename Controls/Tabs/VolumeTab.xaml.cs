@@ -228,7 +228,7 @@ namespace ImagingSIMS.Controls.Tabs
             {
                 foreach (DisplayImage image in series.Images)
                 {
-                    Data2D d = ImageHelper.ConvertToData2D(image.Source as BitmapSource);
+                    Data2D d = ImageGenerator.Instance.ConvertToData2D(image.Source as BitmapSource);
                     convertedTables.Add(d);
 
                     if (targetWidth == -1 && targetHeight == -1)

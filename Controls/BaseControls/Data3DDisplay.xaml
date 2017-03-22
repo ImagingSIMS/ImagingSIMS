@@ -142,7 +142,7 @@
                         Minimum="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Minimum}"
                         Maximum="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Maximum}"
                         Value="{Binding DisplayItem.Saturation, Mode=TwoWay, ElementName=userControl}"/>
-                <TextBlock Grid.Column="2" Text="{Binding DisplayItem.Saturation, StringFormat=0.0####, ElementName=userControl}"/>
+                <TextBlock Grid.Column="2" Text="{Binding DisplayItem.Saturation, StringFormat=0.000, ElementName=userControl}"/>
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -157,7 +157,7 @@
                         Minimum="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Minimum}"
                         Maximum="{Binding ElementName=userControl, Path=DisplayItem.ViewableDataSource.Maximum}"
                         Value="{Binding DisplayItem.Threshold, Mode=TwoWay, ElementName=userControl}"/>
-                <TextBlock Grid.Column="2" Text="{Binding DisplayItem.Threshold, StringFormat=0.0####, ElementName=userControl}"/>
+                <TextBlock Grid.Column="2" Text="{Binding DisplayItem.Threshold, StringFormat=0.000, ElementName=userControl}"/>
             </Grid>
             <Grid>
                 <Grid.RowDefinitions>
@@ -182,16 +182,6 @@
                                            IsEnabled="{Binding DisplayItem.ColorScale, Converter={StaticResource colorScaleToBoolConverter}, ElementName=userControl}"
                                            SelectedColor="{Binding DisplayItem.SolidColorScale, ElementName=userControl, Mode=TwoWay}"                                           
                                            IsAlphaEnabled="False"/>
-                <!--<Button x:Name="buttonShowColor" Grid.Column="2" Width="20" Height="20" Margin="4" 
-                        IsEnabled="{Binding DisplayItem.ColorScale, Converter={StaticResource colorScaleToBoolConverter}, ElementName=userControl}"
-                        MouseEnter="buttonShowColor_MouseEnter">
-                    <Image Source="..\Images\PaintPalette.ico"/>
-                </Button>
-                <Popup x:Name="popupSolidColorScale" IsOpen="False" PlacementTarget="{Binding ElementName=buttonShowColor}" StaysOpen="False">
-                    <Grid Background="{StaticResource MenuBackground}">
-                        <cc:ColorSelector SelectedColor="{Binding DisplayItem.SolidColorScale, Mode=TwoWay, ElementName=userControl}" IsAlphaEnabled="False"/>
-                    </Grid>
-                </Popup>-->
             </Grid>         
             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Width="20" Height="20" Click="contentButtonRemove_Click" Margin="4" ToolTip="Delete">

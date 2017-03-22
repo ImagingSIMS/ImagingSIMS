@@ -221,7 +221,7 @@ namespace ImagingSIMS.Controls.Tabs
 
             Data3D tables = new Data3D(data.ToArray<Data2D>());
 
-            preview.OriginalImage = ImageHelper.CreateColorScaleImage(tables.Summed, ColorScaleTypes.ThermalWarm);
+            preview.OriginalImage = ImageGenerator.Instance.Create(tables.Summed, ColorScaleTypes.ThermalWarm);
         }
 
         private void selectionThumb_DragDelta(object sender, DragDeltaEventArgs e)

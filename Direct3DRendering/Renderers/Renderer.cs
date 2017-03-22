@@ -117,7 +117,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             {
                 if (_dataContextRenderWindow != null)
                 {
-                    return _dataContextRenderWindow.RenderWindowView.BackColor.ToSharpDXColor();
+                    return _dataContextRenderWindow.RenderWindowView.BackColor;
                 }
                 return Color.Black;
             }
