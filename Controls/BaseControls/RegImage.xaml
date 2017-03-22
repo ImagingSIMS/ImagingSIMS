@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.BaseControls.RegImage"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImagingSIMS.Controls.BaseControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Border DataContext="{Binding ElementName=userControl, Path=ViewModel}"
+            BorderThickness="2">
+        <Border.BorderBrush>
+            <SolidColorBrush Color="{Binding SelectionColor}"/>
+        </Border.BorderBrush>
+        <Grid x:Name="grid_host" MouseDown="Grid_MouseDown">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Image HorizontalAlignment="Stretch"
+                   Stretch="Uniform"
+                   Source="{Binding BaseImage}"
+                   Width="{Binding VisualWidth, Mode=OneWayToSource}"
+                   Height="{Binding VisualHeight, Mode=OneWayToSource}"/>
+            <ItemsControl HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          ItemsSource="{Binding ControlPoints}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <ItemContainerTemplate>                        
+                        <local:ControlPointSelection ControlPoint="{Binding}"/>
+                    </ItemContainerTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="Canvas.Left" Value="{Binding ControlPoint.VisualX}"/>
+                        <Setter Property="Canvas.Top" Value="{Binding ControlPoint.VisualY}"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
+        </Grid>
+    </Border>
+</UserControl>

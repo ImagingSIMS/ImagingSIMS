@@ -6,6 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ImagingSIMS.Controls.BaseControls"
              xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             xmlns:bc="clr-namespace:ImagingSIMS.Controls.BaseControls"
              mc:Ignorable="d" 
              d:DesignWidth="700" d:DesignHeight="600" Width="Auto" Height="Auto" xmlns:my="clr-namespace:ImagingSIMS.Controls">
     <UserControl.Resources>
@@ -18,7 +19,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <bc:RegImage HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Height="300"/>
+
+    <!--<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <Grid x:Name="LayoutRoot">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -157,5 +160,5 @@
                 <CheckBox IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=Workspace.Registry.ShowStartup}"/>
             </StackPanel>
         </Grid>
-    </ScrollViewer>
+    </ScrollViewer>-->
 </UserControl>
