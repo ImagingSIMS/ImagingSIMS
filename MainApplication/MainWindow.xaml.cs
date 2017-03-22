@@ -5339,11 +5339,11 @@ namespace ImagingSIMS.MainApplication
 
         private async void test7_Click(object sender, RoutedEventArgs e)
         {
-            var bsHighRes = ImageHelper.BitmapSourceFromFile(@"D:\Data\10-01-12\1e.bmp");
+            var bsHighRes = ImageGenerator.Instance.FromFile(@"D:\Data\10-01-12\1e.bmp");
             var spec = new BioToFSpectrum("grid 894");
             spec.LoadFromFile(@"D:\Data\10-01-12\grid 894 fov_50shot._2ND xyt.xyt", null);
 
-            var pan = ImageHelper.ConvertToData2D(bsHighRes);
+            var pan = ImageGenerator.Instance.ConvertToData2D(bsHighRes);
 
             List<Data2D> masses = new List<Data2D>();
             for (int i = (int)spec.StartMass; i < spec.EndMass; i++)

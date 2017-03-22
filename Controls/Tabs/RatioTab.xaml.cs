@@ -252,7 +252,7 @@ namespace ImagingSIMS.Controls.Tabs
             Data2D highRes = null;
             if (InputData.FuseImagesFirst)
             {
-                highRes = ImageHelper.ConvertToData2D(InputData.HighRes, Data2DConverionType.Grayscale);
+                highRes = ImageGenerator.Instance.ConvertToData2D(InputData.HighRes, Data2DConverionType.Grayscale);
             }
 
             // args

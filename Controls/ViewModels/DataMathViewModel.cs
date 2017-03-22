@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using ImagingSIMS.Common.Controls;
 using ImagingSIMS.Data;
 using ImagingSIMS.Data.Imaging;
+using System.Windows.Media;
 
 namespace ImagingSIMS.Controls.ViewModels
 {
@@ -23,7 +24,7 @@ namespace ImagingSIMS.Controls.ViewModels
         string _operationHistory;
         Data2D _result;
         ColorScaleTypes _resultColorScale;
-        NotifiableColor _resultSolidColorScale;
+        Color _resultSolidColorScale;
         BitmapSource _resultPreview;
 
         public ObservableCollection<Data2D> DataVariables
@@ -124,7 +125,7 @@ namespace ImagingSIMS.Controls.ViewModels
                 }
             }
         }
-        public NotifiableColor ResultSolidColorScale
+        public Color ResultSolidColorScale
         {
             get { return _resultSolidColorScale; }
             set
@@ -163,7 +164,7 @@ namespace ImagingSIMS.Controls.ViewModels
                 0d, 0d, 0d, 0d,
             };
             ResultColorScale = ColorScaleTypes.ThermalCold;
-            ResultSolidColorScale = NotifiableColor.White;
+            ResultSolidColorScale = Color.FromArgb(255, 255, 255, 255);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -179,11 +180,11 @@ namespace ImagingSIMS.Controls.ViewModels
             if (ResultColorScale == ColorScaleTypes.Solid)
             {
 
-                ResultPreview = ImageHelper.CreateSolidColorImage(Result, ResultSolidColorScale);
+                ResultPreview = ImageGenerator.Instance.Create(Result, ResultSolidColorScale);
             }
             else
             {
-                ResultPreview = ImageHelper.CreateColorScaleImage(Result, ResultColorScale);
+                ResultPreview = ImageGenerator.Instance.Create(Result, ResultColorScale);
             }
         }
     }
