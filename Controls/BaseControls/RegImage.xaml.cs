@@ -119,6 +119,41 @@ namespace ImagingSIMS.Controls.BaseControls
         }
         private void regImageControl_Drop(object sender, DragEventArgs e)
         {
+            if (e.Data.GetDataPresent(DataFormats.Bitmap))
+            {
+                var bs = e.Data.GetData(DataFormats.Bitmap) as BitmapSource;
+                if (bs == null) return;
+
+                ViewModel.BaseImage = bs;
+
+                e.Handled = true;
+            }
+
+            else if (e.Data.GetDataPresent("DisplayImage"))
+            {
+                var image = e.Data.GetData("DisplayImage") as DisplayImage;
+                if (image == null) return;
+
+                var bs = image.Source as BitmapSource;
+                if (bs == null) return;
+
+                ViewModel.BaseImage = bs;
+
+                e.Handled = true;
+            }
+
+            if (e.Data.GetDataPresent("Data2D"))
+            {
+                var data = e.Data.GetData("Data2D") as Data2D;
+                if (data == null) return;
+
+                var bs = ImageGenerator.Instance.Create(data, ColorScaleTypes.ThermalCold);
+
+                ViewModel.BaseImage = bs;
+
+                e.Handled = true;
+            }
+
             ViewModel.IsDropTarget = false;
         }
 
@@ -176,7 +211,6 @@ namespace ImagingSIMS.Controls.BaseControls
         Color _selectionColor;
         double _visualWidth;
         double _visualHeight;
-        bool _clearPointsOnImageChanged;
         bool _clearPointsOnRegistration;
         bool _isDropTarget;
         RegistrationImageSelectionMode _selectionMode;
@@ -267,18 +301,6 @@ namespace ImagingSIMS.Controls.BaseControls
                 }
             }
         }
-        public bool ClearPointsOnImageChanged
-        {
-            get { return _clearPointsOnImageChanged; }
-            set
-            {
-                if(_clearPointsOnImageChanged != value)
-                {
-                    _clearPointsOnImageChanged = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
         public bool ClearPointsOnRegistration
         {
             get { return _clearPointsOnRegistration; }
@@ -333,18 +355,19 @@ namespace ImagingSIMS.Controls.BaseControls
             BaseWidth = (int)BaseImage.Width;
             BaseHeight = (int)BaseImage.Height;
 
-            if (ClearPointsOnImageChanged)
-            {
-                ControlPoints.Clear();
-            }
-
-            else
+            if (ControlPoints.Count > 0)
             {
                 foreach (var point in ControlPoints)
                 {
                     SetMatrixCoordinates(point);
                 }
             }
+
+            if (RegionOfInterest.HasRegionOfInterest)
+            {
+                SetMatrixCoordinates(RegionOfInterest);
+            }
+            
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

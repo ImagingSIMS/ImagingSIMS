@@ -9,6 +9,7 @@
              xmlns:c="clr-namespace:ImagingSIMS.Controls"
              xmlns:converters="clr-namespace:ImagingSIMS.Controls.Converters"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              mc:Ignorable="d" 
              Background="Transparent"
              AllowDrop="True" DragEnter="regImageControl_DragEnter" DragLeave="regImageControl_DragLeave" Drop="regImageControl_Drop">
@@ -57,6 +58,15 @@
             <Grid x:Name="gridImageHost" 
                   MouseDown="gridImageHost_MouseDown" MouseMove="gridImageHost_MouseMove" MouseUp="gridImageHost_MouseUp"
                   MouseLeave="gridImageHost_MouseLeave">
+
+                <xctk:MagnifierManager.Magnifier>
+                    <xctk:Magnifier BorderBrush="{StaticResource ThemeBlueBrush}"
+                                    BorderThickness="2"
+                                    Radius="100"
+                                    ZoomFactor="0.5">
+                    </xctk:Magnifier>
+                </xctk:MagnifierManager.Magnifier>
+                
                 <Image HorizontalAlignment="Stretch"
                    Stretch="Uniform"
                    Source="{Binding BaseImage}"
@@ -143,14 +153,6 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock>Clear points on registration:</TextBlock>
                         <CheckBox Grid.Column="1" IsChecked="{Binding ClearPointsOnRegistration}"/>
-                    </Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock>Clear points on image change:</TextBlock>
-                        <CheckBox Grid.Column="1" IsChecked="{Binding ClearPointsOnImageChanged}"/>
                     </Grid>
                     <Grid>
                         <Grid.ColumnDefinitions>
