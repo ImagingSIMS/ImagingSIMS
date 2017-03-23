@@ -109,6 +109,11 @@ namespace ImagingSIMS.Controls.BaseControls
                 ViewModel.RegionOfInterest.ClearRegionOfInterest();
         }
 
+        private void ResetSaturation_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            ViewModel.Saturation = ViewModel.InitialSaturation;
+        }
+
         private void regImageControl_DragEnter(object sender, DragEventArgs e)
         {
             ViewModel.IsDropTarget = true;
@@ -124,7 +129,7 @@ namespace ImagingSIMS.Controls.BaseControls
                 var bs = e.Data.GetData(DataFormats.Bitmap) as BitmapSource;
                 if (bs == null) return;
 
-                ViewModel.BaseImage = bs;
+                ViewModel.DataSource = ImageGenerator.Instance.ConvertToData2D(bs, Data2DConverionType.Grayscale);
 
                 e.Handled = true;
             }
@@ -137,7 +142,7 @@ namespace ImagingSIMS.Controls.BaseControls
                 var bs = image.Source as BitmapSource;
                 if (bs == null) return;
 
-                ViewModel.BaseImage = bs;
+                ViewModel.DataSource = ImageGenerator.Instance.ConvertToData2D(bs, Data2DConverionType.Grayscale);
 
                 e.Handled = true;
             }
@@ -147,9 +152,7 @@ namespace ImagingSIMS.Controls.BaseControls
                 var data = e.Data.GetData("Data2D") as Data2D;
                 if (data == null) return;
 
-                var bs = ImageGenerator.Instance.Create(data, ColorScaleTypes.ThermalCold);
-
-                ViewModel.BaseImage = bs;
+                ViewModel.DataSource = data;
 
                 e.Handled = true;
             }
@@ -200,11 +203,51 @@ namespace ImagingSIMS.Controls.BaseControls
                 _isRoiDragging = false;
             }
         }
+
+        private void cmCopyScale_Click(object sender, RoutedEventArgs e)
+        {
+            BitmapSource source = imageColorScale.Source as BitmapSource;
+            if (source == null) return;
+
+            Clipboard.SetImage(source);
+        }
+        private void cmCopyImage_Click(object sender, RoutedEventArgs e)
+        {
+            BitmapSource source = ViewModel.DisplayImage;
+            if (source == null) return;
+
+            Clipboard.SetImage(source);
+        }
+
+        private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = ViewModel.DisplayImage != null;
+        }
+        private void Save_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+        private void Copy_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = ViewModel.DisplayImage != null;
+        }
+        private void Copy_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
     }
 
     public class RegImageViewModel : INotifyPropertyChanged
     {
-        BitmapSource _baseImage;
+        Data2D _dataSource;
+        BitmapSource _displayImage;
+        double _saturation;
+        double _initialSaturation;
+        ColorScaleTypes _colorScale;
+        Color _solidColorScale;
+        double _threshold;
+        double _initialThreshold;
+
         ObservableCollection<ControlPointViewModel> _controlPoints;
         int _baseWidth;
         int _baseHeight;
@@ -216,19 +259,108 @@ namespace ImagingSIMS.Controls.BaseControls
         RegistrationImageSelectionMode _selectionMode;
         RegionOfInterestViewModel _regionOfInterest;
 
-        public BitmapSource BaseImage
+        public Data2D DataSource
         {
-            get { return _baseImage; }
+            get { return _dataSource; }
             set
             {
-                if(_baseImage != value)
+                if(_dataSource != value)
                 {
-                    _baseImage = value;
+                    _dataSource = value;
                     NotifyPropertyChanged();
-                    OnBaseImageChanged();
+                    OnDataSourceChanged();
                 }
             }
         }
+        public BitmapSource DisplayImage
+        {
+            get { return _displayImage; }
+            set
+            {
+                if(_displayImage != value)
+                {
+                    _displayImage = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public double Saturation
+        {
+            get { return _saturation; }
+            set
+            {
+                if (_saturation != value)
+                {
+                    _saturation = value;
+                    NotifyPropertyChanged();
+                    Redraw();
+                }
+            }
+        }
+        public double InitialSaturation
+        {
+            get { return _initialSaturation; }
+            set
+            {
+                if (_initialSaturation != value)
+                {
+                    _initialSaturation = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public ColorScaleTypes ColorScale
+        {
+            get { return _colorScale; }
+            set
+            {
+                if (_colorScale != value)
+                {
+                    _colorScale = value;
+                    NotifyPropertyChanged();
+                    Redraw();
+                }
+            }
+        } 
+        public Color SolidColorScale
+        {
+            get { return _solidColorScale; }
+            set
+            {
+                if (_solidColorScale != value)
+                {
+                    _solidColorScale = value;
+                    NotifyPropertyChanged();
+                    Redraw();
+                }
+            }
+        }
+        public double Threshold
+        {
+            get { return _threshold; }
+            set
+            {
+                if (_threshold != value)
+                {
+                    _threshold = value;
+                    NotifyPropertyChanged();
+                    Redraw();
+                }
+            }
+        }
+        public double InitialThreshold
+        {
+            get { return _initialThreshold; }
+            set
+            {
+                if (_initialThreshold != value)
+                {
+                    _initialThreshold = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
         public ObservableCollection<ControlPointViewModel> ControlPoints
         {
             get { return _controlPoints; }
@@ -350,10 +482,10 @@ namespace ImagingSIMS.Controls.BaseControls
             }
         }
 
-        private void OnBaseImageChanged()
+        private void OnDataSourceChanged()
         {
-            BaseWidth = (int)BaseImage.Width;
-            BaseHeight = (int)BaseImage.Height;
+            BaseWidth = DataSource.Width;
+            BaseHeight = DataSource.Height;
 
             if (ControlPoints.Count > 0)
             {
@@ -367,7 +499,24 @@ namespace ImagingSIMS.Controls.BaseControls
             {
                 SetMatrixCoordinates(RegionOfInterest);
             }
-            
+
+            Saturation = DataSource.Maximum;
+            InitialSaturation = DataSource.Maximum;
+            Threshold = DataSource.Minimum;
+            InitialSaturation = DataSource.Minimum;
+        }
+        private void Redraw()
+        {
+            if (DataSource == null) return;
+
+            if (ColorScale == ColorScaleTypes.Solid)
+            {
+                DisplayImage = ImageGenerator.Instance.Create(DataSource, SolidColorScale, (float)Saturation, (float)Threshold);
+            }
+            else
+            {
+                DisplayImage = ImageGenerator.Instance.Create(DataSource, ColorScale, (float)Saturation, (float)Threshold);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -384,15 +533,8 @@ namespace ImagingSIMS.Controls.BaseControls
             SelectionMode = RegistrationImageSelectionMode.ControlPoints;
             RegionOfInterest = new RegionOfInterestViewModel();
 
-            var testImage = new Data2D(256, 256);
-            for (int x = 0; x < 256; x++)
-            {
-                for (int y = 0; y < 256; y++)
-                {
-                    testImage[x, y] = x + y;
-                }
-            }
-            BaseImage = ImageGenerator.Instance.Create(testImage, ColorScaleTypes.ThermalCold);
+            SolidColorScale = Color.FromArgb(255, 255, 255, 255);
+            ColorScale = ColorScaleTypes.ThermalCold;
         }
 
         public void AddNewPoint(Point controlLocation)

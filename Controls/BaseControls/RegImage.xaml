@@ -10,11 +10,15 @@
              xmlns:converters="clr-namespace:ImagingSIMS.Controls.Converters"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:img="clr-namespace:ImagingSIMS.Data.Imaging;assembly=Data"
              mc:Ignorable="d" 
              Background="Transparent"
              AllowDrop="True" DragEnter="regImageControl_DragEnter" DragLeave="regImageControl_DragLeave" Drop="regImageControl_Drop">
     <UserControl.CommandBindings>
         <CommandBinding Command="c:RegistrationCommands.ClearSelection" CanExecute="ClearSelection_CanExecute" Executed="ClearSelection_Executed"/>
+        <CommandBinding Command="c:RegistrationCommands.ResetSaturation" Executed="ResetSaturation_Executed"/>
+        <CommandBinding Command="ApplicationCommands.Copy" CanExecute="Copy_CanExecute" Executed="Copy_Executed"/>
+        <CommandBinding Command="ApplicationCommands.Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
     </UserControl.CommandBindings>
     <UserControl.Resources>
         <ResourceDictionary>
@@ -23,8 +27,8 @@
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="Button">
                 <Setter Property="Margin" Value="4"/>
-                <Setter Property="Width" Value="75"/>
-                <Setter Property="Height" Value="23"/>
+                <Setter Property="Width" Value="25"/>
+                <Setter Property="Height" Value="25"/>
             </Style>
             <SolidColorBrush x:Key="dropBorderAdornerColor" Color="#FFFF3333"/>
             <converters:RegistrationSelectionTypeToVisibilityConverter x:Key="registrationSelectionTypeToVisibiltyConverter"/>
@@ -33,6 +37,13 @@
                     <x:Type TypeName="local:RegistrationImageSelectionMode"/>
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
+            <ObjectDataProvider x:Key="colorScaleFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="img:ColorScaleTypes"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            <converters:ColorScaleToBoolConverter x:Key="colorScaleToBoolConverter"/>
+            <converters:ColorScaleToBitmapSourceConverter x:Key="colorScaleToBitmapSourceConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Border DataContext="{Binding ElementName=regImageControl, Path=ViewModel}"
@@ -69,7 +80,7 @@
                 
                 <Image HorizontalAlignment="Stretch"
                    Stretch="Uniform"
-                   Source="{Binding BaseImage}"
+                   Source="{Binding DisplayImage}"
                        SizeChanged="Image_SizeChanged"/>
                 
                 <!-- Control Points -->
@@ -144,8 +155,95 @@
                 </Canvas>
             </Grid>
 
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="1">              
                 <StackPanel Orientation="Vertical">
+
+                    <Grid>
+                        <Image x:Name="imageColorScale" Margin="4" Width="{Binding ElementName=gridImageHost, Path=ActualWidth}" 
+                               HorizontalAlignment="Center" Stretch="UniformToFill" Height="20">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource colorScaleToBitmapSourceConverter}">
+                                    <Binding Path="ViewModel.ColorScale" ElementName="regImageControl"/>
+                                    <Binding Path="ViewModel.SolidColorScale" ElementName="regImageControl"/>
+                                    <Binding Path="ViewModel.DataSource.Maximum" ElementName="regImageControl"/>
+                                    <Binding Path="ViewModel.Saturation" ElementName="regImageControl"/>
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Copy Image" Click="cmCopyImage_Click"/>
+                                <MenuItem Header="Copy Scale" Click="cmCopyScale_Click"/>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0">Saturation:</TextBlock>
+                        <Slider x:Name="sliderSaturation" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch"
+                        SmallChange="{Binding DataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Small}"
+                        LargeChange="{Binding DataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Large}"
+                        Minimum="{Binding DataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Minimum}"
+                        Maximum="{Binding DataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Maximum}"
+                        Value="{Binding Saturation, Mode=TwoWay}"/>
+                        <TextBlock Grid.Column="2" Text="{Binding Saturation, StringFormat=0.000}"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0">Threshold:</TextBlock>
+                        <Slider x:Name="sliderThreshold" Grid.Column="1" Margin="4" HorizontalAlignment="Stretch"
+                        SmallChange="{Binding DataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Small}"
+                        LargeChange="{Binding DataSource.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Large}"
+                        Minimum="{Binding DataSource.Minimum}"
+                        Maximum="{Binding DataSource.Maximum}"
+                        Value="{Binding Threshold, Mode=TwoWay}"/>
+                        <TextBlock Grid.Column="2" Text="{Binding Threshold, StringFormat=0.000}"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0">Color Scale:</TextBlock>
+                        <ComboBox Grid.Row="0" Grid.Column="1" Margin="4" Width="Auto" Height="20" IsEditable="False" 
+                                      ItemsSource="{Binding Source={StaticResource colorScaleFromEnum}}"
+                                      SelectedItem="{Binding ColorScale}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock>Image Color:</TextBlock>
+                        <cc:CollapsedColorSelector Grid.Column="1" Margin="4"
+                                           IsEnabled="{Binding ColorScale, Converter={StaticResource colorScaleToBoolConverter}}"
+                                           SelectedColor="{Binding SolidColorScale, Mode=TwoWay}"                                           
+                                           IsAlphaEnabled="False"/>
+
+                    </Grid>
+
+
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -171,11 +269,35 @@
                         </ComboBox>
                         
                     </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock>Selection Color:</TextBlock>
+                        <cc:CollapsedColorSelector Grid.Column="1" Margin="4"
+                                                   IsAlphaEnabled="True" SelectedColor="{Binding SelectionColor, Mode=TwoWay}"
+                                                   HorizontalAlignment="Center"/>
+                        
+                    </Grid>
+
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Command="c:RegistrationCommands.ClearSelection" Width="90">Clear Selection</Button>
+                        <Button Command="c:RegistrationCommands.ClearSelection" ToolTip="Clear Selection">
+                            <Image Source="..\Images\Remove24.png"/>
+                        </Button>
+                        <Button Command="ApplicationCommands.Save" ToolTip="Save">
+                            <Image Source="..\Images\saveHS.png"/>
+                        </Button>
+                        <Button Command="ApplicationCommands.Copy" ToolTip="Copy">
+                            <Image Source="..\Images\copy.ico"/>
+                        </Button>
+                        <Button Command="c:RegistrationCommands.ResetSaturation" ToolTip="Reset Saturation">
+                            <Image Source="..\Images\Reverse.png"/>
+                        </Button>
                     </StackPanel>
-                    <cc:CollapsedColorSelector IsAlphaEnabled="True" SelectedColor="{Binding SelectionColor, Mode=TwoWay}"
-                                           HorizontalAlignment="Center"/>
+
                 </StackPanel>
 
             </Grid>
