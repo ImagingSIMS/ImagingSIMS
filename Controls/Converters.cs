@@ -18,6 +18,7 @@ using ImagingSIMS.Common.Controls;
 using System.Windows.Media;
 using ImagingSIMS.Common;
 using ImagingSIMS.Controls.ViewModels;
+using ImagingSIMS.Controls.BaseControls;
 
 namespace ImagingSIMS.Controls.Converters
 {
@@ -892,6 +893,28 @@ namespace ImagingSIMS.Controls.Converters
             if (model == null) return string.Empty;
 
             return $"{model.ViewableDataSource.Width} x {model.ViewableDataSource.Height} x {model.LayerEnd - model.LayerStart + 1}";
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class RegistrationSelectionTypeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                var selectionMode = (RegistrationImageSelectionMode)value;
+                var target = (string)parameter;
+
+                if (selectionMode.ToString().ToLower() == target.ToLower()) return Visibility.Visible;
+                return Visibility.Collapsed;
+            }
+            catch (Exception)
+            {
+                return Visibility.Collapsed;
+            }
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

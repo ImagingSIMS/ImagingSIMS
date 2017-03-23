@@ -68,11 +68,11 @@ namespace ImagingSIMS.Controls
 
     public static class RegistrationCommands
     {
-        private static RoutedUICommand _clearPoints = new RoutedUICommand("Clear Selected Points", "ClearPoints", typeof(RegistrationCommands));
+        private static RoutedUICommand _clearSelection = new RoutedUICommand("Clear Selection", "ClearSelection", typeof(RegistrationCommands));
 
-        public static RoutedUICommand ClearPoints
+        public static RoutedUICommand ClearSelection
         {
-            get { return _clearPoints; }
+            get { return _clearSelection; }
         }
     }
 }

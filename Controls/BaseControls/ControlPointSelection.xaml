@@ -26,10 +26,22 @@
         </TextBlock>
         <Border.ToolTip>
             <ToolTip>
-                <StackPanel Orientation="Vertical">
-                    <TextBlock Text="{Binding CoordX, StringFormat=X: {0:F2}}"/>
-                    <TextBlock Text="{Binding CoordY, StringFormat=Y: {0:F2}}"/>
-                </StackPanel>                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0">X:</TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="1">Y:</TextBlock>
+
+                    <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding CoordX, StringFormat={}{0:F2}}"/>
+                    <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding CoordY, StringFormat={}{0:F2}}"/>
+                </Grid>
             </ToolTip>
         </Border.ToolTip>
 

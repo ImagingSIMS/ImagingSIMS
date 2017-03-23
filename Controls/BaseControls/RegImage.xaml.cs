@@ -62,16 +62,9 @@ namespace ImagingSIMS.Controls.BaseControls
             ViewModel.VisualHeight = image.ActualHeight;
 
             ViewModel.RepositionPoints();
+            ViewModel.RepoisitonRregionOfInterest();
         }
-        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                var coord = e.GetPosition(gridImageHost);
 
-                ViewModel.AddNewPoint(coord);
-            }
-        }
         private void ControlPointSelection_ControlPointDragging(object sender, ControlPointDragRoutedEventArgs e)
         {
             var selection = e.Source as ControlPointSelection;
@@ -99,13 +92,21 @@ namespace ImagingSIMS.Controls.BaseControls
             }
         }
 
-        private void ClearPoints_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void ClearSelection_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = ViewModel.ControlPoints.Count > 0;
+            if (ViewModel.SelectionMode == RegistrationImageSelectionMode.ControlPoints)
+                e.CanExecute = ViewModel.ControlPoints.Count > 0;
+
+            else if (ViewModel.SelectionMode == RegistrationImageSelectionMode.ROI)
+                e.CanExecute = ViewModel.RegionOfInterest.HasRegionOfInterest;
         }
-        private void ClearPoints_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void ClearSelection_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            ViewModel.ControlPoints.Clear();
+            if (ViewModel.SelectionMode == RegistrationImageSelectionMode.ControlPoints)
+                ViewModel.ControlPoints.Clear();
+
+            else if (ViewModel.SelectionMode == RegistrationImageSelectionMode.ROI)
+                ViewModel.RegionOfInterest.ClearRegionOfInterest();
         }
 
         private void regImageControl_DragEnter(object sender, DragEventArgs e)
@@ -119,6 +120,50 @@ namespace ImagingSIMS.Controls.BaseControls
         private void regImageControl_Drop(object sender, DragEventArgs e)
         {
             ViewModel.IsDropTarget = false;
+        }
+
+        bool _isRoiDragging;
+        private void gridImageHost_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                var coord = e.GetPosition(gridImageHost);
+
+                if (ViewModel.SelectionMode == RegistrationImageSelectionMode.ControlPoints)
+                {
+
+                    ViewModel.AddNewPoint(coord);
+                }
+                else
+                {
+                    ViewModel.RegionOfInterest.Reset(coord);
+                    ViewModel.SetMatrixCoordinates(ViewModel.RegionOfInterest);
+                    _isRoiDragging = true;
+                }
+            }
+        }
+        private void gridImageHost_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (ViewModel.SelectionMode == RegistrationImageSelectionMode.ROI && _isRoiDragging)
+            {
+                var coord = e.GetPosition(gridImageHost);
+                ViewModel.RegionOfInterest.DragTo(coord);
+                ViewModel.SetMatrixCoordinates(ViewModel.RegionOfInterest);
+            }
+        }
+        private void gridImageHost_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if(ViewModel.SelectionMode == RegistrationImageSelectionMode.ROI)
+            {
+                _isRoiDragging = false;
+            }
+        }
+        private void gridImageHost_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (ViewModel.SelectionMode == RegistrationImageSelectionMode.ROI)
+            {
+                _isRoiDragging = false;
+            }
         }
     }
 
@@ -134,6 +179,8 @@ namespace ImagingSIMS.Controls.BaseControls
         bool _clearPointsOnImageChanged;
         bool _clearPointsOnRegistration;
         bool _isDropTarget;
+        RegistrationImageSelectionMode _selectionMode;
+        RegionOfInterestViewModel _regionOfInterest;
 
         public BitmapSource BaseImage
         {
@@ -256,6 +303,30 @@ namespace ImagingSIMS.Controls.BaseControls
                 }
             }
         }
+        public RegistrationImageSelectionMode SelectionMode
+        {
+            get { return _selectionMode; }
+            set
+            {
+                if(_selectionMode != value)
+                {
+                    _selectionMode = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public RegionOfInterestViewModel RegionOfInterest
+        {
+            get { return _regionOfInterest; }
+            set
+            {
+                if (_regionOfInterest != value)
+                {
+                    _regionOfInterest = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         private void OnBaseImageChanged()
         {
@@ -286,6 +357,9 @@ namespace ImagingSIMS.Controls.BaseControls
         {
             ControlPoints = new ObservableCollection<ControlPointViewModel>();
             SelectionColor = Color.FromArgb(255, 128, 255, 0);
+
+            SelectionMode = RegistrationImageSelectionMode.ControlPoints;
+            RegionOfInterest = new RegionOfInterestViewModel();
 
             var testImage = new Data2D(256, 256);
             for (int x = 0; x < 256; x++)
@@ -327,13 +401,236 @@ namespace ImagingSIMS.Controls.BaseControls
                 point.SetVisualCoordinate(VisualWidth, VisualHeight, BaseWidth, BaseHeight);
             }
         }
+        public void RepoisitonRregionOfInterest()
+        {
+            RegionOfInterest.SetVisualCoordinate(VisualWidth, VisualHeight, BaseWidth, BaseHeight);
+        }
         public void SetMatrixCoordinates(ControlPointViewModel point)
         {
             point.SetMatrixCoordinate(VisualWidth, VisualHeight, BaseWidth, BaseHeight);
+        }
+        public void SetMatrixCoordinates(RegionOfInterestViewModel regionOfInterest)
+        {
+            regionOfInterest.SetMatrixCoordinate(VisualWidth, VisualHeight, BaseWidth, BaseHeight);
         }
         public void SetVisualCoordinates(ControlPointViewModel point)
         {
             point.SetVisualCoordinate(VisualWidth, VisualHeight, BaseWidth, BaseHeight);
         }
+        public void SetVisualCoordinates(RegionOfInterestViewModel regionOfInterest)
+        {
+            regionOfInterest.SetVisualCoordinate(VisualWidth, VisualHeight, BaseWidth, BaseHeight);
+        }
+    }
+
+    public class RegionOfInterestViewModel : INotifyPropertyChanged
+    {
+        Point _dragStart;
+
+        double _left;
+        double _top;
+        double _height;
+        double _width;
+
+        double _visualLeft;
+        double _visualTop;
+        double _visualHeight;
+        double _visualWidth;
+
+        bool _hasRegionOfInterest;
+
+        public double Left
+        {
+            get { return _left; }
+            set
+            {
+                if(_left != value)
+                {
+                    _left = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public double Top
+        {
+            get { return _top; }
+            set
+            {
+                if (_top != value)
+                {
+                    _top = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public double Width
+        {
+            get { return _width; }
+            set
+            {
+                if (_width != value)
+                {
+                    _width = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public double Height
+        {
+            get { return _height; }
+            set
+            {
+                if (_height != value)
+                {
+                    _height = value;
+                    NotifyPropertyChanged();
+                }
+            }
+
+        }
+
+        public double VisualLeft
+        {
+            get { return _visualLeft; }
+            set
+            {
+                if (_visualLeft != value)
+                {
+                    _visualLeft = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public double VisualTop
+        {
+            get { return _visualTop; }
+            set
+            {
+                if (_visualTop != value)
+                {
+                    _visualTop = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public double VisualWidth
+        {
+            get { return _visualWidth; }
+            set
+            {
+                if (_visualWidth != value)
+                {
+                    _visualWidth = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public double VisualHeight
+        {
+            get { return _visualHeight; }
+            set
+            {
+                if(_visualHeight != value)
+                {
+                    _visualHeight = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public bool HasRegionOfInterest
+        {
+            get { return _hasRegionOfInterest; }
+            set
+            {
+                if (_hasRegionOfInterest != value)
+                {
+                    _hasRegionOfInterest = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public Rect Rectangle
+        {
+            get { return new Rect(Left, Top, Width, Height); }
+        }
+
+        public RegionOfInterestViewModel()
+        {
+            _dragStart = new Point();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void Reset(Point startPoint)
+        {
+            VisualLeft = startPoint.X;
+            VisualTop = startPoint.Y;
+            VisualWidth = 0;
+            VisualHeight = 0;
+
+            _dragStart = startPoint;
+
+            HasRegionOfInterest = true;
+        }
+        public void DragTo(Point endPoint)
+        {
+            if (_dragStart == null) return;
+
+            VisualLeft = Math.Min(_dragStart.X, endPoint.X);
+            VisualTop = Math.Min(_dragStart.Y, endPoint.Y);
+
+            VisualWidth = Math.Abs(_dragStart.X - endPoint.X);
+            VisualHeight = Math.Abs(_dragStart.Y - endPoint.Y);
+
+            HasRegionOfInterest = true;
+        }
+
+        public void SetVisualCoordinate(double visualElementWidth,
+            double visualElementHeight, int matrixWidth, int matrixHeight)
+        {
+            VisualLeft = visualElementWidth * Left / matrixWidth;
+            VisualTop = visualElementHeight * Top / matrixHeight;
+            VisualWidth = visualElementWidth * Width / matrixWidth;
+            VisualHeight = visualElementHeight * Height / matrixHeight;
+        }
+        public void SetMatrixCoordinate(double visualElementWidth,
+            double visualElementHeight, int matrixWidth, int matrixHeight)
+        {
+            Left = VisualLeft * matrixWidth / visualElementWidth;
+            Top = VisualTop * matrixHeight / visualElementHeight;
+            Width = VisualWidth * matrixWidth / visualElementWidth;
+            Height = VisualHeight * matrixHeight / visualElementHeight;
+        }
+
+        public void ClearRegionOfInterest()
+        {
+            _dragStart = new Point();
+
+            HasRegionOfInterest = false;
+
+            VisualLeft = 0;
+            VisualTop = 0;
+            VisualWidth = 0;
+            VisualHeight = 0;
+
+            Left = 0;
+            Top = 0;
+            Width = 0;
+            Height = 0;
+        }
+    }
+
+    public enum RegistrationImageSelectionMode
+    {
+        [Description("Control Points")]
+        ControlPoints,
+
+        ROI
     }
 }

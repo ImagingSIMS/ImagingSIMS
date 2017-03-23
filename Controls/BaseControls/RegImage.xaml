@@ -7,11 +7,13 @@
              xmlns:local="clr-namespace:ImagingSIMS.Controls.BaseControls"
              xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
              xmlns:c="clr-namespace:ImagingSIMS.Controls"
+             xmlns:converters="clr-namespace:ImagingSIMS.Controls.Converters"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              Background="Transparent"
              AllowDrop="True" DragEnter="regImageControl_DragEnter" DragLeave="regImageControl_DragLeave" Drop="regImageControl_Drop">
     <UserControl.CommandBindings>
-        <CommandBinding Command="c:RegistrationCommands.ClearPoints" CanExecute="ClearPoints_CanExecute" Executed="ClearPoints_Executed"/>
+        <CommandBinding Command="c:RegistrationCommands.ClearSelection" CanExecute="ClearSelection_CanExecute" Executed="ClearSelection_Executed"/>
     </UserControl.CommandBindings>
     <UserControl.Resources>
         <ResourceDictionary>
@@ -24,6 +26,12 @@
                 <Setter Property="Height" Value="23"/>
             </Style>
             <SolidColorBrush x:Key="dropBorderAdornerColor" Color="#FFFF3333"/>
+            <converters:RegistrationSelectionTypeToVisibilityConverter x:Key="registrationSelectionTypeToVisibiltyConverter"/>
+            <ObjectDataProvider x:Key="registrationSelectionTypeFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="local:RegistrationImageSelectionMode"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
         </ResourceDictionary>
     </UserControl.Resources>
     <Border DataContext="{Binding ElementName=regImageControl, Path=ViewModel}"
@@ -46,11 +54,15 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
-            <Grid x:Name="gridImageHost" MouseDown="Grid_MouseDown">
+            <Grid x:Name="gridImageHost" 
+                  MouseDown="gridImageHost_MouseDown" MouseMove="gridImageHost_MouseMove" MouseUp="gridImageHost_MouseUp"
+                  MouseLeave="gridImageHost_MouseLeave">
                 <Image HorizontalAlignment="Stretch"
                    Stretch="Uniform"
                    Source="{Binding BaseImage}"
                        SizeChanged="Image_SizeChanged"/>
+                
+                <!-- Control Points -->
                 <ItemsControl x:Name="itemsControl" HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
                           ItemsSource="{Binding ControlPoints}">
@@ -63,6 +75,8 @@
                         <DataTemplate>
                             <local:ControlPointSelection ControlPoint="{Binding}" 
                                                          SelectionColor="{Binding ElementName=regImageControl, Path=ViewModel.SelectionColor}"
+                                                         Visibility="{Binding ElementName=regImageControl, Path=ViewModel.SelectionMode, 
+                                                                        Converter={StaticResource registrationSelectionTypeToVisibiltyConverter}, ConverterParameter=ControlPoints}"
                                                          ControlPointDragging="ControlPointSelection_ControlPointDragging"
                                                          ControlPointRemoved="ControlPointSelection_ControlPointRemoved"/>
                         </DataTemplate>
@@ -74,6 +88,50 @@
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
+                
+                <!-- ROI -->
+                <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Rectangle Visibility="{Binding SelectionMode, 
+                                    Converter={StaticResource registrationSelectionTypeToVisibiltyConverter}, ConverterParameter=ROI}"
+                        Canvas.Left="{Binding RegionOfInterest.VisualLeft}"
+                        Canvas.Top="{Binding RegionOfInterest.VisualTop}"
+                        Width="{Binding RegionOfInterest.VisualWidth}"
+                        Height="{Binding RegionOfInterest.VisualHeight}">
+                        <Rectangle.Stroke>
+                            <SolidColorBrush Color="{Binding SelectionColor}"/>
+                        </Rectangle.Stroke>
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{Binding SelectionColor}" Opacity="0.3"/>
+                        </Rectangle.Fill>
+                        <Rectangle.ToolTip>
+                            <ToolTip>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0">Left:</TextBlock>
+                                    <TextBlock Grid.Row="1" Grid.Column="0">Top:</TextBlock>
+                                    <TextBlock Grid.Row="2" Grid.Column="0">Width:</TextBlock>
+                                    <TextBlock Grid.Row="3" Grid.Column="0">Height:</TextBlock>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding RegionOfInterest.Left, StringFormat={}{0:F2}}"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding RegionOfInterest.Top, StringFormat={}{0:F2}}"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding RegionOfInterest.Width, StringFormat={}{0:F2}}"/>
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding RegionOfInterest.Height, StringFormat={}{0:F2}}"/>
+                                    
+                                </Grid> 
+                            </ToolTip>
+                        </Rectangle.ToolTip>
+                    </Rectangle>
+                </Canvas>
             </Grid>
 
             <Grid Grid.Row="1">
@@ -94,8 +152,25 @@
                         <TextBlock>Clear points on image change:</TextBlock>
                         <CheckBox Grid.Column="1" IsChecked="{Binding ClearPointsOnImageChanged}"/>
                     </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock>Selection Mode:</TextBlock>
+                        <ComboBox Grid.Column="1" Margin="4" Width="Auto" HorizontalAlignment="Stretch"
+                                  ItemsSource="{Binding Source={StaticResource registrationSelectionTypeFromEnum}}"
+                                  SelectedItem="{Binding ElementName=regImageControl, Path=ViewModel.SelectionMode}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        
+                    </Grid>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Command="c:RegistrationCommands.ClearPoints">Clear</Button>
+                        <Button Command="c:RegistrationCommands.ClearSelection" Width="90">Clear Selection</Button>
                     </StackPanel>
                     <cc:CollapsedColorSelector IsAlphaEnabled="True" SelectedColor="{Binding SelectionColor, Mode=TwoWay}"
                                            HorizontalAlignment="Center"/>

@@ -210,17 +210,17 @@ namespace ImagingSIMS.Controls.BaseControls
             return base.GetHashCode();
         }
 
-        public void SetVisualCoordinate(double visualWidth,
-            double visualHeight, int matrixWidth, int matrixHeight)
+        public void SetVisualCoordinate(double visualElementWidth,
+            double visualElementHeight, int matrixWidth, int matrixHeight)
         {
-            VisualX = (visualWidth * CoordX / matrixWidth) - (ControlPointSelection.TargetWidth / 2);
-            VisualY = (visualHeight * CoordY / matrixHeight) - (ControlPointSelection.TargetHeight / 2);
+            VisualX = (visualElementWidth * CoordX / matrixWidth) - (ControlPointSelection.TargetWidth / 2);
+            VisualY = (visualElementHeight * CoordY / matrixHeight) - (ControlPointSelection.TargetHeight / 2);
         }
-        public void SetMatrixCoordinate(double visualWidth,
-            double visualHeight, int matrixWidth, int matrixHeight)
+        public void SetMatrixCoordinate(double visualElementWidth,
+            double visualElementHeight, int matrixWidth, int matrixHeight)
         {
-            CoordX = (VisualX + (ControlPointSelection.TargetWidth / 2)) * matrixWidth / visualWidth;
-            CoordY = (VisualY + (ControlPointSelection.TargetHeight / 2)) * matrixHeight / visualHeight;
+            CoordX = (VisualX + (ControlPointSelection.TargetWidth / 2)) * matrixWidth / visualElementWidth;
+            CoordY = (VisualY + (ControlPointSelection.TargetHeight / 2)) * matrixHeight / visualElementHeight;
         }
     }
 
