@@ -33,6 +33,18 @@ namespace ImagingSIMS.Controls.BaseControls
             get { return (RegImageViewModel)GetValue(ViewModelProperty); }
             set { SetValue(ViewModelProperty, value); }
         }
+        public IEnumerable<ControlPoint> SelectedPoints
+        {
+            get
+            {
+                return ViewModel.ControlPoints.Select(p => new ControlPoint()
+                {
+                    Id = p.Id,
+                    X = p.CoordX,
+                    Y = p.CoordY
+                });
+            }
+        }
 
         public RegImage()
         {
@@ -41,12 +53,72 @@ namespace ImagingSIMS.Controls.BaseControls
             InitializeComponent();
         }
 
+        private void Image_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var image = sender as Image;
+            if (image == null) return;
+
+            ViewModel.VisualWidth = image.ActualWidth;
+            ViewModel.VisualHeight = image.ActualHeight;
+
+            ViewModel.RepositionPoints();
+        }
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var coord = e.GetPosition(grid_host);
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                var coord = e.GetPosition(gridImageHost);
 
-            var controlPoint = new ControlPointViewModel(3, coord.X, coord.Y);
-            ViewModel.ControlPoints.Add(controlPoint);
+                ViewModel.AddNewPoint(coord);
+            }
+        }
+        private void ControlPointSelection_ControlPointDragging(object sender, ControlPointDragRoutedEventArgs e)
+        {
+            var selection = e.Source as ControlPointSelection;
+            if (selection == null) return;
+
+            var point = selection.ControlPoint;
+
+            // TODO: Drag
+            var coord = e.DragArgs.GetPosition(gridImageHost);
+
+            point.VisualX = coord.X - (ControlPointSelection.TargetWidth / 2);
+            point.VisualY = coord.Y - (ControlPointSelection.TargetHeight / 2);
+            ViewModel.SetMatrixCoordinates(point);
+        }
+        private void ControlPointSelection_ControlPointRemoved(object sender, RoutedEventArgs e)
+        {
+            var selection = e.Source as ControlPointSelection;
+            if (selection == null) return;
+
+            var point = selection.ControlPoint;
+
+            if (ViewModel.ControlPoints.Contains(point))
+            {
+                ViewModel.ControlPoints.Remove(point);
+            }
+        }
+
+        private void ClearPoints_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = ViewModel.ControlPoints.Count > 0;
+        }
+        private void ClearPoints_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            ViewModel.ControlPoints.Clear();
+        }
+
+        private void regImageControl_DragEnter(object sender, DragEventArgs e)
+        {
+            ViewModel.IsDropTarget = true;
+        }
+        private void regImageControl_DragLeave(object sender, DragEventArgs e)
+        {
+            ViewModel.IsDropTarget = false;
+        }
+        private void regImageControl_Drop(object sender, DragEventArgs e)
+        {
+            ViewModel.IsDropTarget = false;
         }
     }
 
@@ -59,6 +131,9 @@ namespace ImagingSIMS.Controls.BaseControls
         Color _selectionColor;
         double _visualWidth;
         double _visualHeight;
+        bool _clearPointsOnImageChanged;
+        bool _clearPointsOnRegistration;
+        bool _isDropTarget;
 
         public BitmapSource BaseImage
         {
@@ -145,13 +220,60 @@ namespace ImagingSIMS.Controls.BaseControls
                 }
             }
         }
+        public bool ClearPointsOnImageChanged
+        {
+            get { return _clearPointsOnImageChanged; }
+            set
+            {
+                if(_clearPointsOnImageChanged != value)
+                {
+                    _clearPointsOnImageChanged = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public bool ClearPointsOnRegistration
+        {
+            get { return _clearPointsOnRegistration; }
+            set
+            {
+                if (_clearPointsOnRegistration != value)
+                {
+                    _clearPointsOnRegistration = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public bool IsDropTarget
+        {
+            get { return _isDropTarget; }
+            set
+            {
+                if(_isDropTarget != value)
+                {
+                    _isDropTarget = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         private void OnBaseImageChanged()
         {
             BaseWidth = (int)BaseImage.Width;
             BaseHeight = (int)BaseImage.Height;
 
-            ControlPoints.Clear();
+            if (ClearPointsOnImageChanged)
+            {
+                ControlPoints.Clear();
+            }
+
+            else
+            {
+                foreach (var point in ControlPoints)
+                {
+                    SetMatrixCoordinates(point);
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -173,7 +295,45 @@ namespace ImagingSIMS.Controls.BaseControls
                     testImage[x, y] = x + y;
                 }
             }
-            BaseImage = ImageHelper.CreateColorScaleImage(testImage, ColorScaleTypes.ThermalCold);
+            BaseImage = ImageGenerator.Instance.Create(testImage, ColorScaleTypes.ThermalCold);
+        }
+
+        public void AddNewPoint(Point controlLocation)
+        {
+            var nextId = GetNextControlPointIndex();
+
+            var controlPoint = new ControlPointViewModel(nextId)
+            {
+                VisualX = controlLocation.X - (ControlPointSelection.TargetWidth / 2),
+                VisualY = controlLocation.Y - (ControlPointSelection.TargetHeight / 2)
+            };
+            SetMatrixCoordinates(controlPoint);
+            ControlPoints.Add(controlPoint);
+        }
+        private int GetNextControlPointIndex()
+        {
+            int i = 1;
+            while (ControlPoints.Select(p => p.Id).Contains(i))
+            {
+                i++;
+            }
+            return i;
+        }
+
+        public void RepositionPoints()
+        {
+            foreach (var point in ControlPoints)
+            {
+                point.SetVisualCoordinate(VisualWidth, VisualHeight, BaseWidth, BaseHeight);
+            }
+        }
+        public void SetMatrixCoordinates(ControlPointViewModel point)
+        {
+            point.SetMatrixCoordinate(VisualWidth, VisualHeight, BaseWidth, BaseHeight);
+        }
+        public void SetVisualCoordinates(ControlPointViewModel point)
+        {
+            point.SetVisualCoordinate(VisualWidth, VisualHeight, BaseWidth, BaseHeight);
         }
     }
 }

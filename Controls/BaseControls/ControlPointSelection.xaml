@@ -6,24 +6,29 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ImagingSIMS.Controls.BaseControls"
              mc:Ignorable="d" 
-             Width="40" Height="40">
-    <Border CornerRadius="10"
-            BorderThickness="2"
-            DataContext="{Binding ElementName=userControl, Path=ControlPoint}"
-            BorderBrush="{Binding Color}"
+             d:DesignHeight="40" d:DesignWidth="40"
+             Width="{Binding ElementName=userControl, Path=TargetWidth}" Height="{Binding ElementName=userControl, Path=TargetHeight}">
+    <Border CornerRadius="20"
+            BorderThickness="2"            
             Background="Transparent"
             MouseDown="Border_MouseDown"
             MouseMove="Border_MouseMove"
             MouseUp="Border_MouseUp">
+        <Border.BorderBrush>
+            <SolidColorBrush Color="{Binding ElementName=userControl, Path=SelectionColor}"/>
+        </Border.BorderBrush>
         <TextBlock HorizontalAlignment="Center"
                    VerticalAlignment="Center"
-                   Foreground="{Binding Color}"
-                   Text="{Binding Id}"/>
+                   Text="{Binding Id}">
+            <TextBlock.Foreground>
+                <SolidColorBrush Color="{Binding ElementName=userControl, Path=SelectionColor}"/>
+            </TextBlock.Foreground>
+        </TextBlock>
         <Border.ToolTip>
             <ToolTip>
                 <StackPanel Orientation="Vertical">
-                    <TextBlock Text="{Binding CoordX, StringFormat=X: {0}}"/>
-                    <TextBlock Text="{Binding CoordY, StringFormat=Y: {0}}"/>
+                    <TextBlock Text="{Binding CoordX, StringFormat=X: {0:F2}}"/>
+                    <TextBlock Text="{Binding CoordY, StringFormat=Y: {0:F2}}"/>
                 </StackPanel>                
             </ToolTip>
         </Border.ToolTip>

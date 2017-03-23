@@ -22,13 +22,24 @@ namespace ImagingSIMS.Controls.BaseControls
     /// </summary>
     public partial class ControlPointSelection : UserControl
     {
+        public static double TargetWidth { get; set; }
+        public static double TargetHeight { get; set; }
+
         bool _isDragging;
+
+        static ControlPointSelection()
+        {
+            TargetWidth = 40;
+            TargetHeight = 40;
+        }
 
         public static readonly DependencyProperty ControlPointProperty = DependencyProperty.Register("ControlPoint",
             typeof(ControlPointViewModel), typeof(ControlPointSelection));
+        public static readonly DependencyProperty SelectionColorProperty = DependencyProperty.Register("SelectionColor",
+            typeof(Color), typeof(ControlPointSelection));
 
         public static readonly RoutedEvent ControlPointDraggingEvent = EventManager.RegisterRoutedEvent("ControlPointDragging",
-            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ControlPointSelection));
+            RoutingStrategy.Bubble, typeof(ControlPointDragRoutedEventHandler), typeof(ControlPointSelection));
         public static readonly RoutedEvent ControlPointRemovedEvent = EventManager.RegisterRoutedEvent("ControlPointRemoved",
             RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ControlPointSelection));
 
@@ -37,7 +48,12 @@ namespace ImagingSIMS.Controls.BaseControls
             get { return (ControlPointViewModel)GetValue(ControlPointProperty); }
             set { SetValue(ControlPointProperty, value); }
         }
-        public event RoutedEventHandler ControlPointDragging
+        public Color SelectionColor
+        {
+            get { return (Color)GetValue(SelectionColorProperty); }
+            set { SetValue(SelectionColorProperty, value); }
+        }
+        public event ControlPointDragRoutedEventHandler ControlPointDragging
         {
             add { AddHandler(ControlPointDraggingEvent, value); }
             remove { RemoveHandler(ControlPointDraggingEvent, value); }
@@ -51,19 +67,6 @@ namespace ImagingSIMS.Controls.BaseControls
         public ControlPointSelection()
         {
             InitializeComponent();
-        }
-
-        public void SetVisualCoordinate(double visualWidth,
-            double visualHeight, int matrixWidth, int matrixHeight)
-        {
-            ControlPoint.VisualX = (visualWidth * ControlPoint.CoordX / matrixWidth) - (ActualWidth / 2);
-            ControlPoint.VisualY = (visualHeight * ControlPoint.CoordY / matrixHeight) - (ActualHeight / 2);
-        }
-        public void SetMatrixCoordinate(double visualWidth,
-            double visualHeight, int matrixWidth, int matrixHeight)
-        {
-            ControlPoint.CoordX = (ControlPoint.VisualX + (ActualWidth / 2)) * matrixWidth / visualWidth;
-            ControlPoint.CoordY = (ControlPoint.VisualY + (ActualHeight / 2)) * matrixHeight / visualHeight;
         }
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
@@ -83,7 +86,8 @@ namespace ImagingSIMS.Controls.BaseControls
         {
             if (_isDragging)
             {
-                RaiseEvent(new RoutedEventArgs(ControlPointDraggingEvent, this));
+                RaiseEvent(new ControlPointDragRoutedEventArgs(e, ControlPointDraggingEvent, this));
+                e.Handled = true;
             }
         }
         private void Border_MouseUp(object sender, MouseButtonEventArgs e)
@@ -103,7 +107,6 @@ namespace ImagingSIMS.Controls.BaseControls
         double _coordY;
         double _visualX;
         double _visualY;
-        Color _color;
 
         public int Id
         {
@@ -165,28 +168,10 @@ namespace ImagingSIMS.Controls.BaseControls
                 }
             }
         }
-        public Color Color
-        {
-            get { return _color; }
-            set
-            {
-                if(_color != value)
-                {
-                    _color = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
 
         public ControlPointViewModel(int id)
         {
             Id = id;
-        }
-        public ControlPointViewModel(int id, double coordX, double coordY)
-        {
-            Id = id;
-            CoordX = coordX;
-            CoordY = coordY;
         }
         public ControlPointViewModel(ControlPoint controlPoint)
         {
@@ -194,7 +179,6 @@ namespace ImagingSIMS.Controls.BaseControls
             CoordX = controlPoint.X;
             CoordY = controlPoint.Y;
         }
-
 
         public ControlPoint ToControlPoint()
         {
@@ -219,11 +203,24 @@ namespace ImagingSIMS.Controls.BaseControls
 
             return c.Id == Id && c.CoordX == CoordX 
                 && c.CoordY == CoordY && c.VisualX == VisualX 
-                && c.VisualY == VisualY && c.Color == Color;
+                && c.VisualY == VisualY;
         }
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        public void SetVisualCoordinate(double visualWidth,
+            double visualHeight, int matrixWidth, int matrixHeight)
+        {
+            VisualX = (visualWidth * CoordX / matrixWidth) - (ControlPointSelection.TargetWidth / 2);
+            VisualY = (visualHeight * CoordY / matrixHeight) - (ControlPointSelection.TargetHeight / 2);
+        }
+        public void SetMatrixCoordinate(double visualWidth,
+            double visualHeight, int matrixWidth, int matrixHeight)
+        {
+            CoordX = (VisualX + (ControlPointSelection.TargetWidth / 2)) * matrixWidth / visualWidth;
+            CoordY = (VisualY + (ControlPointSelection.TargetHeight / 2)) * matrixHeight / visualHeight;
         }
     }
 
@@ -244,5 +241,15 @@ namespace ImagingSIMS.Controls.BaseControls
         {
             return base.GetHashCode();
         }
+    }
+
+    public delegate void ControlPointDragRoutedEventHandler(object sender, ControlPointDragRoutedEventArgs e);
+    public class ControlPointDragRoutedEventArgs : RoutedEventArgs
+    {
+        public MouseEventArgs DragArgs { get; set; }
+
+        public ControlPointDragRoutedEventArgs(MouseEventArgs dragArgs) : base() { DragArgs = dragArgs; }
+        public ControlPointDragRoutedEventArgs(MouseEventArgs dragArgs, RoutedEvent routedEvent) : base(routedEvent) { DragArgs = dragArgs; }
+        public ControlPointDragRoutedEventArgs(MouseEventArgs dragArgs, RoutedEvent routedEvent, object source) : base(routedEvent, source) { DragArgs = dragArgs; }
     }
 }

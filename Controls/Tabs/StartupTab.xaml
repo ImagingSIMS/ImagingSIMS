@@ -19,7 +19,21 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <bc:RegImage HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Height="300"/>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <bc:RegImage Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <bc:RegImage Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <bc:RegImage Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <bc:RegImage Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+    </Grid>
+
+
 
     <!--<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <Grid x:Name="LayoutRoot">
