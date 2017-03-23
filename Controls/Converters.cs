@@ -590,8 +590,10 @@ namespace ImagingSIMS.Controls.Converters
             // [3]:  (int)saturation
             try
             {
-                if (values[0] == DependencyProperty.UnsetValue)
-                    return null;
+                for (int i = 0; i < values.Length; i++)
+                {
+                    if (values[i] == DependencyProperty.UnsetValue) return null;
+                }
 
                 ColorScaleTypes colorScale = (ColorScaleTypes)values[0];
                 Color solidColorScale = (Color)values[1];
