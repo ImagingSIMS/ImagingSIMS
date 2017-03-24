@@ -298,6 +298,52 @@
                         </Button>
                     </StackPanel>
 
+                    <ItemsControl HorizontalAlignment="Stretch" Margin="4"
+                                  ItemsSource="{Binding ControlPoints}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Column="0" Grid.Row="0">X:</TextBlock>
+                                    <TextBlock Grid.Column="0" Grid.Row="1">Y:</TextBlock>
+
+                                    <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding CoordX, StringFormat={}{0:F2}}" />
+                                    <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding CoordY, StringFormat={}{0:F2}}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Grid Margin="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Column="0" Grid.Row="0">Left:</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="1">Top:</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="2">Width:</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="3">Height:</TextBlock>
+
+                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding RegionOfInterest.Left, StringFormat={}{0:F2}}"/>
+                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding RegionOfInterest.Top, StringFormat={}{0:F2}}"/>
+                        <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding RegionOfInterest.Width, StringFormat={}{0:F2}}"/>
+                        <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding RegionOfInterest.Height, StringFormat={}{0:F2}}"/>
+                    </Grid>
                 </StackPanel>
 
             </Grid>
