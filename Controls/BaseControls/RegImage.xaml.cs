@@ -1,5 +1,8 @@
-﻿using ImagingSIMS.Data;
+﻿using ImagingSIMS.Common;
+using ImagingSIMS.Common.Dialogs;
+using ImagingSIMS.Data;
 using ImagingSIMS.Data.Imaging;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -225,7 +228,15 @@ namespace ImagingSIMS.Controls.BaseControls
         }
         private void Save_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            if (ViewModel.DisplayImage == null) return;
 
+            var sfd = new SaveFileDialog();
+            sfd.Filter = "Bitmap Images (.bmp)|*.bmp";
+            if (sfd.ShowDialog() != true) return;
+
+            ViewModel.DisplayImage.Save(sfd.FileName);
+
+            DialogBox.Show("Image saved successfully!", sfd.FileName, "Save", DialogIcon.Ok);
         }
         private void Copy_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -233,7 +244,10 @@ namespace ImagingSIMS.Controls.BaseControls
         }
         private void Copy_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
+            if(ViewModel.DisplayImage != null)
+            {
+                Clipboard.SetImage(ViewModel.DisplayImage);
+            }
         }
     }
 
