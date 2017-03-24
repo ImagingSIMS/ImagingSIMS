@@ -109,8 +109,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseControls\ControlPointSelection.xaml.cs">
+      <DependentUpon>ControlPointSelection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BaseControls\Data3DDisplay.xaml.cs">
       <DependentUpon>Data3DDisplay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BaseControls\RegImage.xaml.cs">
+      <DependentUpon>RegImage.xaml</DependentUpon>
     </Compile>
     <Compile Include="BaseControls\IndexedStackPanel.cs" />
     <Compile Include="TabControls\MovableTabControl.cs" />
@@ -380,6 +386,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BaseControls\ControlPointSelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="BaseControls\Data3DDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -399,6 +409,10 @@
     <Page Include="Tabs\RatioTab.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BaseControls\RegImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Icons.xaml">
       <SubType>Designer</SubType>
