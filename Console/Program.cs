@@ -40,13 +40,13 @@ namespace ConsoleApp
             //Console.ReadLine();
 
             // https://www.codeproject.com/articles/95453/automatic-image-stitching-with-accord-net
-            var inputFixedImage = ImageHelper.BitmapSourceFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputFixedImage.bmp");
-            var inputMovingImage = ImageHelper.BitmapSourceFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputMovingImage.bmp");
+            var inputFixedImage = ImageGenerator.Instance.FromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputFixedImage.bmp");
+            var inputMovingImage = ImageGenerator.Instance.FromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputMovingImage.bmp");
             var fixedPointList = PointSet.PointSetFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\fixedPointList.pts");
             var movingPointList = PointSet.PointSetFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\movingPointsList.pts");
 
-            var matrixFixedImage = ImageHelper.ConvertToData3D(inputFixedImage);
-            var matrixMovingImage = ImageHelper.ConvertToData3D(inputMovingImage);
+            var matrixFixedImage = ImageGenerator.Instance.ConvertToData3D(inputFixedImage);
+            var matrixMovingImage = ImageGenerator.Instance.ConvertToData3D(inputMovingImage);
 
             int numPoints = fixedPointList.Count;
 
@@ -106,7 +106,7 @@ namespace ConsoleApp
                 }
             }
 
-            var bsTransformed = ImageHelper.CreateImage(matrixTransformed);
+            var bsTransformed = ImageGenerator.Instance.Create(matrixTransformed);
             bsTransformed.Save(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\transformed.bmp");
 
             Console.Write("Press Enter to exit.");
@@ -115,13 +115,13 @@ namespace ConsoleApp
 
         private static void main_MatrixMath()
         {
-            var inputFixedImage = ImageHelper.BitmapSourceFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputFixedImage.bmp");
-            var inputMovingImage = ImageHelper.BitmapSourceFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputMovingImage.bmp");
+            var inputFixedImage = ImageGenerator.Instance.FromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputFixedImage.bmp");
+            var inputMovingImage = ImageGenerator.Instance.FromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\inputMovingImage.bmp");
             var fixedPointList = PointSet.PointSetFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\fixedPointList.pts");
             var movingPointList = PointSet.PointSetFromFile(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\movingPointsList.pts");
 
-            var matrixFixedImage = ImageHelper.ConvertToData3D(inputFixedImage);
-            var matrixMovingImage = ImageHelper.ConvertToData3D(inputMovingImage);
+            var matrixFixedImage = ImageGenerator.Instance.ConvertToData3D(inputFixedImage);
+            var matrixMovingImage = ImageGenerator.Instance.ConvertToData3D(inputMovingImage);
 
             double[,] fixedPointsNorm = new double[fixedPointList.Count, 2];
             double[,] movingPointsNorm = new double[movingPointList.Count, 2];
@@ -190,8 +190,8 @@ namespace ConsoleApp
 
             var combined = uv_basisMat.DotWithTransposed(xy_basisMat);
 
-            var dFixed = ImageHelper.ConvertToData3D(inputFixedImage);
-            var dMoving = ImageHelper.ConvertToData3D(inputMovingImage);
+            var dFixed = ImageGenerator.Instance.ConvertToData3D(inputFixedImage);
+            var dMoving = ImageGenerator.Instance.ConvertToData3D(inputMovingImage);
 
             var transformed = new Data3D(dFixed.Width, dFixed.Height, 4);
             for (int x = 0; x < dFixed.Width; x++)
@@ -225,7 +225,7 @@ namespace ConsoleApp
                 }
             }
 
-            var bsTransformed = ImageHelper.CreateImage(transformed);
+            var bsTransformed = ImageGenerator.Instance.Create(transformed);
             bsTransformed.Save(@"C:\Users\taro148\AppData\Roaming\ImagingSIMS\plugins\imageregistration\transfer\transformed.bmp");
         }
         private static void main_loadNanoSIMS()

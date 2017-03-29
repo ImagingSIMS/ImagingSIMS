@@ -1,0 +1,299 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.Tabs.FusionPointTab"
+             Name="fusionRegistrationTabControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="clr-namespace:ImagingSIMS.Controls.BaseControls"
+             xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             xmlns:converters="clr-namespace:ImagingSIMS.Controls.Converters"
+             xmlns:data="clr-namespace:ImagingSIMS.Data.Fusion;assembly=Data"
+             xmlns:reg="clr-namespace:ImagingSIMS.ImageRegistration;assembly=ImageRegistration"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:ctrls="clr-namespace:ImagingSIMS.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Themes\Generic.xaml"/>
+                <ResourceDictionary>
+                    <converters:HasImageToBoolConverter x:Key="hasImageToBoolConverter"/>
+                    <converters:FusionEnumToVisibilityConverter x:Key="fusionEnumToVisibilityConverter"/>
+                    <converters:BitmapSourceToDimensionsConverter x:Key="bitmapSourceToDimensionsConverter"/>
+                    <ObjectDataProvider x:Key="data2DConversionItemsSource" ObjectType="sys:Enum">
+                        
+                    </ObjectDataProvider>
+                    <Style TargetType="GridSplitter">
+                        <Setter Property="Margin" Value="4"/>
+                        <Setter Property="Background" Value="DarkGray"/>
+                    </Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Height" Value="23"/>
+                        <Setter Property="Width" Value="75"/>
+                        <Setter Property="Margin" Value="4"/>
+                    </Style>
+                    <Style TargetType="GroupBox">
+                        <Setter Property="Margin" Value="2"/>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding Command="ctrls:FusionCommands.Fuse" CanExecute="Fuse_CanExeucte" Executed="Fuse_Executed"/>
+        <CommandBinding Command="ctrls:RegistrationCommands.Register" CanExecute="Register_CanExecute" Executed="Register_Executed"/>
+        <CommandBinding Command="ApplicationCommands.Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
+        <CommandBinding Command="ApplicationCommands.Copy" CanExecute="Copy_CanExecute" Executed="Copy_Executed"/>
+    </UserControl.CommandBindings>
+
+    <Grid DataContext="{Binding ElementName=fusionRegistrationTabControl, Path=ViewModel}">
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="400"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="325"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" MinWidth="250"/>
+        </Grid.ColumnDefinitions>
+
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+
+        <GroupBox Header="Input" Grid.Column="0" HorizontalAlignment="Stretch">
+            
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Column="0">
+
+                </Grid>
+
+                <TextBlock Grid.Row="0">Fixed/High Res Image</TextBlock>
+                <TextBlock Grid.Row="0" HorizontalAlignment="Right" 
+                       Foreground="#FF33FF33"
+                       Visibility="{Binding FixedImageViewModel.IsRegistered, Converter={StaticResource boolVisConverter}}">Registered</TextBlock>
+                <c:ControlPointImage Margin="4" Grid.Row="1" Width="Auto" 
+                        HorizontalAlignment="Stretch"
+                        ViewModel="{Binding FixedImageViewModel}"/>
+                <TextBlock Grid.Row="2">Moving/Low Res Image</TextBlock>
+                <TextBlock Grid.Row="2" HorizontalAlignment="Right" 
+                       Foreground="#FF33FF33"
+                       Visibility="{Binding MovingImageViewModel.IsRegistered, Converter={StaticResource boolVisConverter}}">Registered</TextBlock>
+                <c:ControlPointImage Margin="4" Grid.Row="3" Width="Auto" 
+                        HorizontalAlignment="Stretch"
+                        ViewModel="{Binding MovingImageViewModel}"/>
+            </Grid>
+
+        </GroupBox>
+
+        <GroupBox Header="Registration" Grid.Column="2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock>Fixed Points:</TextBlock>
+                        <ScrollViewer Grid.Row="1" 
+                                      VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding FixedImageViewModel.ControlPoints}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical" Margin="4"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <DataTemplate.Resources>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Margin" Value="2,0"/>
+                                            </Style>
+                                        </DataTemplate.Resources>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Id, StringFormat=• {0}}"/>
+                                            <TextBlock>X:</TextBlock>
+                                            <TextBlock Text="{Binding CoordX, StringFormat={}{0:F2}}"/>
+                                            <TextBlock>Y:</TextBlock>
+                                            <TextBlock Text="{Binding CoordY, StringFormat={}{0:F2}}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock>Moving Points:</TextBlock>
+                        <ScrollViewer Grid.Row="1" 
+                                      VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding MovingImageViewModel.ControlPoints}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical" Margin="4"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <DataTemplate.Resources>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Margin" Value="2,0"/>
+                                            </Style>
+                                        </DataTemplate.Resources>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Id, StringFormat=• {0}}"/>
+                                            <TextBlock>X:</TextBlock>
+                                            <TextBlock Text="{Binding CoordX, StringFormat={}{0:F2}}"/>
+                                            <TextBlock>Y:</TextBlock>
+                                            <TextBlock Text="{Binding CoordY, StringFormat={}{0:F2}}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+
+                <StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Button HorizontalAlignment="Center"
+                        Command="ctrls:RegistrationCommands.Register">Register</Button>
+
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Grid.Row="2">
+                    <TextBlock>Registered:</TextBlock>
+                    <Image Grid.Row="1" Margin="4"
+                        Width="Auto" Height="Auto"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                        Source="{Binding Path=RegisteredOverlay}"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <Grid Grid.Column="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" MinHeight="200"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" MinHeight="200"/>
+            </Grid.RowDefinitions>
+
+            <GroupBox Header="Fusion" Grid.Row="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Vertical"
+                                Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
+                        <TextBlock>Panchromatic Conversion:</TextBlock>
+                        <ComboBox HorizontalAlignment="Stretch" Height="23" Margin="4"
+                                  IsEditable="False"
+                                  ItemsSource="{Binding Source={StaticResource data2DConversionFromEnum}}"
+                                  SelectedItem="{Binding PanchromaticConversion}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <cc:CollapsedColorSelector Margin="4"
+                                                   SelectedColor="{Binding PanchromaticConversionSolidColor}"
+                                                   Visibility="{Binding PanchromaticConversion, Converter={StaticResource data2DConversionTypeToVisibilityConverter}, ConverterParameter=Color}"/>
+                        <TextBlock>Fusion Method:</TextBlock>
+                        <ComboBox HorizontalAlignment="Stretch" Height="23" Margin="4"
+                                  IsEditable="False"
+                                  ItemsSource="{Binding Source={StaticResource fusionFromEnum}}"
+                                  SelectedItem="{Binding FusionType}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <StackPanel Orientation="Horizontal"
+                                    Visibility="{Binding FusionType, Converter={StaticResource fusionEnumToVisibilityConverter}}">
+                            <TextBlock>Window Size:</TextBlock>
+                            <TextBox Width="50" Height="23" HorizontalAlignment="Right"
+                                     Margin="4" Text="{Binding WindowSize}"/>
+                        </StackPanel>
+
+                        <Grid HorizontalAlignment="Stretch">
+                            <Button HorizontalAlignment="Center" Command="ctrls:FusionCommands.Fuse">Fuse</Button>
+                        </Grid>
+                    </StackPanel>
+
+                    <Image Margin="4" Grid.Column="1" Grid.Row="0" 
+                           HorizontalAlignment="Stretch" Width="Auto" 
+                           VerticalAlignment="Stretch" Height="Auto"
+                           Stretch="Uniform"
+                           Source="{Binding FusedImage}"
+                           ToolTip="{Binding Path=FusedImage, Converter={StaticResource bitmapSourceToDimensionsConverter}}" />
+
+                    <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                        <Button  Height="20" Width="20" Margin="4" ToolTip="Save Fused"
+                                 Command="ApplicationCommands.Save" CommandParameter="Fused">
+                            <Image Source="..\Images\FloppyDisk.ico"/>
+                        </Button>
+                        <Button Height="20" Width="20" Margin="4" ToolTip="Copy Fused"
+                                Command="ApplicationCommands.Copy" CommandParameter="Fused">
+                            <Image Source="..\Images\copy.ico"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+            </GroupBox>
+
+            <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+            
+            <GroupBox Grid.Row="2" Header="Output">
+                
+                <Grid x:Name="gridOutput">
+                    <TabControl x:Name="tabControlOutputs" Background="Transparent" 
+                            HorizontalAlignment="Stretch" Width="Auto" MaxWidth="{Binding ElementName=gridOutput, Path=ActualWidth}"
+                            VerticalAlignment="Stretch" Height="Auto" MaxHeight="{Binding ElementName=gridOutput, Path=ActualHeight}"
+                                ItemContainerStyle="{StaticResource BlueTabItemHeader}" 
+                                BorderThickness="0">
+                        <TabItem Header="Registration Output">
+                            <Grid>
+                                <reg:RegistrationProgressTextBox Grid.Column="0" x:Name="registrationProgressTextBox"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Analysis Output">
+                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="textBoxCC" VerticalScrollBarVisibility="Auto"
+                                 IsReadOnly="True" Background="Transparent" Foreground="White"/>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </GroupBox>
+
+        </Grid>
+        
+    </Grid>
+</UserControl>

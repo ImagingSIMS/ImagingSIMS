@@ -3336,9 +3336,20 @@ namespace ImagingSIMS.MainApplication
         #region Fusion Tab
         private void OpenFusionTab(object sender, RoutedEventArgs e)
         {
-            ClosableTabItem cti = ClosableTabItem.Create(new FusionTab(), TabType.Fusion, true);
-            tabMain.Items.Add(cti);
-            tabMain.SelectedItem = cti;
+            var button = sender as RibbonButton;
+            if (sender == null) return;
+
+            if(button == fusionNew)
+            {
+                ClosableTabItem cti = ClosableTabItem.Create(new FusionTab(), TabType.Fusion, true);
+                tabMain.Items.Add(cti);
+                tabMain.SelectedItem = cti;
+            }
+            else if(button == fusionPointNew)
+            {
+                var cti = ClosableTabItem.Create(new FusionPointTab(), TabType.FusionPoint, "Fusion", true);
+                AddTabItemAndNavigate(cti);
+            }
         }
         private void LoadFusionHigh(object sender, RoutedEventArgs e)
         {
@@ -3356,7 +3367,8 @@ namespace ImagingSIMS.MainApplication
             src.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
             src.EndInit();
 
-            FusionTab ft;
+            FusionTab ft = null;
+            FusionPointTab frt = null;
             ClosableTabItem cti = tabMain.SelectedItem as ClosableTabItem;
             if (cti == null) goto NewTab;
             else
@@ -3370,19 +3382,30 @@ namespace ImagingSIMS.MainApplication
 
                     ft = cti.Content as FusionTab;
                     if (ft != null) goto UseTab;
+
+                    frt = cti.Content as FusionPointTab;
+                    if (frt != null) goto UseTab;
                 }
             }
 
             NewTab:
             {
-                ft = new FusionTab();
-                cti = ClosableTabItem.Create(ft, TabType.Fusion, true);
+                frt = new FusionPointTab();
+                cti = ClosableTabItem.Create(frt, TabType.FusionPoint, true);
                 tabMain.Items.Add(cti);
                 goto UseTab;
             }
             UseTab:
             {
-                ft.SetHighRes(src);
+                if(ft != null)
+                {
+                    ft.SetHighRes(src);
+                }
+                else if(frt != null)
+                {
+                    frt.SetImage(src, true);
+                }
+
                 tabMain.SelectedItem = cti;
             }
         }
@@ -3402,7 +3425,8 @@ namespace ImagingSIMS.MainApplication
             src.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
             src.EndInit();
 
-            FusionTab ft;
+            FusionTab ft = null;
+            FusionPointTab frt = null;
             ClosableTabItem cti = tabMain.SelectedItem as ClosableTabItem;
             if (cti == null) goto NewTab;
             else
@@ -3416,6 +3440,9 @@ namespace ImagingSIMS.MainApplication
 
                     ft = cti.Content as FusionTab;
                     if (ft != null) goto UseTab;
+
+                    frt = cti.Content as FusionPointTab;
+                    if (frt != null) goto UseTab;
                 }
             }
 
@@ -3428,7 +3455,15 @@ namespace ImagingSIMS.MainApplication
             }
             UseTab:
             {
-                ft.SetLowRes(src);
+                if (ft != null)
+                {
+                    ft.SetLowRes(src);
+                }
+                else if(frt != null)
+                {
+                    frt.SetImage(src, false);
+                }
+
                 tabMain.SelectedItem = cti;
             }
         }
@@ -3438,18 +3473,8 @@ namespace ImagingSIMS.MainApplication
             ClosableTabItem cti = tabMain.SelectedItem as ClosableTabItem;
             if (cti == null)
             {
-                DialogBox db = new DialogBox("No document available to save.",
+                DialogBox.Show("No document available to save.",
                     "Navigate to or open a new fusion tab and try again.", "Save", DialogIcon.Error);
-                db.ShowDialog();
-                return;
-            }
-
-            FusionTab ft = cti.Content as FusionTab;
-            if (ft == null)
-            {
-                DialogBox db = new DialogBox("No fusion document available to save.",
-                    "Navigate to or open a new fusion tab and try again.", "Save", DialogIcon.Error);
-                db.ShowDialog();
                 return;
             }
 
@@ -3470,35 +3495,56 @@ namespace ImagingSIMS.MainApplication
 
             if (parameter == FusionSaveParameter.None)
             {
-                DialogBox db = new DialogBox("Could not perform the selected operation.",
+                DialogBox.Show("Could not perform the selected operation.",
                     "For some reason, the save parameter could not be determined.", "Save", DialogIcon.Error);
-                db.ShowDialog();
                 return;
             }
 
-            ft.CallSave(parameter);
+            FusionTab ft = cti.Content as FusionTab;
+            if (ft != null)
+            {
+                ft.CallSave(parameter);
+                return;
+            }
+
+            FusionPointTab frt = cti.Content as FusionPointTab;
+            if (frt != null)
+            {
+                frt.SaveImage(parameter);
+                return;
+            }
+
+            DialogBox.Show("No fusion document available to save.",
+                "Navigate to or open a new fusion tab and try again.", "Save", DialogIcon.Error);
+            return;
+            
         }
         private void ribbonFusionSaveSeries_Click(object sender, RoutedEventArgs e)
         {
             ClosableTabItem cti = tabMain.SelectedItem as ClosableTabItem;
             if (cti == null)
             {
-                DialogBox db = new DialogBox("No document available to save.",
+                DialogBox.Show("No document available to save.",
                     "Navigate to or open a new fusion tab and try again.", "Save", DialogIcon.Error);
-                db.ShowDialog();
                 return;
             }
 
             FusionTab ft = cti.Content as FusionTab;
-            if (ft == null)
+            if (ft != null)
             {
-                DialogBox db = new DialogBox("No fusion document available to save.",
-                    "Navigate to or open a new fusion tab and try again.", "Save", DialogIcon.Error);
-                db.ShowDialog();
+                ft.CallSave(FusionSaveParameter.Series);
                 return;
             }
 
-            ft.CallSave(FusionSaveParameter.Series);
+            FusionPointTab frt = cti.Content as FusionPointTab;
+            if (frt != null)
+            {
+                frt.SaveSeries();
+                return;
+            }
+
+            DialogBox.Show("No fusion document available to save.",
+                "Navigate to or open a new fusion tab and try again.", "Save", DialogIcon.Error);
         }
 
         private void ribbonRegistrationOverlay_Click(object sender, RoutedEventArgs e)
@@ -5489,10 +5535,17 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test9_Click(object sender, RoutedEventArgs e)
         {
-            var dmt = new DataMathTab();
-            var cti = ClosableTabItem.Create(dmt, TabType.DataMath, "Data Math", true);
+            var data = new Data2D(256, 256) { DataName = "test" };
 
-            AddTabItemAndNavigate(cti);     
+            for (int x = 0; x < 256; x++)
+            {
+                for (int y = 0; y < 256; y++)
+                {
+                    data[x, y] = x + y;
+                }
+            }
+
+            AddTable(data);
         }
         private async void test10_Click(object sender, RoutedEventArgs e)
         {

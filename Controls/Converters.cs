@@ -839,6 +839,30 @@ namespace ImagingSIMS.Controls.Converters
             return null;
         }
     }
+    public class Data2DConversionTypeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return Visibility.Collapsed;
+
+            try
+            {
+                Data2DConverionType ct = (Data2DConverionType)value;
+                string param = (string)parameter;
+                if (ct.ToString().ToLower() == param.ToLower()) return Visibility.Visible;
+
+                return Visibility.Collapsed;
+            }
+            catch (Exception)
+            {
+                return Visibility.Collapsed;
+            }
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class Data3DToRangeSliderMinMaxConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -948,6 +972,19 @@ namespace ImagingSIMS.Controls.Converters
             if (d == null) return null;
 
             return new Data3DDisplayViewModel(new Data3D(new Data2D[] { d }), ColorScaleTypes.ThermalCold);
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class IsNotNullToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return Visibility.Collapsed;
+
+            return Visibility.Visible;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

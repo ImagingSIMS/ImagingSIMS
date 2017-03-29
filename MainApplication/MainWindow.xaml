@@ -845,6 +845,9 @@
                     <RibbonButton x:Name="fusionNew" Label="New Fusion" Click="OpenFusionTab" 
                                   LargeImageSource="Images\FusionNew.ico" ToolTipTitle="New Image Fusion" 
                                   ToolTipDescription="Opens a new image fusion tab." ToolTipImageSource="Images\FusionNew.ico"/>
+                    <RibbonButton x:Name="fusionPointNew" Label="New Point Registration Fusion" Click="OpenFusionTab"
+                                  LargeImageSource="Images\FusionNew.ico" ToolTipTitle="New Point Registration Image Fusion" 
+                                  ToolTipDescription="Opens a new image fusion tab with point based image registration." ToolTipImageSource="Images\FusionNew.ico"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Load">
                     <RibbonButton x:Name="fusionLoadHigh" LargeImageSource="Images\FusionOpenHigh.ico"
@@ -857,7 +860,7 @@
                                   ToolTipImageSource="Images\FusionOpenLow.ico"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Save" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
-                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Fusion}">
+                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Fusion|FusionPoint}">
                     <RibbonButton LargeImageSource="Images\SaveAll.ico" Click="ribbonFusionSaveSeries_Click"
                                   Label="Save Series" ToolTipTitle="Save Series"
                                   ToolTipDescription="Saves the high res, low res, and fused image series of the active fusion tab."/>
@@ -870,7 +873,7 @@
                     </RibbonMenuButton>
                 </RibbonGroup>
                 <RibbonGroup Header="Registration" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
-                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Fusion}">
+                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Fusion|FusionPoint}">
                     <RibbonButton LargeImageSource="Images\merge.png" Label="Open Overlay Window" Click="ribbonRegistrationOverlay_Click"
                                   ToolTipTitle="Open Overlay Window"
                                   ToolTipDescription="Opens a window for manually overlaying two images for registration to generate initial guesses."/>

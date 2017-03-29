@@ -6,44 +6,70 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ImagingSIMS.Controls.BaseControls"
              mc:Ignorable="d" 
-             d:DesignHeight="40" d:DesignWidth="40"
+             d:DesignHeight="40" d:DesignWidth="40"             
              Width="{Binding ElementName=userControl, Path=TargetWidth}" Height="{Binding ElementName=userControl, Path=TargetHeight}">
-    <Border CornerRadius="20"
+    <Grid>
+        <Path StrokeThickness="1" Data="M 4,4 L 14,14">
+            <Path.Stroke>
+                <SolidColorBrush Color="{Binding ElementName=userControl, Path=SelectionColor}"/>
+            </Path.Stroke>
+        </Path>
+        <Path StrokeThickness="1" Data="M 26,14 L 36,4">
+            <Path.Stroke>
+                <SolidColorBrush Color="{Binding ElementName=userControl, Path=SelectionColor}"/>
+            </Path.Stroke>
+        </Path>
+        <Path StrokeThickness="1" Data="M 4,36 L 14,26">
+            <Path.Stroke>
+                <SolidColorBrush Color="{Binding ElementName=userControl, Path=SelectionColor}"/>
+            </Path.Stroke>
+        </Path>
+        <Path StrokeThickness="1" Data="M 26,26 L 36,36">
+            <Path.Stroke>
+                <SolidColorBrush Color="{Binding ElementName=userControl, Path=SelectionColor}"/>
+            </Path.Stroke>
+        </Path>
+        
+        <Border CornerRadius="20"
             BorderThickness="2"            
             Background="Transparent"
             MouseDown="Border_MouseDown"
             MouseMove="Border_MouseMove"
             MouseUp="Border_MouseUp">
-        <Border.BorderBrush>
-            <SolidColorBrush Color="{Binding ElementName=userControl, Path=SelectionColor}"/>
-        </Border.BorderBrush>
-        <TextBlock HorizontalAlignment="Center"
+            <Border.BorderBrush>
+                <SolidColorBrush Color="{Binding ElementName=userControl, Path=SelectionColor}"/>
+            </Border.BorderBrush>
+            <TextBlock HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    Text="{Binding Id}">
-            <TextBlock.Foreground>
-                <SolidColorBrush Color="{Binding ElementName=userControl, Path=SelectionColor}"/>
-            </TextBlock.Foreground>
-        </TextBlock>
-        <Border.ToolTip>
-            <ToolTip>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                <TextBlock.Foreground>
+                    <SolidColorBrush Color="{Binding ElementName=userControl, Path=SelectionColor}"/>
+                </TextBlock.Foreground>
+            </TextBlock>
+            
+            <Border.ToolTip>
+                <ToolTip>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="0" Grid.Row="0">X:</TextBlock>
-                    <TextBlock Grid.Column="0" Grid.Row="1">Y:</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="0">X:</TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="1">Y:</TextBlock>
 
-                    <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding CoordX, StringFormat={}{0:F2}}"/>
-                    <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding CoordY, StringFormat={}{0:F2}}"/>
-                </Grid>
-            </ToolTip>
-        </Border.ToolTip>
+                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding CoordX, StringFormat={}{0:F2}}"/>
+                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding CoordY, StringFormat={}{0:F2}}"/>
+                    </Grid>
+                </ToolTip>
+            </Border.ToolTip>
 
-    </Border>
+        </Border>
+        
+    </Grid>
+    
 </UserControl>

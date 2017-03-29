@@ -385,7 +385,7 @@ namespace ImagingSIMS.Controls.Tabs
     {
         Startup, Data, Spectrum,
         Component, Display,
-        Rendering, Fusion, Settings,
+        Rendering, Fusion, Settings, FusionPoint,
         TableSelector, PCA,
         Crop, SEM, RenderObject,
         Correction, ZCorrection, SpectrumCrop,

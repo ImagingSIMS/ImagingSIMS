@@ -87,6 +87,9 @@ namespace ImagingSIMS.Controls
     {
         private static RoutedUICommand _clearSelection = new RoutedUICommand("Clear Selection", "ClearSelection", typeof(RegistrationCommands));
         private static RoutedUICommand _resetSaturation = new RoutedUICommand("Clear Selection", "ClearSelection", typeof(RegistrationCommands));
+        private static RoutedUICommand _register = new RoutedUICommand("Register", "Register", typeof(RegistrationCommands));
+        private static RoutedUICommand _cancelRegistration = new RoutedUICommand("Cancel Registration", "CancelRegistration", typeof(RegistrationCommands));
+        private static RoutedUICommand _undoRegistration = new RoutedUICommand("Undo Registration", "UndoRegistration", typeof(RegistrationCommands));
 
         public static RoutedUICommand ClearSelection
         {
@@ -95,6 +98,28 @@ namespace ImagingSIMS.Controls
         public static RoutedUICommand ResetSaturation
         {
             get { return _resetSaturation; }
+        }
+        public static RoutedUICommand Register
+        {
+            get { return _register; }
+        }
+        public static RoutedUICommand CancelRegistration
+        {
+            get { return _cancelRegistration; }
+        }
+        public static RoutedUICommand UndoRegistration
+        {
+            get { return _undoRegistration; }
+        }
+    }
+
+    public static class FusionCommands
+    {
+        private static RoutedUICommand _fuse = new RoutedUICommand("Fuse", "Fuse", typeof(FusionCommands));
+
+        public static RoutedUICommand Fuse
+        {
+            get { return _fuse; }
         }
     }
 }
