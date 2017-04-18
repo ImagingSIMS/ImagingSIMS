@@ -5385,97 +5385,91 @@ namespace ImagingSIMS.MainApplication
 
         private async void test7_Click(object sender, RoutedEventArgs e)
         {
-            var bsHighRes = ImageGenerator.Instance.FromFile(@"D:\Data\10-01-12\1e.bmp");
-            var spec = new BioToFSpectrum("grid 894");
-            spec.LoadFromFile(@"D:\Data\10-01-12\grid 894 fov_50shot._2ND xyt.xyt", null);
+            var spec = AvailableHost.AvailableSpectraSource.GetAvailableSpectra()[0] as Cameca1280Spectrum;
 
-            var pan = ImageGenerator.Instance.ConvertToData2D(bsHighRes);
-
-            List<Data2D> masses = new List<Data2D>();
-            for (int i = (int)spec.StartMass; i < spec.EndMass; i++)
+            var masses = new List<Data2D>();
+            foreach (var species in spec.Species)
             {
-                float max = 0;
-                var m = spec.FromMassRange(new MassRange(i - 0.5d, i + 0.5d), out max, null);
-                masses.Add(m.Upscale(pan.Width, pan.Height));
+                masses.Add(spec.FromSpecies(species));
             }
 
-            int linearLength = pan.Width * pan.Height;
-            int numChannels = masses.Count;
+            int lrSizeX = spec.SizeX;
+            int lrSizeY = spec.SizeY;
+            int lrPixels = spec.SizeX * spec.SizeY;
+            int hrSizeX = lrSizeX * 2;
+            int hrSizeY = lrSizeY * 2;
+            int hrPixels = hrSizeX * hrSizeY;
+            int numMasses = masses.Count;
 
-            double[] panData = new double[linearLength];
-            for (int x = 0; x < pan.Width; x++)
+            // Normalize each mass to [0,1]
+            double[,] hsMatrix = new double[lrPixels, numMasses];
+            for (int i = 0; i < numMasses; i++)
             {
-                for (int y = 0; y < pan.Height; y++)
+                for (int x = 0; x < lrSizeX; x++)
                 {
-                    int index = x * pan.Height + y;
-                    panData[index] = pan[x, y];
-                }
-            }
-
-            double[,] hsData = new double[linearLength, numChannels];
-            double[] hsMeans = new double[linearLength];
-            for (int i = 0; i < numChannels; i++)
-            {
-                var channel = masses[i];
-                hsMeans[i] = channel.Mean;
-
-                for (int x = 0; x < pan.Width; x++)
-                {
-                    for (int y = 0; y < pan.Height; y++)
+                    for (int y = 0; y < lrSizeY; y++)
                     {
-                        int index = x * pan.Height + y;
-                        hsData[index, i] = channel[x, y] - hsMeans[i];
+                        hsMatrix[x * lrSizeY + y, i] = masses[i][x, y];// / masses[i].Maximum;
                     }
                 }
             }
 
-            var svd = new SingularValueDecomposition(hsData, true, false, false, false);
+            // Mean center the columns
+            double[] means = new double[numMasses];
+            for (int i = 0; i < numMasses; i++)
+            {
+                double sum = 0;
+                for (int j = 0; j < lrPixels; j++)
+                {
+                    sum += hsMatrix[j, i];
+                }
+                means[i] = sum / lrPixels;
+                for (int j = 0; j < lrPixels; j++)
+                {
+                    hsMatrix[j, i] -= means[i];
+                }
+            }
+
+            var svd = new SingularValueDecomposition(hsMatrix, true, true, false, false);
             var u = svd.LeftSingularVectors;
+            var d = svd.Diagonal;
 
-            //var indexPc1 = svd.Ordering.IndexOf(0);
-            int indexPc1 = 0;
-
-            double[] pc1 = new double[linearLength];
-            for (int i = 0; i < linearLength; i++)
+            double[,] upsampledMatrix = new double[hrPixels, numMasses];
+            for (int i = 0; i < numMasses; i++)
             {
-                pc1[i] = u[i, indexPc1];
-            }
-
-            var matched = HistogramMatching.Match(panData, pc1, 1000);
-
-            for (int i = 0; i < linearLength; i++)
-            {
-                u[i, indexPc1] = matched[i];
-            }
-
-            var reverted = svd.Reverse();
-
-            for (int i = 0; i < numChannels; i++)
-            {
-                Data2D hr = new Data2D(pan.Width, pan.Height);
-                for (int x = 0; x < pan.Width; x++)
+                double[,] pcReshaped = new double[lrSizeX, lrSizeY];
+                for (int x = 0; x < lrSizeX; x++)
                 {
-                    for (int y = 0; y < pan.Height; y++)
+                    for (int y = 0; y < lrSizeY; y++)
                     {
-                        int index = x * pan.Height + y;
-                        hr[x, y] = (float)reverted[index, i];
+                        pcReshaped[x, y] = u[x * lrSizeY + y, i];
                     }
                 }
 
-                masses[i] = hr;
+                var upscaled = pcReshaped.Upscale(hrSizeX, hrSizeY, false);
+
+                for (int x = 0; x < hrSizeX; x++)
+                {
+                    for (int y = 0; y < hrSizeY; y++)
+                    {
+                        upsampledMatrix[x * hrSizeY + y, i] = upscaled[x, y];
+                    }
+                }
             }
 
-            DataDisplayTab dt = new DataDisplayTab();
-            var cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
-            tabMain.Items.Add(cti);
-            tabMain.SelectedItem = cti;
+            var reverted = upsampledMatrix.Dot(svd.DiagonalMatrix).DotWithTransposed(svd.RightSingularVectors);
 
-            foreach (var mass in masses)
+            for (int i = 0; i < numMasses; i++)
             {
-                if(mass.TotalCounts > 10000)
+                Data2D b = new Data2D(hrSizeX, hrSizeY);
+                for (int x = 0; x < hrSizeX; x++)
                 {
-                    await dt.AddDataSourceAsync(mass, ColorScaleTypes.ThermalWarm);
+                    for (int y = 0; y < hrSizeY; y++)
+                    {
+                        b[x, y] = (float)reverted[x * hrSizeY + y, i];
+                    }
                 }
+                AddTable(b);
             }
         }
         private async void test8_Click(object sender, RoutedEventArgs e)
