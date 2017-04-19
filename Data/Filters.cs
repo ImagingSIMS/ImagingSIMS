@@ -790,9 +790,8 @@ namespace ImagingSIMS.Data.Imaging
                             int locX = startX + a;
                             int locY = startY + b;
 
-                            if (locX < 0 || locX >= sizeX ||
-                                locY < 0 || locY >= sizeY)
-                                continue;
+                            locX = locX.EnsureValidIndex(sizeX, MathExtensions.DimensionMode.Reflect);
+                            locY = locY.EnsureValidIndex(sizeY, MathExtensions.DimensionMode.Reflect);
 
                             values.Add(input[locX, locY]);
                         }
@@ -827,9 +826,8 @@ namespace ImagingSIMS.Data.Imaging
                             int locX = startX + a;
                             int locY = startY + b;
 
-                            if (locX < 0 || locX >= sizeX ||
-                                locY < 0 || locY >= sizeY)
-                                continue;
+                            locX = locX.EnsureValidIndex(sizeX, MathExtensions.DimensionMode.Reflect);
+                            locY = locY.EnsureValidIndex(sizeY, MathExtensions.DimensionMode.Reflect);
 
                             values.Add(input[locX, locY]);
                         }
@@ -883,10 +881,8 @@ namespace ImagingSIMS.Data.Imaging
 
                             //If pixel is outside bounds of image, use boundary pixels
                             //http://en.wikipedia.org/wiki/File:Extend_Edge-Handling.png
-                            if (locX < 0) locX = 0;
-                            else if (locX >= sizeX) locX = sizeX - 1;
-                            if (locY < 0) locY = 0;
-                            else if (locY >= sizeY) locY = sizeY - 1;
+                            locX = locX.EnsureValidIndex(sizeX, MathExtensions.DimensionMode.Reflect);
+                            locY = locY.EnsureValidIndex(sizeY, MathExtensions.DimensionMode.Reflect);
 
                             float V = input[locX, locY];
 
@@ -927,10 +923,8 @@ namespace ImagingSIMS.Data.Imaging
 
                             //If pixel is outside bounds of image, use boundary pixels
                             //http://en.wikipedia.org/wiki/File:Extend_Edge-Handling.png
-                            if (locX < 0) locX = 0;
-                            else if (locX >= sizeX) locX = sizeX - 1;
-                            if (locY < 0) locY = 0;
-                            else if (locY >= sizeY) locY = sizeY - 1;
+                            locX = locX.EnsureValidIndex(sizeX, MathExtensions.DimensionMode.Reflect);
+                            locY = locY.EnsureValidIndex(sizeY, MathExtensions.DimensionMode.Reflect);
 
                             float V = input[locX, locY];
 
@@ -971,10 +965,8 @@ namespace ImagingSIMS.Data.Imaging
 
                             //If pixel is outside bounds of image, use boundary pixels
                             //http://en.wikipedia.org/wiki/File:Extend_Edge-Handling.png
-                            if (locX < 0) locX = 0;
-                            else if (locX >= sizeX) locX = sizeX - 1;
-                            if (locY < 0) locY = 0;
-                            else if (locY >= sizeY) locY = sizeY - 1;
+                            locX = locX.EnsureValidIndex(sizeX, MathExtensions.DimensionMode.Reflect);
+                            locY = locY.EnsureValidIndex(sizeY, MathExtensions.DimensionMode.Reflect);
 
                             float V = input[locX, locY];
 
