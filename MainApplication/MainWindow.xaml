@@ -1165,6 +1165,7 @@
                                 <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
                                     <Setter Property="Foreground" >
                                         <Setter.Value>
+                                            <!-- This line causes System.Windows.Data Error 2 -->
                                             <SolidColorBrush Color="{Binding PixelColor}"/>
                                         </Setter.Value>
                                     </Setter>
@@ -1221,6 +1222,7 @@
                                 <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
                                     <Setter Property="Foreground" >
                                         <Setter.Value>
+                                            <!-- This line causes System.Windows.Data Error 2 -->
                                             <SolidColorBrush Color="{Binding DataColor}"/>
                                         </Setter.Value>
                                     </Setter>
