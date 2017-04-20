@@ -79,7 +79,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Border BorderBrush="White" Background="Wheat" Width="8" Height="8" CornerRadius="4"/>
-                        <TextBlock Grid.Column="1">Supported mass spectra files include those from Bio-ToF (.dat, .xyt, .txt) and J105 (.IonoptikaIA2DspectrV2) systems.</TextBlock>
+                        <TextBlock Grid.Column="1">Supported mass spectra files include those from CAMECA IMS-1280 hr (.imp), CAMECA NanoSIMS (.im), Bio-ToF (.dat, .xyt, .txt), and J105 (.IonoptikaIA2DspectrV2) systems.</TextBlock>
                     </Grid>
                     <TextBlock Margin="12,2,0,0">
                         Select mass ranges to generate data tables from mass spectra. Data tables can also be loaded from ASCII text files.
