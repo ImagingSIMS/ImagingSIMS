@@ -1051,7 +1051,7 @@ namespace ImagingSIMS.Data
 
             foreach (char c in firstLine)
             {
-                if (c == ',') w++;
+                if (_delimiters.Contains(c)) w++;
             }
 
             //Last value in line does not have comma, so add one to account and get actual width
@@ -1068,8 +1068,7 @@ namespace ImagingSIMS.Data
             int y = 0;
             foreach (string line in FileLines)
             {
-                char delimiter = ',';
-                string[] lineDelim = line.Split(delimiter);
+                string[] lineDelim = line.Split(_delimiters);
 
                 foreach (string st in lineDelim)
                 {
