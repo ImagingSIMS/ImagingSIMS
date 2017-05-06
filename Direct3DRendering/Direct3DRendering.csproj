@@ -144,8 +144,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Imaging\ColorScaleDrawer.cs" />
-    <Compile Include="Imaging\ImageComputeShader.cs" />
     <Compile Include="SceneObjects\Axes.cs" />
     <Compile Include="SceneObjects\BoundingBox.cs" />
     <Compile Include="DrawingObjects\Camera.cs" />

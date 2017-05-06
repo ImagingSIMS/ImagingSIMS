@@ -1543,7 +1543,7 @@ namespace ImagingSIMS.MainApplication
             StartupTab st = new StartupTab();
             st.RecentFileClicked += startupTab_RecentFileClicked;
             st.RecentFileRemoveClicked += startupTab_RecentFileClicked;
-            ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Startup);
+            ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Startup, true);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -4466,7 +4466,24 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test10_Click(object sender, RoutedEventArgs e)
         {
+            var tables = GetSelectedTables();
+            //var table = new Data2D(200, 200);
+            //for (int x = 0; x < table.Width; x++)
+            //{
+            //    for (int y = 0; y < table.Height; y++)
+            //    {
+            //        table[x, y] = x * y;
+            //    }
+            //}
+            var dt = new DataDisplayTab(ColorScaleTypes.Solid);
+            var cti = ClosableTabItem.Create(dt, TabType.Data,  "GPU", true);
+            AddTabItemAndNavigate(cti);
 
+            foreach (var table in tables)
+            {
+                await dt.AddDataSourceAsync(table);
+            }
+            
         }
 #pragma warning restore 1998
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -8,11 +9,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
+using ImagingSIMS.Common;
 using ImagingSIMS.Data;
 using ImagingSIMS.Data.Colors;
 using ImagingSIMS.Data.Converters;
-
+using ImagingSIMS.Data.Imaging;
 using SharpDX;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
@@ -27,122 +28,82 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Press Enter to begin...");
+            Console.WriteLine("Press any key to begin");
             Console.ReadLine();
 
-            int numTested = 0;
-            int numHslFailed = 0;
-            int numIhsFailed = 0;
+            var rand = new Random();
 
-            for (int r = 0; r < 256; r++)
+            var data = new Data2D(512, 512);
+            for (int x = 0; x < data.Width; x++)
             {
-                for (int g = 0; g < 255; g++)
+                for (int y = 0; y < data.Height; y++)
                 {
-                    for (int b = 0; b < 255; b++)
-                    { 
-                        numTested++;
-
-                        RGB rgb = new RGB(r, g, b);
-                        var hsl = ColorConversion.RGBtoHSL(rgb.Normalize());
-                        var ihs = ColorConversion.RGBtoIHS(rgb.Normalize());
-
-                        var hslBack = ColorConversion.HSLtoRGB(hsl);
-                        var ihsBack = ColorConversion.IHStoRGB(ihs);
-
-                        if (!hslBack.IsClose(rgb, 1.5))
-                        {
-                            Console.WriteLine($"HSL failed-- R:{r} G:{g} B:{b} ({hslBack.R},{hslBack.G},{hslBack.B})");
-                            numHslFailed++;
-                        }
-                        if (!ihsBack.IsClose(rgb))
-                        {
-                            Console.WriteLine($"IHS failed-- R:{r} G:{g} B:{b} ({ihsBack.R},{ihsBack.G},{ihsBack.B})");
-                            numIhsFailed++;
-                        }
-                    }
+                    data[x, y] = rand.Next(100);
                 }
             }
 
-            Console.WriteLine($"Failed HSL: {(numHslFailed * 100d / numTested).ToString("0.0")}% IHS: {(numIhsFailed * 100d / numTested).ToString("0.0")}%");
+            var cpuGenerator = new CPUImageGenerator();
+            var gpuGenerator = new GPUImageGenerator();
 
-            //IntPtr windowHandle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
-            //var desc = new SwapChainDescription()
-            //{
-            //    BufferCount = 1,
-            //    ModeDescription = new ModeDescription(100, 100,
-            //        new Rational(60, 1), Format.R8G8B8A8_UNorm),
-            //    IsWindowed = true,
-            //    OutputHandle = windowHandle,
-            //    SampleDescription = new SampleDescription(1, 0),
-            //    SwapEffect = SwapEffect.Discard,
-            //    Usage = Usage.RenderTargetOutput,
-            //};
-            //Device device;
-            //SwapChain swapChain;
+            foreach (ColorScaleTypes colorScale in Enum.GetValues(typeof(ColorScaleTypes)))
+            {
+                var resultsCpu = new List<long>();
+                var resultsGpu = new List<long>();
 
-            //Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.None, desc, out device, out swapChain);
-            //int[,] testSpec = TestSpec.Generate();
+                var numTests = 1000;
 
-            //var byteCode = ShaderBytecode.CompileFromFile("SpectrumView.hlsl", "cs_5_0", ShaderFlags.None, EffectFlags.None);
-            //ComputeShader shader = new ComputeShader(device, byteCode);
+                var stopWatch = new Stopwatch();
 
-            //int numTested = 0;
-            //int numPassed = 0;
-            //int numFailed = 0;
+                if (colorScale == ColorScaleTypes.Solid)
+                {
+                    for (int i = 0; i < numTests; i++)
+                    {
+                        stopWatch.Restart();
+                        var bs = cpuGenerator.Create(data, System.Windows.Media.Color.FromArgb(255, 255, 255, 255));
+                        var elapsed = stopWatch.ElapsedMilliseconds;
+                        resultsCpu.Add(elapsed);
+                    }
 
-            //List<double[]> failed = new List<double[]>();
+                    // Throw one test away because the first call will need to compile the shader
+                    var discard = gpuGenerator.Create(data, System.Windows.Media.Color.FromArgb(255, 255, 255, 255));
 
-            //for (int r = 0; r < 256; r++)
-            //{
-            //    for (int g = 0; g < 256; g++)
-            //    {
-            //        for (int b = 0; b < 256; b++)
-            //        {
-            //            if (r% 5 != 0 || g % 5 != 0 || b % 5 != 0)
-            //            {
-            //                continue;
-            //            }
-            //            double[] hsl = ColorConversion.RGBtoHSL(r, g, b);
+                    for (int i = 0; i < numTests; i++)
+                    {
+                        stopWatch.Restart();
+                        var bs = gpuGenerator.Create(data, System.Windows.Media.Color.FromArgb(255, 255, 255, 255));
+                        var elapsed = stopWatch.ElapsedMilliseconds;
+                        resultsGpu.Add(elapsed);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < numTests; i++)
+                    {
+                        stopWatch.Restart();
+                        var bs = cpuGenerator.Create(data, colorScale);
+                        var elapsed = stopWatch.ElapsedMilliseconds;
+                        resultsCpu.Add(elapsed);
+                    }
 
-            //            double[] rgb = ColorConversion.HSLtoRGB(hsl[0], hsl[1], hsl[2]);
+                    // Throw one test away because the first call will need to compile the shader
+                    var discard = gpuGenerator.Create(data, colorScale);
 
-            //            if (Math.Abs(rgb[0] -  r) < 0.1d && Math.Abs(rgb[1] - g) < 0.1d && Math.Abs(rgb[2] - b) < 0.1d)
-            //            {
-            //                numPassed++;
-            //            }
-            //            else
-            //            {
-            //                numFailed++;
-            //                failed.Add(new double[]
-            //                {
-            //                    r, g, b,
-            //                    rgb[0], rgb[1], rgb[2],
-            //                    hsl[0], hsl[1], hsl[2]
-            //                });
-            //            }
+                    for (int i = 0; i < numTests; i++)
+                    {
+                        stopWatch.Restart();
+                        var bs = gpuGenerator.Create(data, colorScale);
+                        var elapsed = stopWatch.ElapsedMilliseconds;
+                        resultsGpu.Add(elapsed);
+                    }
+                }
 
-            //            numTested++;
-            //        }
-            //    }
-            //}
+                var meanCpu = resultsCpu.Average();
+                var meanGpu = resultsGpu.Average();
 
-            //Console.WriteLine($"Finished testing {numTested} color combinations.");
-            //Console.WriteLine($"Number passed: {numPassed}; Number failed {numFailed}.");
-            //Console.WriteLine("Press enter to save failing combinations.");
-            //Console.ReadLine();
+                Console.WriteLine($"Color scale: {colorScale}\t\tNumber tests: {numTests} CPU: {meanCpu.ToString()} GPU: {meanGpu.ToString()}");
+            }
 
-            //using (StreamWriter sw = new StreamWriter(@"D:\failingcolors.csv"))
-            //{
-            //    foreach (double[] fail in failed)
-            //    {
-            //        sw.WriteLine($"{fail[0]},{fail[1]},{fail[2]},{fail[3]},{fail[4]},{fail[5]},{fail[6]},{fail[7]},{fail[8]}");
-            //    }
-            //}
-
-            //float result = 0f / 1f;
-            //Console.WriteLine(result);
-
-            Console.Write("Press Enter to exit.");
+            Console.Write("Press any key to exit.");
             Console.ReadLine();
         }
 
