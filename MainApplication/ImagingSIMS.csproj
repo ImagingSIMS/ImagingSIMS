@@ -83,7 +83,7 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>PaintPalette.ico</ApplicationIcon>
+    <ApplicationIcon>Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -401,6 +401,7 @@
     <Resource Include="Logo.png" />
     <Resource Include="Images\Logo.png" />
     <Resource Include="Images\Logo.ico" />
+    <Resource Include="Logo.ico" />
     <Content Include="Redist\Files.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
