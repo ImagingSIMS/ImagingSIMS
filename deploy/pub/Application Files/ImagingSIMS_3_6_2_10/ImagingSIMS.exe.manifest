@@ -4,7 +4,7 @@
   <description asmv2:iconFile="PaintPalette.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="ImagingSIMS" version="3.6.1.17214" language="neutral" processorArchitecture="msil" />
+    <assemblyIdentity name="ImagingSIMS" version="3.6.1.17310" language="neutral" processorArchitecture="msil" />
     <commandLine file="ImagingSIMS.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -73,37 +73,37 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Controls.dll" size="3284480">
-      <assemblyIdentity name="Controls" version="3.6.1.17118" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="Controls" version="3.6.1.17308" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>H0Ra4jR+gl7GADnElOrpAg0qK3J+51jhN34NwWh6oyU=</dsig:DigestValue>
+        <dsig:DigestValue>vKSEDyqjb0zpNBFVSYrDq0VZRM+innBlOOjabV4UDo8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Data.dll" size="266240">
-      <assemblyIdentity name="Data" version="3.6.1.17116" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="Data" version="3.6.1.17306" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>ITZmjF0fK0AjMbG5r7WZ4sHzpTOh+tDyy4E0ErwEHqc=</dsig:DigestValue>
+        <dsig:DigestValue>S/TM3UG2N6xGGork0ULdlDcGzFXbfkxzzh3caoLEU/U=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Direct3DRendering.dll" size="237568">
-      <assemblyIdentity name="Direct3DRendering" version="1.6.1.17120" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="Direct3DRendering" version="1.6.1.17309" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>q7x8Sc20pbxv2FXokZug/9FRAkr0ph0AmsGpt3H5ZsY=</dsig:DigestValue>
+        <dsig:DigestValue>NLswuKRkIbofOHbSzCXaIuxEgHL5Rs7mNcr05zHlw8o=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -127,19 +127,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>osGq4k1DyvSFd0JW+gk1oXXT8Y1Z+RSY3gikUG5RK4s=</dsig:DigestValue>
+        <dsig:DigestValue>m4641lS8c3zsMC3Xk4msUYaaBNXTImfipHI7fubOk+k=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ImagingSIMS.exe" size="4745152">
-      <assemblyIdentity name="ImagingSIMS" version="3.6.1.17214" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ImagingSIMS.exe" size="4744128">
+      <assemblyIdentity name="ImagingSIMS" version="3.6.1.17310" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>tBEddX/k3AMfJ4OIelKuUu6LJv0n7V1+2yEUJdz7TB8=</dsig:DigestValue>
+        <dsig:DigestValue>mocChXKEyT2QGVkmmkZlmRPpXYP1kHzeTw8VxXSjfms=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -1152,4 +1152,4 @@
       <!--<supportedOS Id="{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}"></supportedOS>-->
     </application>
   </compatibility>
-<publisherIdentity name="CN=HOMEBUILD2\jayta" issuerKeyHash="75bc92c5220a169718956596fffcca4e4fc1fbdd" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>9CjX6ZmKh7EFOGbFrlMdgEp2hBpZJtgMP8dWb9XP7y4=</DigestValue></Reference></SignedInfo><SignatureValue>Qc2+dZyTwR9qb2kR5PbVg4NXCIZyaKXUtya6u/DCnDgTmwZr0pkcblcTNjmT33eInTvK8xku5pNbbed4yoYd4ozKwVvn3QTdUguiI5lJYiNsbMI6KySFKdutpazOTxxizgX3mf4fVkbPCn7c+zTh/tmPDy0k0WQH+QDzECkbP00=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>mL6Za7uHfQo/1hw6CJFwWWKZZqdlXfInPb9R6ONGosCIY/Pc8EwRb1HIv0B/A/3d60/Hlx9E5S4nHqS36aERCDEj2SlJHvp3TvrJazdy9JWR8+A8FwAo0fX1Vh0BdjAfsgQL2Spi484vXIjmDOo5F1DHi7+RYH84dRKU9KMQFQE=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="2eefcfd56f56c73f0cd826591a84764a801d53aec5663805b1878a99e9d728f4" Description="" Url=""><as:assemblyIdentity name="ImagingSIMS.exe" version="3.6.2.10" publicKeyToken="9f3ff08481aa147a" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=HOMEBUILD2\jayta</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>ZWkKeOveDzghZURjVugvH3R/YYpULJfEkwbzOmEYb+8=</DigestValue></Reference></SignedInfo><SignatureValue>lWdMheRy5Bz1DSNSaP3T7MHEaY8v43Le318/MK2PA1L7HGSvvpy+2z3LTeHrxOhQpco/XY6tJ2hTfv4KF6KIUKYEAogQGmJe9WdaDekz9GnfXkckgUKazwn6R625gDibZIHdI5m7t0fsJ0RBdZgS7XEVY96ZF6FJ5kR3P2RyrRQ=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>mL6Za7uHfQo/1hw6CJFwWWKZZqdlXfInPb9R6ONGosCIY/Pc8EwRb1HIv0B/A/3d60/Hlx9E5S4nHqS36aERCDEj2SlJHvp3TvrJazdy9JWR8+A8FwAo0fX1Vh0BdjAfsgQL2Spi484vXIjmDOo5F1DHi7+RYH84dRKU9KMQFQE=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB2TCCAUKgAwIBAgIQEO8c+SThNYhFFptKW8eXVTANBgkqhkiG9w0BAQsFADArMSkwJwYDVQQDHiAASABPAE0ARQBCAFUASQBMAEQAMgBcAGoAYQB5AHQAYTAeFw0xNzAyMDMwNDAwNDVaFw0xODAyMDMxMDAwNDVaMCsxKTAnBgNVBAMeIABIAE8ATQBFAEIAVQBJAEwARAAyAFwAagBhAHkAdABhMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCYvplru4d9Cj/WHDoIkXBZYplmp2Vd8ic9v1Ho40aiwIhj89zwTBFvUci/QH8D/d3rT8eXH0TlLicepLfpoREIMSPZKUke+ndO+slrN3L0lZHz4DwXACjR9fVWHQF2MB+yBAvZKmLjzi9ciOYM6jkXUMeLv5Fgfzh1EpT0oxAVAQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAHgBtRia/jOCfYm6q9YvGv3LSl/8k0h1EVh5nbi+pNNnjVSgUeiJyIEMOYg54CAZC71AutpWuk6ciVxM/Dq8S2871oYvbRPUSizd63cfjf/v9JJRNLaxqUMHnFjTeYAuBwlhLn09oVblUdIIAwGfPggYTYKvUorrVjpqLSVpb3nY</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
+<publisherIdentity name="CN=HOMEBUILD2\jayta" issuerKeyHash="75bc92c5220a169718956596fffcca4e4fc1fbdd" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>lew6OQsDH9Y5T319MDdPSNyAlyFOUpZf7b2ptnQaAKU=</DigestValue></Reference></SignedInfo><SignatureValue>e/0qILxgXLb5tDjpNXzhOEAWFiexEuzurQ1+jb1x2W22ikgPQIsdMsy2VRa058CZXcDBLo1e1ie7gFoECEXGpp8O1MCrvdNdhd8cjABYOvOQ18kocOmNES+3GPNLOMrBbfvLQIVLiGs0tSM9XC68U9I9+N+9VxGiwdJDpqHFrgg=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>mL6Za7uHfQo/1hw6CJFwWWKZZqdlXfInPb9R6ONGosCIY/Pc8EwRb1HIv0B/A/3d60/Hlx9E5S4nHqS36aERCDEj2SlJHvp3TvrJazdy9JWR8+A8FwAo0fX1Vh0BdjAfsgQL2Spi484vXIjmDOo5F1DHi7+RYH84dRKU9KMQFQE=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="a5001a74b6a9bded5f96524e219780dc484f37307d7d4f39d61f030b393aec95" Description="" Url=""><as:assemblyIdentity name="ImagingSIMS.exe" version="3.6.2.10" publicKeyToken="9f3ff08481aa147a" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=HOMEBUILD2\jayta</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>PiTT27Zk6pGNJvcN7GJ3Dm2zmNLeBI9PI5DRBtkTBmc=</DigestValue></Reference></SignedInfo><SignatureValue>GnT9xVKG0gMNDvjeLFm0g/Q8SE9gyh6/N0tigD8WSFXEXVVf/zfrkHMYC9u7NbT4CKmtCH3W1D5Rb5KxEt0AcEtnytLyG0Z/rKMuvH5brPqgFftMrfoksLh91W3r2XTOTaudJMl7I+5kjRbM002mGh99oEzXKvSuPxGNXgqdLmg=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>mL6Za7uHfQo/1hw6CJFwWWKZZqdlXfInPb9R6ONGosCIY/Pc8EwRb1HIv0B/A/3d60/Hlx9E5S4nHqS36aERCDEj2SlJHvp3TvrJazdy9JWR8+A8FwAo0fX1Vh0BdjAfsgQL2Spi484vXIjmDOo5F1DHi7+RYH84dRKU9KMQFQE=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB2TCCAUKgAwIBAgIQEO8c+SThNYhFFptKW8eXVTANBgkqhkiG9w0BAQsFADArMSkwJwYDVQQDHiAASABPAE0ARQBCAFUASQBMAEQAMgBcAGoAYQB5AHQAYTAeFw0xNzAyMDMwNDAwNDVaFw0xODAyMDMxMDAwNDVaMCsxKTAnBgNVBAMeIABIAE8ATQBFAEIAVQBJAEwARAAyAFwAagBhAHkAdABhMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCYvplru4d9Cj/WHDoIkXBZYplmp2Vd8ic9v1Ho40aiwIhj89zwTBFvUci/QH8D/d3rT8eXH0TlLicepLfpoREIMSPZKUke+ndO+slrN3L0lZHz4DwXACjR9fVWHQF2MB+yBAvZKmLjzi9ciOYM6jkXUMeLv5Fgfzh1EpT0oxAVAQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAHgBtRia/jOCfYm6q9YvGv3LSl/8k0h1EVh5nbi+pNNnjVSgUeiJyIEMOYg54CAZC71AutpWuk6ciVxM/Dq8S2871oYvbRPUSizd63cfjf/v9JJRNLaxqUMHnFjTeYAuBwlhLn09oVblUdIIAwGfPggYTYKvUorrVjpqLSVpb3nY</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
