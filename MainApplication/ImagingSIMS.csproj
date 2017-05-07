@@ -71,16 +71,16 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>C7E1499F9BFF22733F621062BDA9DC67F62DC599</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>4870E5E596CABF37DC457163E8912018CD58A6F2</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>ImagingSIMS_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>ImagingSIMS_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>PaintPalette.ico</ApplicationIcon>
@@ -184,6 +184,9 @@
     <Compile Include="IImagingSIMSWindow.cs" />
     <Compile Include="ImagingSIMSApplication.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Splash.xaml.cs">
+      <DependentUpon>Splash.xaml</DependentUpon>
+    </Compile>
     <Page Include="About.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -233,6 +236,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\RibbonResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Splash.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -390,6 +397,10 @@
     <Content Include="Icons\Workspace.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="LogoCredits.txt" />
+    <Resource Include="Logo.png" />
+    <Resource Include="Images\Logo.png" />
+    <Resource Include="Images\Logo.ico" />
     <Content Include="Redist\Files.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -439,6 +450,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Images\DepthProfile.ico" />
+    <None Include="ImagingSIMS_1_TemporaryKey.pfx" />
     <None Include="ImagingSIMS_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <Resource Include="Images\Update.png" />
@@ -532,7 +544,7 @@
     <Resource Include="Images\SmallIcon.png" />
     <Resource Include="Images\Spec.ico" />
     <None Include="Images\Splash.jpg" />
-    <SplashScreen Include="Images\Splash.png" />
+    <None Include="Images\Splash.png" />
     <Resource Include="Images\Star.png" />
     <Resource Include="Images\StopHS.png" />
     <Resource Include="Images\Sum.ico" />

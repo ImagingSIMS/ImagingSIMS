@@ -110,5 +110,18 @@
       "Inlcude support for color scales in range of [-1, +1].",
       "Minor improvement in image rendering speed."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 10
+    },
+    "Updates": [
+      "A new logo and animated splash screen while the application loads.",
+      "Fixed an issue with the color selector.",
+      "Some under the hood changes to set up some future improvements."
+    ]
   }
 ]

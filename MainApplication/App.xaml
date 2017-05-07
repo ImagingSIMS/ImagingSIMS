@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:reg="clr-namespace:ImagingSIMS.Common.Registry;assembly=Common"
+             LoadCompleted="Application_LoadCompleted"
              StartupUri="MainWindow.xaml"
              Startup="Application_Startup"
              Exit="Application_Exit"

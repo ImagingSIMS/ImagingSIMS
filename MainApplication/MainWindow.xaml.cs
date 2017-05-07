@@ -51,6 +51,7 @@ namespace ImagingSIMS.MainApplication
         //BackgroundWorker bw;
         ProgressWindow pw;
         TraceListenerWindow tlw;
+        Splash _splashScreen;
 
         public Workspace Workspace
         {
@@ -72,11 +73,14 @@ namespace ImagingSIMS.MainApplication
 
         #region Load
         public MainWindow()
-        {            
+        {
+            _splashScreen = new Splash();
+            _splashScreen.Show();
 #if DEBUG
             IsDebug = true;
 #endif          
             Workspace = new Workspace();
+
 
             InitializeComponent();
 
@@ -245,6 +249,8 @@ namespace ImagingSIMS.MainApplication
             AvailableHost.AvailableSpectraSource = this;
 
             Trace.WriteLine("Window load complete.");
+
+            _splashScreen?.Close();
         }
         #endregion
 
@@ -4466,7 +4472,8 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test10_Click(object sender, RoutedEventArgs e)
         {
-
+            Splash splash = new MainApplication.Splash();
+            splash.Show();
         }
 #pragma warning restore 1998
 
