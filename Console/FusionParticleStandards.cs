@@ -25,23 +25,52 @@ namespace ConsoleApp
             int[] centerX = { 240, 225, 150, 115, 115, 170, 200, 50, 190, 70 };
             int[] centerY = { 200, 225, 65, 85, 25, 225, 40, 50, 140, 180 };
 
+            //List<Tuple<int, int, int>> particleInfos = new List<Tuple<int, int, int>>()
+            //{
+            //    new Tuple<int, int, int>(5, 240, 200),
+            //    new Tuple<int, int, int>(8, 225, 225),
+            //    new Tuple<int, int, int>(10, 150, 65),
+            //    new Tuple<int, int, int>(15, 115, 85),
+            //    new Tuple<int, int, int>(20, 115, 25),
+            //    new Tuple<int, int, int>(25, 170, 225),
+            //    new Tuple<int, int, int>(30, 200, 40),
+            //    new Tuple<int, int, int>(40, 50, 50),
+            //    new Tuple<int, int, int>(50, 190, 140),
+            //    new Tuple<int, int, int>(65, 70, 180)
+            //};
+
             List<Tuple<int, int, int>> particleInfos = new List<Tuple<int, int, int>>()
             {
-                new Tuple<int, int, int>(5, 240, 200),
-                new Tuple<int, int, int>(8, 225, 225),
-                new Tuple<int, int, int>(10, 150, 65),
-                new Tuple<int, int, int>(15, 115, 85),
-                new Tuple<int, int, int>(20, 115, 25),
-                new Tuple<int, int, int>(25, 170, 225),
-                new Tuple<int, int, int>(30, 200, 40),
-                new Tuple<int, int, int>(40, 50, 50),
-                new Tuple<int, int, int>(50, 190, 140),
-                new Tuple<int, int, int>(65, 70, 180)
+                // Row 1
+                new Tuple<int, int, int>(2, 30, 30),
+                new Tuple<int, int, int>(3, 95, 30),
+                new Tuple<int, int, int>(4, 160, 30),
+                new Tuple<int, int, int>(5, 225, 30),
+                
+                // Row 2
+                new Tuple<int, int, int>(9, 225, 90),
+                new Tuple<int, int, int>(8, 160, 90),
+                new Tuple<int, int, int>(7, 95, 90),
+                new Tuple<int, int, int>(6, 30, 90),
+
+                // Row 3
+                new Tuple<int, int, int>(10, 50, 150),
+                new Tuple<int, int, int>(12, 120, 150),
+                new Tuple<int, int, int>(14, 190, 150),
+
+                // Row 4
+                new Tuple<int, int, int>(20, 220, 220),
+                new Tuple<int, int, int>(18, 105, 220),
+                new Tuple<int, int, int>(16, 30, 220),
             };
+
+            //double maxRadius = radii.Max();
+            //double minRadius = radii.Min();
 
             foreach (var info in particleInfos)
             {
-                simsParticles.Add(new SIMSParticle(info.Item1, info.Item2, info.Item3, imageSize, imageSize));
+                int radius = (int)(0.936 * info.Item1 + 24.464);
+                simsParticles.Add(new SIMSParticle(radius, info.Item2, info.Item3, imageSize, imageSize));                
                 semParticles.Add(new SEMParticle(info.Item1 * hrFactor, info.Item2 * hrFactor, info.Item3 * hrFactor, imageSize * hrFactor, imageSize * hrFactor));
             }
 
@@ -59,51 +88,11 @@ namespace ConsoleApp
                 semData += particle.Matrix;
             }
 
-            var bsSIMS = ImageGenerator.Instance.Create(simsData, ColorScaleTypes.ThermalCold);
-            var bsSEM = ImageGenerator.Instance.Create(semData, ColorScaleTypes.ThermalCold);
+            var bsSIMS = ImageGenerator.Instance.Create(simsData, ColorScaleTypes.Neon);
+            var bsSEM = ImageGenerator.Instance.Create(semData, ColorScaleTypes.Gray);
 
             bsSIMS.Save(outputFolder + "SIMS.bmp");
-            bsSEM.Save(outputFolder + "SEM.bmp");
-
-            //var testDataSIMS = new Data2D(256, 256);
-
-            //for (int x = 0; x < testDataSIMS.Width; x++)
-            //{
-            //    for (int y = 0; y < testDataSIMS.Height; y++)
-            //    {
-            //        foreach (var particle in simsParticles)
-            //        {
-            //            if (IsInCircle(x, y, particle.CenterX, particle.CenterY, particle.Radius))
-            //            {
-            //                testDataSIMS[x, y] = 1;
-            //                break;
-            //            }
-            //        }
-            //    }
-            //}
-
-            //var bsTestDataSIMS = ImageGenerator.Instance.Create(testDataSIMS, ColorScaleTypes.ThermalCold);
-            //bsTestDataSIMS.Save(outputFolder + "circles_sims.bmp");
-
-            //var testDataSEM = new Data2D(512, 512);
-
-            //for (int x = 0; x < testDataSEM.Width; x++)
-            //{
-            //    for (int y = 0; y < testDataSEM.Height; y++)
-            //    {
-            //        foreach (var particle in semParticles)
-            //        {
-            //            if (IsInCircle(x, y, particle.CenterX, particle.CenterY, particle.Radius))
-            //            {
-            //                testDataSEM[x, y] = 1;
-            //                break;
-            //            }
-            //        }
-            //    }
-            //}
-
-            //var bsTestDataSEM = ImageGenerator.Instance.Create(testDataSEM, ColorScaleTypes.ThermalCold);
-            //bsTestDataSEM.Save(outputFolder + "circles_sem.bmp");            
+            bsSEM.Save(outputFolder + "SEM.bmp");           
         }
 
         private static bool IsInCircle(int x, int y, int cX, int cY, int radius)
@@ -114,7 +103,7 @@ namespace ConsoleApp
 
     internal static class RandomGenerator
     {
-        static Random _random = new Random();
+        static Random _random = new Random(12091986);
 
         public static int Next()
         {
@@ -164,11 +153,20 @@ namespace ConsoleApp
         public SIMSParticle(int radius, int centerX, int centerY, int imageSizeX, int imageSizeY) 
             : base(radius, centerX, centerY, imageSizeX, imageSizeY)
         {
+
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    double distance  = i / 100d;
+            //    Console.WriteLine($"i {i} distance {Gaussian(distance, 0, 0.2)}");
+            //}
         }
 
         public override void GeneratePixels()
         {
             int idealCounts = (int)(Math.PI * Math.Pow(Radius, 2) * RandomGenerator.Next(50, 80));
+
+            double sigmaSquared = .2;
+            double mu = 0;
 
             while(idealCounts > 0)
             {
@@ -176,12 +174,14 @@ namespace ConsoleApp
                 int y = RandomGenerator.Next(CenterY - Radius, CenterY + Radius);
 
                 if (!IsInCircle(x, y, CenterX, CenterY, Radius)) continue;
+                if (x < 0 || x >= ImageSizeX || y < 0 || y >= ImageSizeY) continue;
 
                 int counts = RandomGenerator.Next(10, 30);
                 counts += RandomGenerator.Next(-(int)Math.Sqrt(counts), (int)Math.Sqrt(counts));
 
                 double distanceToCenter = Math.Sqrt(Math.Pow(CenterX - x, 2) + Math.Pow(CenterY - y, 2)) / Radius;
-                counts = (int)(counts / Math.Max(Math.Min(distanceToCenter, 1.3), 0.5));
+                //counts = (int)(counts / Math.Max(Math.Min(distanceToCenter, 1.3), 0.5));
+                counts = (int)(counts * Gaussian(distanceToCenter, mu, sigmaSquared));
 
                 idealCounts -= counts;
                 Matrix[x, y] += counts;
@@ -189,7 +189,14 @@ namespace ConsoleApp
 
             TotalCounts = (int)Matrix.TotalCounts;
         }
+
+        private double Gaussian(double x, double mu, double sigmaSquared)
+        {
+            //return (1 / Math.Sqrt(2 * Math.PI * sigmaSquared)) * Math.Pow(Math.E, -(Math.Pow(x - mu, 2) / 2 * sigmaSquared));
+            return (Math.Pow(Math.E, -Math.Pow(x - mu, 2)/(2*sigmaSquared))/Math.Sqrt(2*Math.PI*sigmaSquared));
+        }
     }
+
     internal class SEMParticle : SIMSParticle
     {
         public SEMParticle(int radius, int centerX, int centerY, int imageSizeX, int imageSizeY) 
@@ -199,25 +206,6 @@ namespace ConsoleApp
 
         public override void GeneratePixels()
         {
-            //int idealCounts = (int)(Math.PI * Math.Pow(Radius, 2) * RandomGenerator.Next(13000, 15000));
-
-            //while (idealCounts > 0)
-            //{
-            //    int x = RandomGenerator.Next(CenterX - Radius, CenterX + Radius);
-            //    int y = RandomGenerator.Next(CenterY - Radius, CenterY + Radius);
-
-            //    if (!IsInCircle(x, y, CenterX, CenterY, Radius)) continue;
-
-            //    int counts = 100;
-            //    //counts += RandomGenerator.Next(-(int)Math.Sqrt(counts), (int)Math.Sqrt(counts));
-
-            //    double distanceToCenter = Math.Sqrt(Math.Pow(CenterX - x, 2) + Math.Pow(CenterY - y, 2)) / Radius;
-            //    counts = (int)(counts / Math.Max(Math.Min(distanceToCenter, 1.2), 0.7));
-
-            //    idealCounts -= counts;
-            //    Matrix[x, y] += counts;
-            //}
-
             for (int x = 0; x < ImageSizeX; x++)
             {
                 for (int y = 0; y < ImageSizeY; y++)
@@ -225,11 +213,9 @@ namespace ConsoleApp
                     if (!IsInCircle(x, y, CenterX, CenterY, Radius)) continue;
 
                     double distanceToCenter = Math.Sqrt(Math.Pow(CenterX - x, 2) + Math.Pow(CenterY - y, 2)) / Radius;
-                    //int counts = (int)(Math.Sqrt(100 / Math.Max(Math.Min(distanceToCenter, 1.0), 0.5)));
-                    int counts = (int)(Math.Sqrt(1 - Math.Max(Math.Min(distanceToCenter, 1.0), 0.7)) * 1000);
+                    int counts = (int)(Math.Sqrt(1 - Math.Pow(distanceToCenter, 2)) * 1000);
 
                     Matrix[x, y] = counts;
-                    //Matrix[x, y] = (float)distanceToCenter;
                 }
             }
 
