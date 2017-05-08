@@ -15,7 +15,7 @@
         xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:commands="clr-namespace:ImagingSIMS.Controls;assembly=Controls"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Icon="Images\PaintPalette.ico" 
+        Icon="Images\Logo.ico" 
         Width="1200" Height="900" WindowState="Maximized" MinWidth="600" MinHeight="480" 
         Loaded="RibbonWindow_Loaded" Unloaded="RibbonWindow_Unloaded" Closing="RibbonWindow_Closing" Background="#FF252525" 
         Title="{Binding Workspace.WorkspaceName, StringFormat=ImagingSIMS3 - {0}}"
@@ -69,7 +69,7 @@
                 </RibbonQuickAccessToolBar>
             </Ribbon.QuickAccessToolBar>
             <Ribbon.ApplicationMenu>
-                <RibbonApplicationMenu SmallImageSource="Images\PaintPalette.ico" KeyTip="F">
+                <RibbonApplicationMenu SmallImageSource="Images\Logo.ico" KeyTip="F">
                     <!--<RibbonApplicationMenu.AuxiliaryPaneContent>
                         <StackPanel>
                             <TextBlock Text="Recent Files" FontSize="16" Margin="8,2,2,2"

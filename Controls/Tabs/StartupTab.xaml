@@ -27,7 +27,18 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" FontSize="24">Welcome to ImagingSIMS version 3.6</TextBlock>
+            <!--<TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" FontSize="24">Welcome to ImagingSIMS version 3.6</TextBlock>-->
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2">
+                <Image  Source="..\Images\Logo_Transparent.png"
+                   Margin="8"
+                   HorizontalAlignment="Left"
+                   Stretch="Uniform" Height="75"/>
+                <TextBlock Margin="8" 
+                           FontSize="24" Foreground="{StaticResource ThemeBlueBrush}"
+                           VerticalAlignment="Bottom" 
+                           Text="{Binding ElementName=userControl, Path=VersionString}"/>
+            </StackPanel>
+
 
             <Grid x:Name="gridMainContent" Grid.Column="0" Grid.Row="1">
                 <Grid.ColumnDefinitions>

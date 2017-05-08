@@ -73,6 +73,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Printing" />
     <Reference Include="System.Windows.Forms" />
@@ -620,6 +621,7 @@
     <Resource Include="Images\Backward.ico" />
     <Resource Include="Images\Forward.ico" />
     <Resource Include="Images\AddRemoveColumns.png" />
+    <Resource Include="Images\Logo_Transparent.png" />
     <Content Include="Images\StartupTabContent.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

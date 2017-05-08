@@ -1,3 +1,5 @@
+<img src="https://github.com/ImagingSIMS/ImagingSIMS/blob/master/MainApplication/Images/Logo_Transparent.png"/>
+
 # ImagingSIMS
 ImagingSIMS is an open-source project for loading, analyzing, and visualizing secondary ion mass spectrometry (SIMS) data.
 
