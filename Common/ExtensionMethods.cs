@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,33 @@ namespace ImagingSIMS.Common
     {
         public static void Save(this BitmapSource img, string filePath)
         {
-            BitmapEncoder encoder = new PngBitmapEncoder();
+            var extension = Path.GetExtension(filePath);
+            BitmapEncoder encoder;
+
+            switch (extension)
+            {
+                case ".bmp":
+                    encoder = new BmpBitmapEncoder();
+                    break;
+                case ".png":
+                    encoder = new PngBitmapEncoder();
+                    break;
+                case ".jpg":
+                    encoder = new JpegBitmapEncoder();
+                    break;
+                case ".jpeg":
+                    encoder = new JpegBitmapEncoder();
+                    break;
+                case ".tif":
+                    encoder = new TiffBitmapEncoder();
+                    break;
+                case ".tiff":
+                    encoder = new TiffBitmapEncoder();
+                    break;
+                default:
+                    throw new ArgumentException("Unsupported file extension");
+            }
+
             encoder.Frames.Add(BitmapFrame.Create(img));
 
             using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Create))
