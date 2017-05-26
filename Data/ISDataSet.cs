@@ -889,6 +889,25 @@ namespace ImagingSIMS.Data
                 }
             }
         }
+        public void FlipDiagonal(bool forward)
+        {
+            var temp = _matrix.ToArray();
+
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    if (forward)
+                    {
+                        _matrix[x, y] = temp[Width - 1 - x, Height - 1 - y];
+                    }
+                    else
+                    {
+                        _matrix[x, y] = temp[y, x];
+                    }
+                }
+            }
+        }
 
         public static async Task<Data2D> LoadData2DAsync(string LoadPath, FileType FileType)
         {
@@ -2400,6 +2419,13 @@ namespace ImagingSIMS.Data
             foreach (var layer in _layers)
             {
                 layer.FlipVertical();
+            }
+        }
+        public void FlipDiagonal(bool forward)
+        {
+            foreach (var layer in _layers)
+            {
+                layer.FlipDiagonal(forward);
             }
         }
 

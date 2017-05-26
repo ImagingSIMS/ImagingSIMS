@@ -12,7 +12,7 @@
     <OutputPath>.</OutputPath>
     <Name>Python</Name>
     <RootNamespace>Python</RootNamespace>
-    <InterpreterId>{c97cacda-797d-4186-93ae-f31296b8c944}</InterpreterId>
+    <InterpreterId>{0204c43f-712f-4384-880f-8041cf66a25d}</InterpreterId>
     <InterpreterVersion>3.5</InterpreterVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -27,13 +27,23 @@
     <Compile Include="Fusion.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Helpers.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IRLS.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PCA.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Testing.py" />
+    <Compile Include="WeightedLeastSquares.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.5-32" />
+    <InterpreterReference Include="{0204c43f-712f-4384-880f-8041cf66a25d}\3.5" />
     <InterpreterReference Include="{c97cacda-797d-4186-93ae-f31296b8c944}\3.5" />
   </ItemGroup>
   <PropertyGroup>

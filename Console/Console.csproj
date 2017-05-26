@@ -122,6 +122,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CloudParticleStandards.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FusionParticleStandards.cs" />
     <Compile Include="LinearRegression.cs" />
     <Compile Include="LoadCamecaNanoSIMS.cs" />

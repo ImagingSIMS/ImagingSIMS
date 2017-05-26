@@ -16,17 +16,42 @@ namespace ImagingSIMS.Data.Imaging
         public static Data2D Register(Data2D fixedImage,
             Data2D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
         {
+            List<IntPoint> fixedPointsCorrected = new List<IntPoint>();
+            List<IntPoint> movingPointsCorrected = new List<IntPoint>();
+
             if (fixedImage.Width != movingImage.Width || fixedImage.Height != movingImage.Height)
             {
                 if (fixedImage.Width <= movingImage.Width && fixedImage.Height <= movingImage.Height)
                 {
                     fixedImage = fixedImage.Resize(movingImage.Width, movingImage.Height);
+
+                    float ratioX = movingImage.Width / fixedImage.Width;
+                    float ratioY = movingImage.Height / fixedImage.Height;
+
+                    foreach (var point in fixedPoints)
+                    {
+                        fixedPointsCorrected.Add(new IntPoint((int)(point.X * ratioX), (int)(point.Y * ratioY)));
+                    }
                 }
                 else if (movingImage.Width <= fixedImage.Width && movingImage.Height <= fixedImage.Height)
                 {
                     movingImage = movingImage.Resize(fixedImage.Width, fixedImage.Height);
+
+                    float ratioX = fixedImage.Width / movingImage.Width;
+                    float ratioY = fixedImage.Height / movingImage.Height;
+
+                    foreach (var point in movingPoints)
+                    {
+                        movingPointsCorrected.Add(new IntPoint((int)(point.X * ratioX), (int)(point.Y * ratioY)));
+                    }
                 }
                 else throw new ArgumentException("Invalid image dimensions. Cannot resize when one dimension is smaller than the other");
+            }
+
+            else
+            {
+                fixedPointsCorrected.AddRange(fixedPoints);
+                movingPointsCorrected.AddRange(movingPoints);
             }
 
             RansacHomographyEstimator ransac = new RansacHomographyEstimator(0.001, 0.99);

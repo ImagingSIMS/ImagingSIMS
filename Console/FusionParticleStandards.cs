@@ -21,55 +21,63 @@ namespace ConsoleApp
             // Based on 256 x 256 pixels FOV
             int imageSize = 256;
             int hrFactor = 2;
-            int[] radii = { 5, 8, 10, 15, 20, 25, 30, 40, 50, 65 };
-            int[] centerX = { 240, 225, 150, 115, 115, 170, 200, 50, 190, 70 };
-            int[] centerY = { 200, 225, 65, 85, 25, 225, 40, 50, 140, 180 };
 
+            // 2 px - 20 px
             //List<Tuple<int, int, int>> particleInfos = new List<Tuple<int, int, int>>()
             //{
-            //    new Tuple<int, int, int>(5, 240, 200),
-            //    new Tuple<int, int, int>(8, 225, 225),
-            //    new Tuple<int, int, int>(10, 150, 65),
-            //    new Tuple<int, int, int>(15, 115, 85),
-            //    new Tuple<int, int, int>(20, 115, 25),
-            //    new Tuple<int, int, int>(25, 170, 225),
-            //    new Tuple<int, int, int>(30, 200, 40),
-            //    new Tuple<int, int, int>(40, 50, 50),
-            //    new Tuple<int, int, int>(50, 190, 140),
-            //    new Tuple<int, int, int>(65, 70, 180)
+            //    // Row 1
+            //    new Tuple<int, int, int>(2, 40, 30),
+            //    new Tuple<int, int, int>(3, 105, 30),
+            //    new Tuple<int, int, int>(4, 170, 30),
+            //    new Tuple<int, int, int>(5, 235, 30),
+
+            //    // Row 2
+            //    new Tuple<int, int, int>(9, 225, 85),
+            //    new Tuple<int, int, int>(8, 160, 85),
+            //    new Tuple<int, int, int>(7, 95, 85),
+            //    new Tuple<int, int, int>(6, 30, 85),
+
+            //    // Row 3
+            //    new Tuple<int, int, int>(10, 60, 145),
+            //    new Tuple<int, int, int>(12, 130, 145),
+            //    new Tuple<int, int, int>(14, 200, 145),
+
+            //    // Row 4
+            //    new Tuple<int, int, int>(16, 30, 215),
+            //    new Tuple<int, int, int>(18, 105, 215),
+            //    new Tuple<int, int, int>(20, 180, 215),               
+
             //};
 
+            // 10 px - 50 px
+            //List<Tuple<int, int, int>> particleInfos = new List<Tuple<int, int, int>>()
+            //{
+            //    // Row 1
+            //    new Tuple<int, int, int>(10, 27, 25),
+            //    new Tuple<int, int, int>(15, 80, 30),
+            //    new Tuple<int, int, int>(20, 142, 35),
+            //    new Tuple<int, int, int>(25, 215, 40),
+
+            //    // Row 2
+            //    new Tuple<int, int, int>(35, 50, 98),
+            //    new Tuple<int, int, int>(40, 200, 128),
+
+            //    // Row 3
+            //    new Tuple<int, int, int>(50, 105, 193),
+
+            //};
+
+            // 40 px - 60 px
             List<Tuple<int, int, int>> particleInfos = new List<Tuple<int, int, int>>()
             {
-                // Row 1
-                new Tuple<int, int, int>(2, 30, 30),
-                new Tuple<int, int, int>(3, 95, 30),
-                new Tuple<int, int, int>(4, 160, 30),
-                new Tuple<int, int, int>(5, 225, 30),
-                
-                // Row 2
-                new Tuple<int, int, int>(9, 225, 90),
-                new Tuple<int, int, int>(8, 160, 90),
-                new Tuple<int, int, int>(7, 95, 90),
-                new Tuple<int, int, int>(6, 30, 90),
-
-                // Row 3
-                new Tuple<int, int, int>(10, 50, 150),
-                new Tuple<int, int, int>(12, 120, 150),
-                new Tuple<int, int, int>(14, 190, 150),
-
-                // Row 4
-                new Tuple<int, int, int>(20, 220, 220),
-                new Tuple<int, int, int>(18, 105, 220),
-                new Tuple<int, int, int>(16, 30, 220),
+                new Tuple<int, int, int>(40, 55, 55),
+                new Tuple<int, int, int>(50, 190, 65),
+                new Tuple<int, int, int>(60, 75, 180),                
             };
-
-            //double maxRadius = radii.Max();
-            //double minRadius = radii.Min();
 
             foreach (var info in particleInfos)
             {
-                int radius = (int)(0.936 * info.Item1 + 24.464);
+                int radius = (int)(.9326 * info.Item1 + 12.885);
                 simsParticles.Add(new SIMSParticle(radius, info.Item2, info.Item3, imageSize, imageSize));                
                 semParticles.Add(new SEMParticle(info.Item1 * hrFactor, info.Item2 * hrFactor, info.Item3 * hrFactor, imageSize * hrFactor, imageSize * hrFactor));
             }
@@ -88,11 +96,14 @@ namespace ConsoleApp
                 semData += particle.Matrix;
             }
 
-            var bsSIMS = ImageGenerator.Instance.Create(simsData, ColorScaleTypes.Neon);
+            var bsSIMS = ImageGenerator.Instance.Create(simsData, ColorScaleTypes.ThermalWarm);
             var bsSEM = ImageGenerator.Instance.Create(semData, ColorScaleTypes.Gray);
 
             bsSIMS.Save(outputFolder + "SIMS.bmp");
-            bsSEM.Save(outputFolder + "SEM.bmp");           
+            bsSEM.Save(outputFolder + "SEM.bmp");
+
+            simsData.Save(outputFolder + "SIMS.txt", ImagingSIMS.Data.Spectra.FileType.CSV);
+            semData.Save(outputFolder + "SEM.txt", ImagingSIMS.Data.Spectra.FileType.CSV);
         }
 
         private static bool IsInCircle(int x, int y, int cX, int cY, int radius)
@@ -103,7 +114,7 @@ namespace ConsoleApp
 
     internal static class RandomGenerator
     {
-        static Random _random = new Random(12091986);
+        static Random _random = new Random();
 
         public static int Next()
         {
@@ -116,6 +127,39 @@ namespace ConsoleApp
         public static int Next(int min, int max)
         {
             return _random.Next(min, max);
+        }
+        public static double NextDouble()
+        {
+            return _random.NextDouble();
+        }
+
+        public static double NextGaussian(double mean=0, double stdDev = 0.2)
+        {
+            var u1 = 1 - _random.NextDouble();
+            var u2 = 1 - _random.NextDouble();
+
+            var randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+            var randNormal = mean + stdDev * randStdNormal;
+
+            return randNormal;
+        }
+        public static double NextGaussianNormal(double mean=0, double stdDev=0.2)
+        {
+            var randNormal = -1d;
+            while (randNormal < 0 || randNormal >= 1)
+            {
+                var u1 = 1 - _random.NextDouble();
+                var u2 = 1 - _random.NextDouble();
+
+                var randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+                randNormal = mean + stdDev * randStdNormal;
+            }
+
+            return randNormal;
+        }
+        private static double Gaussian(double x, double mu, double sigmaSquared)
+        {
+            return (Math.Pow(Math.E, -Math.Pow(x - mu, 2) / (2 * sigmaSquared)) / Math.Sqrt(2 * Math.PI * sigmaSquared));
         }
     }
 
@@ -193,7 +237,7 @@ namespace ConsoleApp
         private double Gaussian(double x, double mu, double sigmaSquared)
         {
             //return (1 / Math.Sqrt(2 * Math.PI * sigmaSquared)) * Math.Pow(Math.E, -(Math.Pow(x - mu, 2) / 2 * sigmaSquared));
-            return (Math.Pow(Math.E, -Math.Pow(x - mu, 2)/(2*sigmaSquared))/Math.Sqrt(2*Math.PI*sigmaSquared));
+            return (Math.Pow(Math.E, -Math.Pow(x - mu, 2) / (2 * sigmaSquared)) / Math.Sqrt(2 * Math.PI * sigmaSquared));
         }
     }
 

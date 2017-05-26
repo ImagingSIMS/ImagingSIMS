@@ -42,6 +42,7 @@ using Matrix = Accord.Math.Matrix;
 using Accord.Statistics.Analysis;
 using Accord.Statistics.Kernels;
 using System.Globalization;
+using System.Windows.Interop;
 
 namespace ImagingSIMS.MainApplication
 {
@@ -5533,19 +5534,24 @@ namespace ImagingSIMS.MainApplication
             }
             
         }
+
         private async void test9_Click(object sender, RoutedEventArgs e)
         {
-            var data = new Data2D(256, 256) { DataName = "test" };
+            //var dt = new DataDisplayTab(ColorScaleTypes.ThermalCold);
+            //var cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
+            //AddTabItemAndNavigate(cti);
 
-            for (int x = 0; x < 256; x++)
-            {
-                for (int y = 0; y < 256; y++)
-                {
-                    data[x, y] = x + y;
-                }
-            }
+            //var selected = GetSelectedTables();
 
-            AddTable(data);
+            //selected[0].FlipHorizontal();
+            //selected[1].FlipVertical();
+            //selected[2].FlipDiagonal(false);
+            //selected[3].FlipDiagonal(true);
+
+            //await dt.AddDataSourceAsync(selected);
+
+            HwndSource hwnd = new HwndSource(0, 0x12cf0000, 0, 50, 50, 250, 250, "Test Window", IntPtr.Zero);
+            hwnd.RootVisual = new System.Windows.Shapes.Rectangle() { Fill = Brushes.GreenYellow, Width = 100, Height = 100 };
         }
         private async void test10_Click(object sender, RoutedEventArgs e)
         {

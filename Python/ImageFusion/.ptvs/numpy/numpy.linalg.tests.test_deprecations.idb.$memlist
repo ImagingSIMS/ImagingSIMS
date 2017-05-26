@@ -1,0 +1,7 @@
+test_qr_mode_full_future_warning
+run_module_suite
+absolute_import
+np
+division
+assert_warns
+print_function

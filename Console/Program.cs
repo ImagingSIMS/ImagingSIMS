@@ -40,6 +40,7 @@ namespace ConsoleApp
             //Console.ReadLine();
 
             FusionParticleStandards.Run();
+            //CloudParticleStandards.Run();
 
             Console.Write("Press Enter to exit.");
             Console.ReadLine();

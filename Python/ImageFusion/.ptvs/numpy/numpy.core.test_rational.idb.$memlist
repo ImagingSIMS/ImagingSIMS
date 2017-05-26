@@ -1,0 +1,14 @@
+__doc__
+__file__
+__loader__
+__name__
+__package__
+__spec__
+denominator
+gcd
+lcm
+matrix_multiply
+numerator
+rational
+test_add
+test_add_rationals
