@@ -52,9 +52,9 @@ def ivv2rgb(ivv):
 
     mat = np.array(
         [
-            [1, -1/math.sqrt(6), 3/math.sqrt(6)],
-            [1, -1/math.sqrt(6), -3/math.sqrt(6)],
-            [1, 2/math.sqrt(6), 0]
+            [1, -1/math.sqrt(2), 1/math.sqrt(2)],
+            [1, -1/math.sqrt(2), -1/math.sqrt(2)],
+            [1, math.sqrt(2), 0]
         ])
 
     return np.dot(mat, ivv)

@@ -5,14 +5,14 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>70070e3d-6896-4dd3-b7aa-be5052c57e2b</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Fusion.py</StartupFile>
+    <StartupFile>Testing.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>Python</Name>
     <RootNamespace>Python</RootNamespace>
-    <InterpreterId>{0204c43f-712f-4384-880f-8041cf66a25d}</InterpreterId>
+    <InterpreterId>{8245af40-c16b-406b-90e3-950e83b181f7}</InterpreterId>
     <InterpreterVersion>3.5</InterpreterVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -43,8 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.5-32" />
-    <InterpreterReference Include="{0204c43f-712f-4384-880f-8041cf66a25d}\3.5" />
-    <InterpreterReference Include="{c97cacda-797d-4186-93ae-f31296b8c944}\3.5" />
+    <InterpreterReference Include="{2af0f10d-7135-4994-9156-5d01c9c11b7e}\3.5" />
+    <InterpreterReference Include="{8245af40-c16b-406b-90e3-950e83b181f7}\3.5" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,8 +1,12 @@
 import numpy as np
 from scipy import misc
 from skimage import color
+from skimage import io
 import pywt as pywt
 
+import matplotlib as mpl
+
+import Helpers as helpers
 def hslFusion(lowRes, highRes):  
 
     lowRes = np.divide(lowRes, 255)
@@ -145,15 +149,58 @@ if __name__ == "__main__":
     #if fused is not None:
     #    misc.imsave('D:\\Data\\FusedDWT.bmp', fused)
 
-    src = np.random.rand(516,516)
-    dest = np.empty((512,512))
+    #for r in range(255):
+    #    for g in range(255):
+    #        for b in range(255):
+    #            rgb = [r,g,b]
+    #            rgb = np.divide(rgb, 255)
+    #            ivv = helpers.rgb2ivv(rgb)
+    #            rev = helpers.ivv2rgb(ivv)
+    #            rev = np.multiply(rev, 255)
+    #            rgb = np.multiply(rgb, 255)
+    #            assert abs(rgb[0] - rev [0]) < 1 and abs(rgb[1] - rev[1]) < 1 and abs(rgb[2] - rev[2]) < 1, "rgb {0} {1} {2} not converted correctly".format(rgb[0], rgb[1], rgb[2])
 
-    for x in range(512):
-        for y in range(512):
+    #src = np.random.rand(516,516)
+    #dest = np.empty((512,512))
 
-            adjX = x + 2
-            adjY = y + 2
-            subset = src[adjX-2:adjX+3, adjY-2:adjY+3]
-            s = subset.shape
-            assert s[0] == 5 and s[1] == 5, "Array shape is [0,1] at {2},{3}".format(s[0],s[1],x,y)
-            j=0;
+    #for x in range(512):
+    #    for y in range(512):
+
+    #        adjX = x + 2
+    #        adjY = y + 2
+    #        subset = src[adjX-2:adjX+3, adjY-2:adjY+3]
+    #        s = subset.shape
+    #        assert s[0] == 5 and s[1] == 5, "Array shape is [0,1] at {2},{3}".format(s[0],s[1],x,y)
+    #        j=0;
+
+    highres = io.imread("C:\\Data\\Fusion Particles\\Fusion Comparison\\highres.bmp", as_grey=True)
+    lowRes = io.imread("C:\\Data\\Fusion Particles\\Fusion Comparison\\lowres.bmp")  
+
+    lowRes = np.divide(lowRes, 255)
+
+    ivv = np.zeros_like(lowRes)
+    rev = np.zeros_like(lowRes, dtype=int)
+
+    for x in range(lowRes.shape[0]):
+        for y in range(lowRes.shape[1]):
+            ivv[x,y,:] = helpers.rgb2ivv(lowRes[x,y,:])
+            temp = helpers.ivv2rgb(ivv[x,y,:])
+            rev[x,y,:] = np.multiply(temp, 255)
+
+    io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\ivv.bmp", ivv)
+    io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\rev.bmp", rev)
+
+    #decomp1 = pywt.wavedec2(highres, 'haar', level=1)
+    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-1-a.bmp", np.clip(decomp1[0], -1, 1))
+    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-1-h1.bmp", np.clip(decomp1[1][0], -1, 1))
+    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-1-v1.bmp", np.clip(decomp1[1][1], -1, 1))
+    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-1-d1.bmp", np.clip(decomp1[1][2], -1, 1))
+
+    #decomp2 = pywt.wavedec2(highres, 'haar', level=2)
+    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-a.bmp", np.clip(decomp2[0], -1, 1))
+    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-h1.bmp", np.clip(decomp2[1][0], -1, 1))
+    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-v1.bmp", np.clip(decomp2[1][1], -1, 1))
+    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-d1.bmp", np.clip(decomp2[1][2], -1, 1))
+    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-h2.bmp", np.clip(decomp2[2][0], -1, 1))
+    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-v2.bmp", np.clip(decomp2[2][1], -1, 1))
+    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-d2.bmp", np.clip(decomp2[2][2], -1, 1))
