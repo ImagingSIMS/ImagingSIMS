@@ -173,34 +173,40 @@ if __name__ == "__main__":
     #        assert s[0] == 5 and s[1] == 5, "Array shape is [0,1] at {2},{3}".format(s[0],s[1],x,y)
     #        j=0;
 
-    highres = io.imread("C:\\Data\\Fusion Particles\\Fusion Comparison\\highres.bmp", as_grey=True)
-    lowRes = io.imread("C:\\Data\\Fusion Particles\\Fusion Comparison\\lowres.bmp")  
+    #highres = io.imread("D:\\Data\\FusionComparison\\highres.bmp", as_grey=True)
+    #lowRes = io.imread("D:\\Data\\FusionComparison\\lowres.bmp")  
 
-    lowRes = np.divide(lowRes, 255)
+    #lowRes = np.divide(lowRes, 255)
 
-    ivv = np.zeros_like(lowRes)
-    rev = np.zeros_like(lowRes, dtype=int)
+    #ivv = np.zeros_like(lowRes)
+    #rev = np.zeros_like(lowRes, dtype=int)
 
-    for x in range(lowRes.shape[0]):
-        for y in range(lowRes.shape[1]):
-            ivv[x,y,:] = helpers.rgb2ivv(lowRes[x,y,:])
-            temp = helpers.ivv2rgb(ivv[x,y,:])
-            rev[x,y,:] = np.multiply(temp, 255)
+    #for x in range(lowRes.shape[0]):
+    #    for y in range(lowRes.shape[1]):
+    #        ivv[x,y,:] = helpers.rgb2ivv(lowRes[x,y,:])
+    #        temp = helpers.ivv2rgb(ivv[x,y,:])
+    #        rev[x,y,:] = np.multiply(temp, 255)
 
-    io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\ivv.bmp", ivv)
-    io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\rev.bmp", rev)
+    #io.imsave("D:\\Data\\FusionComparison\\ivv.bmp", ivv)
+    #io.imsave("D:\\Data\\FusionComparison\\rev.bmp", rev)
 
     #decomp1 = pywt.wavedec2(highres, 'haar', level=1)
-    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-1-a.bmp", np.clip(decomp1[0], -1, 1))
-    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-1-h1.bmp", np.clip(decomp1[1][0], -1, 1))
-    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-1-v1.bmp", np.clip(decomp1[1][1], -1, 1))
-    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-1-d1.bmp", np.clip(decomp1[1][2], -1, 1))
+    #io.imsave("D:\\Data\\FusionComparison\\decomp-1-a.bmp", np.clip(decomp1[0], -1, 1))
+    #io.imsave("D:\\Data\\FusionComparison\\decomp-1-h1.bmp", np.clip(decomp1[1][0], -1, 1))
+    #io.imsave("D:\\Data\\FusionComparison\\decomp-1-v1.bmp", np.clip(decomp1[1][1], -1, 1))
+    #io.imsave("D:\\Data\\FusionComparison\\decomp-1-d1.bmp", np.clip(decomp1[1][2], -1, 1))
 
     #decomp2 = pywt.wavedec2(highres, 'haar', level=2)
-    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-a.bmp", np.clip(decomp2[0], -1, 1))
-    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-h1.bmp", np.clip(decomp2[1][0], -1, 1))
-    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-v1.bmp", np.clip(decomp2[1][1], -1, 1))
-    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-d1.bmp", np.clip(decomp2[1][2], -1, 1))
-    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-h2.bmp", np.clip(decomp2[2][0], -1, 1))
-    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-v2.bmp", np.clip(decomp2[2][1], -1, 1))
-    #io.imsave("C:\\Data\\Fusion Particles\\Fusion Comparison\\decomp-2-d2.bmp", np.clip(decomp2[2][2], -1, 1))
+    #io.imsave("D:\\Data\\FusionComparison\\decomp-2-a.bmp", np.clip(decomp2[0], -1, 1))
+    #io.imsave("D:\\Data\\FusionComparison\\decomp-2-h1.bmp", np.clip(decomp2[1][0], -1, 1))
+    #io.imsave("D:\\Data\\FusionComparison\\decomp-2-v1.bmp", np.clip(decomp2[1][1], -1, 1))
+    #io.imsave("D:\\Data\\FusionComparison\\decomp-2-d1.bmp", np.clip(decomp2[1][2], -1, 1))
+    #io.imsave("D:\\Data\\FusionComparison\\decomp-2-h2.bmp", np.clip(decomp2[2][0], -1, 1))
+    #io.imsave("D:\\Data\\FusionComparison\\decomp-2-v2.bmp", np.clip(decomp2[2][1], -1, 1))
+    #io.imsave("D:\\Data\\FusionComparison\\decomp-2-d2.bmp", np.clip(decomp2[2][2], -1, 1))
+
+    mat = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]])
+    means = np.mean(mat, axis=0)
+    means = np.repeat(means, 4, axis=1)
+
+    print(means)

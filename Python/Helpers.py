@@ -16,7 +16,7 @@ def upscaleImage(lowRes, highRes):
     lrWidth = lowRes.shape[0]
     lrHeight = lowRes.shape[1]
 
-    return misc.imresize(lowRes, [hrWidth, hrHeight])
+    return misc.imresize(lowRes, [hrWidth, hrHeight], 'bilinear')
 
 
 def matchHistogram(target, reference):
@@ -67,3 +67,16 @@ def rgb2ihs(rgb):
     s = math.sqrt(ivv[1] * ivv[1] + ivv[2] * ivv[2])
 
     return np.array([ivv[0], h, s])
+
+def emptyUpscale(image):
+
+    sizeX = image.shape[0]
+    sizeY = image.shape[1]
+
+    upscaled = np.zeros([sizeX * 2, sizeY * 2])
+
+    for x in range(sizeX):
+        for y in range(sizeY):
+            upscaled[x*2,y*2] = image[x,y]
+
+    return upscaled
