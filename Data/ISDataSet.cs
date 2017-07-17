@@ -1505,9 +1505,42 @@ namespace ImagingSIMS.Data
                 return UpscaleBicubic(lowResSizeX, lowResSizeY, highResSizeX, highResSizeY);
         }
 
+        /// <summary>
+        /// Resizes the array to the specified width and height. Can only be used 
+        /// to decrease the matrix dimensions.
+        /// </summary>
+        /// <param name="targetWidth">Width of the new matrix.</param>
+        /// <param name="targetHeight">Height of the new matrix.</param>
+        /// <returns></returns>
+        public Data2D Downscale(int targetWidth, int targetHeight)
+        {
+            int lowResSizeX = targetWidth;
+            int lowResSizeY = targetHeight;
+            int highResSizeX = Width;
+            int highResSizeY = Height;
+
+            Data2D resized = new Data2D(lowResSizeX, lowResSizeY) { DataName = DataName + " - Downscaled" };
+
+            if (lowResSizeX > highResSizeX || lowResSizeY > highResSizeY)
+                throw new ArgumentException("Cannot upscale using this function.");
+
+            float xRatio = (highResSizeX - 1f) / lowResSizeX;
+            float yRatio = (highResSizeY - 1f) / lowResSizeY;
+
+            for (int x = 0; x < lowResSizeX; x++)
+            {
+                for (int y = 0; y < lowResSizeY; y++)
+                {
+                    resized[x, y] = Sample(xRatio * x, yRatio * y);
+                }
+            }
+
+            return resized;
+        }
+
         private Data2D UpscaleBilinear(int lowResSizeX, int lowResSizeY, int highResSizeX, int highResSizeY)
         {
-            Data2D resized = new Data2D(highResSizeX, highResSizeY);
+            Data2D resized = new Data2D(highResSizeX, highResSizeY) { DataName = DataName + " - Upscaled" };
 
             float xRatio = (lowResSizeX - 1f) / highResSizeX;
             float yRatio = (lowResSizeY - 1f) / highResSizeY;
@@ -1516,7 +1549,6 @@ namespace ImagingSIMS.Data
             {
                 for (int j = 0; j < highResSizeY; j++)
                 {
-
                     resized[i, j] = Sample(xRatio * i, yRatio * j);
                 }
             }
@@ -1525,7 +1557,7 @@ namespace ImagingSIMS.Data
         }
         private Data2D UpscaleBicubic(int lowResSizeX, int lowResSizeY, int highResSizeX, int highResSizeY)
         {
-            Data2D resized = new Data2D(highResSizeX, highResSizeY);
+            Data2D resized = new Data2D(highResSizeX, highResSizeY) { DataName = DataName + " - Upscaled" };
 
             float xRatio = (lowResSizeX - 1f) / highResSizeX;
             float yRatio = (lowResSizeY - 1f) / highResSizeY;
