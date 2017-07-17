@@ -200,8 +200,8 @@ namespace ImagingSIMS.Controls.ViewModels
 
         public FusionPointTabViewModel()
         {
-            MovingImageViewModel = new ControlPointImageViewModel();
-            FixedImageViewModel = new ControlPointImageViewModel();
+            MovingImageViewModel = new ControlPointImageViewModel() { ColorScale = ColorScaleTypes.ThermalCold };
+            FixedImageViewModel = new ControlPointImageViewModel() { ColorScale = ColorScaleTypes.Gray };
             ItkRegistrationViewModel = new RegistrationParametersViewModel();
 
             PanchromaticConversion = Data2DConverionType.Grayscale;

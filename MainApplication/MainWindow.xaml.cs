@@ -5392,6 +5392,24 @@ namespace ImagingSIMS.MainApplication
 
         private async void test7_Click(object sender, RoutedEventArgs e)
         {
+            var fixedImage = ImageGenerator.Instance.FromFile(@"D:\Data\Control Point Test\Fixed.png");
+            var movingImage = ImageGenerator.Instance.FromFile(@"D:\Data\Control Point Test\Moving.png");
+
+            var fixedData = ImageGenerator.Instance.ConvertToData2D(fixedImage);
+            var movingData = ImageGenerator.Instance.ConvertToData2D(movingImage);
+
+            fixedData.DataName = "Fixed";
+            movingData.DataName = "Moving";
+
+            var fixedData256x256 = fixedData.Downscale(256, 256);
+            var movingData256x256 = movingData.Downscale(256, 256);
+
+            var fixedData1769x2043 = fixedData.Upscale(1769, 2043);
+            var movingData1769x2043 = movingData.Upscale(1769, 2043);
+
+            AddTables(new Data2D[] { fixedData, movingData, fixedData256x256, movingData256x256, fixedData1769x2043, movingData1769x2043 });
+            return;
+
             var spec = AvailableHost.AvailableSpectraSource.GetAvailableSpectra()[0] as Cameca1280Spectrum;
 
             var masses = new List<Data2D>();
@@ -5479,85 +5497,85 @@ namespace ImagingSIMS.MainApplication
                 AddTable(b);
             }
 
-            var tables = await Task.Run(async () =>
-            {
-                List<Data2D> tablesToReturn = new List<Data2D>();
+            //var tables = await Task.Run(async () =>
+            //{
+            //    List<Data2D> tablesToReturn = new List<Data2D>();
 
-                var bsHighRes = ImageGenerator.Instance.FromFile(@"D:\Data\10-01-12\1a.bmp");
-                var bsLowRes = ImageGenerator.Instance.FromFile(@"D:\Data\10-01-12\3_64.bmp");
+            //    var bsHighRes = ImageGenerator.Instance.FromFile(@"D:\Data\10-01-12\1a.bmp");
+            //    var bsLowRes = ImageGenerator.Instance.FromFile(@"D:\Data\10-01-12\3_64.bmp");
 
-                //var bsHighRes = ImageGenerator.Instance.FromFile(@"D:\Data\Al-Li Alloy\Hyperspectral\Registered_800.png");
+            //    //var bsHighRes = ImageGenerator.Instance.FromFile(@"D:\Data\Al-Li Alloy\Hyperspectral\Registered_800.png");
 
-                var highRes = ImageGenerator.Instance.ConvertToData2D(bsHighRes);
-                highRes.DataName = "High Res";
-                //var lowRes = await Data2D.LoadData2DAsync(@"D:\Data\Al-Li Alloy\Hyperspectral\28.txt", FileType.CSV);
-                var lowRes = ImageGenerator.Instance.ConvertToData2D(bsLowRes, Data2DConverionType.Color, Color.FromArgb(255, 0, 255, 0));
-                lowRes.DataName = "Low Res";
+            //    var highRes = ImageGenerator.Instance.ConvertToData2D(bsHighRes);
+            //    highRes.DataName = "High Res";
+            //    //var lowRes = await Data2D.LoadData2DAsync(@"D:\Data\Al-Li Alloy\Hyperspectral\28.txt", FileType.CSV);
+            //    var lowRes = ImageGenerator.Instance.ConvertToData2D(bsLowRes, Data2DConverionType.Color, Color.FromArgb(255, 0, 255, 0));
+            //    lowRes.DataName = "Low Res";
 
-                tablesToReturn.Add(highRes);
-                tablesToReturn.Add(lowRes);
+            //    tablesToReturn.Add(highRes);
+            //    tablesToReturn.Add(lowRes);
 
-                float hrMax = highRes.Maximum;
-                float lrMax = lowRes.Maximum;
+            //    float hrMax = highRes.Maximum;
+            //    float lrMax = lowRes.Maximum;
 
-                // Normalize
-                highRes /= hrMax;
-                lowRes /= lrMax;
+            //    // Normalize
+            //    highRes /= hrMax;
+            //    lowRes /= lrMax;
 
-                int resolutionRatio = (int)Math.Min(
-                    Math.Ceiling((double)highRes.Width / lowRes.Width),
-                    Math.Ceiling((double)highRes.Height / lowRes.Height));
+            //    int resolutionRatio = (int)Math.Min(
+            //        Math.Ceiling((double)highRes.Width / lowRes.Width),
+            //        Math.Ceiling((double)highRes.Height / lowRes.Height));
 
-                int numDecompositions = (int)Math.Log(resolutionRatio, 2);
+            //    int numDecompositions = (int)Math.Log(resolutionRatio, 2);
 
-                Data2D[] s = new Data2D[numDecompositions + 1];
-                Data2D[] g = new Data2D[numDecompositions + 1];
-                Data2D[] l = new Data2D[numDecompositions + 1];
+            //    Data2D[] s = new Data2D[numDecompositions + 1];
+            //    Data2D[] g = new Data2D[numDecompositions + 1];
+            //    Data2D[] l = new Data2D[numDecompositions + 1];
 
-                for (int i = 0; i < numDecompositions + 1; i++)
-                {
-                    s[i] = i == 0 ? highRes : s[i - 1].Downscale(g[i - 1].Width / 2, g[i - 1].Height / 2);
-                    g[i] = Filter.DoFilter(s[i], FilterType.Gauissian);
-                    l[i] = s[i] - g[i];
+            //    for (int i = 0; i < numDecompositions + 1; i++)
+            //    {
+            //        s[i] = i == 0 ? highRes : s[i - 1].Downscale(g[i - 1].Width / 2, g[i - 1].Height / 2);
+            //        g[i] = Filter.DoFilter(s[i], FilterType.Gauissian);
+            //        l[i] = s[i] - g[i];
 
-                    s[i].DataName = $"S {i}";
-                    tablesToReturn.Add(s[i]);
-                    g[i].DataName = $"G {i}";
-                    tablesToReturn.Add(g[i]);
-                    l[i].DataName = $"L {i}";
-                    tablesToReturn.Add(l[i]);
-                }
+            //        s[i].DataName = $"S {i}";
+            //        tablesToReturn.Add(s[i]);
+            //        g[i].DataName = $"G {i}";
+            //        tablesToReturn.Add(g[i]);
+            //        l[i].DataName = $"L {i}";
+            //        tablesToReturn.Add(l[i]);
+            //    }
 
-                Data2D[] r = new Data2D[numDecompositions + 1];
-                for (int i = numDecompositions; i >= 0; i--)
-                {
-                    if (i == numDecompositions)
-                    {
-                        if (lowRes.Width != l[i].Width || lowRes.Height != l[i].Height)
-                        {
-                            lowRes = lowRes.Resize(l[i].Width, l[i].Height);
-                        }
-                        r[i] = lowRes + l[i];
-                    }
-                    else
-                    {
-                        var upscaled = EmptyUpscale(r[i + 1], 2);
-                        upscaled = Filter.DoFilter(upscaled, FilterType.Gauissian) * 4f;
-                        r[i] = upscaled + l[i];
-                    }
-                    r[i].DataName = $"R {i}";
-                }
+            //    Data2D[] r = new Data2D[numDecompositions + 1];
+            //    for (int i = numDecompositions; i >= 0; i--)
+            //    {
+            //        if (i == numDecompositions)
+            //        {
+            //            if (lowRes.Width != l[i].Width || lowRes.Height != l[i].Height)
+            //            {
+            //                lowRes = lowRes.Resize(l[i].Width, l[i].Height);
+            //            }
+            //            r[i] = lowRes + l[i];
+            //        }
+            //        else
+            //        {
+            //            var upscaled = EmptyUpscale(r[i + 1], 2);
+            //            upscaled = Filter.DoFilter(upscaled, FilterType.Gauissian) * 4f;
+            //            r[i] = upscaled + l[i];
+            //        }
+            //        r[i].DataName = $"R {i}";
+            //    }
 
-                tablesToReturn.AddRange(r);
+            //    tablesToReturn.AddRange(r);
 
-                // Unnormalize
-                var fused = r[0] *= lrMax;
-                fused += -fused.Minimum;
-                fused.DataName = "Fused";
-                tablesToReturn.Add(fused);
+            //    // Unnormalize
+            //    var fused = r[0] *= lrMax;
+            //    fused += -fused.Minimum;
+            //    fused.DataName = "Fused";
+            //    tablesToReturn.Add(fused);
 
-                return tablesToReturn;
-            });
+            //    return tablesToReturn;
+            //});
         }
         private async void test8_Click(object sender, RoutedEventArgs e)
         {

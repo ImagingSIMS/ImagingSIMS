@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using Accord;
 using Accord.Imaging;
 using Accord.Math;
-
+using Accord.Math.Distances;
+using Accord.Math.Metrics;
 
 namespace ImagingSIMS.Data.Imaging
 {
@@ -22,28 +23,33 @@ namespace ImagingSIMS.Data.Imaging
             if (fixedImage.Width != movingImage.Width || fixedImage.Height != movingImage.Height)
             {
                 if (fixedImage.Width <= movingImage.Width && fixedImage.Height <= movingImage.Height)
-                {
-                    fixedImage = fixedImage.Resize(movingImage.Width, movingImage.Height);
-
+                {               
                     float ratioX = movingImage.Width / fixedImage.Width;
                     float ratioY = movingImage.Height / fixedImage.Height;
+
+                    fixedImage = fixedImage.Resize(movingImage.Width, movingImage.Height);
 
                     foreach (var point in fixedPoints)
                     {
                         fixedPointsCorrected.Add(new IntPoint((int)(point.X * ratioX), (int)(point.Y * ratioY)));
                     }
+
+
+                    movingPointsCorrected.AddRange(movingPoints);
                 }
                 else if (movingImage.Width <= fixedImage.Width && movingImage.Height <= fixedImage.Height)
-                {
-                    movingImage = movingImage.Resize(fixedImage.Width, fixedImage.Height);
-
+                {             
                     float ratioX = fixedImage.Width / movingImage.Width;
                     float ratioY = fixedImage.Height / movingImage.Height;
+
+                    movingImage = movingImage.Resize(fixedImage.Width, fixedImage.Height);
 
                     foreach (var point in movingPoints)
                     {
                         movingPointsCorrected.Add(new IntPoint((int)(point.X * ratioX), (int)(point.Y * ratioY)));
                     }
+
+                    fixedPointsCorrected.AddRange(fixedPoints);
                 }
                 else throw new ArgumentException("Invalid image dimensions. Cannot resize when one dimension is smaller than the other");
             }
@@ -55,7 +61,7 @@ namespace ImagingSIMS.Data.Imaging
             }
 
             RansacHomographyEstimator ransac = new RansacHomographyEstimator(0.001, 0.99);
-            var transform = ransac.Estimate(fixedPoints.ToArray(), movingPoints.ToArray()).ToDoubleArray();
+            var transform = ransac.Estimate(fixedPointsCorrected.ToArray(), movingPointsCorrected.ToArray()).ToDoubleArray();
 
             int transformedWidth = fixedImage.Width;
             int transformedHeight = fixedImage.Height;
