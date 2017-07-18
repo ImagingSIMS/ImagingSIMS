@@ -59,7 +59,6 @@ def doWeightedAverageFusion():
 
     io.imsave("D:\\Data\\FusionComparison\\fused_wa.bmp", fused)
 
-
 def doHSVFusion():
 
     highres, lowres = loadInputImages()
@@ -139,36 +138,53 @@ def doADWTFusion():
     # Scale lowres to [0, 1] -- highres is already in range from imread
     lowresResized = np.divide(lowresResized, 255)
 
-    fused = np.zeros([hrSizeX, hrSizeY, 3])
-    I = np.zeros([hrSizeX, hrSizeY])
-    v1 = np.zeros([hrSizeX, hrSizeY])
-    v2 = np.zeros([hrSizeX, hrSizeY])
+    H = np.zeros([hrSizeX, hrSizeY])
+    L = np.zeros([hrSizeX, hrSizeY])
+    S = np.zeros([hrSizeX, hrSizeY])
 
     for x in range(hrSizeX):
-        for y in range(hrSizeY):
-            ivv = helpers.rgb2ivv(lowresResized[x,y,:])
-            I[x,y] = ivv[0]
-            v1[x,y] = ivv[1]
-            v2[x,y] = ivv[2]
+        for y in range(hrSizeY):            
+            H[x,y],L[x,y],S[x,y] = color.rgb_to_hls(lowresResized[x,y,0], lowresResized[x,y,1], lowresResized[x,y,2])
 
-    highres = helpers.matchHistogram(highres, I)  
+    highres = helpers.matchHistogram(highres, L)
 
-    decomp = pywt.swt2(highres, 'haar', 2)
+    numDecomps = [1, 2, 3, 4, 5, 6]
 
-    y2 = decomp[0][0]
-    y1 = decomp[1][0]
+    for n in numDecomps:
 
-    iprime = I + y1 + y2
-    for x in range(hrSizeX):
-        for y in range(hrSizeY):
-            fused[x,y,:] = helpers.ivv2rgb([iprime[x,y], v1[x,y], v2[x,y]])
+        decompL = pywt.swt2(L, 'haar', n)
+        decompP = pywt.swt2(highres, 'haar', n)
 
-    if np.min(fused) < 0:
-        fused = np.subtract(fused, np.min(fused))
-    if np.max(fused) > 1:
-        fused = np.divide(fused, np.max(fused))
+        #for i in range(n):
+        #    L = np.add(L, decompP[i][0])
 
-    io.imsave("D:\\Data\\FusionComparison\\fused_adwt.bmp", fused)
+        for x in range(hrSizeX):
+            for y in range(hrSizeY):
+                for i in range(n):
+                    decompL[i][0][x, y] = (decompL[i][0][x, y] + decompP[i][0][x, y]) / 2
+                    # decompL[1][0][x, y] = decompL[1][0][x, y] + decompP[1][0][x, y]
+
+        L = pywt.iswt2(decompL, 'haar')
+
+        R = np.zeros([hrSizeX, hrSizeY])
+        G = np.zeros([hrSizeX, hrSizeY])
+        B = np.zeros([hrSizeX, hrSizeY])
+
+        for x in range(hrSizeX):
+            for y in range(hrSizeY):
+                R[x,y], G[x,y], B[x,y] = color.hls_to_rgb(H[x,y], L[x,y], S[x,y])
+
+        fused = np.empty([hrSizeX,hrSizeY,3])
+        fused[:,:,0] = R
+        fused[:,:,1] = G
+        fused[:,:,2] = B
+
+        print("Min {0} Max {1}".format(np.min(fused), np.max(fused)))
+
+        fused[fused < 0] = 0
+        fused[fused > 1] = 1
+
+        io.imsave("D:\\Data\\FusionComparison\\fused_adwt_{0}.bmp".format(n), fused)
 
 def doSDWTFusion():
 
@@ -179,42 +195,57 @@ def doSDWTFusion():
     lrSizeX = lowres.shape[0]
     lrSizeY = lowres.shape[1]
 
+    # highres = np.multiply(highres, 255)
+
     lowresResized = helpers.upscaleImage(lowres, highres)
     # Scale lowres to [0, 1] -- highres is already in range from imread
     lowresResized = np.divide(lowresResized, 255)
 
-    fused = np.zeros([hrSizeX, hrSizeY, 3])
-    I = np.zeros([hrSizeX, hrSizeY])
-    v1 = np.zeros([hrSizeX, hrSizeY])
-    v2 = np.zeros([hrSizeX, hrSizeY])
+    H = np.zeros([hrSizeX, hrSizeY])
+    L = np.zeros([hrSizeX, hrSizeY])
+    S = np.zeros([hrSizeX, hrSizeY])
 
     for x in range(hrSizeX):
-        for y in range(hrSizeY):
-            ivv = helpers.rgb2ivv(lowresResized[x,y,:])
-            I[x,y] = ivv[0]
-            v1[x,y] = ivv[1]
-            v2[x,y] = ivv[2]
+        for y in range(hrSizeY):            
+            H[x,y],L[x,y],S[x,y] = color.rgb_to_hls(lowresResized[x,y,0], lowresResized[x,y,1], lowresResized[x,y,2])
 
-    highres = helpers.matchHistogram(highres, I)
+    highres = helpers.matchHistogram(highres, L)
+    
+    numDecomps = [1, 2, 3, 4, 5, 6]
 
-    decompP = pywt.swt2(highres, 'haar', 2)
-    decompI = pywt.swt2(I, 'haar', 2)
+    for n in numDecomps:
+        decompL = pywt.swt2(L, 'haar', n)
+        decompP = pywt.swt2(highres, 'haar', n)
 
-    iy2 = decompI[0][0]
-    py1 = decompP[1][0]
-    py2 = decompP[0][0]
+        #L = decompP[n - 1][0]
 
-    iprime = iy2 + py1 + py2
-    for x in range(hrSizeX):
-        for y in range(hrSizeY):
-            fused[x,y,:] = helpers.ivv2rgb([iprime[x,y], v1[x,y], v2[x,y]])
+        for x in range(hrSizeX):
+            for y in range(hrSizeY):
+                for i in range(n):
+                    decompL[i][0][x, y] = decompP[i][0][x, y]
+                    # decompL[1][0][x, y] = decompP[1][0][x, y]
 
-    if np.min(fused) < 0:
-        fused = np.subtract(fused, np.min(fused))
-    if np.max(fused) > 1:
-        fused = np.divide(fused, np.max(fused))
+        L = pywt.iswt2(decompL, 'haar')
 
-    io.imsave("D:\\Data\\FusionComparison\\fused_sdwt.bmp", fused)
+        R = np.zeros([hrSizeX, hrSizeY])
+        G = np.zeros([hrSizeX, hrSizeY])
+        B = np.zeros([hrSizeX, hrSizeY])
+
+        for x in range(hrSizeX):
+            for y in range(hrSizeY):
+                R[x,y], G[x,y], B[x,y] = color.hls_to_rgb(H[x,y], L[x,y], S[x,y])
+
+        fused = np.empty([hrSizeX,hrSizeY,3])
+        fused[:,:,0] = R
+        fused[:,:,1] = G
+        fused[:,:,2] = B
+
+        print("Min {0} Max {1}".format(np.min(fused), np.max(fused)))
+
+        fused[fused < 0] = 0
+        fused[fused > 1] = 1
+
+        io.imsave("D:\\Data\\FusionComparison\\fused_sdwt_{0}.bmp".format(n), fused)
 
 def doPCAFusion():
 
@@ -339,7 +370,7 @@ if __name__ == "__main__":
     # doWeightedAverageFusion()
     # doHSVFusion()
     # doHSLFusion()
-    # doADWTFusion()
+    doADWTFusion()
     # doSDWTFusion()
     # doPCAFusion()
-    doLaplaceFusion()
+    # doLaplaceFusion()
