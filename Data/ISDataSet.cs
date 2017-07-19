@@ -80,7 +80,11 @@ namespace ImagingSIMS.Data
         }
     }
 
-    public sealed class Data2D : Data, ISavable
+    public interface IDataObject
+    {
+
+    }
+    public sealed class Data2D : Data, ISavable, IDataObject
     {
         int _uniqueID;
         public int UniqueID
@@ -1898,7 +1902,7 @@ namespace ImagingSIMS.Data
         #endregion
     }
 
-    public class Data3D : Data
+    public class Data3D : Data, IDataObject
     {
         List<Data2D> _layers;
 
