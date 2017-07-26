@@ -416,5 +416,22 @@ namespace ImagingSIMS.Controls.ViewModels
 
             DataSource = dataSource;
         }
+
+        /// <summary>
+        /// Creates an image of the the supplied matrix with the same imaging parameters set in the view model.
+        /// </summary>
+        /// <param name="data">Scalar matrix to create an image of.</param>
+        /// <returns>Image with the same imaging parameters as set in the view model.</returns>
+        public BitmapSource CreateSimilarImage(Data2D data)
+        {
+            if(ColorScale == ColorScaleTypes.Solid)
+            {
+                return ImageGenerator.Instance.Create(data, SolidColorScale, (float)Saturation, (float)Threshold);
+            }
+            else
+            {
+                return ImageGenerator.Instance.Create(data, ColorScale, (float)Saturation, (float)Threshold);
+            }
+        }
     }
 }

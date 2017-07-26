@@ -182,13 +182,18 @@
 
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Grid.Row="2">
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
                     <TextBlock>Registered:</TextBlock>
                     <Image Grid.Row="1" Margin="4"
                         Width="Auto" Height="Auto"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                        Stretch="Uniform"
+                        HorizontalAlignment="Center" VerticalAlignment="Stretch"
                         Source="{Binding Path=RegisteredOverlay}"/>
-                </StackPanel>
+                </Grid>
             </Grid>
         </GroupBox>
 

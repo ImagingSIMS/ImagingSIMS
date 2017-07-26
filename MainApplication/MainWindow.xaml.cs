@@ -5579,58 +5579,81 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test8_Click(object sender, RoutedEventArgs e)
         {
-            int width = 752;
-            int height = 240;
+            //var ft = tabMain.SelectedContent as FusionPointTab;
+            //await ft.TestRegistration();
+            var data256x256 = new Data2D(256, 256) { DataName = "256x256" };
+            var data512x256 = new Data2D(512, 256) { DataName = "512x256" };
+            var data256x512 = new Data2D(256, 512) { DataName = "256x512" };
+            var data512x512 = new Data2D(512, 512) { DataName = "512x512" };
 
-            var filesToLoad = Directory.GetFiles(@"Y:\VUV Shape 1-6-17")
-                .Where(f => Path.GetExtension(f).Contains("asc"))
-                .Where(f => !Path.GetFileNameWithoutExtension(f).Contains("center"))
-                .ToList();
-            filesToLoad.Sort((x, y) =>
+            for (int x = 0; x < data256x256.Width; x++)
             {
-                int x1 = int.Parse(Path.GetFileNameWithoutExtension(x).Split('-')[0]);
-                int y1 = int.Parse(Path.GetFileNameWithoutExtension(y).Split('-')[0]);
-                return x1.CompareTo(y1);
-            });
-            filesToLoad.Reverse();
-
-            foreach (var fileToLoad in filesToLoad)
-            {
-                Data2D loaded = new Data2D(width, height)
+                for (int y = 0; y < data256x256.Width; y++)
                 {
-                    DataName = Path.GetFileNameWithoutExtension(fileToLoad)
-                };
+                    if (x > data256x256.Width / 2 - 16 && x < data256x256.Width / 2 + 16) data256x256[x, y] = 100;
+                    if (y > data256x256.Height / 2 - 16 && y < data256x256.Height / 2 + 16) data256x256[x, y] = 100;
 
-                using (var sr = new StreamReader(fileToLoad))
-                {
-                    for (int y = 0; y < height; y++)
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        string line = sr.ReadLine();
-                        sb.Append(line);
-                        while (!line.EndsWith(","))
-                        {
-                            line = sr.ReadLine();
-                            sb.Append(line);
-                        }
-
-                        var splits = sb.ToString().Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        for (int x = 0; x < width; x++)
-                        {
-                            int sum = 0;
-                            for (int i = 0; i < 3; i++)
-                            {
-                                sum += int.Parse(splits[x * 3 + i]);
-                            }
-                            loaded[x, y] = sum / 3f;
-                        }
-                    }
+                    if (IsInCircle(x, y, 10, 10, 5)) data256x256[x, y] = 100;
+                    if (IsInCircle(x, y, 10, 246, 5)) data256x256[x, y] = 100;
+                    if (IsInCircle(x, y, 246, 10, 5)) data256x256[x, y] = 100;
+                    if (IsInCircle(x, y, 246, 246, 5)) data256x256[x, y] = 100;
                 }
-
-                AvailableHost.AvailableTablesSource.AddTable(loaded);
             }
-            
+
+            for (int x = 0; x < data512x256.Width; x++)
+            {
+                for (int y = 0; y < data512x256.Height; y++)
+                {
+                    if (x > data512x256.Width / 2 - 32 && x < data512x256.Width / 2 + 32) data512x256[x, y] = 100;
+                    if (y > data512x256.Height / 2 - 16 && y < data512x256.Height / 2 + 16) data512x256[x, y] = 100;
+
+                    if (IsInCircle(x, y, 20, 10, 5)) data512x256[x, y] = 100;
+                    if (IsInCircle(x, y, 20, 246, 5)) data512x256[x, y] = 100;
+                    if (IsInCircle(x, y, 492, 10, 5)) data512x256[x, y] = 100;
+                    if (IsInCircle(x, y, 492, 246, 5)) data512x256[x, y] = 100;
+                }
+            }
+
+            for (int x = 0; x < data256x512.Width; x++)
+            {
+                for (int y = 0; y < data256x512.Height; y++)
+                {
+                    if (x > data256x512.Width / 2 - 16 && x < data256x512.Width / 2 + 16) data256x512[x, y] = 100;
+                    if (y > data256x512.Height / 2 - 32 && y < data256x512.Height / 2 + 32) data256x512[x, y] = 100;
+
+                    if (IsInCircle(x, y, 10, 20, 5)) data256x512[x, y] = 100;
+                    if (IsInCircle(x, y, 10, 492, 5)) data256x512[x, y] = 100;
+                    if (IsInCircle(x, y, 246, 20, 5)) data256x512[x, y] = 100;
+                    if (IsInCircle(x, y, 246, 492, 5)) data256x512[x, y] = 100;
+                }
+            }
+
+            for (int x = 0; x < data512x512.Width; x++)
+            {
+                for (int y = 0; y < data512x512.Height; y++)
+                {
+                    if (x > data512x512.Width / 2 - 32 && x < data512x512.Width / 2 + 32) data512x512[x, y] = 100;
+                    if (y > data512x512.Height / 2 - 32 && y < data512x512.Height / 2 + 32) data512x512[x, y] = 100;
+
+                    if (IsInCircle(x, y, 20, 20, 5)) data512x512[x, y] = 100;
+                    if (IsInCircle(x, y, 20, 492, 5)) data512x512[x, y] = 100;
+                    if (IsInCircle(x, y, 492, 20, 5)) data512x512[x, y] = 100;
+                    if (IsInCircle(x, y, 492, 492, 5)) data512x512[x, y] = 100;
+                }
+            }
+
+            AddTables(new Data2D[] { data256x256, data512x256, data256x512, data512x512 });
+
+            var dt = new DataDisplayTab(ColorScaleTypes.ThermalCold);
+            foreach (var table in GetAvailableTables())
+            {
+                dt.AddDataSource(table);
+            }
+            AddTabItemAndNavigate(ClosableTabItem.Create(dt, TabType.DataDisplay));
+        }
+        private bool IsInCircle(int x, int y, int cx, int cy, int radius)
+        {
+            return ((x - cx) * (x - cx) + (y - cy) * (y - cy)) <= radius * radius;
         }
 
         private async void test9_Click(object sender, RoutedEventArgs e)

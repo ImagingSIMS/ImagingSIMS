@@ -19,7 +19,8 @@ def loadInputImages():
     highres = io.imread("D:\\Data\\FusionComparison\\highres.bmp", as_grey=True)
     lowRes = io.imread("D:\\Data\\FusionComparison\\lowres.bmp")    
 
-    return highres, lowRes
+    # Scale lowres to [0, 1] -- highres is already in range from imread
+    return highres, np.divide(lowRes, 255)
 
 def doWeightedAverageFusion():
 
@@ -31,8 +32,6 @@ def doWeightedAverageFusion():
     lrSizeY = lowres.shape[1]
 
     lowresResized = helpers.upscaleImage(lowres, highres)
-    # Scale lowres to [0, 1] -- highres is already in range from imread
-    lowresResized = np.divide(lowresResized, 255)
 
     fused = np.zeros([hrSizeX, hrSizeY, 3])
     H = np.zeros([hrSizeX, hrSizeY])
@@ -69,8 +68,6 @@ def doHSVFusion():
     lrSizeY = lowres.shape[1]
 
     lowresResized = helpers.upscaleImage(lowres, highres)
-    # Scale lowres to [0, 1] -- highres is already in range from imread
-    lowresResized = np.divide(lowresResized, 255)
 
     fused = np.zeros([hrSizeX, hrSizeY, 3])
     H = np.zeros([hrSizeX, hrSizeY])
@@ -103,8 +100,6 @@ def doHSLFusion():
     lrSizeY = lowres.shape[1]
 
     lowresResized = helpers.upscaleImage(lowres, highres)
-    # Scale lowres to [0, 1] -- highres is already in range from imread
-    lowresResized = np.divide(lowresResized, 255)
 
     fused = np.zeros([hrSizeX, hrSizeY, 3])
     H = np.zeros([hrSizeX, hrSizeY])
@@ -135,8 +130,6 @@ def doADWTFusion():
     lrSizeY = lowres.shape[1]
 
     lowresResized = helpers.upscaleImage(lowres, highres)
-    # Scale lowres to [0, 1] -- highres is already in range from imread
-    lowresResized = np.divide(lowresResized, 255)
 
     H = np.zeros([hrSizeX, hrSizeY])
     L = np.zeros([hrSizeX, hrSizeY])
@@ -170,6 +163,8 @@ def doADWTFusion():
         G = np.zeros([hrSizeX, hrSizeY])
         B = np.zeros([hrSizeX, hrSizeY])
 
+        L = helpers.normalizeComponent(L)
+
         for x in range(hrSizeX):
             for y in range(hrSizeY):
                 R[x,y], G[x,y], B[x,y] = color.hls_to_rgb(H[x,y], L[x,y], S[x,y])
@@ -179,10 +174,10 @@ def doADWTFusion():
         fused[:,:,1] = G
         fused[:,:,2] = B
 
-        print("Min {0} Max {1}".format(np.min(fused), np.max(fused)))
+        #print("Min {0} Max {1}".format(np.min(fused), np.max(fused)))
 
-        fused[fused < 0] = 0
-        fused[fused > 1] = 1
+        #fused[fused < 0] = 0
+        #fused[fused > 1] = 1
 
         io.imsave("D:\\Data\\FusionComparison\\fused_adwt_{0}.bmp".format(n), fused)
 
@@ -198,8 +193,6 @@ def doSDWTFusion():
     # highres = np.multiply(highres, 255)
 
     lowresResized = helpers.upscaleImage(lowres, highres)
-    # Scale lowres to [0, 1] -- highres is already in range from imread
-    lowresResized = np.divide(lowresResized, 255)
 
     H = np.zeros([hrSizeX, hrSizeY])
     L = np.zeros([hrSizeX, hrSizeY])
@@ -227,6 +220,8 @@ def doSDWTFusion():
 
         L = pywt.iswt2(decompL, 'haar')
 
+        L = helpers.normalizeComponent(L)
+
         R = np.zeros([hrSizeX, hrSizeY])
         G = np.zeros([hrSizeX, hrSizeY])
         B = np.zeros([hrSizeX, hrSizeY])
@@ -240,10 +235,10 @@ def doSDWTFusion():
         fused[:,:,1] = G
         fused[:,:,2] = B
 
-        print("Min {0} Max {1}".format(np.min(fused), np.max(fused)))
+        #print("Min {0} Max {1}".format(np.min(fused), np.max(fused)))
 
-        fused[fused < 0] = 0
-        fused[fused > 1] = 1
+        #fused[fused < 0] = 0
+        #fused[fused > 1] = 1
 
         io.imsave("D:\\Data\\FusionComparison\\fused_sdwt_{0}.bmp".format(n), fused)
 
@@ -257,8 +252,6 @@ def doPCAFusion():
     lrSizeY = lowres.shape[1]
 
     lowresResized = helpers.upscaleImage(lowres, highres)
-    # Scale lowres to [0, 1] -- highres is already in range from imread
-    lowresResized = np.divide(lowresResized, 255)
     lowresResized = np.reshape(lowresResized, [hrSizeX * hrSizeY, -1])
 
     # Mean center each column
@@ -287,10 +280,15 @@ def doPCAFusion():
     reverted = np.add(reverted, means)
     fused = np.reshape(reverted, [hrSizeX, hrSizeY, 3])
 
-    if np.min(fused) < 0:
-        fused = np.subtract(fused, np.min(fused))
-    if np.max(fused) > 1:
-        fused = np.divide(fused, np.max(fused))
+    #if np.min(fused) < 0:
+    #    fused = np.subtract(fused, np.min(fused))
+    #if np.max(fused) > 1:
+    #    fused = np.divide(fused, np.max(fused))
+
+    print("Min {0} Max {1}".format(np.min(fused), np.max(fused)))
+
+    fused[fused < 0] = 0
+    fused[fused > 1] = 1
 
     io.imsave("D:\\Data\\FusionComparison\\fused_pca.bmp", fused)
 
@@ -303,74 +301,158 @@ def doLaplaceFusion():
     lrSizeX = lowres.shape[0]
     lrSizeY = lowres.shape[1]
 
-    # Scale lowres to [0, 1] -- highres is already in range from imread
-    lowres = np.divide(lowres, 255)
+    lowresResized = helpers.upscaleImage(lowres, highres)
 
     fused = np.zeros([hrSizeX, hrSizeY, 3])
     H = np.zeros([lrSizeX, lrSizeY])
+    L = np.zeros([lrSizeX, lrSizeY])
     S = np.zeros([lrSizeX, lrSizeY])
-    V = np.zeros([lrSizeX, lrSizeY])
 
     for x in range(lrSizeX):
         for y in range(lrSizeY):            
-            H[x,y],S[x,y],V[x,y] = color.rgb_to_hsv(lowres[x,y,0], lowres[x,y,1], lowres[x,y,2])
+            H[x,y],L[x,y],S[x,y] = color.rgb_to_hls(lowres[x,y,0], lowres[x,y,1], lowres[x,y,2])
 
     numLevels = int(np.log2(max(hrSizeX / lrSizeX, hrSizeY / lrSizeY))) + 1
+
     fusionLevel = numLevels - 1
 
-    s = [None] * numLevels
-    g = [None] * numLevels
-    l = [None] * numLevels
+    sHr = [None] * numLevels
+    gHr = [None] * numLevels
+    lHr = [None] * numLevels
 
     for i in range(numLevels):
 
         if i == 0:
-            s[i] = highres
+            sHr[i] = highres
         else:
-            s[i] = s[i - 1][::2,::2]
+            sHr[i] = sHr[i - 1][::2,::2]
 
-        g[i] = filters.gaussian_filter(s[i], 1.0)
-        l[i] = s[i] - g[i]
+        gHr[i] = filters.gaussian_filter(sHr[i], 1.0)
+        lHr[i] = sHr[i] - gHr[i]
 
-    
-    matched = helpers.matchHistogram(V, g[fusionLevel])
+    matched = helpers.matchHistogram(L, lHr[fusionLevel])
 
-    r = [None] * numLevels
+    sRec = [None] * numLevels
+    gRec = [None] * numLevels
+    lRec = [None] * numLevels
+
     i = fusionLevel
     while i >= 0:
 
         if i == fusionLevel:
-            r[i] = matched + l[i]
+            sRec[i] = matched + lHr[i]
+            # sRec[i] = gHr[i] + lHr[i]
         else:
-            r[i] = filters.gaussian_filter(helpers.emptyUpscale(r[i + 1]), 1.0) + l[i]
+            sRec[i] = gRec[i] + lHr[i]
+        
+        if i > 0:
+            gRec[i - 1] = filters.gaussian_filter(helpers.emptyUpscale(sRec[i]), 1.0) * 4
 
         i = i - 1
 
-    H = np.divide(helpers.upscaleImage(H, r[0]), 255)
-    S = np.divide(helpers.upscaleImage(S, r[0]), 255)
+    H = helpers.upscaleImage(H, sRec[0])
+    S = helpers.upscaleImage(S, sRec[0])
+    L = sRec[0]
+
+    L = helpers.normalizeComponent(L)
+
+    lmin = np.min(L)
+    lmax = np.max(L)
 
     for x in range(hrSizeX):
         for y in range(hrSizeY):
 
-            red,green,blue = color.hsv_to_rgb(H[x,y], S[x,y], r[0][x,y])
+            red,green,blue = color.hls_to_rgb(H[x,y], L[x,y], S[x,y])
             fused[x,y,:] = [red,green,blue]
 
-    fusedMin = np.min(fused)
-    fusedMax = np.max(fused)
+    # print("Min {0} Max {1}".format(np.min(fused), np.max(fused)))
 
-    if np.min(fused) < 0:
-        fused = np.subtract(fused, np.min(fused))
-    if np.max(fused) > 1:
-        fused = np.divide(fused, np.max(fused))
+    #if np.min(fused) < 0:
+    #    fused = np.subtract(fused, np.min(fused))
+    #if np.max(fused) > 1:
+    #    fused = np.divide(fused, np.max(fused))
+
+    #fused[fused < 0] = 0
+    #fused[fused > 1] = 1
 
     io.imsave("D:\\Data\\FusionComparison\\fused_lpf.bmp", fused)
+
+    #numLevels = [1, 2, 3, 4, 5, 6]
+    #for n in numLevels:
+
+    #    fusionLevel = n - 1
+
+    #    s = [None] * n
+    #    g = [None] * n
+    #    l = [None] * n
+
+    #    for i in range(n):
+
+    #        if i == 0:
+    #            s[i] = L
+    #        else:
+    #            s[i] = s[i - 1][::2,::2]
+
+    #        g[i] = filters.gaussian_filter(s[i], 1.0)
+    #        l[i] = s[i] - g[i]
+
+    
+    #    matched = helpers.matchHistogram(highres, l[fusionLevel])
+
+    #    for i in range(fusionLevel):
+    #        matched = matched[::2,::2]
+
+    #    r = [None] * n
+    #    i = fusionLevel
+    #    while i >= 0:
+
+    #        if i == fusionLevel:
+    #            r[i] = matched + l[i]
+    #        else:
+    #            r[i] = filters.gaussian_filter(helpers.emptyUpscale(r[i + 1]), 1.0) + l[i]
+
+    #        i = i - 1
+
+    #    H = np.divide(helpers.upscaleImage(H, r[0]), 255)
+    #    S = np.divide(helpers.upscaleImage(S, r[0]), 255)
+
+    #    lmin = np.min(r[0])
+    #    lmax = np.max(r[0])
+
+    #    if np.min(r[0]) < 0:
+    #        r[0] = np.subtract(r[0], np.min(r[0]))
+    #    if np.max(r[0]) > 0:
+    #        r[0] = np.divide(r[0], np.max(r[0]))
+
+    #    z = 0
+
+    #    for x in range(hrSizeX):
+    #        for y in range(hrSizeY):
+
+    #            red,green,blue = color.hls_to_rgb(H[x,y], r[0][x,y], S[x,y])
+    #            fused[x,y,:] = [red,green,blue]
+
+    #    fusedMin = np.min(fused)
+    #    fusedMax = np.max(fused)
+
+    #    print("Min {0} Max {1}".format(np.min(fused), np.max(fused)))
+
+    #    if np.min(fused) < 0:
+    #        fused = np.subtract(fused, np.min(fused))
+    #    if np.max(fused) > 1:
+    #        fused = np.divide(fused, np.max(fused))
+
+    #    #fused[fused < 0] = 0
+    #    #fused[fused > 1] = 1
+
+    #    io.imsave("D:\\Data\\FusionComparison\\fused_lpf_{0}.bmp".format(n), fused)
 
 if __name__ == "__main__":
     
     # doWeightedAverageFusion()
     # doHSVFusion()
     # doHSLFusion()
-    doADWTFusion()
+    # doADWTFusion()
     # doSDWTFusion()
     # doPCAFusion()
-    # doLaplaceFusion()
+    doLaplaceFusion()

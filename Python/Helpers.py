@@ -16,7 +16,8 @@ def upscaleImage(lowRes, highRes):
     lrWidth = lowRes.shape[0]
     lrHeight = lowRes.shape[1]
 
-    return misc.imresize(lowRes, [hrWidth, hrHeight], 'bilinear')
+    resized = misc.imresize(lowRes, [hrWidth, hrHeight], 'bilinear')
+    return np.divide(resized, 255)
 
 
 def matchHistogram(target, reference):
@@ -80,3 +81,20 @@ def emptyUpscale(image):
             upscaled[x*2,y*2] = image[x,y]
 
     return upscaled
+
+def normalizeComponent(matrix):
+
+    temp = matrix
+
+    #min = np.min(matrix)
+
+    #if min < 0:
+    #    temp = np.subtract(temp, min)
+    temp[temp < 0] = 0
+
+    max = np.max(matrix)
+
+    #if max > 1:
+    temp = np.divide(temp, max)
+
+    return temp

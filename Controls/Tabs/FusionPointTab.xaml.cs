@@ -11,6 +11,8 @@ using ImagingSIMS.Data.Imaging;
 using ImagingSIMS.Data.Fusion;
 using Microsoft.Win32;
 using ImagingSIMS.Common;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace ImagingSIMS.Controls.Tabs
 {
@@ -60,18 +62,20 @@ namespace ImagingSIMS.Controls.Tabs
                 return;
             }
 
-            var registered = await PointRegistration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
+            var registrationResult = await PointRegistration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
                 ViewModel.MovingImageViewModel.DataSource, fixedPoints.Convert(), movingPoints.Convert());
 
-            ViewModel.MovingImageViewModel.ChangeDataSource(registered);
+            ViewModel.MovingImageViewModel.ChangeDataSource(registrationResult.Result);
 
             if (ViewModel.FixedImageViewModel.ClearPointsOnRegistration)
                 ViewModel.FixedImageViewModel.ControlPoints.Clear();
             if (ViewModel.MovingImageViewModel.ClearPointsOnRegistration)
                 ViewModel.MovingImageViewModel.ControlPoints.Clear();
 
-            ViewModel.RegisteredOverlay = Overlay.CreateFalseColorOverlay(ViewModel.FixedImageViewModel.DisplayImage,
-                ViewModel.MovingImageViewModel.DisplayImage, FalseColorOverlayMode.GreenMagenta);
+            var scaledFixedImage = ViewModel.FixedImageViewModel.CreateSimilarImage(registrationResult.ScaledFixedImage);
+            var resultImage = ViewModel.MovingImageViewModel.CreateSimilarImage(registrationResult.Result);
+
+            ViewModel.RegisteredOverlay = Overlay.CreateFalseColorOverlay(scaledFixedImage, resultImage, FalseColorOverlayMode.GreenMagenta);
         }
 
         private void Fuse_CanExeucte(object sender, CanExecuteRoutedEventArgs e)
@@ -322,6 +326,33 @@ namespace ImagingSIMS.Controls.Tabs
                 sfd.FileName.Insert(sfd.FileName.Length - 4, "-Fused"));
 
             Dialog.Show("Image series saved successfully!", sfd.FileName, "Save", DialogIcon.Ok);
+        }
+
+        public async Task TestRegistration()
+        {
+            var fixedPoints = new List<Point>()
+            {
+                new Point(10, 10), new Point(246, 10), new Point(246, 246), new Point(10, 246)
+            };
+            var movingPoints = new List<Point>()
+            {
+                new Point(20, 20), new Point(482, 20), new Point(482, 482), new Point(20, 482)
+            };
+
+            var registrationResult = await PointRegistration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
+                ViewModel.MovingImageViewModel.DataSource, fixedPoints.Convert(), movingPoints.Convert());
+
+            ViewModel.MovingImageViewModel.ChangeDataSource(registrationResult.Result);
+
+            if (ViewModel.FixedImageViewModel.ClearPointsOnRegistration)
+                ViewModel.FixedImageViewModel.ControlPoints.Clear();
+            if (ViewModel.MovingImageViewModel.ClearPointsOnRegistration)
+                ViewModel.MovingImageViewModel.ControlPoints.Clear();
+
+            var scaledFixedImage = ViewModel.FixedImageViewModel.CreateSimilarImage(registrationResult.ScaledFixedImage);
+            var resultImage = ViewModel.MovingImageViewModel.CreateSimilarImage(registrationResult.Result);
+
+            ViewModel.RegisteredOverlay = Overlay.CreateFalseColorOverlay(scaledFixedImage, resultImage, FalseColorOverlayMode.GreenMagenta);
         }
     }    
 }
