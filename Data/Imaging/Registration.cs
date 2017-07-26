@@ -12,6 +12,17 @@ using Accord.Math.Metrics;
 
 namespace ImagingSIMS.Data.Imaging
 {
+    public static class PointExtensionMethods
+    {
+        private static IntPoint Convert(this System.Windows.Point p)
+        {
+            return new IntPoint((int)p.X, (int)p.Y);
+        }
+        public static IEnumerable<IntPoint> Convert(this IEnumerable<System.Windows.Point> points)
+        {
+            return points.Select(p => p.Convert());
+        }
+    }
     public class PointRegistrationResult<T> where T : IDataObject
     {
         public T InputFixedImage { get; set; }
@@ -38,9 +49,45 @@ namespace ImagingSIMS.Data.Imaging
             Result = result;
         }
     }
-    public static class PointRegistration
+
+    public enum PointRegistrationType
     {
-        public static PointRegistrationResult<Data2D> Register(Data2D fixedImage,
+        Ransac, Affine
+    }
+
+    public static class PointRegistrationGenerator
+    {
+        public static PointRegistration GetRegistrationClass(int numPoints)
+        {
+            if (numPoints == 3) return new AffineRegistration();
+            else if (numPoints > 4) return new RansacRegistration();
+
+            else throw new ArgumentException("Invlaid number of points for registration");
+        }
+    }
+
+    public abstract class PointRegistration
+    {
+        public abstract PointRegistrationResult<Data2D> Register(Data2D fixedImage,
+            Data2D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints);
+        public async Task<PointRegistrationResult<Data2D>> RegisterAsync(Data2D fixedImage,
+            Data2D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
+        {
+            return await Task.Run(() => Register(fixedImage, movingImage, fixedPoints, movingPoints));
+        }
+
+        public abstract PointRegistrationResult<Data3D> Register(Data3D fixedImage,
+            Data3D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints);
+        public async Task<PointRegistrationResult<Data3D>> RegisterAsync(Data3D fixedImage,
+            Data3D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
+        {
+            return await Task.Run(() => Register(fixedImage, movingImage, fixedPoints, movingPoints));
+        }
+    }
+
+    public class RansacRegistration : PointRegistration
+    {
+        public override PointRegistrationResult<Data2D> Register(Data2D fixedImage,
             Data2D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
         {
             List<IntPoint> fixedPointsCorrected = new List<IntPoint>();
@@ -119,13 +166,8 @@ namespace ImagingSIMS.Data.Imaging
 
             return result;
         }
-        public static Task<PointRegistrationResult<Data2D>> RegisterAsync(Data2D fixedImage,
-            Data2D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
-        {
-            return Task.Run(() => Register(fixedImage, movingImage, fixedPoints, movingPoints));
-        }
 
-        public static PointRegistrationResult<Data3D> Register(Data3D fixedImage,
+        public override PointRegistrationResult<Data3D> Register(Data3D fixedImage,
             Data3D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
         {
             List<IntPoint> fixedPointsCorrected = new List<IntPoint>();
@@ -214,19 +256,32 @@ namespace ImagingSIMS.Data.Imaging
 
             return result;
         }
-        public static Task<PointRegistrationResult<Data3D>> RegisterAsync(Data3D fixedImage,
+    }
+
+    public class AffineRegistration : PointRegistration
+    {
+        // https://stackoverflow.com/questions/2755771/affine-transformation-algorithm
+
+        //      fixed       moving
+        //   [x1 x2 x3]   [u1 u2 u3]
+        // M [y1 y2 y3] = [v1 v2 v3]
+        //   [1  1  1 ]
+
+        // M = moving * inv(fixed)
+
+        // https://stackoverflow.com/questions/22954239/given-three-points-compute-affine-transformation
+
+
+        public override PointRegistrationResult<Data3D> Register(Data3D fixedImage, 
             Data3D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
         {
-            return Task.Run(() => Register(fixedImage, movingImage, fixedPoints, movingPoints));
+            throw new NotImplementedException();
         }
 
-        public static IntPoint Convert(this System.Windows.Point p)
+        public override PointRegistrationResult<Data2D> Register(Data2D fixedImage, 
+            Data2D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
         {
-            return new IntPoint((int)p.X, (int)p.Y);
-        }
-        public static IEnumerable<IntPoint> Convert(this IEnumerable<System.Windows.Point> points)
-        {
-            return points.Select(p => p.Convert());
+            throw new NotImplementedException();
         }
     }
 }

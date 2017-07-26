@@ -62,7 +62,7 @@ namespace ImagingSIMS.Controls.Tabs
                 return;
             }
 
-            var registrationResult = await PointRegistration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
+            var registrationResult = await RansacRegistration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
                 ViewModel.MovingImageViewModel.DataSource, fixedPoints.Convert(), movingPoints.Convert());
 
             ViewModel.MovingImageViewModel.ChangeDataSource(registrationResult.Result);
@@ -339,7 +339,7 @@ namespace ImagingSIMS.Controls.Tabs
                 new Point(20, 20), new Point(482, 20), new Point(482, 482), new Point(20, 482)
             };
 
-            var registrationResult = await PointRegistration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
+            var registrationResult = await RansacRegistration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
                 ViewModel.MovingImageViewModel.DataSource, fixedPoints.Convert(), movingPoints.Convert());
 
             ViewModel.MovingImageViewModel.ChangeDataSource(registrationResult.Result);
