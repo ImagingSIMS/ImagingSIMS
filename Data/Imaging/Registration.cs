@@ -229,4 +229,108 @@ namespace ImagingSIMS.Data.Imaging
             return points.Select(p => p.Convert());
         }
     }
+
+    public class AffineTransform
+    {
+        public IEnumerable<IntPoint> FixedPoints { get; set; }
+        public IEnumerable<IntPoint> MovingPoints { get; set; }
+        public double[,] Transform { get; set; }
+
+        public AffineTransform()
+        {
+
+        }
+        public void CalculateTransform(IEnumerable<IntPoint> fixedPoints, 
+            IEnumerable<IntPoint> movingPoints, Data2D fixedImage, Data2D movingImage)
+        {
+            List<IntPoint> fixedPointsCorrected = new List<IntPoint>();
+            List<IntPoint> movingPointsCorrected = new List<IntPoint>();
+
+            var result = new PointRegistrationResult<Data2D>(fixedImage, movingImage);
+
+            if (fixedImage.Width != movingImage.Width || fixedImage.Height != movingImage.Height)
+            {
+                if (fixedImage.Width <= movingImage.Width && fixedImage.Height <= movingImage.Height)
+                {
+                    float ratioX = movingImage.Width / fixedImage.Width;
+                    float ratioY = movingImage.Height / fixedImage.Height;
+
+                    fixedImage = fixedImage.Resize(movingImage.Width, movingImage.Height);
+
+                    foreach (var point in fixedPoints)
+                    {
+                        fixedPointsCorrected.Add(new IntPoint((int)(point.X * ratioX), (int)(point.Y * ratioY)));
+                    }
+
+                    movingPointsCorrected.AddRange(movingPoints);
+                }
+                else if (movingImage.Width <= fixedImage.Width && movingImage.Height <= fixedImage.Height)
+                {
+                    float ratioX = fixedImage.Width / movingImage.Width;
+                    float ratioY = fixedImage.Height / movingImage.Height;
+
+                    movingImage = movingImage.Resize(fixedImage.Width, fixedImage.Height);
+
+                    foreach (var point in movingPoints)
+                    {
+                        movingPointsCorrected.Add(new IntPoint((int)(point.X * ratioX), (int)(point.Y * ratioY)));
+                    }
+
+                    fixedPointsCorrected.AddRange(fixedPoints);
+                }
+                else throw new ArgumentException("Invalid image dimensions. Cannot resize when one dimension is smaller than the other");
+            }
+
+            else
+            {
+                fixedPointsCorrected.AddRange(fixedPoints);
+                movingPointsCorrected.AddRange(movingPoints);
+            }
+
+            FixedPoints = fixedPointsCorrected;
+            MovingPoints = movingPointsCorrected;
+
+            int numPoints = FixedPoints.Count();
+
+            double[,] X = new double[numPoints * 2, 6];
+            double[] Xprime = new double[numPoints * 2];
+
+            for (int i = 0; i < numPoints; i++)
+            {
+                var xExpanded = ExpandCoordinate(FixedPoints.ElementAt(i));
+                var xPrimePoint = MovingPoints.ElementAt(i);
+
+                for (int r = 0; r < 2; r++)
+                {
+                    int row = i * 2 + r;
+                    for (int c = 0; c < 6; c++)
+                    {
+                        X[row, c] = xExpanded[r, c];
+                    }
+                }
+
+                Xprime[i * 3 + 0] = xPrimePoint.X;
+                Xprime[i * 3 + 1] = xPrimePoint.Y;
+            }
+
+            var affine = Xprime.TransposeAndDot(X);
+            var affineVector = affine.Reshape();
+            Transform = affineVector.Reshape(2, 3);
+        }
+
+        private double[,] ExpandCoordinate(IntPoint point)
+        {
+            double[,] expanded = new double[2, 6];
+
+            expanded[0, 0] = point.X;
+            expanded[0, 1] = point.Y;
+            expanded[0, 2] = 1;
+
+            expanded[1, 3] = point.X;
+            expanded[1, 4] = point.Y;
+            expanded[1, 5] = 1;
+
+            return expanded;
+        }
+    }
 }
