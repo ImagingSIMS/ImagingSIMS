@@ -269,34 +269,11 @@ namespace ImagingSIMS.Data.Imaging
 
         // M = moving * inv(fixed)
 
-        // https://stackoverflow.com/questions/22954239/given-three-points-compute-affine-transformation
+        // --> https://stackoverflow.com/questions/22954239/given-three-points-compute-affine-transformation
 
 
-        public override PointRegistrationResult<Data3D> Register(Data3D fixedImage, 
-            Data3D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override PointRegistrationResult<Data2D> Register(Data2D fixedImage, 
+        public override PointRegistrationResult<Data2D> Register(Data2D fixedImage,
             Data2D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class AffineTransform
-    {
-        public IEnumerable<IntPoint> FixedPoints { get; set; }
-        public IEnumerable<IntPoint> MovingPoints { get; set; }
-        public double[,] Transform { get; set; }
-
-        public AffineTransform()
-        {
-
-        }
-        public void CalculateTransform(IEnumerable<IntPoint> fixedPoints, 
-            IEnumerable<IntPoint> movingPoints, Data2D fixedImage, Data2D movingImage)
         {
             List<IntPoint> fixedPointsCorrected = new List<IntPoint>();
             List<IntPoint> movingPointsCorrected = new List<IntPoint>();
@@ -342,35 +319,98 @@ namespace ImagingSIMS.Data.Imaging
                 movingPointsCorrected.AddRange(movingPoints);
             }
 
-            FixedPoints = fixedPointsCorrected;
-            MovingPoints = movingPointsCorrected;
+            result.ScaledFixedImage = fixedImage;
+            result.ScaledMovingImage = movingImage;
+
+            AffineTransform transform = new Imaging.AffineTransform();
+            transform.CalculateTransform(fixedPointsCorrected, movingPointsCorrected);
+
+            int transformedWidth = fixedImage.Width;
+            int transformedHeight = fixedImage.Height;
+
+            var transformed = new Data2D(transformedWidth, transformedHeight);
+
+            for (int x = 0; x < transformedWidth; x++)
+            {
+                for (int y = 0; y < transformedHeight; y++)
+                { 
+                    var transformedPoint = transform.TransformCoordinate(new IntPoint(x, y));
+
+                    if (transformedPoint.X < 0 || transformedPoint.X >= transformedWidth || transformedPoint.Y < 0 || transformedPoint.Y >= transformedHeight) continue;
+
+                    transformed[x, y] = result.ScaledMovingImage.Sample(transformedPoint.X, transformedPoint.Y);
+                }
+            }
+
+            result.Result = transformed;
+
+            return result;
+        }
+        public override PointRegistrationResult<Data3D> Register(Data3D fixedImage,
+            Data3D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
+        {
+            throw new NotImplementedException();
+        }
+   
+    }
+
+    public class AffineTransform
+    {
+        public IEnumerable<IntPoint> FixedPoints { get; set; }
+        public IEnumerable<IntPoint> MovingPoints { get; set; }
+        public double[,] Transform { get; set; }
+
+        public AffineTransform()
+        {
+
+        }
+        public void CalculateTransform(IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
+        {          
+            FixedPoints = fixedPoints;
+            MovingPoints = movingPoints;
 
             int numPoints = FixedPoints.Count();
 
             double[,] X = new double[numPoints * 2, 6];
-            double[] Xprime = new double[numPoints * 2];
+            double[] xPrime = new double[numPoints * 2];
 
             for (int i = 0; i < numPoints; i++)
             {
                 var xExpanded = ExpandCoordinate(FixedPoints.ElementAt(i));
                 var xPrimePoint = MovingPoints.ElementAt(i);
 
-                for (int r = 0; r < 2; r++)
+                for (int c = 0; c < 6; c++)
                 {
-                    int row = i * 2 + r;
-                    for (int c = 0; c < 6; c++)
-                    {
-                        X[row, c] = xExpanded[r, c];
-                    }
+                    X[i, c] = xExpanded[0, c];
+                    X[numPoints + i, c] = xExpanded[1, c];
                 }
 
-                Xprime[i * 3 + 0] = xPrimePoint.X;
-                Xprime[i * 3 + 1] = xPrimePoint.Y;
+                xPrime[i] = xPrimePoint.X;
+                xPrime[numPoints + i] = xPrimePoint.Y;
             }
 
-            var affine = Xprime.TransposeAndDot(X);
-            var affineVector = affine.Reshape();
-            Transform = affineVector.Reshape(2, 3);
+            var solution = xPrime.Dot(X.PseudoInverse().Transpose());
+            var affine = new double[3, 3];
+            affine[0, 0] = solution[0];
+            affine[0, 1] = solution[1];
+            affine[0, 2] = solution[2];
+            affine[1, 0] = solution[3];
+            affine[1, 1] = solution[4];
+            affine[1, 2] = solution[5];
+            affine[2, 2] = 1;
+            Transform = affine.Inverse();
+            Transform[2, 2] = 1;
+            Transform = Transform.Transpose();
+        }
+
+        public DoublePoint TransformCoordinate(IntPoint point)
+        {
+            if (Transform == null) throw new ArgumentException("Transform not calculated");
+
+            double[] pointVector = new double[] { point.X, point.Y, 1 };
+            var transformed = Transform.Dot(pointVector);
+
+            return new DoublePoint(transformed[0] / transformed[2], transformed[1] / transformed[2]);
         }
 
         private double[,] ExpandCoordinate(IntPoint point)

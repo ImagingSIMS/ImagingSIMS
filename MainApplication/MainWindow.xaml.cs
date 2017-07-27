@@ -3584,6 +3584,17 @@ namespace ImagingSIMS.MainApplication
                 }
                 dt.OpenOverlay();
             }
+            else if (cti.TabType == TabType.FusionPoint)
+            {
+                FusionPointTab ft = cti.Content as FusionPointTab;
+                if (ft == null)
+                {
+                    DialogBox.Show("Not a valid fusion document.", "Navigate to a fusion tab and try again.",
+                        "Registration", DialogIcon.Error);
+                    return;
+                }
+                ft.OpenOverlay();
+            }
 
             else
             {
@@ -5579,8 +5590,11 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test8_Click(object sender, RoutedEventArgs e)
         {
-            //var ft = tabMain.SelectedContent as FusionPointTab;
-            //await ft.TestRegistration();
+            var ft = tabMain.SelectedContent as FusionPointTab;
+            await ft.TestRegistration();
+
+            return;
+
             var data256x256 = new Data2D(256, 256) { DataName = "256x256" };
             var data512x256 = new Data2D(512, 256) { DataName = "512x256" };
             var data256x512 = new Data2D(256, 512) { DataName = "256x512" };

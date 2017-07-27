@@ -13,6 +13,8 @@ using Microsoft.Win32;
 using ImagingSIMS.Common;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using ImagingSIMS.ImageRegistration;
+using ImagingSIMS.Controls.BaseControls;
 
 namespace ImagingSIMS.Controls.Tabs
 {
@@ -21,6 +23,8 @@ namespace ImagingSIMS.Controls.Tabs
     /// </summary>
     public partial class FusionPointTab : UserControl, IDroppableTab
     {
+        ImageOverlayWindow _overlayWindow;
+
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register("ViewModel",
             typeof(FusionPointTabViewModel), typeof(FusionPointTab));
 
@@ -62,7 +66,11 @@ namespace ImagingSIMS.Controls.Tabs
                 return;
             }
 
-            var registrationResult = await RansacRegistration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
+            //var registrationResult = await RansacRegistration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
+            //    ViewModel.MovingImageViewModel.DataSource, fixedPoints.Convert(), movingPoints.Convert());
+
+            var registration = new AffineRegistration();
+            var registrationResult = await registration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
                 ViewModel.MovingImageViewModel.DataSource, fixedPoints.Convert(), movingPoints.Convert());
 
             ViewModel.MovingImageViewModel.ChangeDataSource(registrationResult.Result);
@@ -330,29 +338,76 @@ namespace ImagingSIMS.Controls.Tabs
 
         public async Task TestRegistration()
         {
+            //var fixedPoints = new List<Point>()
+            //{
+            //    new Point(10, 10), new Point(246, 10), new Point(246, 246), new Point(10, 246)
+            //};
+            //var movingPoints = new List<Point>()
+            //{
+            //    new Point(20, 20), new Point(492, 20), new Point(492, 492), new Point(20, 492)
+            //};
+
+            ////var registrationResult = await RansacRegistration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
+            ////    ViewModel.MovingImageViewModel.DataSource, fixedPoints.Convert(), movingPoints.Convert());
+
+            //var registration = new AffineRegistration();
+            //var registrationResult = await registration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
+            //   ViewModel.MovingImageViewModel.DataSource, fixedPoints.Convert(), movingPoints.Convert());
+
+            //ViewModel.MovingImageViewModel.ChangeDataSource(registrationResult.Result);
+
+            //if (ViewModel.FixedImageViewModel.ClearPointsOnRegistration)
+            //    ViewModel.FixedImageViewModel.ControlPoints.Clear();
+            //if (ViewModel.MovingImageViewModel.ClearPointsOnRegistration)
+            //    ViewModel.MovingImageViewModel.ControlPoints.Clear();
+
+            //var scaledFixedImage = ViewModel.FixedImageViewModel.CreateSimilarImage(registrationResult.ScaledFixedImage);
+            //var resultImage = ViewModel.MovingImageViewModel.CreateSimilarImage(registrationResult.Result);
+
+            //ViewModel.RegisteredOverlay = Overlay.CreateFalseColorOverlay(scaledFixedImage, resultImage, FalseColorOverlayMode.GreenMagenta);
+
             var fixedPoints = new List<Point>()
             {
-                new Point(10, 10), new Point(246, 10), new Point(246, 246), new Point(10, 246)
+                new Point(553.10, 201.78), new Point(793.66, 332.70), new Point(404.70, 787.12), new Point(122.73, 457.32)
             };
             var movingPoints = new List<Point>()
             {
-                new Point(20, 20), new Point(482, 20), new Point(482, 482), new Point(20, 482)
+                new Point(133.35, 80.99), new Point(177.54, 92.35), new Point(137.77, 186.72), new Point(80.96, 147.90)
             };
 
-            var registrationResult = await RansacRegistration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
-                ViewModel.MovingImageViewModel.DataSource, fixedPoints.Convert(), movingPoints.Convert());
+            for (int i = 0; i < fixedPoints.Count; i++)
+            {
+                ViewModel.FixedImageViewModel.AddNewPoint(fixedPoints[i]);
+                ViewModel.MovingImageViewModel.AddNewPoint(movingPoints[i]);
+            }
+        }
 
-            ViewModel.MovingImageViewModel.ChangeDataSource(registrationResult.Result);
+        public void OpenOverlay()
+        {
+            _overlayWindow = new ImageOverlayWindow();
 
-            if (ViewModel.FixedImageViewModel.ClearPointsOnRegistration)
-                ViewModel.FixedImageViewModel.ControlPoints.Clear();
-            if (ViewModel.MovingImageViewModel.ClearPointsOnRegistration)
-                ViewModel.MovingImageViewModel.ControlPoints.Clear();
+            _overlayWindow.FixedImageSource = ViewModel.FixedImageViewModel.DisplayImage;
+            _overlayWindow.MovingImageSource = ViewModel.MovingImageViewModel.DisplayImage;
 
-            var scaledFixedImage = ViewModel.FixedImageViewModel.CreateSimilarImage(registrationResult.ScaledFixedImage);
-            var resultImage = ViewModel.MovingImageViewModel.CreateSimilarImage(registrationResult.Result);
+            _overlayWindow.ParametersGenerated += _overlayWindow_ParametersGenerated;
+            _overlayWindow.Closed += _overlayWindow_Closed;
 
-            ViewModel.RegisteredOverlay = Overlay.CreateFalseColorOverlay(scaledFixedImage, resultImage, FalseColorOverlayMode.GreenMagenta);
+            _overlayWindow.Show();
+        }
+        private void _overlayWindow_Closed(object sender, EventArgs e)
+        {
+            _overlayWindow.ParametersGenerated -= _overlayWindow_ParametersGenerated;
+            _overlayWindow.Closed -= _overlayWindow_Closed;
+            _overlayWindow = null;
+        }
+        private void _overlayWindow_ParametersGenerated(object sender, ParametersGeneratedEventArgs e)
+        {
+            //RegistrationParameters parameters = e.Paramaters;
+
+            //registrationParametersControl.RegistrationParameters.Angle = parameters.Angle;
+            //registrationParametersControl.RegistrationParameters.Scale = parameters.Scale;
+            //registrationParametersControl.RegistrationParameters.TranslationX = parameters.TranslationX;
+            //registrationParametersControl.RegistrationParameters.TranslationY = parameters.TranslationY;
         }
     }    
 }
