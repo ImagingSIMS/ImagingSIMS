@@ -4633,7 +4633,7 @@ namespace ImagingSIMS.MainApplication
                     sb.ToString(), "Add", DialogIcon.Alert);
             }
         }
-        public void AddTables(Data2D[] tablesToAdd)
+        public void AddTables(params Data2D[] tablesToAdd)
         {
             List<Data2D> notAdded = new List<Data2D>();
 
