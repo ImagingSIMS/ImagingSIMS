@@ -5598,7 +5598,7 @@ namespace ImagingSIMS.MainApplication
             var movingData = ImageGenerator.Instance.ConvertToData2D(movingImage);
             movingData.DataName = "Moving";
 
-            AddTables(new Data2D[] { fixedData, movingData, movingDataResized });
+            AddTables(new Data2D[] { fixedData, movingData });
 
             var fpt = new FusionPointTab();
             fpt.ViewModel.FixedImageViewModel.DataSource = fixedData;
