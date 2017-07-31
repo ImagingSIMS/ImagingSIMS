@@ -16,6 +16,7 @@ namespace ImagingSIMS.Controls.ViewModels
         ControlPointImageViewModel _fixedImageViewModel;
         RegistrationParametersViewModel _itkRegistrationViewModel;
 
+        PointRegistrationType _pointRegistrationType;
         BitmapSource _fusedImage;
         BitmapSource _registeredOverlay;
         bool _isRegistering;
@@ -65,6 +66,18 @@ namespace ImagingSIMS.Controls.ViewModels
             }
         }
 
+        public PointRegistrationType PointRegistrationType
+        {
+            get { return _pointRegistrationType; }
+            set
+            {
+                if(_pointRegistrationType != value)
+                {
+                    _pointRegistrationType = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
         public BitmapSource FusedImage
         {
             get { return _fusedImage; }
@@ -210,6 +223,8 @@ namespace ImagingSIMS.Controls.ViewModels
             PanchromaticConversionSolidColor = Color.FromArgb(255, 255, 255, 255);
 
             AnalysisResults = string.Empty;
+
+            PointRegistrationType = PointRegistrationType.Projective;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

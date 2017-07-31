@@ -5590,11 +5590,11 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test8_Click(object sender, RoutedEventArgs e)
         {
-            var fixedImage = ImageGenerator.Instance.FromFile(@"C:\Users\taro148\Documents\MATLAB\f.bmp");
+            var fixedImage = ImageGenerator.Instance.FromFile(@"D:\Data\Control Point Test\f.bmp");
             var fixedData = ImageGenerator.Instance.ConvertToData2D(fixedImage);
             fixedData.DataName = "Fixed";
 
-            var movingImage = ImageGenerator.Instance.FromFile(@"C:\Users\taro148\Documents\MATLAB\m.bmp");
+            var movingImage = ImageGenerator.Instance.FromFile(@"D:\Data\Control Point Test\m.bmp");
             var movingData = ImageGenerator.Instance.ConvertToData2D(movingImage);
             movingData.DataName = "Moving";
 
@@ -5603,7 +5603,7 @@ namespace ImagingSIMS.MainApplication
             var fpt = new FusionPointTab();
             fpt.ViewModel.FixedImageViewModel.DataSource = fixedData;
             fpt.ViewModel.MovingImageViewModel.DataSource = movingData;
-            var cti = ClosableTabItem.Create(fpt, TabType.FusionPoint);
+            var cti = ClosableTabItem.Create(fpt, TabType.FusionPoint, true);
             AddTabItemAndNavigate(cti);
             return;
 

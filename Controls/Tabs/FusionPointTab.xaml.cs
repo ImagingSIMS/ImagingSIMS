@@ -66,13 +66,9 @@ namespace ImagingSIMS.Controls.Tabs
                 return;
             }
 
-            //var registrationResult = await RansacRegistration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
-            //    ViewModel.MovingImageViewModel.DataSource, fixedPoints.Convert(), movingPoints.Convert());
-
-            //var registration = new AffineRegistration();
-            var registration = new ProjectiveRegistration();
+            PointRegistration registration = PointRegistrationGenerator.GetRegistrationClass(ViewModel.PointRegistrationType);
             var registrationResult = await registration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
-                ViewModel.MovingImageViewModel.DataSource, fixedPoints.Convert(), movingPoints.Convert());
+                ViewModel.MovingImageViewModel.DataSource, fixedPoints.ConvertToIntPoint(), movingPoints.ConvertToIntPoint());
 
             ViewModel.MovingImageViewModel.ChangeDataSource(registrationResult.Result);
 
@@ -204,30 +200,52 @@ namespace ImagingSIMS.Controls.Tabs
 
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = ViewModel.FusedImage != null;
+            e.CanExecute = ViewModel.FusedImage != null || ViewModel.RegisteredOverlay != null;
         }
         private void Copy_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = ViewModel.FusedImage != null;
+            e.CanExecute = ViewModel.FusedImage != null || ViewModel.RegisteredOverlay != null;
         }
 
         private void Save_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (ViewModel.FusedImage == null) return;
-
             var sfd = new SaveFileDialog();
             sfd.Filter = "Bitmap Images (.bmp)|*.bmp";
             if (sfd.ShowDialog() != true) return;
 
-            ViewModel.FusedImage.Save(sfd.FileName);
+            switch ((string)(e.Parameter))
+            {
+                case "Fused":
+                    if (ViewModel.FusedImage != null)
+                        ViewModel.FusedImage.Save(sfd.FileName);
+                    break;
+                case "RegisteredOverlay":
+                    if (ViewModel.RegisteredOverlay != null)
+                        ViewModel.RegisteredOverlay.Save(sfd.FileName);
+                    break;
+                default:
+                    DialogBox.Show("Invalid image parameter", e.Parameter.ToString(), "Save", DialogIcon.Error);
+                    return;
+            }
 
-            DialogBox.Show("Image saved successfully!", sfd.FileName, "Save", DialogIcon.Ok);
         }
         private void Copy_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (ViewModel.FusedImage == null) return;
+            switch ((string)(e.Parameter))
+            {
+                case "Fused":
+                    if (ViewModel.FusedImage != null)
+                        Clipboard.SetImage(ViewModel.FusedImage);
+                    break;
+                case "RegisteredOverlay":
+                    if (ViewModel.RegisteredOverlay != null)
+                        Clipboard.SetImage(ViewModel.RegisteredOverlay);
+                    break;
+                default:
+                    DialogBox.Show("Invalid image parameter", e.Parameter.ToString(), "Save", DialogIcon.Error);
+                    return;
 
-            Clipboard.SetImage(ViewModel.FusedImage);
+            }
         }
 
         public void HandleDragDrop(object sender, DragEventArgs e)

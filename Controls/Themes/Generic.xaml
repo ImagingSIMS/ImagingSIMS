@@ -38,6 +38,11 @@
             <x:Type TypeName="data:MathOperations"/>
         </ObjectDataProvider.MethodParameters>
     </ObjectDataProvider>
+    <ObjectDataProvider x:Key="pointRegistrationItemsSource" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="imaging:PointRegistrationType"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
 
     <!-- Fill Brushes -->
     <SolidColorBrush x:Key="ToolTipBackground" Color="#FF292929"/>
