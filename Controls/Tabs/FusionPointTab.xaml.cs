@@ -69,7 +69,8 @@ namespace ImagingSIMS.Controls.Tabs
             //var registrationResult = await RansacRegistration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
             //    ViewModel.MovingImageViewModel.DataSource, fixedPoints.Convert(), movingPoints.Convert());
 
-            var registration = new AffineRegistration();
+            //var registration = new AffineRegistration();
+            var registration = new ProjectiveRegistration();
             var registrationResult = await registration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
                 ViewModel.MovingImageViewModel.DataSource, fixedPoints.Convert(), movingPoints.Convert());
 

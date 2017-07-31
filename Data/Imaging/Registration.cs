@@ -99,8 +99,8 @@ namespace ImagingSIMS.Data.Imaging
             {
                 if (fixedImage.Width <= movingImage.Width && fixedImage.Height <= movingImage.Height)
                 {               
-                    float ratioX = movingImage.Width / fixedImage.Width;
-                    float ratioY = movingImage.Height / fixedImage.Height;
+                    float ratioX = (float)movingImage.Width / fixedImage.Width;
+                    float ratioY = (float)movingImage.Height / fixedImage.Height;
 
                     fixedImage = fixedImage.Resize(movingImage.Width, movingImage.Height);
 
@@ -113,8 +113,8 @@ namespace ImagingSIMS.Data.Imaging
                 }
                 else if (movingImage.Width <= fixedImage.Width && movingImage.Height <= fixedImage.Height)
                 {             
-                    float ratioX = fixedImage.Width / movingImage.Width;
-                    float ratioY = fixedImage.Height / movingImage.Height;
+                    float ratioX = (float)fixedImage.Width / movingImage.Width;
+                    float ratioY = (float)fixedImage.Height / movingImage.Height;
 
                     movingImage = movingImage.Resize(fixedImage.Width, fixedImage.Height);
 
@@ -258,6 +258,215 @@ namespace ImagingSIMS.Data.Imaging
         }
     }
 
+    public class ProjectiveRegistration : PointRegistration
+    {
+        public override PointRegistrationResult<Data2D> Register(Data2D fixedImage,
+            Data2D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
+        {
+            List<IntPoint> fixedPointsCorrected = new List<IntPoint>();
+            List<IntPoint> movingPointsCorrected = new List<IntPoint>();
+
+            var result = new PointRegistrationResult<Data2D>(fixedImage, movingImage);
+
+            if (fixedImage.Width != movingImage.Width || fixedImage.Height != movingImage.Height)
+            {
+                if (fixedImage.Width <= movingImage.Width && fixedImage.Height <= movingImage.Height)
+                {
+                    float ratioX = (float)movingImage.Width / fixedImage.Width;
+                    float ratioY = (float)movingImage.Height / fixedImage.Height;
+
+                    fixedImage = fixedImage.Resize(movingImage.Width, movingImage.Height);
+
+                    foreach (var point in fixedPoints)
+                    {
+                        fixedPointsCorrected.Add(new IntPoint((int)(point.X * ratioX), (int)(point.Y * ratioY)));
+                    }
+
+                    movingPointsCorrected.AddRange(movingPoints);
+                }
+                else if (movingImage.Width <= fixedImage.Width && movingImage.Height <= fixedImage.Height)
+                {
+                    float ratioX = (float)fixedImage.Width / movingImage.Width;
+                    float ratioY = (float)fixedImage.Height / movingImage.Height;
+
+                    movingImage = movingImage.Resize(fixedImage.Width, fixedImage.Height);
+
+                    foreach (var point in movingPoints)
+                    {
+                        movingPointsCorrected.Add(new IntPoint((int)(point.X * ratioX), (int)(point.Y * ratioY)));
+                    }
+
+                    fixedPointsCorrected.AddRange(fixedPoints);
+                }
+                else throw new ArgumentException("Invalid image dimensions. Cannot resize when one dimension is smaller than the other");
+            }
+
+            else
+            {
+                fixedPointsCorrected.AddRange(fixedPoints);
+                movingPointsCorrected.AddRange(movingPoints);
+            }
+
+            result.ScaledFixedImage = fixedImage;
+            result.ScaledMovingImage = movingImage;
+
+            ProjectiveTransform transform = new ProjectiveTransform();
+            transform.CalculateTransform(fixedPointsCorrected, movingPointsCorrected);
+
+            int transformedWidth = fixedImage.Width;
+            int transformedHeight = fixedImage.Height;
+
+            var transformed = new Data2D(transformedWidth, transformedHeight);
+
+            for (int x = 0; x < transformedWidth; x++)
+            {
+                for (int y = 0; y < transformedHeight; y++)
+                {
+                    var transformedPoint = transform.TransformCoordinate(new IntPoint(x, y));
+
+                    if (transformedPoint.X < 0 || transformedPoint.X >= transformedWidth || transformedPoint.Y < 0 || transformedPoint.Y >= transformedHeight) continue;
+
+                    transformed[x, y] = result.ScaledMovingImage.Sample(transformedPoint.X, transformedPoint.Y);
+                }
+            }
+
+            result.Result = transformed;
+
+            return result;
+        }
+
+        public override PointRegistrationResult<Data3D> Register(Data3D fixedImage,
+            Data3D movingImage, IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ProjectiveTransform
+    {
+        public IEnumerable<IntPoint> FixedPoints { get; set; }
+        public IEnumerable<IntPoint> MovingPoints { get; set; }
+        public double[,] Transform { get; set; }
+
+        public ProjectiveTransform()
+        {
+
+        }
+        public void CalculateTransform(IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints)
+        {
+            FixedPoints = fixedPoints;
+            MovingPoints = movingPoints;
+
+            int numPoints = FixedPoints.Count();
+
+            double[] U = new double[numPoints * 2];
+            double[,] X = new double[numPoints * 2, 8];
+
+            // uv: moving points
+            // xy: fixed points
+
+            // u = [x y 1 0 0 0 -ux -uy] * [A B C D E F G H]'
+            // v = [0 0 0 x y 1 -vx -vy] * [A B C D E F G H]'
+
+            for (int i = 0; i < numPoints; i++)
+            {
+                var fixedPoint = fixedPoints.ElementAt(i);
+                var movingPoint = movingPoints.ElementAt(i);
+
+                U[i] = movingPoint.X;
+                U[numPoints + i] = movingPoint.Y;
+
+                X[i, 0] = fixedPoint.X;
+                X[i, 1] = fixedPoint.Y;
+                X[i, 2] = 1;
+                X[i, 6] = -movingPoint.X * fixedPoint.X;
+                X[i, 7] = -movingPoint.X * fixedPoint.Y;
+
+                X[numPoints + i, 3] = fixedPoint.X;
+                X[numPoints + i, 4] = fixedPoint.Y;
+                X[numPoints + i, 5] = 1;
+                X[numPoints + i, 6] = -movingPoint.Y * fixedPoint.X;
+                X[numPoints + i, 7] = -movingPoint.Y * fixedPoint.Y;
+            }
+
+            var tVec = X.Solve(U);
+            tVec = AppendVectorWithOne(tVec);
+
+            var tInv = tVec.Reshape(3, 3);//.Transpose();
+            Transform = tInv.Inverse();
+            Transform = Transform.Inverse();
+            Transform = Transform.Divide(Transform[2, 2]);
+
+            //Transform[2, 0] *= -1;
+            //Transform[2, 1] *= -1;
+
+            int a = 0;
+            //double[,] X = new double[numPoints * 2, 6];
+            //double[] xPrime = new double[numPoints * 2];
+
+            //for (int i = 0; i < numPoints; i++)
+            //{
+            //    var xExpanded = ExpandCoordinate(FixedPoints.ElementAt(i));
+            //    var xPrimePoint = MovingPoints.ElementAt(i);
+
+            //    for (int c = 0; c < 6; c++)
+            //    {
+            //        X[i, c] = xExpanded[0, c];
+            //        X[numPoints + i, c] = xExpanded[1, c];
+            //    }
+
+            //    xPrime[i] = xPrimePoint.X;
+            //    xPrime[numPoints + i] = xPrimePoint.Y;
+            //}
+
+            //var solution = xPrime.Dot(X.PseudoInverse().Transpose());
+            //var affine = new double[3, 3];
+            //affine[0, 0] = solution[0];
+            //affine[0, 1] = solution[1];
+            //affine[0, 2] = solution[2];
+            //affine[1, 0] = solution[3];
+            //affine[1, 1] = solution[4];
+            //affine[1, 2] = solution[5];
+            //affine[2, 2] = 1;
+            //Transform = affine.Inverse();
+            //Transform[2, 2] = 1;
+            //Transform = Transform.Transpose();
+        }
+
+        private double[] AppendVectorWithOne(double[] vector)
+        {
+            var result = new double[vector.Length + 1];
+            Array.Copy(vector, 0, result, 0, vector.Length);
+            result[vector.Length] = 1;
+            return result;
+        }
+
+        public DoublePoint TransformCoordinate(IntPoint point)
+        {
+            if (Transform == null) throw new ArgumentException("Transform not calculated");
+
+            double[] pointVector = new double[] { point.X, point.Y, 1 };
+            var transformed = Transform.Dot(pointVector);
+
+            return new DoublePoint(transformed[0] / transformed[2], transformed[1] / transformed[2]);
+        }
+
+        private double[,] ExpandCoordinate(IntPoint point)
+        {
+            double[,] expanded = new double[2, 6];
+
+            expanded[0, 0] = point.X;
+            expanded[0, 1] = point.Y;
+            expanded[0, 2] = 1;
+
+            expanded[1, 3] = point.X;
+            expanded[1, 4] = point.Y;
+            expanded[1, 5] = 1;
+
+            return expanded;
+        }
+    }
+
     public class AffineRegistration : PointRegistration
     {
         // https://stackoverflow.com/questions/2755771/affine-transformation-algorithm
@@ -284,8 +493,8 @@ namespace ImagingSIMS.Data.Imaging
             {
                 if (fixedImage.Width <= movingImage.Width && fixedImage.Height <= movingImage.Height)
                 {
-                    float ratioX = movingImage.Width / fixedImage.Width;
-                    float ratioY = movingImage.Height / fixedImage.Height;
+                    float ratioX = (float)movingImage.Width / fixedImage.Width;
+                    float ratioY = (float)movingImage.Height / fixedImage.Height;
 
                     fixedImage = fixedImage.Resize(movingImage.Width, movingImage.Height);
 
@@ -298,8 +507,8 @@ namespace ImagingSIMS.Data.Imaging
                 }
                 else if (movingImage.Width <= fixedImage.Width && movingImage.Height <= fixedImage.Height)
                 {
-                    float ratioX = fixedImage.Width / movingImage.Width;
-                    float ratioY = fixedImage.Height / movingImage.Height;
+                    float ratioX = (float)fixedImage.Width / movingImage.Width;
+                    float ratioY = (float)fixedImage.Height / movingImage.Height;
 
                     movingImage = movingImage.Resize(fixedImage.Width, fixedImage.Height);
 
