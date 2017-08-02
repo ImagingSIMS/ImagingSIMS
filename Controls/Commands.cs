@@ -90,6 +90,7 @@ namespace ImagingSIMS.Controls
         private static RoutedUICommand _register = new RoutedUICommand("Register", "Register", typeof(RegistrationCommands));
         private static RoutedUICommand _cancelRegistration = new RoutedUICommand("Cancel Registration", "CancelRegistration", typeof(RegistrationCommands));
         private static RoutedUICommand _undoRegistration = new RoutedUICommand("Undo Registration", "UndoRegistration", typeof(RegistrationCommands));
+        private static RoutedUICommand _addTable = new RoutedUICommand("Add Table", "AddTable", typeof(RegistrationCommands));
 
         public static RoutedUICommand ClearSelection
         {
@@ -110,6 +111,10 @@ namespace ImagingSIMS.Controls
         public static RoutedUICommand UndoRegistration
         {
             get { return _undoRegistration; }
+        }
+        public static RoutedUICommand AddTable
+        {
+            get { return _addTable; }
         }
     }
 

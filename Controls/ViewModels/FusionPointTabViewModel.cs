@@ -20,6 +20,7 @@ namespace ImagingSIMS.Controls.ViewModels
         BitmapSource _fusedImage;
         BitmapSource _registeredOverlay;
         bool _isRegistering;
+        int _registrationProgress;
         RegistrationResult _registrationResults;
         Task _registrationTask;
         Task _fusionTask;
@@ -110,6 +111,18 @@ namespace ImagingSIMS.Controls.ViewModels
                 if (_isRegistering != value)
                 {
                     _isRegistering = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public int RegistrationProgress
+        {
+            get { return _registrationProgress; }
+            set
+            {
+                if (_registrationProgress != value)
+                {
+                    _registrationProgress = value;
                     NotifyPropertyChanged();
                 }
             }

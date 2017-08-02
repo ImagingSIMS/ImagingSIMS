@@ -267,6 +267,26 @@ namespace ImagingSIMS.Controls.BaseControls
             ViewModel.UndoHistory.Push(ViewModel.DataSource);
             ViewModel.DataSource = redo;
         }
+
+        private void AddTable_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = ViewModel.DataSource != null;
+        }
+        private void AddTable_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var tableToAdd = new Data2D(ViewModel.DataSource.Width, ViewModel.DataSource.Height)
+            {
+                DataName = ViewModel.AddTableName
+            };
+            for (int x = 0; x < ViewModel.DataSource.Width; x++)
+            {
+                for (int y = 0; y < ViewModel.DataSource.Height; y++)
+                {
+                    tableToAdd[x, y] = ViewModel.DataSource[x, y];
+                }
+            }
+            AvailableHost.AvailableTablesSource.AddTable(tableToAdd);
+        }
     }
 
     public enum RegistrationImageSelectionMode

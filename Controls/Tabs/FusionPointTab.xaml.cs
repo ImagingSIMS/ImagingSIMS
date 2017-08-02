@@ -50,6 +50,16 @@ namespace ImagingSIMS.Controls.Tabs
         }
         private async void Register_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+
+            ViewModel.IsRegistering = true;
+            ViewModel.RegistrationProgress = 0;
+
+            var progress = new Progress<int>();
+            progress.ProgressChanged += (progressSender, progressE) =>
+            {
+                ViewModel.RegistrationProgress = progressE;
+            };
+
             var fixedPoints = ViewModel.FixedImageViewModel.ControlPoints.Select(p => new Point(p.CoordX, p.CoordY));
             var movingPoints = ViewModel.MovingImageViewModel.ControlPoints.Select(p => new Point(p.CoordX, p.CoordY));
 
@@ -68,7 +78,7 @@ namespace ImagingSIMS.Controls.Tabs
 
             PointRegistration registration = PointRegistrationGenerator.GetRegistrationClass(ViewModel.PointRegistrationType);
             var registrationResult = await registration.RegisterAsync(ViewModel.FixedImageViewModel.DataSource,
-                ViewModel.MovingImageViewModel.DataSource, fixedPoints.ConvertToIntPoint(), movingPoints.ConvertToIntPoint());
+                ViewModel.MovingImageViewModel.DataSource, fixedPoints.ConvertToIntPoint(), movingPoints.ConvertToIntPoint(), progress);
 
             ViewModel.MovingImageViewModel.ChangeDataSource(registrationResult.Result);
 
@@ -81,7 +91,10 @@ namespace ImagingSIMS.Controls.Tabs
             var resultImage = ViewModel.MovingImageViewModel.CreateSimilarImage(registrationResult.Result);
 
             ViewModel.RegisteredOverlay = Overlay.CreateFalseColorOverlay(scaledFixedImage, resultImage, FalseColorOverlayMode.GreenMagenta);
+
+            ViewModel.IsRegistering = false;
         }
+
 
         private void Fuse_CanExeucte(object sender, CanExecuteRoutedEventArgs e)
         {

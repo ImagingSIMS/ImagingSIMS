@@ -22,6 +22,7 @@
         <CommandBinding Command="ApplicationCommands.Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
         <CommandBinding Command="ApplicationCommands.Undo" CanExecute="Undo_CanExecute" Executed="Undo_Executed"/>
         <CommandBinding Command="ApplicationCommands.Redo" CanExecute="Redo_CanExecute" Executed="Redo_Executed"/>
+        <CommandBinding Command="c:RegistrationCommands.AddTable" CanExecute="AddTable_CanExecute" Executed="AddTable_Executed"/>
     </UserControl.CommandBindings>
     <UserControl.Resources>
         <ResourceDictionary>
@@ -315,6 +316,18 @@
                             <Image Source="..\Images\Reverse.png"/>
                         </Button>
                     </StackPanel>
+                    <Grid Width="Auto" HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock>Table name:</TextBlock>
+                        <TextBox Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" Width="Auto" Text="{Binding AddTableName}"/>
+                        <Button Grid.Column="2" Command="c:RegistrationCommands.AddTable" ToolTip="Add Table to Workspace">
+                            <Image Source="..\Images\Backward.ico"/>
+                        </Button>
+                    </Grid>
 
                     <!--<ItemsControl HorizontalAlignment="Stretch" Margin="4"
                                   ItemsSource="{Binding ControlPoints}">

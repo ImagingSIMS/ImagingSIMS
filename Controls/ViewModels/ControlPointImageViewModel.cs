@@ -26,6 +26,7 @@ namespace ImagingSIMS.Controls.ViewModels
         Color _solidColorScale;
         double _threshold;
         double _initialThreshold;
+        string _addTableName;
 
         public bool IsRegistered
         {
@@ -175,6 +176,18 @@ namespace ImagingSIMS.Controls.ViewModels
                 }
             }
         }
+        public string AddTableName
+        {
+            get { return _addTableName; }
+            set
+            {
+                if (_addTableName != value)
+                {
+                    _addTableName = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public ObservableCollection<ControlPointViewModel> ControlPoints
         {
@@ -319,6 +332,8 @@ namespace ImagingSIMS.Controls.ViewModels
             InitialSaturation = DataSource.Maximum;
             Threshold = DataSource.Minimum;
             InitialSaturation = DataSource.Minimum;
+
+            AddTableName = DataSource.DataName;
 
             Redraw();
         }
