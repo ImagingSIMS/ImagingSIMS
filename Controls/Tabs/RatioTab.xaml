@@ -55,6 +55,18 @@
                         </GridView>
                     </ListView.View>
                 </ListView>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0">Threshold:</TextBlock>
+                    <CheckBox Grid.Column="1" IsChecked="{Binding DoNumeratorThreshold}"/>
+                    <TextBlock Grid.Column="2">Value:</TextBlock>
+                    <TextBox Grid.Column="3" Width="50" IsEnabled="{Binding DoNumeratorThreshold}" Text="{Binding NumeratorThresholdValue}"/>
+                </Grid>
             </StackPanel>
             <Grid Grid.Row="0" Grid.Column="2" Visibility="{Binding FuseImagesFirst, Converter={StaticResource boolVisConverter}}">
                 <Grid.RowDefinitions>
@@ -99,6 +111,18 @@
                         </GridView>
                     </ListView.View>
                 </ListView>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0">Threshold:</TextBlock>
+                    <CheckBox Grid.Column="1" IsChecked="{Binding DoDenominatorThreshold}"/>
+                    <TextBlock Grid.Column="2">Value:</TextBlock>
+                    <TextBox Grid.Column="3" Width="50" IsEnabled="{Binding DoDenominatorThreshold}" Text="{Binding DenominatorThresholdValue}"/>
+                </Grid>
             </StackPanel>
 
             <!-- Controls -->

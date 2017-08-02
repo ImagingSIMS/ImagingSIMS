@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Media.Imaging;
 using ImagingSIMS.Data;
 using ImagingSIMS.Data.Fusion;
@@ -11,6 +12,10 @@ namespace ImagingSIMS.Controls.ViewModels
     {
         ObservableCollection<Data2D> _numeratorTables;
         ObservableCollection<Data2D> _denominatorTables;
+        bool _doNumeratorThreshold;
+        bool _doDenominatorThreshold;
+        int _numeratorThresholdValue;
+        int _denominatorThresholdValue;
         string _outputBaseName;
         bool _removeOriginalTables;
         bool _doCrossRatio;
@@ -45,6 +50,54 @@ namespace ImagingSIMS.Controls.ViewModels
             }
         }
 
+        public bool DoNumeratorThreshold
+        {
+            get { return _doNumeratorThreshold; }
+            set
+            {
+                if(_doNumeratorThreshold != value)
+                {
+                    _doNumeratorThreshold = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public bool DoDenominatorThreshold
+        {
+            get { return _doDenominatorThreshold; }
+            set
+            {
+                if (_doDenominatorThreshold != value)
+                {
+                    _doDenominatorThreshold = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public int NumeratorThresholdValue
+        {
+            get { return _numeratorThresholdValue; }
+            set
+            {
+                if (_numeratorThresholdValue != value)
+                {
+                    _numeratorThresholdValue = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public int DenominatorThresholdValue
+        {
+            get { return _denominatorThresholdValue; }
+            set
+            {
+                if (_denominatorThresholdValue != value)
+                {
+                    _denominatorThresholdValue = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
         public string OutputBaseName
         {
             get { return _outputBaseName; }
@@ -151,7 +204,7 @@ namespace ImagingSIMS.Controls.ViewModels
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public void NotifyPropertyChanged(string propertyName)
+        public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             if (PropertyChanged != null)
             {

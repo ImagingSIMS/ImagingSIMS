@@ -266,10 +266,14 @@ namespace ImagingSIMS.Controls.Tabs
             // [7]: bool            Fuse images first
             // [8]: FusionType      Fusion method
             // [9]: Data2D          High res image
+            // [10]: bool           Do numerator threshold
+            // [11]: bool           Do denominator threshold
+            // [12]: int            Numerator threshold value
+            // [13]: int            Denominator threshold value
             object[] args = new object[]
             {
-                InputData.NumeratorTables.ToList(),
-                InputData.DenominatorTables.ToList(),
+                InputData.NumeratorTables.ToArray(),
+                InputData.DenominatorTables.ToArray(),
                 InputData.OutputBaseName,
                 InputData.DoCrossRatio,
                 InputData.MultiplyByFactor,
@@ -277,7 +281,11 @@ namespace ImagingSIMS.Controls.Tabs
                 InputData.RemoveOriginalTables,
                 InputData.FuseImagesFirst,
                 InputData.FusionType,
-                highRes
+                highRes,
+                InputData.DoNumeratorThreshold,
+                InputData.DoDenominatorThreshold,
+                InputData.NumeratorThresholdValue,
+                InputData.DenominatorThresholdValue
             };
             bw.RunWorkerAsync(args);
         }
@@ -298,8 +306,12 @@ namespace ImagingSIMS.Controls.Tabs
             // [7]: bool            Fuse images first
             // [8]: FusionType      Fusion method
             // [9]: Data2D          High res image
-            List<Data2D> numeratorTables = (List<Data2D>)args[0];
-            List<Data2D> denominatorTables = (List<Data2D>)args[1];
+            // [10]: bool           Do numerator threshold
+            // [11]: bool           Do denominator threshold
+            // [12]: int            Numerator threshold value
+            // [13]: int            Denominator threshold value
+            Data2D[] numeratorTables = (Data2D[])args[0];
+            Data2D[] denominatorTables = (Data2D[])args[1];
             string baseName = (string)args[2];            
             bool doCross = (bool)args[3];
             bool multiplyByFactor = (bool)args[4];
@@ -308,25 +320,44 @@ namespace ImagingSIMS.Controls.Tabs
             bool fusionFirst = (bool)args[7];
             FusionType fusionType = (FusionType)args[8];
             Data2D highRes = (Data2D)args[9];
+            bool doNumeratorThreshold = (bool)args[10];
+            bool doDenominatorThreshold = (bool)args[11];
+            int numeratorThresholdValue = (int)args[12];
+            int denominatorThresholdValue = (int)args[13];
+
+            if (doNumeratorThreshold)
+            {
+                for (int i = 0; i < numeratorTables.Length; i++)
+                {
+                    numeratorTables[i] = numeratorTables[i].Threshold(numeratorThresholdValue);
+                }
+            }
+            if (doDenominatorThreshold)
+            {
+                for (int i = 0; i < denominatorTables.Length; i++)
+                {
+                    denominatorTables[i] = denominatorTables[i].Threshold(denominatorThresholdValue);
+                }
+            }
 
             int totalSteps = 0;
             int pos = 0;
             if (fusionFirst)
             {
-                totalSteps += numeratorTables.Count + denominatorTables.Count;
+                totalSteps += numeratorTables.Length + denominatorTables.Length;
             }
             if (doCross)
             {
-                totalSteps += numeratorTables.Count;
+                totalSteps += numeratorTables.Length;
             }
             else
             {
-                totalSteps += numeratorTables.Count + 1;
+                totalSteps += numeratorTables.Length + 1;
             }
 
             if (fusionFirst)
             {
-                int numTables = numeratorTables.Count;
+                int numTables = numeratorTables.Length;
                 for (int i = 0; i < numTables; i++)
                 {
                     Fusion fusionNum;
@@ -454,7 +485,7 @@ namespace ImagingSIMS.Controls.Tabs
 
             if (doCross)
             {
-                int toRatio = numeratorTables.Count;
+                int toRatio = numeratorTables.Length;
 
                 for (int i = 0; i < toRatio; i++)
                 {
@@ -470,7 +501,7 @@ namespace ImagingSIMS.Controls.Tabs
             }
             else
             {
-                int toSum = numeratorTables.Count;
+                int toSum = numeratorTables.Length;
 
                 Data2D summedNum = new Data2D(outWidth, outHeight);
                 Data2D summedDen = new Data2D(outWidth, outHeight);
@@ -516,8 +547,8 @@ namespace ImagingSIMS.Controls.Tabs
             // results
             // [0]: List<Data2D>    Ratio tables
             // [1]: bool            Remove original tables
-            // [2]: List<Data2D>    Original numerator tables
-            // [3]: List<Data2D>    Original denominator tables
+            // [2]: Data2D[]        Original numerator tables
+            // [3]: Data2D[]        Original denominator tables
             object[] results = new object[]
             {
                 ratioTables,
@@ -543,14 +574,14 @@ namespace ImagingSIMS.Controls.Tabs
             // results
             // [0]: List<Data2D>    Ratio tables
             // [1]: bool            Remove original tables
-            // [2]: List<Data2D>    Original numerator tables
-            // [3]: List<Data2D>    Original denominator tables
+            // [2]: Data2D[]        Original numerator tables
+            // [3]: Data2D[]        Original denominator tables
             object[] result = (object[])e.Result;
 
             List<Data2D> ratioTables = (List<Data2D>)result[0];
             bool removeOriginal = (bool)result[1];
-            List<Data2D> originalNumerator = (List<Data2D>)result[2];
-            List<Data2D> originalDenominator = (List<Data2D>)result[3];
+            Data2D[] originalNumerator = (Data2D[])result[2];
+            Data2D[] originalDenominator = (Data2D[])result[3];
 
             _pw.ProgressFinished("Ratio complete");
 

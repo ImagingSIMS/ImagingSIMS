@@ -869,6 +869,19 @@ namespace ImagingSIMS.Data
             return d;
         }
 
+        public Data2D Threshold(int thresholdValue)
+        {
+            Data2D d = new Data2D(Width, Height) { DataName = DataName };
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    d[x, y] = this[x, y] >= thresholdValue ? this[x, y] : 0;
+                }
+            }
+            return d;
+        }
+
         public void FlipHorizontal()
         {
             for (int y = 0; y < Height; y++)
