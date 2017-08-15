@@ -14,10 +14,13 @@ import scipy.misc
 import matplotlib as mpl
 from matplotlib.mlab import PCA as pca
 
+folder = "D:\\Data\\FusionComparison\\8-15-17\\"
+# folder = "C:\\Data\\FusionComparison\\8-15-17\\"
+
 def loadInputImages():
 
-    highres = io.imread("D:\\Data\\FusionComparison\\highres.bmp", as_grey=True)
-    lowRes = io.imread("D:\\Data\\FusionComparison\\lowres.bmp")    
+    highres = io.imread(folder + "grid_highres.bmp", as_grey=True)
+    lowRes = io.imread(folder + "grid_lowres.bmp")    
 
     # Scale lowres to [0, 1] -- highres is already in range from imread
     return highres, np.divide(lowRes, 255)
@@ -35,28 +38,26 @@ def doWeightedAverageFusion():
 
     fused = np.zeros([hrSizeX, hrSizeY, 3])
     H = np.zeros([hrSizeX, hrSizeY])
+    L = np.zeros([hrSizeX, hrSizeY])
     S = np.zeros([hrSizeX, hrSizeY])
-    V = np.zeros([hrSizeX, hrSizeY])
 
     for x in range(hrSizeX):
         for y in range(hrSizeY):            
-            H[x,y],S[x,y],V[x,y] = color.rgb_to_hsv(lowresResized[x,y,0], lowresResized[x,y,1], lowresResized[x,y,2])
+            H[x,y],L[x,y],S[x,y] = color.rgb_to_hls(lowresResized[x,y,0], lowresResized[x,y,1], lowresResized[x,y,2])
 
+    L = helpers.matchHistogram(highres, L)
 
-    # V = helpers.matchHistogram(highres, V)
-
-    meanV = np.mean(V)
+    meanL = np.mean(L)
     meanHr = np.mean(highres)
-    meanSum = meanV + meanHr
+    meanSum = meanL + meanHr
 
     for x in range(hrSizeX):
         for y in range(hrSizeY):
-
-            wa = (V[x,y] * meanV / meanSum) + (highres[x,y] * meanHr / meanSum)
-            r,g,b = color.hsv_to_rgb(H[x,y], S[x,y], wa)
+            wa = (L[x,y] * meanL / meanSum) + (highres[x,y] * meanHr / meanSum)
+            r,g,b = color.hls_to_rgb(H[x,y], wa, S[x,y])
             fused[x,y,:] = [r,g,b]
 
-    io.imsave("D:\\Data\\FusionComparison\\fused_wa.bmp", fused)
+    io.imsave(folder + "fused_wa.bmp", fused)
 
 def doHSVFusion():
 
@@ -87,7 +88,7 @@ def doHSVFusion():
             r,g,b = color.hsv_to_rgb(H[x,y], S[x,y], V[x,y])
             fused[x,y,:] = [r,g,b]
 
-    io.imsave("D:\\Data\\FusionComparison\\fused_hsv.bmp", fused)
+    io.imsave(folder + "fused_hsv.bmp", fused)
 
 def doHSLFusion():
     # Note: HSL is the typical abbreviation but the colorsys fuction switches the position of s and l (HLS)
@@ -118,7 +119,7 @@ def doHSLFusion():
             r,g,b = color.hls_to_rgb(H[x,y], L[x,y], S[x,y])
             fused[x,y,:] = [r,g,b]
 
-    io.imsave("D:\\Data\\FusionComparison\\fused_hsl.bmp", fused)
+    io.imsave(folder + "fused_hsl.bmp", fused)
 
 def doADWTFusion():
 
@@ -141,29 +142,26 @@ def doADWTFusion():
 
     highres = helpers.matchHistogram(highres, L)
 
-    numDecomps = [1, 2, 3, 4, 5, 6]
 
-    for n in numDecomps:
+    decompLevels = [1, 2, 3, 4, 5, 6]
+
+    for n in decompLevels:
 
         decompL = pywt.swt2(L, 'haar', n)
         decompP = pywt.swt2(highres, 'haar', n)
 
-        #for i in range(n):
-        #    L = np.add(L, decompP[i][0])
-
         for x in range(hrSizeX):
             for y in range(hrSizeY):
-                for i in range(n):
-                    decompL[i][0][x, y] = (decompL[i][0][x, y] + decompP[i][0][x, y]) / 2
-                    # decompL[1][0][x, y] = decompL[1][0][x, y] + decompP[1][0][x, y]
+
+                decompL[n - 1][1][0][x,y] = (decompL[n - 1][1][0][x,y] + decompP[n - 1][1][0][x,y]) / 2
+                decompL[n - 1][1][1][x,y] = (decompL[n - 1][1][1][x,y] + decompP[n - 1][1][1][x,y]) / 2
+                decompL[n - 1][1][2][x,y] = (decompL[n - 1][1][2][x,y] + decompP[n - 1][1][2][x,y]) / 2
 
         L = pywt.iswt2(decompL, 'haar')
 
         R = np.zeros([hrSizeX, hrSizeY])
         G = np.zeros([hrSizeX, hrSizeY])
         B = np.zeros([hrSizeX, hrSizeY])
-
-        L = helpers.normalizeComponent(L)
 
         for x in range(hrSizeX):
             for y in range(hrSizeY):
@@ -174,12 +172,7 @@ def doADWTFusion():
         fused[:,:,1] = G
         fused[:,:,2] = B
 
-        #print("Min {0} Max {1}".format(np.min(fused), np.max(fused)))
-
-        #fused[fused < 0] = 0
-        #fused[fused > 1] = 1
-
-        io.imsave("D:\\Data\\FusionComparison\\fused_adwt_{0}.bmp".format(n), fused)
+        io.imsave(folder + "fused_adwt_{0}.bmp".format(n), fused)
 
 def doSDWTFusion():
 
@@ -189,8 +182,6 @@ def doSDWTFusion():
     hrSizeY = highres.shape[1]
     lrSizeX = lowres.shape[0]
     lrSizeY = lowres.shape[1]
-
-    # highres = np.multiply(highres, 255)
 
     lowresResized = helpers.upscaleImage(lowres, highres)
 
@@ -203,24 +194,22 @@ def doSDWTFusion():
             H[x,y],L[x,y],S[x,y] = color.rgb_to_hls(lowresResized[x,y,0], lowresResized[x,y,1], lowresResized[x,y,2])
 
     highres = helpers.matchHistogram(highres, L)
-    
-    numDecomps = [1, 2, 3, 4, 5, 6]
 
-    for n in numDecomps:
+    decompLevels = [1, 2, 3, 4, 5, 6]
+
+    for n in decompLevels:
+
         decompL = pywt.swt2(L, 'haar', n)
         decompP = pywt.swt2(highres, 'haar', n)
 
-        #L = decompP[n - 1][0]
-
         for x in range(hrSizeX):
             for y in range(hrSizeY):
-                for i in range(n):
-                    decompL[i][0][x, y] = decompP[i][0][x, y]
-                    # decompL[1][0][x, y] = decompP[1][0][x, y]
+
+                decompL[n - 1][1][0][x,y] = decompP[n - 1][1][0][x,y]
+                decompL[n - 1][1][1][x,y] = decompP[n - 1][1][1][x,y]
+                decompL[n - 1][1][2][x,y] = decompP[n - 1][1][2][x,y]
 
         L = pywt.iswt2(decompL, 'haar')
-
-        L = helpers.normalizeComponent(L)
 
         R = np.zeros([hrSizeX, hrSizeY])
         G = np.zeros([hrSizeX, hrSizeY])
@@ -235,12 +224,7 @@ def doSDWTFusion():
         fused[:,:,1] = G
         fused[:,:,2] = B
 
-        #print("Min {0} Max {1}".format(np.min(fused), np.max(fused)))
-
-        #fused[fused < 0] = 0
-        #fused[fused > 1] = 1
-
-        io.imsave("D:\\Data\\FusionComparison\\fused_sdwt_{0}.bmp".format(n), fused)
+        io.imsave(folder + "fused_sdwt_{0}.bmp".format(n), fused)
 
 def doPCAFusion():
 
@@ -264,33 +248,50 @@ def doPCAFusion():
     pcCount = 3
 
     fused = np.zeros([hrSizeX, hrSizeY, 3])
-    cov = np.dot(lowresResized.T, lowresResized) / lowresResized.shape[0]
-    eValues, eVectors = np.linalg.eigh(cov)
-    key = np.argsort(eValues)[::-1][:pcCount]
-    eValues, eVectors = eValues[key], eVectors[:, key]
-    u = np.dot(lowresResized, eVectors)
+    #cov = np.dot(lowresResized.T, lowresResized) / lowresResized.shape[0]
+    #eValues, eVectors = np.linalg.eigh(cov)
+    #key = np.argsort(eValues)[::-1][:pcCount]
+    #eValues, eVectors = eValues[key], eVectors[:, key]
+    #u = np.dot(lowresResized, eVectors)
 
+    u,s,v = np.linalg.svd(lowresResized, full_matrices=False)
+
+    # pc1 = u[:,0]
+    #us = np.dot(u, np.diag(s))
+    #pc1 = us[:,0]
     pc1 = u[:,0]
 
+    minPc1 = np.min(pc1)
+    maxPc1 = np.max(pc1)
+
     highRes = helpers.matchHistogram(highRes, pc1)
+    #crossCorrelation = np.correlate(np.reshape(pc1, [-1]), np.reshape(highRes, [-1]))
+    #crossCorrelationSign = 1
+    #if crossCorrelation < 0:
+    #    crossCorrelationSign = -1
+
+    # u[:,0] = highRes * crossCorrelationSign
+        
+    # us[:,0] = highRes
     u[:,0] = highRes
 
-    reverted = np.dot(u, eVectors)
+    # reverted = np.dot(u, eVectors)
+    reverted = np.dot(np.dot(u, np.diag(s)), v)
     # Reverse mean centering
     reverted = np.add(reverted, means)
     fused = np.reshape(reverted, [hrSizeX, hrSizeY, 3])
 
-    #if np.min(fused) < 0:
-    #    fused = np.subtract(fused, np.min(fused))
-    #if np.max(fused) > 1:
-    #    fused = np.divide(fused, np.max(fused))
+    if np.min(fused) < 0:
+        fused = np.subtract(fused, np.min(fused))
+    if np.max(fused) > 1:
+        fused = np.divide(fused, np.max(fused))
 
     print("Min {0} Max {1}".format(np.min(fused), np.max(fused)))
 
-    fused[fused < 0] = 0
-    fused[fused > 1] = 1
+    #fused[fused < 0] = 0
+    #fused[fused > 1] = 1
 
-    io.imsave("D:\\Data\\FusionComparison\\fused_pca.bmp", fused)
+    io.imsave(folder + "fused_pca.bmp", fused)
 
 def doLaplaceFusion():
     
@@ -375,8 +376,6 @@ def doLaplaceFusion():
     #fused[fused < 0] = 0
     #fused[fused > 1] = 1
 
-    io.imsave("D:\\Data\\FusionComparison\\fused_lpf.bmp", fused)
-
     #numLevels = [1, 2, 3, 4, 5, 6]
     #for n in numLevels:
 
@@ -446,6 +445,7 @@ def doLaplaceFusion():
     #    #fused[fused > 1] = 1
 
     #    io.imsave("D:\\Data\\FusionComparison\\fused_lpf_{0}.bmp".format(n), fused)
+    io.imsave(folder + "fused_lpf.bmp", fused)
 
 if __name__ == "__main__":
     
@@ -454,5 +454,5 @@ if __name__ == "__main__":
     # doHSLFusion()
     # doADWTFusion()
     # doSDWTFusion()
-    # doPCAFusion()
-    doLaplaceFusion()
+    doPCAFusion()
+    # doLaplaceFusion()
