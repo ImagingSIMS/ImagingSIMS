@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>70070e3d-6896-4dd3-b7aa-be5052c57e2b</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Fusion.py</StartupFile>
+    <StartupFile>FusionMetrics.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -25,6 +25,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Fusion.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FusionMetrics.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helpers.py">
