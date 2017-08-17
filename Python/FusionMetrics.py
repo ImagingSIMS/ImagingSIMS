@@ -86,6 +86,30 @@ def mutualInformation(highresImage, lowresImage, fusedImage):
 
     return iFL + iFH
 
+def crossCorrelation(lowresImage, fusedImage):
+
+    rL = np.reshape(lowresImage[:,:,0], [-1])
+    gL = np.reshape(lowresImage[:,:,1], [-1])
+    bL = np.reshape(lowresImage[:,:,2], [-1])
+
+    rF = np.reshape(fusedImage[:,:,0], [-1])
+    gF = np.reshape(fusedImage[:,:,1], [-1])
+    bF = np.reshape(fusedImage[:,:,2], [-1])
+
+    rMeanL = np.mean(rL)
+    gMeanL = np.mean(gL)
+    bMeanL = np.mean(bL)
+
+    rMeanF = np.mean(rF)
+    gMeanF = np.mean(gF)
+    bMeanF = np.mean(bF)
+
+    cc[0] = np.sum((rF - rMeanF) * (rL - rMeanL)) / np.sqrt(np.sum(np.square(rF - rMeanF)) * np.sum(np.square(rL - rMeanL)))
+    cc[1] = np.sum((gF - gMeanF) * (gL - gMeanL)) / np.sqrt(np.sum(np.square(gF - gMeanF)) * np.sum(np.square(gL - gMeanL)))
+    cc[2] = np.sum((bF - bMeanF) * (bL - bMeanL)) / np.sqrt(np.sum(np.square(bF - bMeanF)) * np.sum(np.square(bL - bMeanL)))
+
+    return np.sum(cc) / 3
+
 if __name__ == "__main__":
 
     lowresImage = io.imread(folder + "grid_lowres.bmp")
@@ -96,10 +120,12 @@ if __name__ == "__main__":
     infEntropy = informationEntropy(fusedImage)
     crossEntropy = crossEntropy(highresImage, lowresImage, fusedImage)
     mutualInf = mutualInformation(highresImage, lowresImage, fusedImage)
+    cc = crossCorrelation(lowresImage, fusedImage)
 
     print("Standard deviation: {0}".format(stdev))
     print("Information entropy: {0}".format(infEntropy))
     print("Cross entropy: {0}".format(crossEntropy))
     print("Mutual information: {0}".format(mutualInf))
+    print("Cross correlation: {0}".format(cc))
 
     i = 0
