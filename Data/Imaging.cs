@@ -1147,9 +1147,19 @@ namespace ImagingSIMS.Data.Imaging
             get { return this.GetHashCode(); }
         }
     }
-    public sealed class DisplaySeries : Data, ISavable
+    public sealed class DisplaySeries : Data, ISavable, IWorkspaceData
     {
         ObservableCollection<DisplayImage> _images;
+
+        public override string SizeString
+        {
+            get
+            {
+                if (_images.Count == 0)
+                    return "Empty";
+                else return $"W: {_images[0].Width} H: {_images[0].Height} Count: {_images.Count}";
+            }
+        }
 
         public string SeriesName
         {
@@ -1329,6 +1339,16 @@ namespace ImagingSIMS.Data.Imaging
     {
         ObservableCollection<Image> _images;
         string[] _titles;
+
+        public override string SizeString
+        {
+            get
+            {
+                if (_images.Count == 0)
+                    return "Empty";
+                else return $"W: {_images[0].Width} H: {_images[0].Height} Count: {_images.Count}";
+            }
+        }
 
         public string SeriesName
         {

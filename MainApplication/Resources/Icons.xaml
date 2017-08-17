@@ -78,4 +78,16 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+    <DrawingImage x:Key="Edit" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Children>
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M21.3789,3L23.6699,3 29.9999,9.374 29.9999,11.163 12.2169,29 3.9999,29 3.9999,20.31z" />
+                    <GeometryDrawing Brush="#FF00529C" Geometry="F1M27.8057,10.4473L22.3597,5.0003 19.8597,7.5003 25.3057,12.9473z" />
+                    <GeometryDrawing Brush="#FF00529C" Geometry="F1M13.2627,24.8965L7.8557,19.4925 17.9307,9.4165 23.3377,14.8225z" />
+                    <GeometryDrawing Brush="#FF00529C" Geometry="F1M6,21.7539L11.166,26.9999 6,26.9999z" />
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 </ResourceDictionary>

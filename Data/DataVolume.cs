@@ -14,7 +14,15 @@ namespace ImagingSIMS.Data
         int _width;
         int _height;
         int _depth;
-        
+
+        public override string SizeString
+        {
+            get
+            {
+                return $"W: {Width} H: {Height} D: {Depth} N: {_matrix.Count}";
+            } 
+        }
+
         /// <summary>
         /// Gets or sets the value at the specified index.
         /// </summary>
