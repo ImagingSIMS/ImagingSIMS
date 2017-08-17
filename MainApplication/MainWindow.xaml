@@ -203,6 +203,11 @@
                                   ToolTipDescription="Removes all data from the current workspace."
                                   ToolTipImageSource="Images\Delete.ico"
                                   IsEnabled="{Binding Workspace.HasContents}"/>
+                    <RibbonButton Click="ribbonEditWorkspace_Click"
+                                  LargeImageSource="{StaticResource Edit}" SmallImageSource="{StaticResource Edit}"
+                                  Label="Edit" ToolTipTitle="Edit Workspace"
+                                  ToolTipDescription="Reorder items in workspace and edit parameters."
+                                  ToolTipImageSource="{StaticResource Edit}"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Recent Files">
                     <ItemsControl ItemsSource="{Binding Workspace.Registry.RecentFiles}">

@@ -24,6 +24,11 @@ namespace ImagingSIMS.Data
     public abstract class Data : ISObject
     {
         protected string _name = "";
+
+        public abstract string SizeString
+        {
+            get;
+        }
     }
 
     namespace Spectra

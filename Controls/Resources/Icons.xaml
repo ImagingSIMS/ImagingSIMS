@@ -1,4 +1,38 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
+    <DrawingImage x:Key="IconChevronGroupDown" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Children>
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M12.0339,6.3681L6.0089,0.344099999999998 1.1709,5.1781 5.1529,9.1591 1.1709,13.1371 12.0339,24.0001 22.8969,13.1381 18.9159,9.1591 22.8969,5.1781 18.0589,0.343099999999998z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M6.0088,11.1309L3.9998,13.1379 12.0338,21.1719 20.0678,13.1379 18.0598,11.1309 12.0338,17.1549z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M6.0088,3.1719L3.9998,5.1789 12.0338,13.2129 20.0678,5.1789 18.0598,3.1719 12.0338,9.1959z" />
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="IconChevronGroupUp" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Children>
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.1718,11.2065L5.1518,15.1845 1.1718,19.1655 6.0078,24.0005 12.0328,17.9755 18.0578,23.9995 22.8968,19.1665 18.9148,15.1845 22.8968,11.2075 12.0328,0.343500000000001z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M18.0586,13.2129L20.0676,11.2059 12.0336,3.1719 3.9996,11.2059 6.0076,13.2129 12.0336,7.1889z" />
+                    <GeometryDrawing Brush="#FF414141" Geometry="F1M18.0586,21.1719L20.0676,19.1649 12.0336,11.1309 3.9996,19.1649 6.0076,21.1719 12.0336,15.1479z" />
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="ClearCollection" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Children>
+                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M16,3L16,13 11,13 11,16 3,16 3,7.363 2.922,7.456C2.601,7.812 2.163,8 1.695,8 1.242,8 0.807,7.829 0.500999999999999,7.531 0.185,7.225 0.000999999999999446,6.793 0,6.349 -0.00100000000000122,5.903 0.175000000000001,5.482 0.499000000000001,5.165L1.801,4 0.532999999999999,2.867C0.175000000000001,2.518 -0.00100000000000122,2.097 0,1.651 0.000999999999999446,1.207 0.185,0.775 0.503,0.467 0.807,0.171 1.242,0 1.694,0 2.163,0 2.6,0.187 2.896,0.513L4,1.838 4,0 12,0 12,3z" />
+                    <GeometryDrawing Brush="#FF424242" Geometry="F1M10,3L11,3 11,1 8,1 8,1.362 7.469,2 10,2z M8,8L9,8 9,14 5,14 5,8 6.274,8 5.156,7 4,7 4,15 10,15 10,7 8,7z M15,4L15,12 11,12 11,11 14,11 14,5 10,5 10,6 9,6 9,4z" />
+                    <GeometryDrawing Brush="#FFF0EFF1" Geometry="F1M8,6L8,3 10,3 10,2 7.469,2 6,3.763 6,4.238 7.468,6z M5,14L9,14 9,8 5,8z M14,5L14,11 11,11 11,6 10,6 10,5z" />
+                    <GeometryDrawing Brush="#FFA1260D" Geometry="F1M6.6558,7L3.9878,4.615 2.1548,6.815C1.9158,7.079 1.4338,7.044 1.1998,6.815 0.9578,6.581 0.9098,6.163 1.1998,5.878L3.3008,4 1.1998,2.122C0.9098,1.837 0.9578,1.419 1.1998,1.185 1.4338,0.956 1.9158,0.921 2.1548,1.185L3.9878,3.385 6.6558,1 6.9998,1 4.4998,4 6.9998,7z" />
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 </ResourceDictionary>

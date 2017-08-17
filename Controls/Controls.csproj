@@ -207,6 +207,9 @@
     <Compile Include="Dialogs\ResizeDialogWindow.xaml.cs">
       <DependentUpon>ResizeDialogWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tabs\ManageWorkspaceTab.xaml.cs">
+      <DependentUpon>ManageWorkspaceTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tabs\SEMTab.xaml.cs">
       <DependentUpon>SEMTab.xaml</DependentUpon>
     </Compile>
@@ -262,6 +265,7 @@
     <Compile Include="ViewModels\FusionImageViewModel.cs" />
     <Compile Include="ViewModels\PeakPreviewViewModel.cs" />
     <Compile Include="ViewModels\RegistrationParametersViewModel.cs" />
+    <Compile Include="ViewModels\ManageWorkspaceViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -453,6 +457,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\ResizeDialogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\ManageWorkspaceTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
