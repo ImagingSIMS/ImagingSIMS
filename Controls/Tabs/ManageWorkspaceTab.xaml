@@ -250,7 +250,7 @@
                               ItemsSource="{Binding Path=SEMs}">
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding DataName}" Width="250"/>
+                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding SEMName}" Width="250"/>
                                     <GridViewColumn Header="Size" DisplayMemberBinding="{Binding SizeString}" Width="75"/>
                                 </GridView>
                             </ListView.View>
