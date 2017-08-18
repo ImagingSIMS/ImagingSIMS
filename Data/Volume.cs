@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace ImagingSIMS.Data.Rendering
 {
-    public class Volume : Data, ISavable
+    public class Volume : Data, ISavable, IWorkspaceData
     {
         Data3D _data;
         Color _dataColor;
@@ -144,9 +144,12 @@ namespace ImagingSIMS.Data.Rendering
                 }
             }
         }
-        public string Dimensions
+        public override string SizeString
         {
-            get { return string.Format("{0}x{1}x{2}", Width, Height, Depth); }
+            get
+            {
+                return $"W: {Width} H: {Height} D: {Depth}";
+            }
         }
 
         public Volume()

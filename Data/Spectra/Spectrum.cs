@@ -5,7 +5,7 @@ using ImagingSIMS.Common.Math;
 
 namespace ImagingSIMS.Data.Spectra
 {
-    public abstract class Spectrum : IDisposable, INotifyPropertyChanged, ISavable
+    public abstract class Spectrum : IDisposable, INotifyPropertyChanged, ISavable, IWorkspaceData
     {
         protected string _name;
 

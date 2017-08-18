@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace ImagingSIMS.Data.Imaging
 {
-    public sealed class ImageComponent : ISObject, ISavable
+    public sealed class ImageComponent : ISObject, ISavable, IWorkspaceData
     {
         string _name;
         Color _pixelColor;

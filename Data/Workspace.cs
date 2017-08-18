@@ -13,6 +13,10 @@ using ImagingSIMS.Data.Spectra;
 
 namespace ImagingSIMS.Data
 {
+    public interface IWorkspaceData
+    {
+
+    }
     public class Workspace : ISObject
     {
         //Registry

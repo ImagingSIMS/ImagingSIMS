@@ -84,7 +84,7 @@ namespace ImagingSIMS.Data
     {
 
     }
-    public sealed class Data2D : Data, ISavable, IDataObject
+    public sealed class Data2D : Data, ISavable, IDataObject, IWorkspaceData
     {
         int _uniqueID;
         public int UniqueID
@@ -251,6 +251,14 @@ namespace ImagingSIMS.Data
                 }
             }
             return nonSparse;
+        }
+
+        public override string SizeString
+        {
+            get
+            {
+                return $"W: {Width} H: {Height}";
+            }
         }
 
         public static Data2D Empty
@@ -2240,6 +2248,14 @@ namespace ImagingSIMS.Data
             {
                 if (_layers == null) return 0;
                 return _layers.Count;
+            }
+        }
+
+        public override string SizeString
+        {
+            get
+            {
+                return $"W: {Width} H: {Height} D: {Depth}";
             }
         }
 

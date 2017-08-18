@@ -1559,6 +1559,14 @@ namespace ImagingSIMS.MainApplication
         #endregion
 
         #region Ribbon Interactions
+        private void ribbonEditWorkspace_Click(object sender, RoutedEventArgs e)
+        {
+            var editTab = new ManageWorkspaceTab(Workspace);
+            var cti = ClosableTabItem.Create(editTab, TabType.EditWorkspace, "Edit Workspace", true);
+            AddTabItemAndNavigate(cti);
+        }
+
+
         private void ribbonOpenSumTab_Click(object sender, RoutedEventArgs e)
         {
             TableSumTab tst = new TableSumTab();
