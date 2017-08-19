@@ -31,6 +31,7 @@ namespace ImagingSIMS.Data.Imaging
         public T ScaledFixedImage { get; set; }
         public T ScaledMovingImage { get; set; }
         public T Result { get; set; }
+        public PointRegistration Transform { get; set; }
 
         public PointRegistrationResult()
         {
@@ -76,6 +77,9 @@ namespace ImagingSIMS.Data.Imaging
 
     public abstract class PointRegistration
     {
+        public int TargetWidth { get; set; }
+        public int TargetHeight { get; set; }
+
         public abstract PointRegistrationResult<Data2D> Register(Data2D fixedImage, Data2D movingImage, 
             IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints, IProgress<int> progressReporter = null);
         public async Task<PointRegistrationResult<Data2D>> RegisterAsync(Data2D fixedImage, Data2D movingImage, 
@@ -91,10 +95,24 @@ namespace ImagingSIMS.Data.Imaging
         {
             return await Task.Run(() => Register(fixedImage, movingImage, fixedPoints, movingPoints, progressReporter));
         }
+
+        public abstract Data2D Transform(Data2D data, string tableName, IProgress<int> progressReporter = null);
+        public async Task<Data2D> TransformAsync(Data2D data, string tableName, IProgress<int> progressReporter = null)
+        {
+            return await Task.Run(() => Transform(data, tableName, progressReporter));
+        }
+
+        public abstract Data3D Transform(Data3D data, string tableName, IProgress<int> progressReporter = null);
+        public async Task<Data3D> TransformAsync(Data3D data, string tableName, IProgress<int> progressReporter = null)
+        {
+            return await Task.Run(() => Transform(data, tableName, progressReporter));
+        }
     }
 
     public class RansacRegistration : PointRegistration
     {
+        private double[,] CalculatedTransform { get; set; }
+
         public override PointRegistrationResult<Data2D> Register(Data2D fixedImage, Data2D movingImage,
             IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints, IProgress<int> progressReporter = null)
         {
@@ -148,34 +166,18 @@ namespace ImagingSIMS.Data.Imaging
             RansacHomographyEstimator ransac = new RansacHomographyEstimator(0.001, 0.99);
             var transform = ransac.Estimate(fixedPointsCorrected.ToArray(), movingPointsCorrected.ToArray()).ToDoubleArray();
 
+            CalculatedTransform = transform;
+
             int transformedWidth = fixedImage.Width;
             int transformedHeight = fixedImage.Height;
 
-            var transformed = new Data2D(transformedWidth, transformedHeight)
-            {
-                DataName = movingImage.DataName + "-Registered"
-            };
+            TargetWidth = transformedWidth;
+            TargetHeight = transformedHeight;
 
-            for (int x = 0; x < transformedWidth; x++)
-            {
-                for (int y = 0; y < transformedHeight; y++)
-                {
-                    var point = new double[] { x, y, 1 };
-
-                    var transformedPoint = transform.Dot(point);
-
-                    var hx = transformedPoint[0] / transformedPoint[2];
-                    var hy = transformedPoint[1] / transformedPoint[2];
-
-                    if (hx < 0 || hx >= transformedWidth || hy < 0 || hy >= transformedHeight) continue;
-
-                    transformed[x, y] = movingImage.Sample(hx, hy);
-                }
-
-                progressReporter?.Report(Percentage.GetPercent(x, transformedWidth));
-            }
+            var transformed = Transform(result.ScaledMovingImage, movingImage.DataName + " - Registered", progressReporter);
 
             result.Result = transformed;
+            result.Transform = this;
 
             return result;
         }
@@ -238,13 +240,31 @@ namespace ImagingSIMS.Data.Imaging
             RansacHomographyEstimator ransac = new RansacHomographyEstimator(0.001, 0.99);
             var transform = ransac.Estimate(fixedPoints.ToArray(), movingPoints.ToArray()).ToDoubleArray();
 
+            CalculatedTransform = transform;
+
             int transformedWidth = fixedImage.Width;
             int transformedHeight = fixedImage.Height;
             int transformedDepth = movingImage.Depth;
 
-            var transformed = new Data3D(transformedWidth, transformedHeight, transformedDepth)
+            TargetWidth = transformedWidth;
+            TargetHeight = transformedHeight;
+
+            var transformed = Transform(result.ScaledMovingImage, movingImage.DataName + " - Registered", progressReporter);
+
+            result.Result = transformed;
+            result.Transform = this;
+
+            return result;
+        }
+
+        public override Data2D Transform(Data2D data, string tableName, IProgress<int> progressReporter = null)
+        {
+            int transformedWidth = data.Width;
+            int transformedHeight = data.Height;
+
+            var transformed = new Data2D(transformedWidth, transformedHeight)
             {
-                DataName = movingImage.DataName + "-Registered"
+                DataName = tableName
             };
 
             for (int x = 0; x < transformedWidth; x++)
@@ -253,7 +273,39 @@ namespace ImagingSIMS.Data.Imaging
                 {
                     var point = new double[] { x, y, 1 };
 
-                    var transformedPoint = transform.Dot(point);
+                    var transformedPoint = CalculatedTransform.Dot(point);
+
+                    var hx = transformedPoint[0] / transformedPoint[2];
+                    var hy = transformedPoint[1] / transformedPoint[2];
+
+                    if (hx < 0 || hx >= transformedWidth || hy < 0 || hy >= transformedHeight) continue;
+
+                    transformed[x, y] = data.Sample(hx, hy);
+                }
+
+                progressReporter?.Report(Percentage.GetPercent(x, transformedWidth));
+            }
+
+            return transformed;
+        }
+        public override Data3D Transform(Data3D data, string tableName, IProgress<int> progressReporter = null)
+        {
+            int transformedWidth = data.Width;
+            int transformedHeight = data.Height;
+            int transformedDepth = data.Depth;
+
+            var transformed = new Data3D(transformedWidth, transformedHeight, transformedDepth)
+            {
+                DataName = tableName
+            };
+
+            for (int x = 0; x < transformedWidth; x++)
+            {
+                for (int y = 0; y < transformedHeight; y++)
+                {
+                    var point = new double[] { x, y, 1 };
+
+                    var transformedPoint = CalculatedTransform.Dot(point);
 
                     var hx = transformedPoint[0] / transformedPoint[2];
                     var hy = transformedPoint[1] / transformedPoint[2];
@@ -262,21 +314,21 @@ namespace ImagingSIMS.Data.Imaging
 
                     for (int z = 0; z < transformedDepth; z++)
                     {
-                        transformed[x, y, z] = movingImage.Layers[z].Sample(hx, hy);
-                    }                    
+                        transformed[x, y, z] = data.Layers[z].Sample(hx, hy);
+                    }
                 }
 
                 progressReporter?.Report(Percentage.GetPercent(x, transformedWidth));
             }
 
-            result.Result = transformed;
-
-            return result;
+            return transformed;
         }
     }
 
     public class ProjectiveRegistration : PointRegistration
     {
+        public ProjectiveTransform CalculatedTransform { get; set; }
+
         public override PointRegistrationResult<Data2D> Register(Data2D fixedImage, Data2D movingImage, 
             IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints, IProgress<int> progressReporter = null)
         {
@@ -330,29 +382,18 @@ namespace ImagingSIMS.Data.Imaging
             ProjectiveTransform transform = new ProjectiveTransform();
             transform.CalculateTransform(fixedPointsCorrected, movingPointsCorrected);
 
+            CalculatedTransform = transform;
+
             int transformedWidth = fixedImage.Width;
             int transformedHeight = fixedImage.Height;
 
-            var transformed = new Data2D(transformedWidth, transformedHeight)
-            {
-                DataName = movingImage.DataName + "-Registered"
-            };
+            TargetWidth = transformedWidth;
+            TargetHeight = transformedHeight;
 
-            for (int x = 0; x < transformedWidth; x++)
-            {
-                for (int y = 0; y < transformedHeight; y++)
-                {
-                    var transformedPoint = transform.TransformCoordinate(new IntPoint(x, y));
-
-                    if (transformedPoint.X < 0 || transformedPoint.X >= transformedWidth || transformedPoint.Y < 0 || transformedPoint.Y >= transformedHeight) continue;
-
-                    transformed[x, y] = result.ScaledMovingImage.Sample(transformedPoint.X, transformedPoint.Y);
-                }
-
-                progressReporter?.Report(Percentage.GetPercent(x, transformedWidth));
-            }
+            var transformed = Transform(result.ScaledMovingImage, movingImage.DataName + " - Registered", progressReporter);
 
             result.Result = transformed;
+            result.Transform = this;
 
             return result;
         }
@@ -415,35 +456,78 @@ namespace ImagingSIMS.Data.Imaging
             ProjectiveTransform transform = new ProjectiveTransform();
             transform.CalculateTransform(fixedPointsCorrected, movingPointsCorrected);
 
+            CalculatedTransform = transform;
+
             int transformedWidth = fixedImage.Width;
             int transformedHeight = fixedImage.Height;
             int transformedDepth = movingImage.Depth;
 
-            var transformed = new Data3D(transformedWidth, transformedHeight, transformedDepth)
+            TargetWidth = transformedWidth;
+            TargetHeight = transformedHeight;
+
+            var transformed = Transform(result.ScaledMovingImage, movingImage.DataName + " - Registered", progressReporter);
+
+            result.Result = transformed;
+            result.Transform = this;
+
+            return result;
+        }
+
+        public override Data2D Transform(Data2D data, string tableName, IProgress<int> progressReporter = null)
+        {
+            int transformedWidth = data.Width;
+            int transformedHeight = data.Height;
+
+            var transformed = new Data2D(transformedWidth, transformedHeight)
             {
-                DataName = movingImage.DataName + "-Registered"
+                DataName = tableName
             };
 
             for (int x = 0; x < transformedWidth; x++)
             {
                 for (int y = 0; y < transformedHeight; y++)
                 {
-                    var transformedPoint = transform.TransformCoordinate(new IntPoint(x, y));
+                    var transformedPoint = CalculatedTransform.TransformCoordinate(new IntPoint(x, y));
+
+                    if (transformedPoint.X < 0 || transformedPoint.X >= transformedWidth || transformedPoint.Y < 0 || transformedPoint.Y >= transformedHeight) continue;
+
+                    transformed[x, y] = data.Sample(transformedPoint.X, transformedPoint.Y);
+                }
+
+                progressReporter?.Report(Percentage.GetPercent(x, transformedWidth));
+            }
+
+            return transformed;
+        }
+        public override Data3D Transform(Data3D data, string tableName, IProgress<int> progressReporter = null)
+        {
+            int transformedWidth = data.Width;
+            int transformedHeight = data.Height;
+            int transformedDepth = data.Depth;
+
+            var transformed = new Data3D(transformedWidth, transformedHeight, transformedDepth)
+            {
+                DataName = tableName
+            };
+
+            for (int x = 0; x < transformedWidth; x++)
+            {
+                for (int y = 0; y < transformedHeight; y++)
+                {
+                    var transformedPoint = CalculatedTransform.TransformCoordinate(new IntPoint(x, y));
 
                     if (transformedPoint.X < 0 || transformedPoint.X >= transformedWidth || transformedPoint.Y < 0 || transformedPoint.Y >= transformedHeight) continue;
 
                     for (int z = 0; z < transformedDepth; z++)
                     {
-                        transformed[x, y, z] = result.ScaledMovingImage.Layers[z].Sample(transformedPoint.X, transformedPoint.Y);
+                        transformed[x, y, z] = data.Layers[z].Sample(transformedPoint.X, transformedPoint.Y);
                     }
 
                     progressReporter?.Report(Percentage.GetPercent(x, transformedWidth));
                 }
             }
 
-            result.Result = transformed;
-
-            return result;
+            return transformed;
         }
     }
 
@@ -539,6 +623,8 @@ namespace ImagingSIMS.Data.Imaging
 
     public class AffineRegistration : PointRegistration
     {
+        public AffineTransform CalculatedTransform { get; set; }
+
         public override PointRegistrationResult<Data2D> Register(Data2D fixedImage, Data2D movingImage, 
             IEnumerable<IntPoint> fixedPoints, IEnumerable<IntPoint> movingPoints, IProgress<int> progressReporter = null)
         {
@@ -592,29 +678,18 @@ namespace ImagingSIMS.Data.Imaging
             AffineTransform transform = new Imaging.AffineTransform();
             transform.CalculateTransform(fixedPointsCorrected, movingPointsCorrected);
 
+            CalculatedTransform = transform;
+
             int transformedWidth = fixedImage.Width;
             int transformedHeight = fixedImage.Height;
 
-            var transformed = new Data2D(transformedWidth, transformedHeight)
-            {
-                DataName = movingImage.DataName + "-Registered"
-            };
+            TargetWidth = transformedWidth;
+            TargetHeight = transformedHeight;
 
-            for (int x = 0; x < transformedWidth; x++)
-            {
-                for (int y = 0; y < transformedHeight; y++)
-                { 
-                    var transformedPoint = transform.TransformCoordinate(new IntPoint(x, y));
-
-                    if (transformedPoint.X < 0 || transformedPoint.X >= transformedWidth || transformedPoint.Y < 0 || transformedPoint.Y >= transformedHeight) continue;
-
-                    transformed[x, y] = result.ScaledMovingImage.Sample(transformedPoint.X, transformedPoint.Y);
-                }
-
-                progressReporter?.Report(Percentage.GetPercent(x, transformedWidth));
-            }
+            var transformed = Transform(result.ScaledMovingImage, movingImage.DataName + " - Registered", progressReporter);
 
             result.Result = transformed;
+            result.Transform = this;
 
             return result;
         }
@@ -677,37 +752,79 @@ namespace ImagingSIMS.Data.Imaging
             AffineTransform transform = new Imaging.AffineTransform();
             transform.CalculateTransform(fixedPointsCorrected, movingPointsCorrected);
 
+            CalculatedTransform = transform;
+
             int transformedWidth = fixedImage.Width;
             int transformedHeight = fixedImage.Height;
             int transformedDepth = movingImage.Depth;
 
-            var transformed = new Data3D(transformedWidth, transformedHeight, transformedDepth)
+            TargetWidth = transformedWidth;
+            TargetHeight = transformedHeight;
+
+            var transformed = Transform(result.ScaledMovingImage, movingImage.DataName + " - Registered", progressReporter);
+
+            result.Result = transformed;
+            result.Transform = this;
+
+            return result;
+        }
+
+        public override Data2D Transform(Data2D data, string tableName, IProgress<int> progressReporter = null)
+        {
+            int transformedWidth = data.Width;
+            int transformedHeight = data.Height;
+
+            var transformed = new Data2D(transformedWidth, transformedHeight)
             {
-                DataName = movingImage.DataName + "-Registered"
+                DataName = tableName
             };
 
             for (int x = 0; x < transformedWidth; x++)
             {
                 for (int y = 0; y < transformedHeight; y++)
                 {
-                    var transformedPoint = transform.TransformCoordinate(new IntPoint(x, y));
+                    var transformedPoint = CalculatedTransform.TransformCoordinate(new IntPoint(x, y));
+
+                    if (transformedPoint.X < 0 || transformedPoint.X >= transformedWidth || transformedPoint.Y < 0 || transformedPoint.Y >= transformedHeight) continue;
+
+                    transformed[x, y] = data.Sample(transformedPoint.X, transformedPoint.Y);
+                }
+
+                progressReporter?.Report(Percentage.GetPercent(x, transformedWidth));
+            }
+
+            return transformed;
+        }
+        public override Data3D Transform(Data3D data, string tableName, IProgress<int> progressReporter = null)
+        {
+            int transformedWidth = data.Width;
+            int transformedHeight = data.Height;
+            int transformedDepth = data.Depth;
+
+            var transformed = new Data3D(transformedWidth, transformedHeight, transformedDepth)
+            {
+                DataName = tableName
+            };
+
+            for (int x = 0; x < transformedWidth; x++)
+            {
+                for (int y = 0; y < transformedHeight; y++)
+                {
+                    var transformedPoint = CalculatedTransform.TransformCoordinate(new IntPoint(x, y));
 
                     if (transformedPoint.X < 0 || transformedPoint.X >= transformedWidth || transformedPoint.Y < 0 || transformedPoint.Y >= transformedHeight) continue;
 
                     for (int z = 0; z < transformedDepth; z++)
                     {
-                        transformed[x, y, z] = result.ScaledMovingImage.Layers[z].Sample(transformedPoint.X, transformedPoint.Y);
+                        transformed[x, y, z] = data.Layers[z].Sample(transformedPoint.X, transformedPoint.Y);
                     }
                 }
 
                 progressReporter?.Report(Percentage.GetPercent(x, transformedWidth));
             }
 
-            result.Result = transformed;
-
-            return result;
+            return transformed;
         }
-   
     }
 
     public class AffineTransform

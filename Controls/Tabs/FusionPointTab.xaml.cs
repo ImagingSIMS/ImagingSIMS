@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using ImagingSIMS.ImageRegistration;
 using ImagingSIMS.Controls.BaseControls;
+using System.Text;
 
 namespace ImagingSIMS.Controls.Tabs
 {
@@ -50,7 +51,6 @@ namespace ImagingSIMS.Controls.Tabs
         }
         private async void Register_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
             ViewModel.IsRegistering = true;
             ViewModel.RegistrationProgress = 0;
 
@@ -93,8 +93,70 @@ namespace ImagingSIMS.Controls.Tabs
             ViewModel.RegisteredOverlay = Overlay.CreateFalseColorOverlay(scaledFixedImage, resultImage, FalseColorOverlayMode.GreenMagenta);
 
             ViewModel.IsRegistering = false;
+
+            ViewModel.PointRegistrationResult = registrationResult;
         }
 
+        private void ApplyTransformToSelected_CanExeucte(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = ViewModel.PointRegistrationResult != null;
+        }
+        private async void ApplyTransformToSelected_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            ViewModel.IsRegistering = true;
+
+            List<KeyValuePair<Data2D, string>> notTransformed = new List<KeyValuePair<Data2D, string>>();
+            List<Data2D> transformedTables = new List<Data2D>();
+
+            var transform = ViewModel.PointRegistrationResult.Transform;
+            int targetWidth = transform.TargetWidth;
+            int targetHeight = transform.TargetHeight;
+
+            var tables = AvailableHost.AvailableTablesSource.GetSelectedTables();
+            foreach (var table in tables)
+            {
+                Data2D toTransform = null;
+                if (targetWidth != table.Width || targetHeight != table.Height)
+                {
+                    try
+                    {
+                        toTransform = table.Resize(targetWidth, targetHeight);
+                    }
+                    catch(Exception ex)
+                    {
+                        notTransformed.Add(new KeyValuePair<Data2D, string>(table, ex.Message));
+                        continue;
+                    }
+                }
+                else toTransform = table;
+
+                try
+                {
+                    var transformed = await transform.TransformAsync(toTransform, table.DataName + " - Registered", null);
+                    transformedTables.Add(transformed);
+                }
+                catch (Exception ex)
+                {
+                    notTransformed.Add(new KeyValuePair<Data2D, string>(table, ex.Message));
+                }
+            }
+
+            AvailableHost.AvailableTablesSource.AddTables(transformedTables);
+
+            if(notTransformed.Count != 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (var kvp in notTransformed)
+                {
+                    sb.AppendLine($"{kvp.Key.DataName}: {kvp.Value}");
+                }
+                sb.Append("Those not listed here have been succesfully transformed");
+
+                DialogBox.Show("Some tables could not be transformed:", sb.ToString(), "Transform", DialogIcon.Invalid);
+            }
+
+            ViewModel.IsRegistering = false;
+        }
 
         private void Fuse_CanExeucte(object sender, CanExecuteRoutedEventArgs e)
         {
