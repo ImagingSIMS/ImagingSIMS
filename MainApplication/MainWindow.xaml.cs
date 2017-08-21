@@ -120,7 +120,7 @@ namespace ImagingSIMS.MainApplication
                 StartupTab st = new StartupTab();
                 st.RecentFileClicked += startupTab_RecentFileClicked;
                 st.RecentFileRemoveClicked += startupTab_RecentFileRemoveClicked;
-                tabMain.Items.Add(ClosableTabItem.Create(st, TabType.Startup, true));
+                tabMain.Items.Add(ClosableTabItem.Create(st, TabType.Startup));
                 tabMain.SelectedIndex = 0;
             }
 
@@ -319,7 +319,7 @@ namespace ImagingSIMS.MainApplication
         #region Application Menu
         private void ribbonButtonOptions_Click(object sender, RoutedEventArgs e)
         {
-            ClosableTabItem cti = ClosableTabItem.Create(new SettingsTab(Workspace.Registry), TabType.Settings, true);
+            ClosableTabItem cti = ClosableTabItem.Create(new SettingsTab(Workspace.Registry), TabType.Settings);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -963,7 +963,7 @@ namespace ImagingSIMS.MainApplication
 
             DisplayTab it = new DisplayTab();
             it.CurrentSeries = series;
-            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.Display, series.SeriesName, true);
+            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.Display, series.SeriesName);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
@@ -1480,7 +1480,7 @@ namespace ImagingSIMS.MainApplication
         private void ribbonEditWorkspace_Click(object sender, RoutedEventArgs e)
         {
             var editTab = new ManageWorkspaceTab(Workspace);
-            var cti = ClosableTabItem.Create(editTab, TabType.EditWorkspace, "Edit Workspace", true);
+            var cti = ClosableTabItem.Create(editTab, TabType.EditWorkspace, "Edit Workspace");
             AddTabItemAndNavigate(cti);
         }
 
@@ -1556,7 +1556,7 @@ namespace ImagingSIMS.MainApplication
             StartupTab st = new StartupTab();
             st.RecentFileClicked += startupTab_RecentFileClicked;
             st.RecentFileRemoveClicked += startupTab_RecentFileClicked;
-            ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Startup, true);
+            ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Startup);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -1743,13 +1743,13 @@ namespace ImagingSIMS.MainApplication
             DisplayTab it = new DisplayTab();
             it.CurrentSeries = series;
 
-            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.Display, it.CurrentSeries.SeriesName, true);
+            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.Display, it.CurrentSeries.SeriesName);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
         private void NewOverlay(object sender, RoutedEventArgs e)
         {
-            ClosableTabItem cti = ClosableTabItem.Create(new DisplayTab(), TabType.Display, "Image Display", true);
+            ClosableTabItem cti = ClosableTabItem.Create(new DisplayTab(), TabType.Display, "Image Display");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -1832,7 +1832,7 @@ namespace ImagingSIMS.MainApplication
                 DisplayTab dt = new DisplayTab();
                 dt.CurrentSeries = series;
 
-                ClosableTabItem cti2 = ClosableTabItem.Create(dt, TabType.Display, series.SeriesName, true);
+                ClosableTabItem cti2 = ClosableTabItem.Create(dt, TabType.Display, series.SeriesName);
                 tabMain.Items.Add(cti2);
                 tabMain.SelectedItem = cti2;
 
@@ -2084,7 +2084,7 @@ namespace ImagingSIMS.MainApplication
         private void CreateVolume(object sender, RoutedEventArgs e)
         {
             VolumeTab vt = new VolumeTab();
-            ClosableTabItem cti = ClosableTabItem.Create(vt, TabType.RenderObject, "New Volume", true);
+            ClosableTabItem cti = ClosableTabItem.Create(vt, TabType.RenderObject, "New Volume");
 
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
@@ -2477,7 +2477,7 @@ namespace ImagingSIMS.MainApplication
         private void createDepthRender_Click(object sender, RoutedEventArgs e)
         {
             ClosableTabItem cti = ClosableTabItem.Create(new HeightMapTab(),
-                TabType.HeightMap, "Depth Render", true);
+                TabType.HeightMap, "Depth Render");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -2486,7 +2486,7 @@ namespace ImagingSIMS.MainApplication
         #region Spectra Tab
         private void ribbonButtonSpecCrop_Click(object sender, RoutedEventArgs e)
         {
-            ClosableTabItem cti = ClosableTabItem.Create(new SpectrumCropTab(), TabType.SpectrumCrop, "Spectrum Crop", false);
+            ClosableTabItem cti = ClosableTabItem.Create(new SpectrumCropTab(), TabType.SpectrumCrop, "Spectrum Crop");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -3153,7 +3153,7 @@ namespace ImagingSIMS.MainApplication
         }
         private void openClusterTab_Click(object sender, RoutedEventArgs e)
         {
-            ClosableTabItem cti = ClosableTabItem.Create(new ClusterTab(), TabType.Cluster, "Clusters", true);
+            ClosableTabItem cti = ClosableTabItem.Create(new ClusterTab(), TabType.Cluster, "Clusters");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -3162,7 +3162,7 @@ namespace ImagingSIMS.MainApplication
         #region Fusion Tab
         private void OpenFusionTab(object sender, RoutedEventArgs e)
         {
-            ClosableTabItem cti = ClosableTabItem.Create(new FusionTab(), TabType.Fusion, true);
+            ClosableTabItem cti = ClosableTabItem.Create(new FusionTab(), TabType.Fusion);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -3202,7 +3202,7 @@ namespace ImagingSIMS.MainApplication
             NewTab:
             {
                 ft = new FusionTab();
-                cti = ClosableTabItem.Create(ft, TabType.Fusion, true);
+                cti = ClosableTabItem.Create(ft, TabType.Fusion);
                 tabMain.Items.Add(cti);
                 goto UseTab;
             }
@@ -3248,7 +3248,7 @@ namespace ImagingSIMS.MainApplication
             NewTab:
             {
                 ft = new FusionTab();
-                cti = ClosableTabItem.Create(ft, TabType.Fusion, true);
+                cti = ClosableTabItem.Create(ft, TabType.Fusion);
                 tabMain.Items.Add(cti);
                 goto UseTab;
             }
@@ -3526,7 +3526,7 @@ namespace ImagingSIMS.MainApplication
             //Data2DDisplayTab it = new Data2DDisplayTab(data, type);
             DataDisplayTab it = new DataDisplayTab(type);
 
-            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.DataDisplay, title, true);
+            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.DataDisplay, title);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
@@ -3638,7 +3638,7 @@ namespace ImagingSIMS.MainApplication
 
                     SpectrumTab st = new SpectrumTab();
                     st.SetData(s.Name, s);
-                    ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Spectrum, s.Name, true);
+                    ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Spectrum, s.Name);
                     tabMain.Items.Add(cti);
                     tabMain.SelectedItem = cti;
 
@@ -3714,7 +3714,7 @@ namespace ImagingSIMS.MainApplication
 
             PCATab pca = new PCATab();
             pca.OriginalSpectrum = s;
-            ClosableTabItem cti = ClosableTabItem.Create(pca, TabType.PCA, $"PCA - {s.Name}", true);
+            ClosableTabItem cti = ClosableTabItem.Create(pca, TabType.PCA, $"PCA - {s.Name}");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -3965,7 +3965,7 @@ namespace ImagingSIMS.MainApplication
             var selected = GetSelectedVolumes();
 
             DataDisplayTab dt = new DataDisplayTab();
-            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Volume Preview", true);
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Volume Preview");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
@@ -4389,7 +4389,7 @@ namespace ImagingSIMS.MainApplication
                 drt.SetRegisteredImages(ft.HighResImage.ImageSource, ft.LowResImage.ImageSource);
             }
 
-            ClosableTabItem ctiDrt = ClosableTabItem.Create(drt, TabType.DataRegistration, "Data Transform", true);
+            ClosableTabItem ctiDrt = ClosableTabItem.Create(drt, TabType.DataRegistration, "Data Transform");
             tabMain.Items.Add(ctiDrt);
             tabMain.SelectedItem = ctiDrt;
         }
@@ -4449,7 +4449,7 @@ namespace ImagingSIMS.MainApplication
             SampleData sd = new SampleData(256, 256, 30);
             sd.CreateSphere(128, 128, 15, 10);
             DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalWarm);
-            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Test", true);
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Test");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
@@ -4505,7 +4505,7 @@ namespace ImagingSIMS.MainApplication
                     }
                 }
 
-                cti = ClosableTabItem.Create(new SettingsTab(Workspace.Registry), TabType.Settings, true);
+                cti = ClosableTabItem.Create(new SettingsTab(Workspace.Registry), TabType.Settings);
                 tabMain.Items.Add(cti);
                 tabMain.SelectedItem = cti;
             }
