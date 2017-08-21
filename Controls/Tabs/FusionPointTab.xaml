@@ -40,6 +40,7 @@
     </UserControl.Resources>
     <UserControl.CommandBindings>
         <CommandBinding Command="ctrls:FusionCommands.Fuse" CanExecute="Fuse_CanExeucte" Executed="Fuse_Executed"/>
+        <CommandBinding Command="ctrls:RegistrationCommands.ApplyTransformToSelected" CanExecute="ApplyTransformToSelected_CanExeucte" Executed="ApplyTransformToSelected_Executed"/>
         <CommandBinding Command="ctrls:RegistrationCommands.Register" CanExecute="Register_CanExecute" Executed="Register_Executed"/>
         <CommandBinding Command="ApplicationCommands.Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
         <CommandBinding Command="ApplicationCommands.Copy" CanExecute="Copy_CanExecute" Executed="Copy_Executed"/>
@@ -181,6 +182,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <ComboBox HorizontalAlignment="Stretch" Width="Auto" Height="23" Margin="4"
                                   IsEditable="False"
@@ -194,6 +196,10 @@
                     </ComboBox>
                     <Button Grid.Column="1"
                         Command="ctrls:RegistrationCommands.Register">Register</Button>
+                    <Button Grid.Column="2"
+                            Command="ctrls:RegistrationCommands.ApplyTransformToSelected">
+                        Apply Selected
+                    </Button>
                 </Grid>
 
                 <Grid Grid.Row="2">

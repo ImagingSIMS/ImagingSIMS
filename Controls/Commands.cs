@@ -91,6 +91,7 @@ namespace ImagingSIMS.Controls
         private static RoutedUICommand _cancelRegistration = new RoutedUICommand("Cancel Registration", "CancelRegistration", typeof(RegistrationCommands));
         private static RoutedUICommand _undoRegistration = new RoutedUICommand("Undo Registration", "UndoRegistration", typeof(RegistrationCommands));
         private static RoutedUICommand _addTable = new RoutedUICommand("Add Table", "AddTable", typeof(RegistrationCommands));
+        private static RoutedUICommand _applyTransformToSelected = new RoutedUICommand("Apply transform to selected data", "ApplyTransformToSelected", typeof(RegistrationCommands));
 
         public static RoutedUICommand ClearSelection
         {
@@ -116,6 +117,8 @@ namespace ImagingSIMS.Controls
         {
             get { return _addTable; }
         }
+        public static RoutedUICommand ApplyTransformToSelected { get { return _applyTransformToSelected; } }
+
     }
 
     public static class FusionCommands

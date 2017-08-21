@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ImagingSIMS.Controls.BaseControls;
+using ImagingSIMS.Data;
 using ImagingSIMS.Data.Fusion;
 using ImagingSIMS.Data.Imaging;
 using ImagingSIMS.ImageRegistration;
@@ -29,6 +30,7 @@ namespace ImagingSIMS.Controls.ViewModels
         Color _panchrolmaticConversionSolidColor;
         FusionType _fusionType;
         string _analysisResults;
+        PointRegistrationResult<Data2D> _pointRegistrationResult;
 
         public ControlPointImageViewModel MovingImageViewModel
         {
@@ -219,6 +221,18 @@ namespace ImagingSIMS.Controls.ViewModels
                 if (_analysisResults != value)
                 {
                     _analysisResults = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public PointRegistrationResult<Data2D> PointRegistrationResult
+        {
+            get { return _pointRegistrationResult; }
+            set
+            {
+                if (_pointRegistrationResult != value)
+                {
+                    _pointRegistrationResult = value;
                     NotifyPropertyChanged();
                 }
             }
