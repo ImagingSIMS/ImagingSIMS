@@ -1605,7 +1605,7 @@ namespace ImagingSIMS.MainApplication
         private void ribbonOpenRatioTab_Click(object sender, RoutedEventArgs e)
         {
             RatioTab rt = new RatioTab();
-            ClosableTabItem cti = ClosableTabItem.Create(rt, TabType.Ratio, "Ratio", true);
+            ClosableTabItem cti = ClosableTabItem.Create(rt, TabType.Ratio, "Ratio");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -1614,14 +1614,14 @@ namespace ImagingSIMS.MainApplication
             ImageStitchTab ist = new ImageStitchTab();
             ist.Workspace = Workspace;
 
-            ClosableTabItem cti = ClosableTabItem.Create(ist, TabType.ImageStitch, "Image Stitch", true);
+            ClosableTabItem cti = ClosableTabItem.Create(ist, TabType.ImageStitch, "Image Stitch");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
         private void ribbonOpenDataMathTab_Click(object sender, RoutedEventArgs e)
         {
             var dmt = new DataMathTab();
-            var cti = ClosableTabItem.Create(dmt, TabType.DataMath, "Data Math", true);
+            var cti = ClosableTabItem.Create(dmt, TabType.DataMath, "Data Math");
             AddTabItemAndNavigate(cti);
         }
         private void NewSampleData(object sender, RoutedEventArgs e)
@@ -5349,7 +5349,7 @@ namespace ImagingSIMS.MainApplication
             AvailableHost.AvailableTablesSource.AddTables(sortedPcs);
 
             var dt = new DataDisplayTab();
-            var cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "GFPCA", true);
+            var cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "GFPCA");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
             foreach (var f in fused)
@@ -5610,7 +5610,7 @@ namespace ImagingSIMS.MainApplication
             var fpt = new FusionPointTab();
             fpt.ViewModel.FixedImageViewModel.DataSource = fixedData;
             fpt.ViewModel.MovingImageViewModel.DataSource = movingData;
-            var cti = ClosableTabItem.Create(fpt, TabType.FusionPoint, true);
+            var cti = ClosableTabItem.Create(fpt, TabType.FusionPoint);
             AddTabItemAndNavigate(cti);
             return;
 
