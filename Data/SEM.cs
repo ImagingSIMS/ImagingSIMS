@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 
 namespace ImagingSIMS.Data
 {
-    public class SEM : Data, ISavable
+    public class SEM : Data, ISavable, IWorkspaceData
     {
         const float Zero = 0.0f;
         const float OneThird = 0.333333f;
@@ -40,6 +40,15 @@ namespace ImagingSIMS.Data
                     NotifyPropertyChanged("IntensityScale");
                     RedrawImage(value);
                 }
+            }
+        }
+
+        public override string SizeString
+        {
+            get
+            {
+                return $"W: {_matrixSize} H: {_matrixSize}";
+
             }
         }
 
