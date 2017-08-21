@@ -1484,7 +1484,6 @@ namespace ImagingSIMS.MainApplication
             AddTabItemAndNavigate(cti);
         }
 
-
         private void ribbonOpenSumTab_Click(object sender, RoutedEventArgs e)
         {
             TableSumTab tst = new TableSumTab();
@@ -1557,7 +1556,7 @@ namespace ImagingSIMS.MainApplication
             StartupTab st = new StartupTab();
             st.RecentFileClicked += startupTab_RecentFileClicked;
             st.RecentFileRemoveClicked += startupTab_RecentFileClicked;
-            ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Startup);
+            ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Startup, true);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
