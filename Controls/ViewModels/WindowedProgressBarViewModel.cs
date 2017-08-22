@@ -21,7 +21,8 @@ namespace ImagingSIMS.Controls.ViewModels
                 {
                     _progress = value;
                     NotifyPropertyChanged();
-                };
+                }
+            }
         }
         public event PropertyChangedEventHandler PropertyChanged;
         protected void NotifyPropertyChanged([CallerMemberName]string propertyName = "")
