@@ -10,6 +10,19 @@ namespace ImagingSIMS.Controls.ViewModels
 {
     public class WindowedProgressBarViewModel : INotifyPropertyChanged
     {
+        int _progress;
+
+        public int Progress
+        {
+            get { return _progress; }
+            set
+            {
+                if (_progress != value)
+                {
+                    _progress = value;
+                    NotifyPropertyChanged();
+                };
+        }
         public event PropertyChangedEventHandler PropertyChanged;
         protected void NotifyPropertyChanged([CallerMemberName]string propertyName = "")
         {
