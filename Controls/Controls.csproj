@@ -113,8 +113,8 @@
     <Compile Include="BaseControls\Data3DDisplay.xaml.cs">
       <DependentUpon>Data3DDisplay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BaseControls\WindowedProgressBar.xaml.cs">
-      <DependentUpon>WindowedProgressBar.xaml</DependentUpon>
+    <Compile Include="BaseControls\DockedProgressBar.xaml.cs">
+      <DependentUpon>DockedProgressBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="TabControls\MovableTabControl.cs" />
     <Compile Include="TabControls\MovableTabItem.cs" />
@@ -269,7 +269,7 @@
     <Compile Include="ViewModels\PeakPreviewViewModel.cs" />
     <Compile Include="ViewModels\RegistrationParametersViewModel.cs" />
     <Compile Include="ViewModels\ManageWorkspaceViewModel.cs" />
-    <Compile Include="ViewModels\WindowedProgressBarViewModel.cs" />
+    <Compile Include="ViewModels\DockedProgressBarViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -376,7 +376,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="BaseControls\WindowedProgressBar.xaml">
+    <Page Include="BaseControls\DockedProgressBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

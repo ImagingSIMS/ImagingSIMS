@@ -31,6 +31,8 @@ using ImagingSIMS.Controls.BaseControls;
 using ImagingSIMS.Controls.BaseControls.SpectrumView;
 using ImagingSIMS.Direct3DRendering.DrawingObjects;
 using ImagingSIMS.Direct3DRendering.Controls;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace ImagingSIMS.MainApplication
 {
@@ -247,6 +249,8 @@ namespace ImagingSIMS.MainApplication
             AvailableHost.AvailableImageSeriesSource = this;
             AvailableHost.AvailableVolumesSource = this;
             AvailableHost.AvailableSpectraSource = this;
+
+            ApplicationProgressManager.RegisterProgressControl(dockedProgressBar);
 
             Trace.WriteLine("Window load complete.");
 
@@ -4475,6 +4479,22 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test9_Click(object sender, RoutedEventArgs e)
         {
+            IProgress<ProgressValue> progressReporter = new Progress<ProgressValue>();
+
+            ApplicationProgressManager.Current.StartProgressReporting((Progress<ProgressValue>)progressReporter);
+
+            await Task.Run(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+
+                    progressReporter.Report(new ProgressValue(i, 100, "Test progress"));
+                    Thread.Sleep(100);
+
+                }
+            });
+
+            ApplicationProgressManager.Current.CompleteProgressReporting();
 
         }
         private async void test10_Click(object sender, RoutedEventArgs e)

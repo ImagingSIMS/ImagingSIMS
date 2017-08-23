@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.BaseControls.DockedProgressBar"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImagingSIMS.Controls.BaseControls"
+             mc:Ignorable="d" 
+             DataContext="{Binding ElementName=userControl, Path=ViewModel}"
+             d:DesignHeight="30" d:DesignWidth="600">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Themes\Generic.xaml"/>
+                <ResourceDictionary>
+                    
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Visibility="{Binding IsProgressRunning, Converter={StaticResource boolVisConverter}}"
+          Background="#FF1A3334">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Margin="4" Foreground="White" Text="{Binding Message}"/>
+
+            <ProgressBar Margin="4" Grid.Column="1" HorizontalAlignment="Stretch" Value="{Binding Progress}"/>
+        </Grid>
+    </Grid>
+</UserControl>

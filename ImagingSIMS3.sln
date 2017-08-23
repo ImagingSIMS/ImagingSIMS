@@ -34,9 +34,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTesting", "UnitTesting\UnitTesting.csproj", "{837D0C17-36D2-45E7-9802-A27A8895F01B}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_with_Device|Any CPU = Debug_with_Device|Any CPU
 		Debug_with_Device|ARM = Debug_with_Device|ARM

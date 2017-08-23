@@ -4,6 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:bc="clr-namespace:ImagingSIMS.Controls.BaseControls;assembly=Controls"
         xmlns:c="clr-namespace:ImagingSIMS.Controls;assembly=Controls"
         xmlns:cbase="clr-namespace:ImagingSIMS.Controls.BaseControls;assembly=Controls"
         xmlns:ctabs="clr-namespace:ImagingSIMS.Controls.Tabs;assembly=Controls"
@@ -41,7 +42,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Ribbon x:Name="Ribbon" SelectedIndex="0" FontFamily="SegoeUI" FontSize="12">
@@ -1307,9 +1307,9 @@
                     </TextBlock.Triggers>
                 </TextBlock>
             </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <bc:DockedProgressBar x:Name="dockedProgressBar" Width="400" />
+            </StatusBarItem>
         </StatusBar>
-        <Grid Grid.Row="3">
-            <commonctrls:ProgressUpdaterControl Visibility="Collapsed"/>
-        </Grid>
     </Grid>
 </RibbonWindow>
