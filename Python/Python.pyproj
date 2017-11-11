@@ -12,8 +12,6 @@
     <OutputPath>.</OutputPath>
     <Name>Python</Name>
     <RootNamespace>Python</RootNamespace>
-    <InterpreterId>{0204c43f-712f-4384-880f-8041cf66a25d}</InterpreterId>
-    <InterpreterVersion>3.5</InterpreterVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,8 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.5-32" />
-    <InterpreterReference Include="{0204c43f-712f-4384-880f-8041cf66a25d}\3.5" />
-    <InterpreterReference Include="{2af0f10d-7135-4994-9156-5d01c9c11b7e}\3.5" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
