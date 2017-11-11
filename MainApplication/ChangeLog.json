@@ -149,5 +149,16 @@
     "Updates": [
       "Application name reflects new version."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 7,
+      "Build": 1,
+      "Revision": 3
+    },
+    "Updates": [
+      "About window displays correct license name."
+    ]
   }
 ]
