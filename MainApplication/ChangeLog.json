@@ -138,5 +138,16 @@
       "Perform user defined mathematical operations to data tables.",
       "New image fusion tab to incorporate point based image registration as well as update images from data tables on the fly."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 7,
+      "Build": 1,
+      "Revision": 2
+    },
+    "Updates": [
+      "Application name reflects new version."
+    ]
   }
 ]

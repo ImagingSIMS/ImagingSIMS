@@ -34,14 +34,13 @@
     <UpdateUrl>https://raw.githubusercontent.com/ImagingSIMS/ImagingSIMS/master/deploy/pub/</UpdateUrl>
     <SupportUrl>https://github.com/jay5026/ImagingSIMS/wiki</SupportUrl>
     <ErrorReportUrl>https://github.com/jay5026/ImagingSIMS/wiki</ErrorReportUrl>
-    <ProductName>ImagingSIMS %28PNNL%29 Version 3.6</ProductName>
+    <ProductName>ImagingSIMS Version 3.7</ProductName>
     <PublisherName>ImagingSIMS</PublisherName>
-    <SuiteName>PNNL Internal Version</SuiteName>
     <MinimumRequiredVersion>3.6.1.83</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>3.7.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
