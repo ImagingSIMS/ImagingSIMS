@@ -3,7 +3,7 @@ To create a ClickOnce deployment:
 2. Change the publihing folder location to \ImagingSIMS3\deploy\pub\ of the local path of the repo
 3. Make sure the project is set to Release mode. Do not publish Debug versions of the software.
 4. In the Changes window, verify that the new folder corresponding to the 
-    deployment (i.e. \deploy\pub\Application Files\ImagingSIMS_3_6_2_xxx\ )
+    deployment (i.e. \deploy\pub\Application Files\ImagingSIMS_3_7_1_xxx\ )
     has been added to the Included changes. If it hasn't, expand the Untracked 
     Files section, right click the folder, and add it to the Included changes
 5. Commit the changes with the comment "ClickOnce deployment for version *.*.*.*"
