@@ -57,6 +57,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Accord, Version=3.3.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.3.3.0\lib\net45\Accord.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="ReachFramework" />
     <Reference Include="SharpDX, Version=3.1.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
@@ -110,17 +114,37 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseControls\ControlPointSelection.xaml.cs">
+      <DependentUpon>ControlPointSelection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BaseControls\Data3DDisplay.xaml.cs">
       <DependentUpon>Data3DDisplay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BaseControls\ControlPointImage.xaml.cs">
+      <DependentUpon>ControlPointImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BaseControls\IndexedStackPanel.cs" />
     <Compile Include="TabControls\MovableTabControl.cs" />
     <Compile Include="TabControls\MovableTabItem.cs" />
+    <Compile Include="BaseControls\GridAware.cs" />
     <Compile Include="BaseControls\MoveThumb.cs" />
+    <Compile Include="BaseControls\RatiosDataGrid.xaml.cs">
+      <DependentUpon>RatiosDataGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BaseControls\ResizeThumb.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="IAvailableImageSeries.cs" />
     <Compile Include="IAvailableSpectra.cs" />
     <Compile Include="IAvailableVolumes.cs" />
+    <Compile Include="Tabs\DataMathTab.xaml.cs">
+      <DependentUpon>DataMathTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tabs\FusionPointTab.xaml.cs">
+      <DependentUpon>FusionPointTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tabs\RatioTab.xaml.cs">
+      <DependentUpon>RatioTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tabs\ClosableTabItem.cs" />
     <Compile Include="Tabs\ClusterTab.xaml.cs">
       <DependentUpon>ClusterTab.xaml</DependentUpon>
@@ -159,6 +183,9 @@
     <Compile Include="History.cs" />
     <Compile Include="BaseControls\Hyperlink.cs" />
     <Compile Include="IAvailableTables.cs" />
+    <Compile Include="Tabs\ImageStitchTab.xaml.cs">
+      <DependentUpon>ImageStitchTab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BaseControls\MaskedTextBox.cs" />
     <Compile Include="Tabs\IClosableTab.cs" />
     <Compile Include="Tabs\IDroppableTab.cs" />
@@ -259,11 +286,18 @@
       <DependentUpon>ZCorrectionTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\ClusterTabViewModel.cs" />
+    <Compile Include="ViewModels\ControlPointImageViewModel.cs" />
+    <Compile Include="ViewModels\ControlPointViewModel.cs" />
     <Compile Include="ViewModels\DataDisplayBatchApplyViewModel.cs" />
     <Compile Include="ViewModels\Data2DDisplayViewModel.cs" />
     <Compile Include="ViewModels\Data3DDisplayViewModel.cs" />
+    <Compile Include="ViewModels\DataMathViewModel.cs" />
     <Compile Include="ViewModels\FusionImageViewModel.cs" />
+    <Compile Include="ViewModels\FusionPointTabViewModel.cs" />
+    <Compile Include="ViewModels\ImageStitchViewModel.cs" />
     <Compile Include="ViewModels\PeakPreviewViewModel.cs" />
+    <Compile Include="ViewModels\RatioTabViewModel.cs" />
+    <Compile Include="ViewModels\RegionOfInterestViewModel.cs" />
     <Compile Include="ViewModels\RegistrationParametersViewModel.cs" />
     <Compile Include="ViewModels\ManageWorkspaceViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -368,7 +402,35 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BaseControls\ControlPointSelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="BaseControls\Data3DDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BaseControls\RatiosDataGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Simple Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Tabs\DataMathTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\FusionPointTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\RatioTab.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BaseControls\ControlPointImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -413,6 +475,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Tabs\HeightMapTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\ImageStitchTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -570,6 +636,13 @@
     <Content Include="SpectrumView\SpectrumView.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Accord.3.3.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.3.0\build\Accord.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Accord.3.3.0\build\Accord.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Accord.3.3.0\build\Accord.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

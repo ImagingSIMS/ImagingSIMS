@@ -18,6 +18,7 @@ using ImagingSIMS.Common.Controls;
 using System.Windows.Media;
 using ImagingSIMS.Common;
 using ImagingSIMS.Controls.ViewModels;
+using ImagingSIMS.Controls.BaseControls;
 
 namespace ImagingSIMS.Controls.Converters
 {
@@ -723,6 +724,23 @@ namespace ImagingSIMS.Controls.Converters
             return 0;
         }
     }
+
+    public class HasDataToBorderBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Data2D d = value as Data2D;
+            if (d == null) return new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+
+            return new SolidColorBrush(Color.FromArgb(255, 20, 255, 80));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class NumberClustersToEnabledConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -821,6 +839,30 @@ namespace ImagingSIMS.Controls.Converters
             return null;
         }
     }
+    public class Data2DConversionTypeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return Visibility.Collapsed;
+
+            try
+            {
+                Data2DConverionType ct = (Data2DConverionType)value;
+                string param = (string)parameter;
+                if (ct.ToString().ToLower() == param.ToLower()) return Visibility.Visible;
+
+                return Visibility.Collapsed;
+            }
+            catch (Exception)
+            {
+                return Visibility.Collapsed;
+            }
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class Data3DToRangeSliderMinMaxConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -894,6 +936,55 @@ namespace ImagingSIMS.Controls.Converters
             if (model == null) return string.Empty;
 
             return $"{model.ViewableDataSource.Width} x {model.ViewableDataSource.Height} x {model.LayerEnd - model.LayerStart + 1}";
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class RegistrationSelectionTypeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                var selectionMode = (RegistrationImageSelectionMode)value;
+                var target = (string)parameter;
+
+                if (selectionMode.ToString().ToLower() == target.ToLower()) return Visibility.Visible;
+                return Visibility.Collapsed;
+            }
+            catch (Exception)
+            {
+                return Visibility.Collapsed;
+            }
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Data2DToData3DDisplayViewModel : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var d = value as Data2D;
+            if (d == null) return null;
+
+            return new Data3DDisplayViewModel(new Data3D(new Data2D[] { d }), ColorScaleTypes.ThermalCold);
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class IsNotNullToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return Visibility.Collapsed;
+
+            return Visibility.Visible;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

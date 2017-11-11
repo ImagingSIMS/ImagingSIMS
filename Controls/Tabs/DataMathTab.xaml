@@ -1,0 +1,394 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.Tabs.DataMathTab"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:ImagingSIMS.Controls.ViewModels"
+             xmlns:local="clr-namespace:ImagingSIMS.Controls.Tabs"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:ctl="clr-namespace:ImagingSIMS.Controls"
+             xmlns:bc="clr-namespace:ImagingSIMS.Controls.BaseControls"
+             xmlns:img="clr-namespace:ImagingSIMS.Data.Imaging;assembly=Data"
+             xmlns:common="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             xmlns:cnvt="clr-namespace:ImagingSIMS.Controls.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Themes\Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <cnvt:ColorScaleToBoolConverter x:Key="colorScaleToBoolConverter"/>
+            <ObjectDataProvider x:Key="termIdentityFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="vm:TermIdentity"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            <ObjectDataProvider x:Key="colorScaleFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="img:ColorScaleTypes"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="Width" Value="50"/>
+                <Setter Property="Height" Value="23"/>
+            </Style>
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="Height" Value="23"/>
+                <Setter Property="Width" Value="50"/>
+            </Style>
+            <Style TargetType="{x:Type ComboBox}">
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="Width" Value="100"/>
+                <Setter Property="Height" Value="23"/>
+            </Style>
+            <Style TargetType="{x:Type bc:IndexedStackPanel}">
+                <Setter Property="Background" Value="Transparent"/>
+                <Style.Triggers>
+                    <Trigger Property="IsDragTarget" Value="True">
+                        <Setter Property="Background" Value="{StaticResource ThemeBlueAltBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding Command="ctl:DataMathCommands.PerformOperation" CanExecute="PerformOperation_CanExecute" Executed="PerformOperation_Executed"/>
+        <CommandBinding Command="ctl:DataMathCommands.AddResultToWorkspace" CanExecute="AddResultToWorkspace_CanExecute" Executed="AddResultToWorkspace_Executed"/>
+        <CommandBinding Command="ctl:DataMathCommands.AssignVariable" Executed="AssignVariable_Executed"/>
+        <CommandBinding Command="ctl:DataMathCommands.ClearVariable" Executed="ClearVariable_Executed"/>
+        <CommandBinding Command="ctl:DataMathCommands.ClearHistory" CanExecute="ClearHistory_CanExecute" Executed="ClearHistory_Executed"/>
+    </UserControl.CommandBindings>
+    <Grid d:DataContext="{d:DesignInstance Type=vm:DataMathViewModel}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="500"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Variables -->
+            <!-- 0 -->
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="0" Index="0" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">                
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock>Table 1:</TextBlock>
+                    <TextBlock Text="{Binding DataVariables[0].DataName}"/>
+                    <TextBlock Text="{Binding DataVariables[0].Width, StringFormat=W:{0}}"/>
+                    <TextBlock Text="{Binding DataVariables[0].Height, StringFormat=H:{0}}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="0">
+                        <Image Source="..\Images\Next.ico"/>
+                    </Button>
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="0">
+                        <Image Source="..\Images\Remove24.png"/>
+                    </Button>
+                </StackPanel>
+            </bc:IndexedStackPanel>
+            <!-- 1 -->
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="1" Index="1" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock>Table 2:</TextBlock>
+                    <TextBlock Text="{Binding DataVariables[1].DataName}"/>
+                    <TextBlock Text="{Binding DataVariables[1].Width, StringFormat=W:{0}}"/>
+                    <TextBlock Text="{Binding DataVariables[1].Height, StringFormat=H:{0}}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="1">
+                        <Image Source="..\Images\Next.ico"/>
+                    </Button>
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="1">
+                        <Image Source="..\Images\Remove24.png"/>
+                    </Button>
+                </StackPanel>
+            </bc:IndexedStackPanel>
+            <!-- 2 -->
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="2" Index="2" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock>Table 3:</TextBlock>
+                    <TextBlock Text="{Binding DataVariables[2].DataName}"/>
+                    <TextBlock Text="{Binding DataVariables[2].Width, StringFormat=W:{0}}"/>
+                    <TextBlock Text="{Binding DataVariables[2].Height, StringFormat=H:{0}}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="2">
+                        <Image Source="..\Images\Next.ico"/>
+                    </Button>
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="2">
+                        <Image Source="..\Images\Remove24.png"/>
+                    </Button>
+                </StackPanel>
+            </bc:IndexedStackPanel>
+            <!-- 3 -->
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="3" Index="3" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock>Table 4:</TextBlock>
+                    <TextBlock Text="{Binding DataVariables[3].DataName}"/>
+                    <TextBlock Text="{Binding DataVariables[3].Width, StringFormat=W:{0}}"/>
+                    <TextBlock Text="{Binding DataVariables[3].Height, StringFormat=H:{0}}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="3">
+                        <Image Source="..\Images\Next.ico"/>
+                    </Button>
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="3">
+                        <Image Source="..\Images\Remove24.png"/>
+                    </Button>
+                </StackPanel>
+            </bc:IndexedStackPanel>
+            <!-- 4 -->
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="4" Index="4" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock>Table 5:</TextBlock>
+                    <TextBlock Text="{Binding DataVariables[4].DataName}"/>
+                    <TextBlock Text="{Binding DataVariables[4].Width, StringFormat=W:{0}}"/>
+                    <TextBlock Text="{Binding DataVariables[4].Height, StringFormat=H:{0}}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="4">
+                        <Image Source="..\Images\Next.ico"/>
+                    </Button>
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="4">
+                        <Image Source="..\Images\Remove24.png"/>
+                    </Button>
+                </StackPanel>
+            </bc:IndexedStackPanel>
+            <!-- 5 -->
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="5" Index="5" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock>Table 6:</TextBlock>
+                    <TextBlock Text="{Binding DataVariables[5].DataName}"/>
+                    <TextBlock Text="{Binding DataVariables[5].Width, StringFormat=W:{0}}"/>
+                    <TextBlock Text="{Binding DataVariables[5].Height, StringFormat=H:{0}}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="5">
+                        <Image Source="..\Images\Next.ico"/>
+                    </Button>
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="5">
+                        <Image Source="..\Images\Remove24.png"/>
+                    </Button>
+                </StackPanel>
+            </bc:IndexedStackPanel>
+            <!-- 6 -->
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="6" Index="6" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock>Table 7:</TextBlock>
+                    <TextBlock Text="{Binding DataVariables[6].DataName}"/>
+                    <TextBlock Text="{Binding DataVariables[6].Width, StringFormat=W:{0}}"/>
+                    <TextBlock Text="{Binding DataVariables[6].Height, StringFormat=H:{0}}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="6">
+                        <Image Source="..\Images\Next.ico"/>
+                    </Button>
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="6">
+                        <Image Source="..\Images\Remove24.png"/>
+                    </Button>
+                </StackPanel>
+            </bc:IndexedStackPanel>
+            <!-- 7 -->
+            <bc:IndexedStackPanel Grid.Column="0" Grid.Row="7" Index="7" 
+                                  Orientation="Vertical" Drop="StackPanelDataVariables_Drop"
+                                  CanDrop="True">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock>Table 8:</TextBlock>
+                    <TextBlock Text="{Binding DataVariables[7].DataName}"/>
+                    <TextBlock Text="{Binding DataVariables[7].Width, StringFormat=W:{0}}"/>
+                    <TextBlock Text="{Binding DataVariables[7].Height, StringFormat=H:{0}}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Command="ctl:DataMathCommands.AssignVariable" CommandParameter="7">
+                        <Image Source="..\Images\Next.ico"/>
+                    </Button>
+                    <Button Command="ctl:DataMathCommands.ClearVariable" CommandParameter="7">
+                        <Image Source="..\Images\Remove24.png"/>
+                    </Button>
+                </StackPanel>
+            </bc:IndexedStackPanel>
+
+            <!-- Scalars -->
+
+            <!-- 0 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="0" Index="0"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 1:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[0]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 1 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="1" Index="1"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 2:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[1]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 2 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="2" Index="2"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 3:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[2]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 3 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="3" Index="3"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 4:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[3]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 4 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="4" Index="4"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 5:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[4]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 5 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="5" Index="5"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 6:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[7]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 6 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="6" Index="6"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 7:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[6]}"/>
+            </bc:IndexedStackPanel>
+            <!-- 7 -->
+            <bc:IndexedStackPanel Grid.Column="1" Grid.Row="7" Index="7"
+                                  Orientation="Horizontal" VerticalAlignment="Top">
+                <TextBlock>Scalar 8:</TextBlock>
+                <TextBox Text="{Binding ScalarFactors[7]}"/>
+            </bc:IndexedStackPanel>
+        </Grid>
+
+        <!-- Opearation and Result -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Parameters -->
+            <StackPanel Orientation="Vertical" Grid.Row="0">
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox ItemsSource="{Binding Source={StaticResource termIdentityFromEnum}}"
+                              SelectedItem="{Binding LeftTerm}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox Width="40" ItemsSource="{Binding Source={StaticResource mathOpsFromEnum}}"
+                              SelectedItem="{Binding Operation}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox ItemsSource="{Binding Source={StaticResource termIdentityFromEnum}}"
+                              SelectedItem="{Binding RightTerm}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <Button Width="75" Command="ctl:DataMathCommands.PerformOperation">Execute</Button>                    
+                </StackPanel>
+            </StackPanel>
+            <!-- Result -->
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Image Source="{Binding ResultPreview}"
+                       HorizontalAlignment="Left"
+                       Margin="4"
+                       Stretch="Uniform"
+                       MouseMove="ResultImage_MouseMove">
+                    <Image.ToolTip>
+                        <ToolTip>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="{Binding Result.Maximum, StringFormat=Max:{0}}"/>
+                                <TextBlock Text="{Binding Result.Minimum, StringFormat=Min:{0}}"/>
+                            </StackPanel>
+                        </ToolTip>
+                    </Image.ToolTip>
+                </Image>
+
+                <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left">
+
+                    <ComboBox Width="200" ItemsSource="{Binding Source={StaticResource colorScaleFromEnum}}" SelectedItem="{Binding ResultColorScale}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource enumDescriptionConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                </StackPanel>
+
+            </Grid>
+            <!-- History -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <Button Grid.Column="0" Command="ctl:DataMathCommands.AddResultToWorkspace"
+                        ToolTip="Add result to workspace">
+                    <Image Source="..\Images\Last.ico"/>
+                </Button>
+                <TextBox Grid.Column="1" TextWrapping="Wrap" 
+                            HorizontalAlignment="Stretch"
+                            VerticalScrollBarVisibility="Auto"
+                            MaxHeight="200"
+                            Width="Auto" Height="Auto" 
+                            Text="{Binding OperationHistory}"
+                            IsReadOnly="True" Background="Transparent" Foreground="White"/>
+
+                <Button Grid.Column="2" Width="75" 
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom"
+                        Command="ctl:DataMathCommands.ClearHistory">Clear History</Button>                
+            </Grid>          
+
+        </Grid>
+    </Grid>
+</UserControl>

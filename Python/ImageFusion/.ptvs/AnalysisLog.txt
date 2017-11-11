@@ -1,0 +1,1287 @@
+﻿
+2017-05-25T12:44:32: Start analysis
+2017-05-25T12:44:32: [WARNING] Library was set explicitly - skipping path detection
+2017-05-25T12:44:32: IncludeModulesFromModulePath = win32com
+2017-05-25T12:44:32: Deleting 0 files
+2017-05-25T12:44:32: Scraping builtin modules
+2017-05-25T12:44:32: Command: C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Scripts\python.exe "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\PythonScraper.py" C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\.ptvs\ "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\\"
+2017-05-25T12:44:33: Output
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_codecs.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_collections.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_functools.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_heapq.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_io.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_locale.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_md5.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_random.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_sha256.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_sha512.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_sre.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_struct.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_warnings.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\_weakref.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\array.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\binascii.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\cmath.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\errno.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\gc.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\itertools.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\marshal.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\math.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\mmap.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\msvcrt.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\nt.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\sys.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\time.idb
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\CompletionDB\xxsubtype.idb
+2017-05-25T12:44:33: Scraped builtin modules
+2017-05-25T12:44:33: Scraping numpy.core.multiarray
+2017-05-25T12:44:33: Command: C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Scripts\python.exe "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\ExtensionScraper.py" scrape numpy.core.multiarray C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\.ptvs\numpy\numpy.core.multiarray
+2017-05-25T12:44:34: Scraping numpy.core.multiarray_tests
+2017-05-25T12:44:34: Command: C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Scripts\python.exe "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\ExtensionScraper.py" scrape numpy.core.multiarray_tests C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\.ptvs\numpy\numpy.core.multiarray_tests
+2017-05-25T12:44:34: Scraping numpy.core.operand_flag_tests
+2017-05-25T12:44:34: Command: C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Scripts\python.exe "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\ExtensionScraper.py" scrape numpy.core.operand_flag_tests C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\.ptvs\numpy\numpy.core.operand_flag_tests
+2017-05-25T12:44:34: Scraping numpy.core.struct_ufunc_test
+2017-05-25T12:44:34: Command: C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Scripts\python.exe "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\ExtensionScraper.py" scrape numpy.core.struct_ufunc_test C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\.ptvs\numpy\numpy.core.struct_ufunc_test
+2017-05-25T12:44:34: Scraping numpy.core.test_rational
+2017-05-25T12:44:34: Command: C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Scripts\python.exe "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\ExtensionScraper.py" scrape numpy.core.test_rational C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\.ptvs\numpy\numpy.core.test_rational
+2017-05-25T12:44:35: Scraping numpy.core.umath
+2017-05-25T12:44:35: Command: C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Scripts\python.exe "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\ExtensionScraper.py" scrape numpy.core.umath C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\.ptvs\numpy\numpy.core.umath
+2017-05-25T12:44:35: Scraping numpy.core.umath_tests
+2017-05-25T12:44:35: Command: C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Scripts\python.exe "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\ExtensionScraper.py" scrape numpy.core.umath_tests C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\.ptvs\numpy\numpy.core.umath_tests
+2017-05-25T12:44:35: Scraping numpy.core._dummy
+2017-05-25T12:44:35: Command: C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Scripts\python.exe "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\ExtensionScraper.py" scrape numpy.core._dummy C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\.ptvs\numpy\numpy.core._dummy
+2017-05-25T12:44:35: Scraping numpy.fft.fftpack_lite
+2017-05-25T12:44:35: Command: C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Scripts\python.exe "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\ExtensionScraper.py" scrape numpy.fft.fftpack_lite C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\.ptvs\numpy\numpy.fft.fftpack_lite
+2017-05-25T12:44:35: Scraping numpy.linalg.lapack_lite
+2017-05-25T12:44:35: Command: C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Scripts\python.exe "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\ExtensionScraper.py" scrape numpy.linalg.lapack_lite C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\.ptvs\numpy\numpy.linalg.lapack_lite
+2017-05-25T12:44:36: Scraping numpy.linalg._umath_linalg
+2017-05-25T12:44:36: Command: C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Scripts\python.exe "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\ExtensionScraper.py" scrape numpy.linalg._umath_linalg C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\.ptvs\numpy\numpy.linalg._umath_linalg
+2017-05-25T12:44:36: Scraping numpy.random.mtrand
+2017-05-25T12:44:36: Command: C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Scripts\python.exe "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\Microsoft\Python Tools for Visual Studio\2.2\ExtensionScraper.py" scrape numpy.random.mtrand C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\.ptvs\numpy\numpy.random.mtrand
+2017-05-25T12:44:36: Scraped 12 files
+2017-05-25T12:44:36: astropy.CallDepth = 0
+2017-05-25T12:44:36: matplotlib.CallDepth = 3
+2017-05-25T12:44:36: pandas.CallDepth = 0
+2017-05-25T12:44:36: sympy.CallDepth = 0
+2017-05-25T12:44:36: Start group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages" with 1 files
+2017-05-25T12:44:36: Parsing "easy_install" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\easy_install.py")
+2017-05-25T12:44:37: Parsing complete
+2017-05-25T12:44:37: Analyzing "easy_install"
+2017-05-25T12:44:37: Starting analysis of 1 modules
+2017-05-25T12:44:37: Analysis complete
+2017-05-25T12:44:37: Saving group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages"
+2017-05-25T12:44:44: End of group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages"
+2017-05-25T12:44:44: Start group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy" with 306 files
+2017-05-25T12:44:44: Parsing "numpy.add_newdocs" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\add_newdocs.py")
+2017-05-25T12:44:44: Parsing "numpy.ctypeslib" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ctypeslib.py")
+2017-05-25T12:44:44: Parsing "numpy.dual" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\dual.py")
+2017-05-25T12:44:44: Parsing "numpy.matlib" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\matlib.py")
+2017-05-25T12:44:44: Parsing "numpy.setup" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\setup.py")
+2017-05-25T12:44:44: Parsing "numpy.version" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\version.py")
+2017-05-25T12:44:44: Parsing "numpy._distributor_init" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\_distributor_init.py")
+2017-05-25T12:44:44: Parsing "numpy._globals" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\_globals.py")
+2017-05-25T12:44:44: Parsing "numpy._import_tools" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\_import_tools.py")
+2017-05-25T12:44:44: Parsing "numpy.__config__" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\__config__.py")
+2017-05-25T12:44:44: Parsing "numpy" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\__init__.py")
+2017-05-25T12:44:44: Parsing "numpy.compat.py3k" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\compat\py3k.py")
+2017-05-25T12:44:44: Parsing "numpy.compat.setup" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\compat\setup.py")
+2017-05-25T12:44:44: Parsing "numpy.compat._inspect" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\compat\_inspect.py")
+2017-05-25T12:44:44: Parsing "numpy.compat" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\compat\__init__.py")
+2017-05-25T12:44:44: Parsing "numpy.core.arrayprint" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\arrayprint.py")
+2017-05-25T12:44:44: Parsing "numpy.core.cversions" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\cversions.py")
+2017-05-25T12:44:44: Parsing "numpy.core.defchararray" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\defchararray.py")
+2017-05-25T12:44:44: Parsing "numpy.core.einsumfunc" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\einsumfunc.py")
+2017-05-25T12:44:44: Parsing "numpy.core.fromnumeric" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\fromnumeric.py")
+2017-05-25T12:44:44: Parsing "numpy.core.function_base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\function_base.py")
+2017-05-25T12:44:44: Parsing "numpy.core.generate_numpy_api" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\generate_numpy_api.py")
+2017-05-25T12:44:44: Parsing "numpy.core.getlimits" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\getlimits.py")
+2017-05-25T12:44:44: Parsing "numpy.core.info" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\info.py")
+2017-05-25T12:44:44: Parsing "numpy.core.machar" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\machar.py")
+2017-05-25T12:44:44: Parsing "numpy.core.memmap" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\memmap.py")
+2017-05-25T12:44:44: Parsing "numpy.core.numeric" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\numeric.py")
+2017-05-25T12:44:44: Parsing "numpy.core.numerictypes" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\numerictypes.py")
+2017-05-25T12:44:44: Parsing "numpy.core.records" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\records.py")
+2017-05-25T12:44:44: Parsing "numpy.core.setup" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\setup.py")
+2017-05-25T12:44:44: Parsing "numpy.core.setup_common" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\setup_common.py")
+2017-05-25T12:44:44: Parsing "numpy.core.shape_base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\shape_base.py")
+2017-05-25T12:44:44: Parsing "numpy.core._internal" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\_internal.py")
+2017-05-25T12:44:44: Parsing "numpy.core._methods" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\_methods.py")
+2017-05-25T12:44:44: Parsing "numpy.core" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\__init__.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_abc" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_abc.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_api" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_api.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_arrayprint" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_arrayprint.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_datetime" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_datetime.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_defchararray" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_defchararray.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_deprecations" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_deprecations.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_dtype" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_dtype.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_einsum" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_einsum.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_errstate" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_errstate.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_extint128" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_extint128.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_function_base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_function_base.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_getlimits" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_getlimits.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_half" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_half.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_indexerrors" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_indexerrors.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_indexing" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_indexing.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_item_selection" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_item_selection.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_longdouble" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_longdouble.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_machar" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_machar.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_memmap" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_memmap.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_mem_overlap" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_mem_overlap.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_multiarray" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_multiarray.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_nditer" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_nditer.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_numeric" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_numeric.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_numerictypes" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_numerictypes.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_print" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_print.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_records" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_records.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_regression" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_regression.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_scalarinherit" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_scalarinherit.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_scalarmath" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_scalarmath.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_scalarprint" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_scalarprint.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_shape_base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_shape_base.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_ufunc" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_ufunc.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_umath" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_umath.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_umath_complex" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_umath_complex.py")
+2017-05-25T12:44:44: Parsing "numpy.core.tests.test_unicode" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\core\tests\test_unicode.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.ccompiler" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\ccompiler.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.compat" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\compat.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.conv_template" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\conv_template.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.core" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\core.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.cpuinfo" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\cpuinfo.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.environment" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\environment.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.exec_command" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\exec_command.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.extension" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\extension.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.from_template" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\from_template.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.info" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\info.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.intelccompiler" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\intelccompiler.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.lib2def" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\lib2def.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.line_endings" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\line_endings.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.log" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\log.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.mingw32ccompiler" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\mingw32ccompiler.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.misc_util" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\misc_util.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.msvc9compiler" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\msvc9compiler.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.msvccompiler" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\msvccompiler.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.npy_pkg_config" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\npy_pkg_config.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.numpy_distribution" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\numpy_distribution.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.pathccompiler" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\pathccompiler.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.setup" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\setup.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.system_info" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\system_info.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.unixccompiler" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\unixccompiler.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.__config__" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\__config__.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\__init__.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.__version__" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\__version__.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.autodist" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\autodist.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.bdist_rpm" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\bdist_rpm.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.build" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\build.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.build_clib" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\build_clib.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.build_ext" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\build_ext.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.build_py" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\build_py.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.build_scripts" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\build_scripts.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.build_src" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\build_src.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.config" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\config.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.config_compiler" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\config_compiler.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.develop" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\develop.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.egg_info" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\egg_info.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.install" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\install.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.install_clib" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\install_clib.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.install_data" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\install_data.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.install_headers" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\install_headers.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command.sdist" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\sdist.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.command" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\command\__init__.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.absoft" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\absoft.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.compaq" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\compaq.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.g95" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\g95.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.gnu" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\gnu.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.hpux" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\hpux.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.ibm" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\ibm.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.intel" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\intel.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.lahey" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\lahey.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.mips" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\mips.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.nag" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\nag.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.none" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\none.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.pathf95" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\pathf95.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.pg" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\pg.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.sun" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\sun.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler.vast" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\vast.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.fcompiler" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\fcompiler\__init__.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.tests.test_exec_command" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\tests\test_exec_command.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.tests.test_fcompiler_gnu" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\tests\test_fcompiler_gnu.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.tests.test_fcompiler_intel" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\tests\test_fcompiler_intel.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.tests.test_misc_util" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\tests\test_misc_util.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.tests.test_npy_pkg_config" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\tests\test_npy_pkg_config.py")
+2017-05-25T12:44:44: Parsing "numpy.distutils.tests.test_system_info" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\distutils\tests\test_system_info.py")
+2017-05-25T12:44:44: Parsing "numpy.doc.basics" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\doc\basics.py")
+2017-05-25T12:44:44: Parsing "numpy.doc.broadcasting" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\doc\broadcasting.py")
+2017-05-25T12:44:44: Parsing "numpy.doc.byteswapping" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\doc\byteswapping.py")
+2017-05-25T12:44:44: Parsing "numpy.doc.constants" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\doc\constants.py")
+2017-05-25T12:44:44: Parsing "numpy.doc.creation" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\doc\creation.py")
+2017-05-25T12:44:44: Parsing "numpy.doc.glossary" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\doc\glossary.py")
+2017-05-25T12:44:44: Parsing "numpy.doc.indexing" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\doc\indexing.py")
+2017-05-25T12:44:44: Parsing "numpy.doc.internals" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\doc\internals.py")
+2017-05-25T12:44:44: Parsing "numpy.doc.misc" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\doc\misc.py")
+2017-05-25T12:44:44: Parsing "numpy.doc.structured_arrays" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\doc\structured_arrays.py")
+2017-05-25T12:44:44: Parsing "numpy.doc.subclassing" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\doc\subclassing.py")
+2017-05-25T12:44:44: Parsing "numpy.doc.ufuncs" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\doc\ufuncs.py")
+2017-05-25T12:44:44: Parsing "numpy.doc" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\doc\__init__.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.auxfuncs" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\auxfuncs.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.capi_maps" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\capi_maps.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.cb_rules" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\cb_rules.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.cfuncs" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\cfuncs.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.common_rules" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\common_rules.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.crackfortran" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\crackfortran.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.diagnose" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\diagnose.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.f2py2e" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\f2py2e.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.f2py_testing" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\f2py_testing.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.f90mod_rules" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\f90mod_rules.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.func2subr" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\func2subr.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.info" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\info.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.rules" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\rules.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.setup" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\setup.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.use_rules" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\use_rules.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\__init__.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.__main__" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\__main__.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.__version__" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\__version__.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.test_array_from_pyobj" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\test_array_from_pyobj.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.test_assumed_shape" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\test_assumed_shape.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.test_callback" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\test_callback.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.test_kind" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\test_kind.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.test_mixed" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\test_mixed.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.test_parameter" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\test_parameter.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.test_regression" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\test_regression.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.test_return_character" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\test_return_character.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.test_return_complex" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\test_return_complex.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.test_return_integer" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\test_return_integer.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.test_return_logical" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\test_return_logical.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.test_return_real" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\test_return_real.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.test_size" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\test_size.py")
+2017-05-25T12:44:44: Parsing "numpy.f2py.tests.util" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\f2py\tests\util.py")
+2017-05-25T12:44:44: Parsing "numpy.fft.fftpack" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\fft\fftpack.py")
+2017-05-25T12:44:44: Parsing "numpy.fft.helper" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\fft\helper.py")
+2017-05-25T12:44:44: Parsing "numpy.fft.info" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\fft\info.py")
+2017-05-25T12:44:44: Parsing "numpy.fft.setup" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\fft\setup.py")
+2017-05-25T12:44:44: Parsing "numpy.fft" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\fft\__init__.py")
+2017-05-25T12:44:44: Parsing "numpy.fft.tests.test_fftpack" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\fft\tests\test_fftpack.py")
+2017-05-25T12:44:44: Parsing "numpy.fft.tests.test_helper" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\fft\tests\test_helper.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.arraypad" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\arraypad.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.arraysetops" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\arraysetops.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.arrayterator" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\arrayterator.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.financial" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\financial.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.format" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\format.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.function_base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\function_base.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.index_tricks" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\index_tricks.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.info" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\info.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.nanfunctions" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\nanfunctions.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.npyio" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\npyio.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.polynomial" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\polynomial.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.recfunctions" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\recfunctions.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.scimath" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\scimath.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.setup" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\setup.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.shape_base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\shape_base.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.stride_tricks" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\stride_tricks.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.twodim_base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\twodim_base.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.type_check" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\type_check.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.ufunclike" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\ufunclike.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.user_array" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\user_array.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.utils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\utils.py")
+2017-05-25T12:44:44: Parsing "numpy.lib._datasource" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\_datasource.py")
+2017-05-25T12:44:44: Parsing "numpy.lib._iotools" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\_iotools.py")
+2017-05-25T12:44:44: Parsing "numpy.lib._version" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\_version.py")
+2017-05-25T12:44:44: Parsing "numpy.lib" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\__init__.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_arraypad" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_arraypad.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_arraysetops" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_arraysetops.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_arrayterator" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_arrayterator.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_financial" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_financial.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_format" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_format.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_function_base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_function_base.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_index_tricks" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_index_tricks.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_io" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_io.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_nanfunctions" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_nanfunctions.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_packbits" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_packbits.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_polynomial" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_polynomial.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_recfunctions" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_recfunctions.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_regression" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_regression.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_shape_base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_shape_base.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_stride_tricks" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_stride_tricks.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_twodim_base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_twodim_base.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_type_check" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_type_check.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_ufunclike" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_ufunclike.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test_utils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test_utils.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test__datasource" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test__datasource.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test__iotools" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test__iotools.py")
+2017-05-25T12:44:44: Parsing "numpy.lib.tests.test__version" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\lib\tests\test__version.py")
+2017-05-25T12:44:44: Parsing "numpy.linalg.info" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\linalg\info.py")
+2017-05-25T12:44:44: Parsing "numpy.linalg.linalg" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\linalg\linalg.py")
+2017-05-25T12:44:44: Parsing "numpy.linalg.setup" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\linalg\setup.py")
+2017-05-25T12:44:44: Parsing "numpy.linalg" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\linalg\__init__.py")
+2017-05-25T12:44:44: Parsing "numpy.linalg.tests.test_build" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\linalg\tests\test_build.py")
+2017-05-25T12:44:44: Parsing "numpy.linalg.tests.test_deprecations" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\linalg\tests\test_deprecations.py")
+2017-05-25T12:44:44: Parsing "numpy.linalg.tests.test_linalg" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\linalg\tests\test_linalg.py")
+2017-05-25T12:44:44: Parsing "numpy.linalg.tests.test_regression" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\linalg\tests\test_regression.py")
+2017-05-25T12:44:44: Parsing "numpy.ma.bench" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\bench.py")
+2017-05-25T12:44:44: Parsing "numpy.ma.core" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\core.py")
+2017-05-25T12:44:44: Parsing "numpy.ma.extras" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\extras.py")
+2017-05-25T12:44:44: Parsing "numpy.ma.mrecords" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\mrecords.py")
+2017-05-25T12:44:44: Parsing "numpy.ma.setup" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\setup.py")
+2017-05-25T12:44:44: Parsing "numpy.ma.testutils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\testutils.py")
+2017-05-25T12:44:44: Parsing "numpy.ma.timer_comparison" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\timer_comparison.py")
+2017-05-25T12:44:44: Parsing "numpy.ma.version" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\version.py")
+2017-05-25T12:44:44: Parsing "numpy.ma" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\__init__.py")
+2017-05-25T12:44:44: Parsing "numpy.ma.tests.test_core" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\tests\test_core.py")
+2017-05-25T12:44:44: Parsing "numpy.ma.tests.test_extras" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\tests\test_extras.py")
+2017-05-25T12:44:44: Parsing "numpy.ma.tests.test_mrecords" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\tests\test_mrecords.py")
+2017-05-25T12:44:44: Parsing "numpy.ma.tests.test_old_ma" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\tests\test_old_ma.py")
+2017-05-25T12:44:45: Parsing "numpy.ma.tests.test_regression" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\tests\test_regression.py")
+2017-05-25T12:44:45: Parsing "numpy.ma.tests.test_subclassing" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\ma\tests\test_subclassing.py")
+2017-05-25T12:44:45: Parsing "numpy.matrixlib.defmatrix" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\matrixlib\defmatrix.py")
+2017-05-25T12:44:45: Parsing "numpy.matrixlib.setup" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\matrixlib\setup.py")
+2017-05-25T12:44:45: Parsing "numpy.matrixlib" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\matrixlib\__init__.py")
+2017-05-25T12:44:45: Parsing "numpy.matrixlib.tests.test_defmatrix" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\matrixlib\tests\test_defmatrix.py")
+2017-05-25T12:44:45: Parsing "numpy.matrixlib.tests.test_multiarray" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\matrixlib\tests\test_multiarray.py")
+2017-05-25T12:44:45: Parsing "numpy.matrixlib.tests.test_numeric" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\matrixlib\tests\test_numeric.py")
+2017-05-25T12:44:45: Parsing "numpy.matrixlib.tests.test_regression" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\matrixlib\tests\test_regression.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.chebyshev" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\chebyshev.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.hermite" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\hermite.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.hermite_e" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\hermite_e.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.laguerre" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\laguerre.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.legendre" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\legendre.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.polynomial" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\polynomial.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.polyutils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\polyutils.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.setup" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\setup.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial._polybase" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\_polybase.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\__init__.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.tests.test_chebyshev" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\tests\test_chebyshev.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.tests.test_classes" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\tests\test_classes.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.tests.test_hermite" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\tests\test_hermite.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.tests.test_hermite_e" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\tests\test_hermite_e.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.tests.test_laguerre" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\tests\test_laguerre.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.tests.test_legendre" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\tests\test_legendre.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.tests.test_polynomial" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\tests\test_polynomial.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.tests.test_polyutils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\tests\test_polyutils.py")
+2017-05-25T12:44:45: Parsing "numpy.polynomial.tests.test_printing" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\polynomial\tests\test_printing.py")
+2017-05-25T12:44:45: Parsing "numpy.random.info" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\random\info.py")
+2017-05-25T12:44:45: Parsing "numpy.random.setup" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\random\setup.py")
+2017-05-25T12:44:45: Parsing "numpy.random" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\random\__init__.py")
+2017-05-25T12:44:45: Parsing "numpy.random.tests.test_random" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\random\tests\test_random.py")
+2017-05-25T12:44:45: Parsing "numpy.random.tests.test_regression" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\random\tests\test_regression.py")
+2017-05-25T12:44:45: Parsing "numpy.testing.decorators" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\testing\decorators.py")
+2017-05-25T12:44:45: Parsing "numpy.testing.noseclasses" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\testing\noseclasses.py")
+2017-05-25T12:44:45: Parsing "numpy.testing.nosetester" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\testing\nosetester.py")
+2017-05-25T12:44:45: Parsing "numpy.testing.print_coercion_tables" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\testing\print_coercion_tables.py")
+2017-05-25T12:44:45: Parsing "numpy.testing.setup" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\testing\setup.py")
+2017-05-25T12:44:45: Parsing "numpy.testing.utils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\testing\utils.py")
+2017-05-25T12:44:45: Parsing "numpy.testing" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\testing\__init__.py")
+2017-05-25T12:44:45: Parsing "numpy.testing.tests.test_decorators" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\testing\tests\test_decorators.py")
+2017-05-25T12:44:45: Parsing "numpy.testing.tests.test_doctesting" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\testing\tests\test_doctesting.py")
+2017-05-25T12:44:45: Parsing "numpy.testing.tests.test_utils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\testing\tests\test_utils.py")
+2017-05-25T12:44:45: Parsing "numpy.tests.test_ctypeslib" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\tests\test_ctypeslib.py")
+2017-05-25T12:44:45: Parsing "numpy.tests.test_matlib" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\tests\test_matlib.py")
+2017-05-25T12:44:45: Parsing "numpy.tests.test_numpy_version" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\tests\test_numpy_version.py")
+2017-05-25T12:44:45: Parsing "numpy.tests.test_reloading" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\tests\test_reloading.py")
+2017-05-25T12:44:45: Parsing "numpy.tests.test_scripts" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\tests\test_scripts.py")
+2017-05-25T12:44:45: Parsing "numpy.tests.test_warnings" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy\tests\test_warnings.py")
+2017-05-25T12:44:45: Parsing complete
+2017-05-25T12:44:45: Analyzing "numpy.add_newdocs"
+2017-05-25T12:44:45: Analyzing "numpy.ctypeslib"
+2017-05-25T12:44:45: Analyzing "numpy.dual"
+2017-05-25T12:44:45: Analyzing "numpy.matlib"
+2017-05-25T12:44:45: Analyzing "numpy.setup"
+2017-05-25T12:44:45: Analyzing "numpy.version"
+2017-05-25T12:44:45: Analyzing "numpy._distributor_init"
+2017-05-25T12:44:45: Analyzing "numpy._globals"
+2017-05-25T12:44:45: Analyzing "numpy._import_tools"
+2017-05-25T12:44:45: Analyzing "numpy.__config__"
+2017-05-25T12:44:45: Analyzing "numpy"
+2017-05-25T12:44:45: Analyzing "numpy.compat.py3k"
+2017-05-25T12:44:45: Analyzing "numpy.compat.setup"
+2017-05-25T12:44:45: Analyzing "numpy.compat._inspect"
+2017-05-25T12:44:45: Analyzing "numpy.compat"
+2017-05-25T12:44:45: Analyzing "numpy.core.arrayprint"
+2017-05-25T12:44:45: Analyzing "numpy.core.cversions"
+2017-05-25T12:44:45: Analyzing "numpy.core.defchararray"
+2017-05-25T12:44:45: Analyzing "numpy.core.einsumfunc"
+2017-05-25T12:44:45: Analyzing "numpy.core.fromnumeric"
+2017-05-25T12:44:45: Analyzing "numpy.core.function_base"
+2017-05-25T12:44:45: Analyzing "numpy.core.generate_numpy_api"
+2017-05-25T12:44:45: Analyzing "numpy.core.getlimits"
+2017-05-25T12:44:45: Analyzing "numpy.core.info"
+2017-05-25T12:44:45: Analyzing "numpy.core.machar"
+2017-05-25T12:44:45: Analyzing "numpy.core.memmap"
+2017-05-25T12:44:45: Analyzing "numpy.core.numeric"
+2017-05-25T12:44:45: Analyzing "numpy.core.numerictypes"
+2017-05-25T12:44:45: Analyzing "numpy.core.records"
+2017-05-25T12:44:45: Analyzing "numpy.core.setup"
+2017-05-25T12:44:45: Analyzing "numpy.core.setup_common"
+2017-05-25T12:44:45: Analyzing "numpy.core.shape_base"
+2017-05-25T12:44:45: Analyzing "numpy.core._internal"
+2017-05-25T12:44:45: Analyzing "numpy.core._methods"
+2017-05-25T12:44:45: Analyzing "numpy.core"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_abc"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_api"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_arrayprint"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_datetime"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_defchararray"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_deprecations"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_dtype"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_einsum"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_errstate"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_extint128"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_function_base"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_getlimits"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_half"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_indexerrors"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_indexing"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_item_selection"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_longdouble"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_machar"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_memmap"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_mem_overlap"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_multiarray"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_nditer"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_numeric"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_numerictypes"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_print"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_records"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_regression"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_scalarinherit"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_scalarmath"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_scalarprint"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_shape_base"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_ufunc"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_umath"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_umath_complex"
+2017-05-25T12:44:45: Analyzing "numpy.core.tests.test_unicode"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.ccompiler"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.compat"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.conv_template"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.core"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.cpuinfo"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.environment"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.exec_command"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.extension"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.from_template"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.info"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.intelccompiler"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.lib2def"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.line_endings"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.log"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.mingw32ccompiler"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.misc_util"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.msvc9compiler"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.msvccompiler"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.npy_pkg_config"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.numpy_distribution"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.pathccompiler"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.setup"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.system_info"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.unixccompiler"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.__config__"
+2017-05-25T12:44:45: Analyzing "numpy.distutils"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.__version__"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.autodist"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.bdist_rpm"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.build"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.build_clib"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.build_ext"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.build_py"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.build_scripts"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.build_src"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.config"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.config_compiler"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.develop"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.egg_info"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.install"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.install_clib"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.install_data"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.install_headers"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command.sdist"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.command"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.absoft"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.compaq"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.g95"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.gnu"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.hpux"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.ibm"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.intel"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.lahey"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.mips"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.nag"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.none"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.pathf95"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.pg"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.sun"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler.vast"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.fcompiler"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.tests.test_exec_command"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.tests.test_fcompiler_gnu"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.tests.test_fcompiler_intel"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.tests.test_misc_util"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.tests.test_npy_pkg_config"
+2017-05-25T12:44:45: Analyzing "numpy.distutils.tests.test_system_info"
+2017-05-25T12:44:45: Analyzing "numpy.doc.basics"
+2017-05-25T12:44:45: Analyzing "numpy.doc.broadcasting"
+2017-05-25T12:44:45: Analyzing "numpy.doc.byteswapping"
+2017-05-25T12:44:45: Analyzing "numpy.doc.constants"
+2017-05-25T12:44:45: Analyzing "numpy.doc.creation"
+2017-05-25T12:44:45: Analyzing "numpy.doc.glossary"
+2017-05-25T12:44:45: Analyzing "numpy.doc.indexing"
+2017-05-25T12:44:45: Analyzing "numpy.doc.internals"
+2017-05-25T12:44:45: Analyzing "numpy.doc.misc"
+2017-05-25T12:44:45: Analyzing "numpy.doc.structured_arrays"
+2017-05-25T12:44:45: Analyzing "numpy.doc.subclassing"
+2017-05-25T12:44:45: Analyzing "numpy.doc.ufuncs"
+2017-05-25T12:44:45: Analyzing "numpy.doc"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.auxfuncs"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.capi_maps"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.cb_rules"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.cfuncs"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.common_rules"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.crackfortran"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.diagnose"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.f2py2e"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.f2py_testing"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.f90mod_rules"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.func2subr"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.info"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.rules"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.setup"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.use_rules"
+2017-05-25T12:44:45: Analyzing "numpy.f2py"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.__main__"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.__version__"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.test_array_from_pyobj"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.test_assumed_shape"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.test_callback"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.test_kind"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.test_mixed"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.test_parameter"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.test_regression"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.test_return_character"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.test_return_complex"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.test_return_integer"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.test_return_logical"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.test_return_real"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.test_size"
+2017-05-25T12:44:45: Analyzing "numpy.f2py.tests.util"
+2017-05-25T12:44:45: Analyzing "numpy.fft.fftpack"
+2017-05-25T12:44:45: Analyzing "numpy.fft.helper"
+2017-05-25T12:44:45: Analyzing "numpy.fft.info"
+2017-05-25T12:44:45: Analyzing "numpy.fft.setup"
+2017-05-25T12:44:45: Analyzing "numpy.fft"
+2017-05-25T12:44:45: Analyzing "numpy.fft.tests.test_fftpack"
+2017-05-25T12:44:45: Analyzing "numpy.fft.tests.test_helper"
+2017-05-25T12:44:45: Analyzing "numpy.lib.arraypad"
+2017-05-25T12:44:45: Analyzing "numpy.lib.arraysetops"
+2017-05-25T12:44:45: Analyzing "numpy.lib.arrayterator"
+2017-05-25T12:44:45: Analyzing "numpy.lib.financial"
+2017-05-25T12:44:45: Analyzing "numpy.lib.format"
+2017-05-25T12:44:45: Analyzing "numpy.lib.function_base"
+2017-05-25T12:44:45: Analyzing "numpy.lib.index_tricks"
+2017-05-25T12:44:45: Analyzing "numpy.lib.info"
+2017-05-25T12:44:45: Analyzing "numpy.lib.nanfunctions"
+2017-05-25T12:44:45: Analyzing "numpy.lib.npyio"
+2017-05-25T12:44:45: Analyzing "numpy.lib.polynomial"
+2017-05-25T12:44:45: Analyzing "numpy.lib.recfunctions"
+2017-05-25T12:44:45: Analyzing "numpy.lib.scimath"
+2017-05-25T12:44:45: Analyzing "numpy.lib.setup"
+2017-05-25T12:44:45: Analyzing "numpy.lib.shape_base"
+2017-05-25T12:44:45: Analyzing "numpy.lib.stride_tricks"
+2017-05-25T12:44:45: Analyzing "numpy.lib.twodim_base"
+2017-05-25T12:44:45: Analyzing "numpy.lib.type_check"
+2017-05-25T12:44:45: Analyzing "numpy.lib.ufunclike"
+2017-05-25T12:44:45: Analyzing "numpy.lib.user_array"
+2017-05-25T12:44:45: Analyzing "numpy.lib.utils"
+2017-05-25T12:44:45: Analyzing "numpy.lib._datasource"
+2017-05-25T12:44:45: Analyzing "numpy.lib._iotools"
+2017-05-25T12:44:45: Analyzing "numpy.lib._version"
+2017-05-25T12:44:45: Analyzing "numpy.lib"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_arraypad"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_arraysetops"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_arrayterator"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_financial"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_format"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_function_base"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_index_tricks"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_io"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_nanfunctions"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_packbits"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_polynomial"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_recfunctions"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_regression"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_shape_base"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_stride_tricks"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_twodim_base"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_type_check"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_ufunclike"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test_utils"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test__datasource"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test__iotools"
+2017-05-25T12:44:45: Analyzing "numpy.lib.tests.test__version"
+2017-05-25T12:44:45: Analyzing "numpy.linalg.info"
+2017-05-25T12:44:45: Analyzing "numpy.linalg.linalg"
+2017-05-25T12:44:45: Analyzing "numpy.linalg.setup"
+2017-05-25T12:44:45: Analyzing "numpy.linalg"
+2017-05-25T12:44:45: Analyzing "numpy.linalg.tests.test_build"
+2017-05-25T12:44:45: Analyzing "numpy.linalg.tests.test_deprecations"
+2017-05-25T12:44:45: Analyzing "numpy.linalg.tests.test_linalg"
+2017-05-25T12:44:45: Analyzing "numpy.linalg.tests.test_regression"
+2017-05-25T12:44:45: Analyzing "numpy.ma.bench"
+2017-05-25T12:44:45: Analyzing "numpy.ma.core"
+2017-05-25T12:44:45: Analyzing "numpy.ma.extras"
+2017-05-25T12:44:45: Analyzing "numpy.ma.mrecords"
+2017-05-25T12:44:45: Analyzing "numpy.ma.setup"
+2017-05-25T12:44:45: Analyzing "numpy.ma.testutils"
+2017-05-25T12:44:45: Analyzing "numpy.ma.timer_comparison"
+2017-05-25T12:44:45: Analyzing "numpy.ma.version"
+2017-05-25T12:44:45: Analyzing "numpy.ma"
+2017-05-25T12:44:45: Analyzing "numpy.ma.tests.test_core"
+2017-05-25T12:44:45: Analyzing "numpy.ma.tests.test_extras"
+2017-05-25T12:44:45: Analyzing "numpy.ma.tests.test_mrecords"
+2017-05-25T12:44:45: Analyzing "numpy.ma.tests.test_old_ma"
+2017-05-25T12:44:45: Analyzing "numpy.ma.tests.test_regression"
+2017-05-25T12:44:45: Analyzing "numpy.ma.tests.test_subclassing"
+2017-05-25T12:44:45: Analyzing "numpy.matrixlib.defmatrix"
+2017-05-25T12:44:45: Analyzing "numpy.matrixlib.setup"
+2017-05-25T12:44:45: Analyzing "numpy.matrixlib"
+2017-05-25T12:44:45: Analyzing "numpy.matrixlib.tests.test_defmatrix"
+2017-05-25T12:44:45: Analyzing "numpy.matrixlib.tests.test_multiarray"
+2017-05-25T12:44:45: Analyzing "numpy.matrixlib.tests.test_numeric"
+2017-05-25T12:44:45: Analyzing "numpy.matrixlib.tests.test_regression"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.chebyshev"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.hermite"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.hermite_e"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.laguerre"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.legendre"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.polynomial"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.polyutils"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.setup"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial._polybase"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.tests.test_chebyshev"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.tests.test_classes"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.tests.test_hermite"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.tests.test_hermite_e"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.tests.test_laguerre"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.tests.test_legendre"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.tests.test_polynomial"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.tests.test_polyutils"
+2017-05-25T12:44:45: Analyzing "numpy.polynomial.tests.test_printing"
+2017-05-25T12:44:45: Analyzing "numpy.random.info"
+2017-05-25T12:44:45: Analyzing "numpy.random.setup"
+2017-05-25T12:44:45: Analyzing "numpy.random"
+2017-05-25T12:44:45: Analyzing "numpy.random.tests.test_random"
+2017-05-25T12:44:45: Analyzing "numpy.random.tests.test_regression"
+2017-05-25T12:44:45: Analyzing "numpy.testing.decorators"
+2017-05-25T12:44:45: Analyzing "numpy.testing.noseclasses"
+2017-05-25T12:44:45: Analyzing "numpy.testing.nosetester"
+2017-05-25T12:44:45: Analyzing "numpy.testing.print_coercion_tables"
+2017-05-25T12:44:45: Analyzing "numpy.testing.setup"
+2017-05-25T12:44:45: Analyzing "numpy.testing.utils"
+2017-05-25T12:44:45: Analyzing "numpy.testing"
+2017-05-25T12:44:45: Analyzing "numpy.testing.tests.test_decorators"
+2017-05-25T12:44:45: Analyzing "numpy.testing.tests.test_doctesting"
+2017-05-25T12:44:45: Analyzing "numpy.testing.tests.test_utils"
+2017-05-25T12:44:45: Analyzing "numpy.tests.test_ctypeslib"
+2017-05-25T12:44:45: Analyzing "numpy.tests.test_matlib"
+2017-05-25T12:44:45: Analyzing "numpy.tests.test_numpy_version"
+2017-05-25T12:44:45: Analyzing "numpy.tests.test_reloading"
+2017-05-25T12:44:45: Analyzing "numpy.tests.test_scripts"
+2017-05-25T12:44:45: Analyzing "numpy.tests.test_warnings"
+2017-05-25T12:44:45: Starting analysis of 306 modules
+2017-05-25T12:45:31: Analysis complete
+2017-05-25T12:45:31: Saving group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy"
+2017-05-25T12:45:34: End of group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\numpy"
+2017-05-25T12:45:34: Start group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip" with 233 files
+2017-05-25T12:45:34: Parsing "pip.basecommand" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\basecommand.py")
+2017-05-25T12:45:34: Parsing "pip.baseparser" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\baseparser.py")
+2017-05-25T12:45:34: Parsing "pip.cmdoptions" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\cmdoptions.py")
+2017-05-25T12:45:34: Parsing "pip.download" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\download.py")
+2017-05-25T12:45:34: Parsing "pip.exceptions" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\exceptions.py")
+2017-05-25T12:45:34: Parsing "pip.index" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\index.py")
+2017-05-25T12:45:34: Parsing "pip.locations" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\locations.py")
+2017-05-25T12:45:34: Parsing "pip.pep425tags" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\pep425tags.py")
+2017-05-25T12:45:34: Parsing "pip.status_codes" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\status_codes.py")
+2017-05-25T12:45:34: Parsing "pip.wheel" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\wheel.py")
+2017-05-25T12:45:34: Parsing "pip" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\__init__.py")
+2017-05-25T12:45:34: Parsing "pip.__main__" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\__main__.py")
+2017-05-25T12:45:34: Parsing "pip.commands.completion" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\commands\completion.py")
+2017-05-25T12:45:34: Parsing "pip.commands.download" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\commands\download.py")
+2017-05-25T12:45:34: Parsing "pip.commands.freeze" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\commands\freeze.py")
+2017-05-25T12:45:34: Parsing "pip.commands.hash" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\commands\hash.py")
+2017-05-25T12:45:34: Parsing "pip.commands.help" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\commands\help.py")
+2017-05-25T12:45:34: Parsing "pip.commands.install" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\commands\install.py")
+2017-05-25T12:45:34: Parsing "pip.commands.list" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\commands\list.py")
+2017-05-25T12:45:34: Parsing "pip.commands.search" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\commands\search.py")
+2017-05-25T12:45:34: Parsing "pip.commands.show" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\commands\show.py")
+2017-05-25T12:45:34: Parsing "pip.commands.uninstall" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\commands\uninstall.py")
+2017-05-25T12:45:34: Parsing "pip.commands.wheel" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\commands\wheel.py")
+2017-05-25T12:45:34: Parsing "pip.commands" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\commands\__init__.py")
+2017-05-25T12:45:34: Parsing "pip.compat.dictconfig" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\compat\dictconfig.py")
+2017-05-25T12:45:34: Parsing "pip.compat.ordereddict" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\compat\ordereddict.py")
+2017-05-25T12:45:34: Parsing "pip.compat" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\compat\__init__.py")
+2017-05-25T12:45:34: Parsing "pip.models.index" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\models\index.py")
+2017-05-25T12:45:34: Parsing "pip.models" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\models\__init__.py")
+2017-05-25T12:45:34: Parsing "pip.operations.freeze" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\operations\freeze.py")
+2017-05-25T12:45:34: Parsing "pip.operations" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\operations\__init__.py")
+2017-05-25T12:45:34: Parsing "pip.req.req_file" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\req\req_file.py")
+2017-05-25T12:45:34: Parsing "pip.req.req_install" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\req\req_install.py")
+2017-05-25T12:45:34: Parsing "pip.req.req_set" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\req\req_set.py")
+2017-05-25T12:45:34: Parsing "pip.req.req_uninstall" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\req\req_uninstall.py")
+2017-05-25T12:45:34: Parsing "pip.req" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\req\__init__.py")
+2017-05-25T12:45:34: Parsing "pip.utils.appdirs" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\utils\appdirs.py")
+2017-05-25T12:45:34: Parsing "pip.utils.build" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\utils\build.py")
+2017-05-25T12:45:34: Parsing "pip.utils.deprecation" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\utils\deprecation.py")
+2017-05-25T12:45:34: Parsing "pip.utils.encoding" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\utils\encoding.py")
+2017-05-25T12:45:34: Parsing "pip.utils.filesystem" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\utils\filesystem.py")
+2017-05-25T12:45:34: Parsing "pip.utils.hashes" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\utils\hashes.py")
+2017-05-25T12:45:34: Parsing "pip.utils.logging" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\utils\logging.py")
+2017-05-25T12:45:34: Parsing "pip.utils.outdated" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\utils\outdated.py")
+2017-05-25T12:45:34: Parsing "pip.utils.setuptools_build" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\utils\setuptools_build.py")
+2017-05-25T12:45:34: Parsing "pip.utils.ui" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\utils\ui.py")
+2017-05-25T12:45:34: Parsing "pip.utils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\utils\__init__.py")
+2017-05-25T12:45:34: Parsing "pip.vcs.bazaar" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\vcs\bazaar.py")
+2017-05-25T12:45:34: Parsing "pip.vcs.git" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\vcs\git.py")
+2017-05-25T12:45:34: Parsing "pip.vcs.mercurial" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\vcs\mercurial.py")
+2017-05-25T12:45:34: Parsing "pip.vcs.subversion" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\vcs\subversion.py")
+2017-05-25T12:45:34: Parsing "pip.vcs" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\vcs\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.ipaddress" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\ipaddress.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.pyparsing" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\pyparsing.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.retrying" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\retrying.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.six" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\six.py")
+2017-05-25T12:45:34: Parsing "pip._vendor" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.cachecontrol.adapter" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\cachecontrol\adapter.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.cachecontrol.cache" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\cachecontrol\cache.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.cachecontrol.compat" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\cachecontrol\compat.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.cachecontrol.controller" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\cachecontrol\controller.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.cachecontrol.filewrapper" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\cachecontrol\filewrapper.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.cachecontrol.heuristics" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\cachecontrol\heuristics.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.cachecontrol.serialize" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\cachecontrol\serialize.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.cachecontrol.wrapper" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\cachecontrol\wrapper.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.cachecontrol._cmd" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\cachecontrol\_cmd.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.cachecontrol" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\cachecontrol\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.cachecontrol.caches.file_cache" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\cachecontrol\caches\file_cache.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.cachecontrol.caches.redis_cache" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\cachecontrol\caches\redis_cache.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.cachecontrol.caches" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\cachecontrol\caches\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.colorama.ansi" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\colorama\ansi.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.colorama.ansitowin32" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\colorama\ansitowin32.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.colorama.initialise" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\colorama\initialise.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.colorama.win32" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\colorama\win32.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.colorama.winterm" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\colorama\winterm.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.colorama" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\colorama\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib.compat" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\compat.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib.database" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\database.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib.index" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\index.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib.locators" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\locators.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib.manifest" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\manifest.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib.markers" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\markers.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib.metadata" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\metadata.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib.resources" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\resources.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib.scripts" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\scripts.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib.util" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\util.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib.version" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\version.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib.wheel" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\wheel.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib._backport.misc" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\_backport\misc.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib._backport.shutil" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\_backport\shutil.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib._backport.sysconfig" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\_backport\sysconfig.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib._backport.tarfile" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\_backport\tarfile.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.distlib._backport" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\distlib\_backport\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.constants" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\constants.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.html5parser" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\html5parser.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.ihatexml" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\ihatexml.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.inputstream" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\inputstream.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.sanitizer" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\sanitizer.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.tokenizer" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\tokenizer.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.utils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\utils.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.filters.alphabeticalattributes" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\filters\alphabeticalattributes.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.filters.inject_meta_charset" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\filters\inject_meta_charset.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.filters.lint" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\filters\lint.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.filters.optionaltags" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\filters\optionaltags.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.filters.sanitizer" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\filters\sanitizer.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.filters.whitespace" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\filters\whitespace.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.filters._base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\filters\_base.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.filters" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\filters\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.serializer.htmlserializer" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\serializer\htmlserializer.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.serializer" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\serializer\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treeadapters.sax" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treeadapters\sax.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treeadapters" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treeadapters\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treebuilders.dom" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treebuilders\dom.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treebuilders.etree" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treebuilders\etree.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treebuilders.etree_lxml" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treebuilders\etree_lxml.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treebuilders._base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treebuilders\_base.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treebuilders" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treebuilders\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treewalkers.dom" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treewalkers\dom.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treewalkers.etree" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treewalkers\etree.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treewalkers.genshistream" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treewalkers\genshistream.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treewalkers.lxmletree" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treewalkers\lxmletree.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treewalkers.pulldom" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treewalkers\pulldom.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treewalkers._base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treewalkers\_base.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.treewalkers" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\treewalkers\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.trie.datrie" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\trie\datrie.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.trie.py" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\trie\py.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.trie._base" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\trie\_base.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.html5lib.trie" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\html5lib\trie\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.lockfile.linklockfile" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\lockfile\linklockfile.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.lockfile.mkdirlockfile" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\lockfile\mkdirlockfile.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.lockfile.pidlockfile" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\lockfile\pidlockfile.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.lockfile.sqlitelockfile" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\lockfile\sqlitelockfile.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.lockfile.symlinklockfile" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\lockfile\symlinklockfile.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.lockfile" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\lockfile\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.packaging.markers" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\packaging\markers.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.packaging.requirements" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\packaging\requirements.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.packaging.specifiers" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\packaging\specifiers.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.packaging.utils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\packaging\utils.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.packaging.version" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\packaging\version.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.packaging._compat" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\packaging\_compat.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.packaging._structures" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\packaging\_structures.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.packaging.__about__" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\packaging\__about__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.packaging" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\packaging\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.pkg_resources" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\pkg_resources\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.progress.bar" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\progress\bar.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.progress.counter" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\progress\counter.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.progress.helpers" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\progress\helpers.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.progress.spinner" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\progress\spinner.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.progress" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\progress\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.adapters" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\adapters.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.api" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\api.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.auth" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\auth.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.certs" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\certs.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.compat" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\compat.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.cookies" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\cookies.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.exceptions" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\exceptions.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.hooks" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\hooks.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.models" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\models.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.sessions" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\sessions.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.status_codes" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\status_codes.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.structures" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\structures.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.utils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\utils.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\__init__.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.big5freq" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\big5freq.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.big5prober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\big5prober.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.chardetect" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\chardetect.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.chardistribution" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\chardistribution.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.charsetgroupprober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\charsetgroupprober.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.charsetprober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\charsetprober.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.codingstatemachine" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\codingstatemachine.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.compat" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\compat.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.constants" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\constants.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.cp949prober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\cp949prober.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.escprober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\escprober.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.escsm" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\escsm.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.eucjpprober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\eucjpprober.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.euckrfreq" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\euckrfreq.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.euckrprober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\euckrprober.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.euctwfreq" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\euctwfreq.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.euctwprober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\euctwprober.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.gb2312freq" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\gb2312freq.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.gb2312prober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\gb2312prober.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.hebrewprober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\hebrewprober.py")
+2017-05-25T12:45:34: Parsing "pip._vendor.requests.packages.chardet.jisfreq" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\jisfreq.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.jpcntx" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\jpcntx.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.langbulgarianmodel" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\langbulgarianmodel.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.langcyrillicmodel" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\langcyrillicmodel.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.langgreekmodel" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\langgreekmodel.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.langhebrewmodel" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\langhebrewmodel.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.langhungarianmodel" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\langhungarianmodel.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.langthaimodel" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\langthaimodel.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.latin1prober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\latin1prober.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.mbcharsetprober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\mbcharsetprober.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.mbcsgroupprober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\mbcsgroupprober.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.mbcssm" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\mbcssm.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.sbcharsetprober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\sbcharsetprober.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.sbcsgroupprober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\sbcsgroupprober.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.sjisprober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\sjisprober.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.universaldetector" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\universaldetector.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet.utf8prober" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\utf8prober.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.chardet" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\chardet\__init__.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.connection" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\connection.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.connectionpool" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\connectionpool.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.exceptions" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\exceptions.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.fields" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\fields.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.filepost" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\filepost.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.poolmanager" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\poolmanager.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.request" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\request.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.response" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\response.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3._collections" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\_collections.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\__init__.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.contrib.appengine" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\contrib\appengine.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.contrib.ntlmpool" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\contrib\ntlmpool.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.contrib.pyopenssl" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\contrib\pyopenssl.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.contrib" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\contrib\__init__.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.packages.ordered_dict" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\packages\ordered_dict.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.packages.six" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\packages\six.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.packages" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\packages\__init__.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.packages.ssl_match_hostname._implementation" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\packages\ssl_match_hostname\_implementation.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.packages.ssl_match_hostname" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\packages\ssl_match_hostname\__init__.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.util.connection" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\util\connection.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.util.request" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\util\request.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.util.response" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\util\response.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.util.retry" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\util\retry.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.util.ssl_" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\util\ssl_.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.util.timeout" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\util\timeout.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.util.url" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\util\url.py")
+2017-05-25T12:45:35: Parsing "pip._vendor.requests.packages.urllib3.util" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\requests\packages\urllib3\util\__init__.py")
+2017-05-25T12:45:35: Parsing "pip._vendor._markerlib.markers" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\_markerlib\markers.py")
+2017-05-25T12:45:35: Parsing "pip._vendor._markerlib" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip\_vendor\_markerlib\__init__.py")
+2017-05-25T12:45:35: Parsing complete
+2017-05-25T12:45:35: Analyzing "pip.basecommand"
+2017-05-25T12:45:35: Analyzing "pip.baseparser"
+2017-05-25T12:45:35: Analyzing "pip.cmdoptions"
+2017-05-25T12:45:35: Analyzing "pip.download"
+2017-05-25T12:45:35: Analyzing "pip.exceptions"
+2017-05-25T12:45:35: Analyzing "pip.index"
+2017-05-25T12:45:35: Analyzing "pip.locations"
+2017-05-25T12:45:35: Analyzing "pip.pep425tags"
+2017-05-25T12:45:35: Analyzing "pip.status_codes"
+2017-05-25T12:45:35: Analyzing "pip.wheel"
+2017-05-25T12:45:35: Analyzing "pip"
+2017-05-25T12:45:35: Analyzing "pip.__main__"
+2017-05-25T12:45:35: Analyzing "pip.commands.completion"
+2017-05-25T12:45:35: Analyzing "pip.commands.download"
+2017-05-25T12:45:35: Analyzing "pip.commands.freeze"
+2017-05-25T12:45:35: Analyzing "pip.commands.hash"
+2017-05-25T12:45:35: Analyzing "pip.commands.help"
+2017-05-25T12:45:35: Analyzing "pip.commands.install"
+2017-05-25T12:45:35: Analyzing "pip.commands.list"
+2017-05-25T12:45:35: Analyzing "pip.commands.search"
+2017-05-25T12:45:35: Analyzing "pip.commands.show"
+2017-05-25T12:45:35: Analyzing "pip.commands.uninstall"
+2017-05-25T12:45:35: Analyzing "pip.commands.wheel"
+2017-05-25T12:45:35: Analyzing "pip.commands"
+2017-05-25T12:45:35: Analyzing "pip.compat.dictconfig"
+2017-05-25T12:45:35: Analyzing "pip.compat.ordereddict"
+2017-05-25T12:45:35: Analyzing "pip.compat"
+2017-05-25T12:45:35: Analyzing "pip.models.index"
+2017-05-25T12:45:35: Analyzing "pip.models"
+2017-05-25T12:45:35: Analyzing "pip.operations.freeze"
+2017-05-25T12:45:35: Analyzing "pip.operations"
+2017-05-25T12:45:35: Analyzing "pip.req.req_file"
+2017-05-25T12:45:35: Analyzing "pip.req.req_install"
+2017-05-25T12:45:35: Analyzing "pip.req.req_set"
+2017-05-25T12:45:35: Analyzing "pip.req.req_uninstall"
+2017-05-25T12:45:35: Analyzing "pip.req"
+2017-05-25T12:45:35: Analyzing "pip.utils.appdirs"
+2017-05-25T12:45:35: Analyzing "pip.utils.build"
+2017-05-25T12:45:35: Analyzing "pip.utils.deprecation"
+2017-05-25T12:45:35: Analyzing "pip.utils.encoding"
+2017-05-25T12:45:35: Analyzing "pip.utils.filesystem"
+2017-05-25T12:45:35: Analyzing "pip.utils.hashes"
+2017-05-25T12:45:35: Analyzing "pip.utils.logging"
+2017-05-25T12:45:35: Analyzing "pip.utils.outdated"
+2017-05-25T12:45:35: Analyzing "pip.utils.setuptools_build"
+2017-05-25T12:45:35: Analyzing "pip.utils.ui"
+2017-05-25T12:45:35: Analyzing "pip.utils"
+2017-05-25T12:45:35: Analyzing "pip.vcs.bazaar"
+2017-05-25T12:45:35: Analyzing "pip.vcs.git"
+2017-05-25T12:45:35: Analyzing "pip.vcs.mercurial"
+2017-05-25T12:45:35: Analyzing "pip.vcs.subversion"
+2017-05-25T12:45:35: Analyzing "pip.vcs"
+2017-05-25T12:45:35: Analyzing "pip._vendor.ipaddress"
+2017-05-25T12:45:35: Analyzing "pip._vendor.pyparsing"
+2017-05-25T12:45:35: Analyzing "pip._vendor.retrying"
+2017-05-25T12:45:35: Analyzing "pip._vendor.six"
+2017-05-25T12:45:35: Analyzing "pip._vendor"
+2017-05-25T12:45:35: Analyzing "pip._vendor.cachecontrol.adapter"
+2017-05-25T12:45:35: Analyzing "pip._vendor.cachecontrol.cache"
+2017-05-25T12:45:35: Analyzing "pip._vendor.cachecontrol.compat"
+2017-05-25T12:45:35: Analyzing "pip._vendor.cachecontrol.controller"
+2017-05-25T12:45:35: Analyzing "pip._vendor.cachecontrol.filewrapper"
+2017-05-25T12:45:35: Analyzing "pip._vendor.cachecontrol.heuristics"
+2017-05-25T12:45:35: Analyzing "pip._vendor.cachecontrol.serialize"
+2017-05-25T12:45:35: Analyzing "pip._vendor.cachecontrol.wrapper"
+2017-05-25T12:45:35: Analyzing "pip._vendor.cachecontrol._cmd"
+2017-05-25T12:45:35: Analyzing "pip._vendor.cachecontrol"
+2017-05-25T12:45:35: Analyzing "pip._vendor.cachecontrol.caches.file_cache"
+2017-05-25T12:45:35: Analyzing "pip._vendor.cachecontrol.caches.redis_cache"
+2017-05-25T12:45:35: Analyzing "pip._vendor.cachecontrol.caches"
+2017-05-25T12:45:35: Analyzing "pip._vendor.colorama.ansi"
+2017-05-25T12:45:35: Analyzing "pip._vendor.colorama.ansitowin32"
+2017-05-25T12:45:35: Analyzing "pip._vendor.colorama.initialise"
+2017-05-25T12:45:35: Analyzing "pip._vendor.colorama.win32"
+2017-05-25T12:45:35: Analyzing "pip._vendor.colorama.winterm"
+2017-05-25T12:45:35: Analyzing "pip._vendor.colorama"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib.compat"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib.database"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib.index"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib.locators"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib.manifest"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib.markers"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib.metadata"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib.resources"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib.scripts"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib.util"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib.version"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib.wheel"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib._backport.misc"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib._backport.shutil"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib._backport.sysconfig"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib._backport.tarfile"
+2017-05-25T12:45:35: Analyzing "pip._vendor.distlib._backport"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.constants"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.html5parser"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.ihatexml"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.inputstream"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.sanitizer"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.tokenizer"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.utils"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.filters.alphabeticalattributes"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.filters.inject_meta_charset"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.filters.lint"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.filters.optionaltags"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.filters.sanitizer"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.filters.whitespace"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.filters._base"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.filters"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.serializer.htmlserializer"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.serializer"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treeadapters.sax"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treeadapters"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treebuilders.dom"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treebuilders.etree"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treebuilders.etree_lxml"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treebuilders._base"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treebuilders"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treewalkers.dom"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treewalkers.etree"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treewalkers.genshistream"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treewalkers.lxmletree"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treewalkers.pulldom"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treewalkers._base"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.treewalkers"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.trie.datrie"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.trie.py"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.trie._base"
+2017-05-25T12:45:35: Analyzing "pip._vendor.html5lib.trie"
+2017-05-25T12:45:35: Analyzing "pip._vendor.lockfile.linklockfile"
+2017-05-25T12:45:35: Analyzing "pip._vendor.lockfile.mkdirlockfile"
+2017-05-25T12:45:35: Analyzing "pip._vendor.lockfile.pidlockfile"
+2017-05-25T12:45:35: Analyzing "pip._vendor.lockfile.sqlitelockfile"
+2017-05-25T12:45:35: Analyzing "pip._vendor.lockfile.symlinklockfile"
+2017-05-25T12:45:35: Analyzing "pip._vendor.lockfile"
+2017-05-25T12:45:35: Analyzing "pip._vendor.packaging.markers"
+2017-05-25T12:45:35: Analyzing "pip._vendor.packaging.requirements"
+2017-05-25T12:45:35: Analyzing "pip._vendor.packaging.specifiers"
+2017-05-25T12:45:35: Analyzing "pip._vendor.packaging.utils"
+2017-05-25T12:45:35: Analyzing "pip._vendor.packaging.version"
+2017-05-25T12:45:35: Analyzing "pip._vendor.packaging._compat"
+2017-05-25T12:45:35: Analyzing "pip._vendor.packaging._structures"
+2017-05-25T12:45:35: Analyzing "pip._vendor.packaging.__about__"
+2017-05-25T12:45:35: Analyzing "pip._vendor.packaging"
+2017-05-25T12:45:35: Analyzing "pip._vendor.pkg_resources"
+2017-05-25T12:45:35: Analyzing "pip._vendor.progress.bar"
+2017-05-25T12:45:35: Analyzing "pip._vendor.progress.counter"
+2017-05-25T12:45:35: Analyzing "pip._vendor.progress.helpers"
+2017-05-25T12:45:35: Analyzing "pip._vendor.progress.spinner"
+2017-05-25T12:45:35: Analyzing "pip._vendor.progress"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.adapters"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.api"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.auth"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.certs"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.compat"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.cookies"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.exceptions"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.hooks"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.models"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.sessions"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.status_codes"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.structures"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.utils"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.big5freq"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.big5prober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.chardetect"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.chardistribution"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.charsetgroupprober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.charsetprober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.codingstatemachine"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.compat"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.constants"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.cp949prober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.escprober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.escsm"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.eucjpprober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.euckrfreq"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.euckrprober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.euctwfreq"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.euctwprober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.gb2312freq"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.gb2312prober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.hebrewprober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.jisfreq"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.jpcntx"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.langbulgarianmodel"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.langcyrillicmodel"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.langgreekmodel"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.langhebrewmodel"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.langhungarianmodel"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.langthaimodel"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.latin1prober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.mbcharsetprober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.mbcsgroupprober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.mbcssm"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.sbcharsetprober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.sbcsgroupprober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.sjisprober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.universaldetector"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet.utf8prober"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.chardet"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.connection"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.connectionpool"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.exceptions"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.fields"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.filepost"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.poolmanager"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.request"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.response"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3._collections"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.contrib.appengine"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.contrib.ntlmpool"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.contrib.pyopenssl"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.contrib"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.packages.ordered_dict"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.packages.six"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.packages"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.packages.ssl_match_hostname._implementation"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.packages.ssl_match_hostname"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.util.connection"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.util.request"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.util.response"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.util.retry"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.util.ssl_"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.util.timeout"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.util.url"
+2017-05-25T12:45:35: Analyzing "pip._vendor.requests.packages.urllib3.util"
+2017-05-25T12:45:35: Analyzing "pip._vendor._markerlib.markers"
+2017-05-25T12:45:35: Analyzing "pip._vendor._markerlib"
+2017-05-25T12:45:35: Starting analysis of 233 modules
+2017-05-25T12:45:40: Analysis complete
+2017-05-25T12:45:40: Saving group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip"
+2017-05-25T12:45:42: End of group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pip"
+2017-05-25T12:45:42: Start group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources" with 14 files
+2017-05-25T12:45:42: Parsing "pkg_resources" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\__init__.py")
+2017-05-25T12:45:42: Parsing "pkg_resources.extern" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\extern\__init__.py")
+2017-05-25T12:45:42: Parsing "pkg_resources._vendor.pyparsing" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\_vendor\pyparsing.py")
+2017-05-25T12:45:42: Parsing "pkg_resources._vendor.six" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\_vendor\six.py")
+2017-05-25T12:45:42: Parsing "pkg_resources._vendor" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\_vendor\__init__.py")
+2017-05-25T12:45:42: Parsing "pkg_resources._vendor.packaging.markers" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\_vendor\packaging\markers.py")
+2017-05-25T12:45:42: Parsing "pkg_resources._vendor.packaging.requirements" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\_vendor\packaging\requirements.py")
+2017-05-25T12:45:42: Parsing "pkg_resources._vendor.packaging.specifiers" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\_vendor\packaging\specifiers.py")
+2017-05-25T12:45:42: Parsing "pkg_resources._vendor.packaging.utils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\_vendor\packaging\utils.py")
+2017-05-25T12:45:42: Parsing "pkg_resources._vendor.packaging.version" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\_vendor\packaging\version.py")
+2017-05-25T12:45:42: Parsing "pkg_resources._vendor.packaging._compat" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\_vendor\packaging\_compat.py")
+2017-05-25T12:45:42: Parsing "pkg_resources._vendor.packaging._structures" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\_vendor\packaging\_structures.py")
+2017-05-25T12:45:42: Parsing "pkg_resources._vendor.packaging.__about__" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\_vendor\packaging\__about__.py")
+2017-05-25T12:45:42: Parsing "pkg_resources._vendor.packaging" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources\_vendor\packaging\__init__.py")
+2017-05-25T12:45:42: Parsing complete
+2017-05-25T12:45:42: Analyzing "pkg_resources"
+2017-05-25T12:45:42: Analyzing "pkg_resources.extern"
+2017-05-25T12:45:42: Analyzing "pkg_resources._vendor.pyparsing"
+2017-05-25T12:45:42: Analyzing "pkg_resources._vendor.six"
+2017-05-25T12:45:42: Analyzing "pkg_resources._vendor"
+2017-05-25T12:45:42: Analyzing "pkg_resources._vendor.packaging.markers"
+2017-05-25T12:45:42: Analyzing "pkg_resources._vendor.packaging.requirements"
+2017-05-25T12:45:42: Analyzing "pkg_resources._vendor.packaging.specifiers"
+2017-05-25T12:45:42: Analyzing "pkg_resources._vendor.packaging.utils"
+2017-05-25T12:45:42: Analyzing "pkg_resources._vendor.packaging.version"
+2017-05-25T12:45:42: Analyzing "pkg_resources._vendor.packaging._compat"
+2017-05-25T12:45:42: Analyzing "pkg_resources._vendor.packaging._structures"
+2017-05-25T12:45:42: Analyzing "pkg_resources._vendor.packaging.__about__"
+2017-05-25T12:45:42: Analyzing "pkg_resources._vendor.packaging"
+2017-05-25T12:45:42: Starting analysis of 14 modules
+2017-05-25T12:45:44: Analysis complete
+2017-05-25T12:45:44: Saving group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources"
+2017-05-25T12:45:44: End of group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\pkg_resources"
+2017-05-25T12:45:44: Start group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools" with 41 files
+2017-05-25T12:45:44: Parsing "setuptools.archive_util" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\archive_util.py")
+2017-05-25T12:45:44: Parsing "setuptools.depends" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\depends.py")
+2017-05-25T12:45:44: Parsing "setuptools.dist" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\dist.py")
+2017-05-25T12:45:44: Parsing "setuptools.extension" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\extension.py")
+2017-05-25T12:45:44: Parsing "setuptools.launch" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\launch.py")
+2017-05-25T12:45:44: Parsing "setuptools.lib2to3_ex" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\lib2to3_ex.py")
+2017-05-25T12:45:44: Parsing "setuptools.msvc9_support" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\msvc9_support.py")
+2017-05-25T12:45:44: Parsing "setuptools.package_index" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\package_index.py")
+2017-05-25T12:45:44: Parsing "setuptools.py26compat" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\py26compat.py")
+2017-05-25T12:45:44: Parsing "setuptools.py27compat" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\py27compat.py")
+2017-05-25T12:45:44: Parsing "setuptools.py31compat" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\py31compat.py")
+2017-05-25T12:45:44: Parsing "setuptools.sandbox" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\sandbox.py")
+2017-05-25T12:45:44: Parsing "setuptools.ssl_support" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\ssl_support.py")
+2017-05-25T12:45:44: Parsing "setuptools.unicode_utils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\unicode_utils.py")
+2017-05-25T12:45:44: Parsing "setuptools.utils" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\utils.py")
+2017-05-25T12:45:44: Parsing "setuptools.version" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\version.py")
+2017-05-25T12:45:44: Parsing "setuptools.windows_support" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\windows_support.py")
+2017-05-25T12:45:44: Parsing "setuptools" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\__init__.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.alias" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\alias.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.bdist_egg" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\bdist_egg.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.bdist_rpm" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\bdist_rpm.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.bdist_wininst" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\bdist_wininst.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.build_ext" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\build_ext.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.build_py" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\build_py.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.develop" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\develop.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.easy_install" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\easy_install.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.egg_info" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\egg_info.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.install" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\install.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.install_egg_info" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\install_egg_info.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.install_lib" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\install_lib.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.install_scripts" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\install_scripts.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.register" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\register.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.rotate" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\rotate.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.saveopts" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\saveopts.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.sdist" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\sdist.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.setopt" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\setopt.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.test" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\test.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.upload" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\upload.py")
+2017-05-25T12:45:44: Parsing "setuptools.command.upload_docs" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\upload_docs.py")
+2017-05-25T12:45:44: Parsing "setuptools.command" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\command\__init__.py")
+2017-05-25T12:45:44: Parsing "setuptools.extern" ("C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools\extern\__init__.py")
+2017-05-25T12:45:44: Parsing complete
+2017-05-25T12:45:44: Analyzing "setuptools.archive_util"
+2017-05-25T12:45:44: Analyzing "setuptools.depends"
+2017-05-25T12:45:44: Analyzing "setuptools.dist"
+2017-05-25T12:45:44: Analyzing "setuptools.extension"
+2017-05-25T12:45:44: Analyzing "setuptools.launch"
+2017-05-25T12:45:44: Analyzing "setuptools.lib2to3_ex"
+2017-05-25T12:45:44: Analyzing "setuptools.msvc9_support"
+2017-05-25T12:45:44: Analyzing "setuptools.package_index"
+2017-05-25T12:45:44: Analyzing "setuptools.py26compat"
+2017-05-25T12:45:44: Analyzing "setuptools.py27compat"
+2017-05-25T12:45:44: Analyzing "setuptools.py31compat"
+2017-05-25T12:45:44: Analyzing "setuptools.sandbox"
+2017-05-25T12:45:44: Analyzing "setuptools.ssl_support"
+2017-05-25T12:45:44: Analyzing "setuptools.unicode_utils"
+2017-05-25T12:45:44: Analyzing "setuptools.utils"
+2017-05-25T12:45:44: Analyzing "setuptools.version"
+2017-05-25T12:45:44: Analyzing "setuptools.windows_support"
+2017-05-25T12:45:44: Analyzing "setuptools"
+2017-05-25T12:45:44: Analyzing "setuptools.command.alias"
+2017-05-25T12:45:44: Analyzing "setuptools.command.bdist_egg"
+2017-05-25T12:45:44: Analyzing "setuptools.command.bdist_rpm"
+2017-05-25T12:45:44: Analyzing "setuptools.command.bdist_wininst"
+2017-05-25T12:45:44: Analyzing "setuptools.command.build_ext"
+2017-05-25T12:45:44: Analyzing "setuptools.command.build_py"
+2017-05-25T12:45:44: Analyzing "setuptools.command.develop"
+2017-05-25T12:45:44: Analyzing "setuptools.command.easy_install"
+2017-05-25T12:45:44: Analyzing "setuptools.command.egg_info"
+2017-05-25T12:45:44: Analyzing "setuptools.command.install"
+2017-05-25T12:45:44: Analyzing "setuptools.command.install_egg_info"
+2017-05-25T12:45:44: Analyzing "setuptools.command.install_lib"
+2017-05-25T12:45:44: Analyzing "setuptools.command.install_scripts"
+2017-05-25T12:45:44: Analyzing "setuptools.command.register"
+2017-05-25T12:45:44: Analyzing "setuptools.command.rotate"
+2017-05-25T12:45:44: Analyzing "setuptools.command.saveopts"
+2017-05-25T12:45:44: Analyzing "setuptools.command.sdist"
+2017-05-25T12:45:44: Analyzing "setuptools.command.setopt"
+2017-05-25T12:45:44: Analyzing "setuptools.command.test"
+2017-05-25T12:45:44: Analyzing "setuptools.command.upload"
+2017-05-25T12:45:44: Analyzing "setuptools.command.upload_docs"
+2017-05-25T12:45:44: Analyzing "setuptools.command"
+2017-05-25T12:45:44: Analyzing "setuptools.extern"
+2017-05-25T12:45:44: Starting analysis of 41 modules
+2017-05-25T12:45:46: Analysis complete
+2017-05-25T12:45:46: Saving group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools"
+2017-05-25T12:45:46: End of group "C:\Users\taro148\Source\Repos\ImagingSIMS\Python\ImageFusion\Lib\site-packages\setuptools"
+2017-05-25T12:45:47: Deleting 0 files

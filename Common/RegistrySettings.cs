@@ -400,5 +400,9 @@ namespace ImagingSIMS.Common.Registry
         J105 = 1,
         [Description("Bio-ToF")]
         BioToF = 2,
+        [Description("Cameca 1280")]
+        Cameca1280 = 3,
+        [Description("Cameca NanoSIMS")]
+        CamecaNanoSIMS = 4,
     }
 }

@@ -13,6 +13,7 @@
         xmlns:commonctrls="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
         xmlns:ec="clr-namespace:ImagingSIMS.MainApplication.ExternalCode"
         xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+        xmlns:commands="clr-namespace:ImagingSIMS.Controls;assembly=Controls"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Icon="Images\Logo.ico" 
         Width="1200" Height="900" WindowState="Maximized" MinWidth="600" MinHeight="480" 
@@ -37,6 +38,9 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </RibbonWindow.Resources>
+    <RibbonWindow.CommandBindings>
+        <CommandBinding x:Name="CommandSpecDeadTimeCorrect" Command="commands:SpectrumCommands.DeadTimeCorrect" CanExecute="SpecDeadTimeCorrect_CanExecute" Executed="SpecDeadTimeCorrect_Executed"/>
+    </RibbonWindow.CommandBindings>
     <Grid PreviewKeyDown="Grid_PreviewKeyDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -243,6 +247,9 @@
                         <RibbonSplitMenuItem x:Name="ribbonButtonDataJ105"
                                                     Header="From J105" Click="LoadDataTable" 
                                              ToolTipTitle="Open J105" ToolTipDescription="Opens an ASCII 105 data table."/>
+                        <RibbonSplitMenuItem x:Name="ribbonButtonDataCamecaAPM"
+                                                    Header="From Cameca APM" Click="LoadDataTable" 
+                                             ToolTipTitle="Open Cameca APM" ToolTipDescription="Opens an ASCII Cameca APM data table."/>
                         <RibbonSplitMenuItem x:Name="ribbonButtonDataQStar"
                                                     Header="From QStar" Click="LoadDataTable" 
                                              ToolTipTitle="Open QStar" ToolTipDescription="Opens an ASCII QStar data table."
@@ -250,6 +257,8 @@
                         <RibbonSplitMenuItem x:Name="ribbonButtonDataCSV"
                                                     Header="From CSV" Click="LoadDataTable" 
                                              ToolTipTitle="Open CSV" ToolTipDescription="Opens an ASCII comma separated values (CSV) data table."/>
+                        <RibbonSplitMenuItem x:Name="ribbonButtonDataSeeker" Click="LoadDataTable"
+                                             Header="From SmartSeeker" ToolTipDescription="Load a SmartSeeker data file."/>
                     </RibbonMenuButton>
                     <RibbonButton x:Name="ribbonDataNewRetro"
                                             LargeImageSource="Images\Spec.ico"
@@ -266,6 +275,14 @@
                                   LargeImageSource="Images\Sum.ico" Click="ribbonOpenSumTab_Click"
                                   ToolTipTitle="Summation"
                                   ToolTipDescription="Opens a table selector to perform table summations."/>
+                    <RibbonButton x:Name="rubbonOpenRatioTab" Label="Ratio"
+                                  LargeImageSource="Images\Isotope.ico" Click="ribbonOpenRatioTab_Click"
+                                  ToolTipTitle="Ratio"
+                                  ToolTipDescription="Opens a table selector to create new data sets that are ratios of input data."/>
+                    <RibbonButton x:Name="rubbonOpenStitchTab" Label="Stitch"
+                                  LargeImageSource="Images\Grid.ico" Click="ribbonOpenStitchTab_Click"
+                                  ToolTipTitle="Stitch"
+                                  ToolTipDescription="Opens a tab to drag and drop tables into in order to stitch multiple adjacent data tables into a single table."/>
                     <RibbonButton x:Name="ribbonOpenCropTab" Label="Crop"
                                   LargeImageSource="Images\Crop.ico" Click="ribbonOpenCropTab_Click"
                                   ToolTipTitle="Crop"
@@ -282,6 +299,10 @@
                                   LargeImageSource="Images\DepthProfile.ico" Click="ribbonOpenDepthProfileTab_Click"
                                   ToolTipTitle="Depth Profile" 
                                   ToolTipDescription="Opens a tab to select tables to generate a depth profile."/>
+                    <RibbonButton Label="Math"
+                                  LargeImageSource="{StaticResource Calculator}" Click="ribbonOpenDataMathTab_Click"
+                                  ToolTipTitle="Open Data Math Tab"
+                                  ToolTipDescription="Opens a tab which allows to add, subtract, divide, multiply, etc. tables and scalars."/>
                 </RibbonGroup>
                 <RibbonGroup Header="Spectra">
                     <RibbonButton LargeImageSource="Images\Crop.ico" Label="Crop" ToolTipTitle="Crop Spectrum"
@@ -644,6 +665,34 @@
                                   ToolTipDescription="Hide preview image."
                                   ToolTipImageSource="Images\Close.png"/>
                 </RibbonGroup>
+                <RibbonGroup Header="Dead Time Correction">
+
+                    <RibbonButton Label="Correct" Command="commands:SpectrumCommands.DeadTimeCorrect" CommandParameter="Correct"
+                                  LargeImageSource="Images\Output.ico"
+                                  ToolTipTitle="Dead Time Correct"
+                                  ToolTipDescription="Performs a dead time correction on the selected CamecaNanoSIMS spectra"
+                                  ToolTipImageSource="Images\Output.ico"/>
+                    
+                    <RibbonButton Label="Revert" Command="commands:SpectrumCommands.DeadTimeCorrect" CommandParameter="Revert"
+                                  ToolTipTitle="Dead Time Correct"
+                                  ToolTipDescription="Performs a dead time correction on the selected CamecaNanoSIMS spectra">
+                        <RibbonButton.LargeImageSource>
+                            <TransformedBitmap Source="Images\Output.ico">
+                                <TransformedBitmap.Transform>
+                                    <RotateTransform Angle="180"/>
+                                </TransformedBitmap.Transform>
+                            </TransformedBitmap>
+                        </RibbonButton.LargeImageSource>
+                        <RibbonButton.ToolTipImageSource>
+                            <TransformedBitmap Source="Images\Output.ico">
+                                <TransformedBitmap.Transform>
+                                    <RotateTransform Angle="180"/>
+                                </TransformedBitmap.Transform>
+                            </TransformedBitmap>
+                        </RibbonButton.ToolTipImageSource>
+                    </RibbonButton>
+                    
+                </RibbonGroup>
                 <RibbonGroup Header="Export" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
                                 Converter={StaticResource TabBoolConverter}, ConverterParameter=Spectrum}">
                     <RibbonTextBox x:Name="ribbonTextBoxSpecExportBinSize" Label="Bin size:"/>
@@ -801,6 +850,9 @@
                     <RibbonButton x:Name="fusionNew" Label="New Fusion" Click="OpenFusionTab" 
                                   LargeImageSource="Images\FusionNew.ico" ToolTipTitle="New Image Fusion" 
                                   ToolTipDescription="Opens a new image fusion tab." ToolTipImageSource="Images\FusionNew.ico"/>
+                    <RibbonButton x:Name="fusionPointNew" Label="New Point Registration Fusion" Click="OpenFusionTab"
+                                  LargeImageSource="Images\FusionNew.ico" ToolTipTitle="New Point Registration Image Fusion" 
+                                  ToolTipDescription="Opens a new image fusion tab with point based image registration." ToolTipImageSource="Images\FusionNew.ico"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Load">
                     <RibbonButton x:Name="fusionLoadHigh" LargeImageSource="Images\FusionOpenHigh.ico"
@@ -813,7 +865,7 @@
                                   ToolTipImageSource="Images\FusionOpenLow.ico"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Save" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
-                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Fusion}">
+                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Fusion|FusionPoint}">
                     <RibbonButton LargeImageSource="Images\SaveAll.ico" Click="ribbonFusionSaveSeries_Click"
                                   Label="Save Series" ToolTipTitle="Save Series"
                                   ToolTipDescription="Saves the high res, low res, and fused image series of the active fusion tab."/>
@@ -826,7 +878,7 @@
                     </RibbonMenuButton>
                 </RibbonGroup>
                 <RibbonGroup Header="Registration" IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
-                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Fusion}">
+                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Fusion|FusionPoint}">
                     <RibbonButton LargeImageSource="Images\merge.png" Label="Open Overlay Window" Click="ribbonRegistrationOverlay_Click"
                                   ToolTipTitle="Open Overlay Window"
                                   ToolTipDescription="Opens a window for manually overlaying two images for registration to generate initial guesses."/>

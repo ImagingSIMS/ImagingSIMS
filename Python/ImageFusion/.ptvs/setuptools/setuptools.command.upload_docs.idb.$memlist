@@ -1,0 +1,16 @@
+upload_docs
+http_client
+tempfile
+b
+os
+six
+socket
+urllib
+iter_entry_points
+upload
+errors
+log
+shutil
+standard_b64encode
+zipfile
+DistutilsOptionError

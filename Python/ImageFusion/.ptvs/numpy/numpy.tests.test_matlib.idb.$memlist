@@ -1,0 +1,16 @@
+run_module_suite
+np
+test_zeros
+print_function
+assert_array_equal
+test_repmat
+test_eye
+test_randn
+absolute_import
+numpy
+test_identity
+test_ones
+division
+test_empty
+assert_
+test_rand

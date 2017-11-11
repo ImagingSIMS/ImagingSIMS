@@ -6,13 +6,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ImagingSIMS.Controls.BaseControls"
              xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             xmlns:bc="clr-namespace:ImagingSIMS.Controls.BaseControls"
              mc:Ignorable="d" 
              d:DesignWidth="700" d:DesignHeight="600" Width="Auto" Height="Auto" xmlns:my="clr-namespace:ImagingSIMS.Controls">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\Themes\Generic.xaml"/>
-                <ResourceDictionary>                  
+                <ResourceDictionary>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -89,7 +90,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Border BorderBrush="White" Background="Wheat" Width="8" Height="8" CornerRadius="4"/>
-                        <TextBlock Grid.Column="1">Supported mass spectra files include those from Bio-ToF (.dat, .xyt, .txt) and J105 (.IonoptikaIA2DspectrV2) systems.</TextBlock>
+                        <TextBlock Grid.Column="1">Supported mass spectra files include those from CAMECA IMS-1280 hr (.imp), CAMECA NanoSIMS (.im), Bio-ToF (.dat, .xyt, .txt), and J105 (.IonoptikaIA2DspectrV2) systems.</TextBlock>
                     </Grid>
                     <TextBlock Margin="12,2,0,0">
                         Select mass ranges to generate data tables from mass spectra. Data tables can also be loaded from ASCII text files.

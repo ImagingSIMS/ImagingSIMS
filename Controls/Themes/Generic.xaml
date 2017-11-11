@@ -6,7 +6,8 @@
 	xmlns:data="clr-namespace:ImagingSIMS.Data;assembly=Data"
 	xmlns:base="clr-namespace:ImagingSIMS.Controls.BaseControls"
 	xmlns:tabs="clr-namespace:ImagingSIMS.Controls.Tabs"
-	xmlns:fusion="clr-namespace:ImagingSIMS.Data.Fusion;assembly=Data">
+	xmlns:fusion="clr-namespace:ImagingSIMS.Data.Fusion;assembly=Data"
+    xmlns:imaging="clr-namespace:ImagingSIMS.Data.Imaging;assembly=Data">
 
 	<BooleanToVisibilityConverter x:Key="boolVisConverter"/>
 
@@ -19,12 +20,29 @@
 	<converters:Data2DToBitmapSourceConverter x:Key="data2DToBitmapSourceConverter"/>
 	<converters:EnumDescriptionConverter x:Key="enumDescriptionConverter"/>
 	<converters:DataMaximumToSliderRangeConverter x:Key="dataMaximumToSliderRangeConverter"/>
+    <converters:IsNotNullToVisibilityConverter x:Key="isNotNullToVisibilityConverter"/>
+    <converters:Data2DConversionTypeToVisibilityConverter x:Key="data2DConversionTypeToVisibilityConverter"/>
 
-	<ObjectDataProvider x:Key="fusionFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+    <ObjectDataProvider x:Key="fusionFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
 		<ObjectDataProvider.MethodParameters>
 			<x:Type TypeName="fusion:FusionType"/>
 		</ObjectDataProvider.MethodParameters>
 	</ObjectDataProvider>
+    <ObjectDataProvider x:Key="data2DConversionFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="imaging:Data2DConverionType"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+    <ObjectDataProvider x:Key="mathOpsFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="data:MathOperations"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+    <ObjectDataProvider x:Key="pointRegistrationItemsSource" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="imaging:PointRegistrationType"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
 
 	<!-- Close tab icon -->
 	<DrawingImage x:Key="IconClose" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">

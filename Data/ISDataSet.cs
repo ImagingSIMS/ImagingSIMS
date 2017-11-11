@@ -306,6 +306,9 @@ namespace ImagingSIMS.Data
                         break;
                     case FileType.QStar:
                         throw new ArgumentException("QStar data is not supported");
+                    case FileType.SmartSeekerData:
+                        LoadSmartSeeker(LoadPath);
+                        break;
                 }
             }
             catch (IOException IOex)
@@ -426,6 +429,36 @@ namespace ImagingSIMS.Data
                 }
 
                 _matrix[w - 1, h - 1] = 0;
+
+                DataName = Path.GetFileNameWithoutExtension(LoadPath);
+            }
+            catch (FormatException)
+            {
+                throw new IOException("The input file was an incorrect format.");
+            }
+        }
+        private void LoadSmartSeeker(string LoadPath)
+        {
+            try
+            {
+                using (StreamReader sr = new StreamReader(LoadPath))
+                {
+                    string[] parameters = sr.ReadLine().Split('\t');
+
+                    int sizeX = int.Parse(parameters[2]);
+                    int sizeY = int.Parse(parameters[3]);
+
+                    _matrix = new FlatArray<float>(sizeX, sizeY);
+
+                    for (int y = 0; y < sizeY; y++)
+                    {
+                        string[] parts = sr.ReadLine().Split('\t');
+                        for (int x = 0; x < sizeX; x++)
+                        {
+                            _matrix[x, y] = float.Parse(parts[x]);
+                        }
+                    }
+                }
 
                 DataName = Path.GetFileNameWithoutExtension(LoadPath);
             }
@@ -844,6 +877,19 @@ namespace ImagingSIMS.Data
             return d;
         }
 
+        public Data2D Threshold(int thresholdValue)
+        {
+            Data2D d = new Data2D(Width, Height) { DataName = DataName };
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    d[x, y] = this[x, y] >= thresholdValue ? this[x, y] : 0;
+                }
+            }
+            return d;
+        }
+
         public void FlipHorizontal()
         {
             for (int y = 0; y < Height; y++)
@@ -865,6 +911,25 @@ namespace ImagingSIMS.Data
                     float temp = _matrix[x, y];
                     _matrix[x, y] = _matrix[x, Height - 1 - y];
                     _matrix[x, Height - 1 - y] = temp;
+                }
+            }
+        }
+        public void FlipDiagonal(bool forward)
+        {
+            var temp = _matrix.ToArray();
+
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    if (forward)
+                    {
+                        _matrix[x, y] = temp[Width - 1 - x, Height - 1 - y];
+                    }
+                    else
+                    {
+                        _matrix[x, y] = temp[y, x];
+                    }
                 }
             }
         }
@@ -900,6 +965,12 @@ namespace ImagingSIMS.Data
                         throw new ArgumentException("QStar data is not supported");
                     case FileType.CSV:
                         d = FromCSV(lines);
+                        break;
+                    case FileType.CamecaAPM:
+                        d = FromCamecaAPM(lines);
+                        break;
+                    case FileType.SmartSeekerData:
+                        d = FromSmartSeeker(lines);
                         break;
                 }
 
@@ -1055,7 +1126,74 @@ namespace ImagingSIMS.Data
             //Return object
             return d;
         }
-        public static explicit operator int[,] (Data2D d)
+        private static Data2D FromCamecaAPM(List<string> FileLines)
+        {
+            //Get matrix dimensions
+            int w = 0;
+            int h = 0;
+
+            string firstLine = FileLines[0];
+
+            foreach (char c in firstLine)
+            {
+                //if (c == ',') w++;
+                if (_delimiters.Contains(c)) w++;
+            }
+
+            //Last value in line does not have comma, so add one to account and get actual width
+            w = w + 1;
+
+            //Height is just the number of lines in file
+            // For Cameca APM the last line is just a space, so don't count that
+            h = FileLines.Count - 1;
+
+            //Create Data2D object
+            Data2D d = new Data2D(w, h);
+
+            //Populate Data2D matrix with data from file
+            int x = 0;
+            int y = 0;
+            foreach (string line in FileLines)
+            {
+                //char delimiter = ',';
+                //string[] lineDelim = line.Split(delimiter);
+                string[] lineDelim = line.Split(_delimiters);
+
+                if (lineDelim.Length == 1) continue;
+
+                foreach (string st in lineDelim)
+                {
+                    d[x, y] = (int)double.Parse(st);
+                    x++;
+                }
+                y++;
+                x = 0;
+            }
+
+            //Return object
+            return d;
+        }
+        private static Data2D FromSmartSeeker(List<string> FileLines)
+        {
+            string[] parameters = FileLines[0].Split('\t');
+            FileLines.Remove(FileLines[0]);
+
+            int sizeX = int.Parse(parameters[2]);
+            int sizeY = int.Parse(parameters[3]);
+
+            Data2D d = new Data2D(sizeX, sizeY);
+
+            for (int y = 0; y < sizeY; y++)
+            {
+            string[] lineDelim = FileLines[y].Split('\t');
+            for (int x = 0; x < sizeX; x++)
+            {
+                d[x, y] = float.Parse(lineDelim[x]);
+            }
+            }
+            return d;
+        }
+        public static explicit operator int[,](Data2D d)
         {
             int[,] matrix = new int[d.Width, d.Height];
             for (int x = 0; x < d.Width; x++)
@@ -1392,9 +1530,42 @@ namespace ImagingSIMS.Data
                 return UpscaleBicubic(lowResSizeX, lowResSizeY, highResSizeX, highResSizeY);
         }
 
+        /// <summary>
+        /// Resizes the array to the specified width and height. Can only be used 
+        /// to decrease the matrix dimensions.
+        /// </summary>
+        /// <param name="targetWidth">Width of the new matrix.</param>
+        /// <param name="targetHeight">Height of the new matrix.</param>
+        /// <returns></returns>
+        public Data2D Downscale(int targetWidth, int targetHeight)
+        {
+            int lowResSizeX = targetWidth;
+            int lowResSizeY = targetHeight;
+            int highResSizeX = Width;
+            int highResSizeY = Height;
+
+            Data2D resized = new Data2D(lowResSizeX, lowResSizeY) { DataName = DataName + " - Downscaled" };
+
+            if (lowResSizeX > highResSizeX || lowResSizeY > highResSizeY)
+                throw new ArgumentException("Cannot upscale using this function.");
+
+            float xRatio = (highResSizeX - 1f) / lowResSizeX;
+            float yRatio = (highResSizeY - 1f) / lowResSizeY;
+
+            for (int x = 0; x < lowResSizeX; x++)
+            {
+                for (int y = 0; y < lowResSizeY; y++)
+                {
+                    resized[x, y] = Sample(xRatio * x, yRatio * y);
+                }
+            }
+
+            return resized;
+        }
+
         private Data2D UpscaleBilinear(int lowResSizeX, int lowResSizeY, int highResSizeX, int highResSizeY)
         {
-            Data2D resized = new Data2D(highResSizeX, highResSizeY);
+            Data2D resized = new Data2D(highResSizeX, highResSizeY) { DataName = DataName + " - Upscaled" };
 
             float xRatio = (lowResSizeX - 1f) / highResSizeX;
             float yRatio = (lowResSizeY - 1f) / highResSizeY;
@@ -1403,7 +1574,6 @@ namespace ImagingSIMS.Data
             {
                 for (int j = 0; j < highResSizeY; j++)
                 {
-
                     resized[i, j] = Sample(xRatio * i, yRatio * j);
                 }
             }
@@ -1412,7 +1582,7 @@ namespace ImagingSIMS.Data
         }
         private Data2D UpscaleBicubic(int lowResSizeX, int lowResSizeY, int highResSizeX, int highResSizeY)
         {
-            Data2D resized = new Data2D(highResSizeX, highResSizeY);
+            Data2D resized = new Data2D(highResSizeX, highResSizeY) { DataName = DataName + " - Upscaled" };
 
             float xRatio = (lowResSizeX - 1f) / highResSizeX;
             float yRatio = (lowResSizeY - 1f) / highResSizeY;
@@ -2314,6 +2484,13 @@ namespace ImagingSIMS.Data
             foreach (var layer in _layers)
             {
                 layer.FlipVertical();
+            }
+        }
+        public void FlipDiagonal(bool forward)
+        {
+            foreach (var layer in _layers)
+            {
+                layer.FlipDiagonal(forward);
             }
         }
 

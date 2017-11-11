@@ -11,7 +11,7 @@ namespace ImagingSIMS.Direct3DRendering
 {
     public enum RenderType
     {
-        Volume, HeightMap, Isosurface, NotSpecified
+        Volume, HeightMap, Isosurface, NotSpecified, CombinedVolume
     }
     public enum MoveDirection
     {

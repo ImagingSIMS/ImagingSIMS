@@ -355,13 +355,13 @@ namespace ImagingSIMS.Controls.Tabs
     {
         Startup, Data, Spectrum,
         Component, Display,
-        Rendering, Fusion, Settings,
+        Rendering, Fusion, Settings, FusionPoint,
         TableSelector, PCA,
         Crop, SEM, RenderObject,
         Correction, ZCorrection, SpectrumCrop,
         HeightMap, DataDisplay, Cluster,
-        DataRegistration, DepthProfile, EditWorkspace
-        
+        DataRegistration, DepthProfile, EditWorkspace,
+        Ratio, ImageStitch, DataMath
     }
 
 
