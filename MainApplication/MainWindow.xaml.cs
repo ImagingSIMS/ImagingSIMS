@@ -806,57 +806,19 @@ namespace ImagingSIMS.MainApplication
         {
             e.Handled = true;
 
-            OpenFileDialog ofd = new OpenFileDialog();
-
-            StringBuilder filter = new StringBuilder();
-            string j105 = "Ionoptika compressed V2 files (.zip)|*.zip;*.IonoptikaIA2DspectrV2";
-            string bioToF = "Bio-ToF Spectra Files (.xyt, .dat)|*.xyt;*.dat";
-            string cameca1280 = "Cameca 1280 Spectra Files (.imp)|*.imp";
-            string camecaNanoSIMS = "Cameca NanoSIMS Spectra Files(.im)|*.im";
-            switch (Workspace.Registry.DefaultProgram)
+            if (Workspace.Registry.DefaultProgram == DefaultProgram.NotSpecified)
             {
-                case DefaultProgram.BioToF:
-                    filter.Append(bioToF);
-                    filter.Append("|");
-                    filter.Append(j105);
-                    break;
-                case DefaultProgram.J105:
-                    filter.Append(j105);
-                    filter.Append("|");
-                    filter.Append(bioToF);
-                    break;
-                case DefaultProgram.Cameca1280:
-                    filter.Append(cameca1280);
-                    filter.Append("|");
-                    filter.Append(camecaNanoSIMS);
-                    filter.Append("|");
-                    filter.Append(j105);
-                    filter.Append("|");
-                    filter.Append(bioToF);
-                    break;
-                case DefaultProgram.CamecaNanoSIMS:
-                    filter.Append(camecaNanoSIMS);
-                    filter.Append("|");
-                    filter.Append(cameca1280);
-                    filter.Append("|");
-                    filter.Append(j105);
-                    filter.Append("|");
-                    filter.Append(bioToF);
-                    break;
-                case DefaultProgram.NotSpecified:
-                    filter.Append(bioToF);
-                    filter.Append("|");
-                    filter.Append(j105);
-                    break;
-                default:
-                    filter.Append(bioToF);
-                    filter.Append("|");
-                    filter.Append(j105);
-                    break;
+                DialogBox.Show("No default program selected.",
+                    "Please choose a default program in the Options tab and try again.", "Load", DialogIcon.Error);
+                return;
             }
 
+            var filter = SpectrumFileExtensions.GetFilterForDefaultProgram(Workspace.Registry.DefaultProgram);
+
+            OpenFileDialog ofd = new OpenFileDialog();
+
             ofd.Title = "Open Spectra";
-            ofd.Filter = filter.ToString();
+            ofd.Filter = filter;
             ofd.Multiselect = true;
             Nullable<bool> result = ofd.ShowDialog();
             if (result != true) return;
@@ -864,13 +826,21 @@ namespace ImagingSIMS.MainApplication
             LoadMSArguments args = new LoadMSArguments();
 
             string extension = Path.GetExtension(ofd.FileName).ToLower();
-            if (extension.ToLower().Contains("xyt") || extension.ToLower().Contains("dat"))
+
+            var spectrumType = SpectrumFileExtensions.GetTypeForFileExtension(extension);
+
+            if (spectrumType == SpectrumType.None)
+            {
+                throw new ArgumentException("Could not determine the spectrum type from the file extension");
+            }
+
+            if (spectrumType == SpectrumType.BioToF)
             {
                 args.NumberFiles = ofd.FileNames.Length;
                 args.FileNames = ofd.FileNames;
-                args.Type = SpectrumType.BioToF;
+                args.Type = spectrumType;
             }
-            else if (extension.ToLower().Contains("zip") || extension.ToLower().Contains("IonoptikaIA2DspectrV2".ToLower()))
+            else if (spectrumType == SpectrumType.J105)
             {
                 if (ofd.FileNames.Length > 1)
                 {
@@ -881,20 +851,20 @@ namespace ImagingSIMS.MainApplication
                 }
                 args.NumberFiles = 1;
                 args.FileName = ofd.FileName;
-                args.Type = SpectrumType.J105;
+                args.Type = spectrumType;
                 args.SaveQuickLoadFile = Workspace.Registry.SaveQuickLoad;
             }
-            else if (extension.ToLower().Contains("imp"))
+            else if (spectrumType == SpectrumType.Cameca1280)
             {
                 args.NumberFiles = ofd.FileName.Length;
                 args.FileNames = ofd.FileNames;
-                args.Type = SpectrumType.Cameca1280;
+                args.Type = spectrumType;
             }
-            else if (extension.ToLower().Contains("im"))
+            else if (spectrumType == SpectrumType.CamecaNanoSIMS)
             {
                 args.NumberFiles = ofd.FileName.Length;
                 args.FileNames = ofd.FileNames;
-                args.Type = SpectrumType.CamecaNanoSIMS;
+                args.Type = spectrumType;
             }
 
             pw = new ProgressWindow("Loading " + System.IO.Path.GetFileName(ofd.FileName), "Load");

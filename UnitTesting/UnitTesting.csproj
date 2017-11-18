@@ -51,9 +51,14 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ColorSpaces.cs" />
+    <Compile Include="Data\Spectra\SpectrumType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{3366D52F-103D-4930-AE32-8DCCC3E85A83}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{E095BA5D-B020-4056-B4D4-BCBA59208616}</Project>
       <Name>Data</Name>
