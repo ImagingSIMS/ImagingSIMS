@@ -70,7 +70,7 @@
 
     <Border BorderThickness="1" BorderBrush="{StaticResource grayStrokeBrush}">
 
-        <Grid DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:CollapsedColorSelector}}, Path=SelectedColor}" 
+        <Grid DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:CollapsedColorSelector}}}" 
           Background="{StaticResource backgroundBrush}" Grid.IsSharedSizeScope="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -82,10 +82,10 @@
             </Grid.RowDefinitions>
 
             <CheckBox Grid.Column="1" Grid.Row="0" Margin="4,0,4,0" Style="{StaticResource expanderCheckBoxStyle}"
-                  IsChecked="{Binding ElementName=userControl, Path=ColorSlidersVisible}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  IsChecked="{Binding Path=ColorSlidersVisible}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
             <!-- A -->
-            <Grid Grid.Row="0" Visibility="{Binding ElementName=userControl, Path=IsAlphaEnabled, Converter={StaticResource boolToVisConverter}}">
+            <Grid Grid.Row="0" Visibility="{Binding Path=IsAlphaEnabled, Converter={StaticResource boolToVisConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
                     <ColumnDefinition Width="*"/>
@@ -93,10 +93,10 @@
                 </Grid.ColumnDefinitions>
 
                 <Label Grid.Column="0">A</Label>
-                <Slider Grid.Column="1" Value="{Binding A, Mode=TwoWay}" Background="{Binding Color, Converter={StaticResource colorToComponentScaleConverter}, ConverterParameter=A}"/>
-                <TextBox Grid.Column="2" Text="{Binding A}"/>
+                <Slider Grid.Column="1" Value="{Binding ColorViewModel.A, Mode=TwoWay}" Background="{Binding SelectedColor, Converter={StaticResource colorToComponentScaleConverter}, ConverterParameter=A}"/>
+                <TextBox Grid.Column="2" Text="{Binding ColorViewModel.A}"/>
             </Grid>
-            <Grid Grid.Row="0" Visibility="{Binding ElementName=userControl, Path=IsAlphaEnabled, Converter={StaticResource boolToVisInvertedConverter}}">
+            <Grid Grid.Row="0" Visibility="{Binding Path=IsAlphaEnabled, Converter={StaticResource boolToVisInvertedConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
                     <ColumnDefinition Width="*"/>
@@ -106,21 +106,21 @@
                     <Image Grid.Column="1" Source="TransparentBackground.png" Height="20" Stretch="Fill"/>
                     <Border BorderThickness="0">
                         <Border.Background>
-                            <SolidColorBrush Color="{Binding Color}"/>
+                            <SolidColorBrush Color="{Binding SelectedColor}"/>
                         </Border.Background>
                     </Border>
                 </Grid>                    
             </Grid>
 
             <!-- R -->
-            <Grid Grid.Row="1" Visibility="{Binding ElementName=userControl, Path=ColorSlidersVisible, Converter={StaticResource boolToVisConverter}}">
+            <Grid Grid.Row="1" Visibility="{Binding Path=ColorSlidersVisible, Converter={StaticResource boolToVisConverter}}">
                 <Grid Background="{StaticResource backgroundBrush}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" Visibility="{Binding ElementName=userControl, Path=ColorSlidersVisible, Converter={StaticResource boolToVisConverter}}">
+                    <Grid Grid.Row="0" Visibility="{Binding Path=ColorSlidersVisible, Converter={StaticResource boolToVisConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
                             <ColumnDefinition Width="*"/>
@@ -128,12 +128,12 @@
                         </Grid.ColumnDefinitions>
 
                         <Label Grid.Column="0">R</Label>
-                        <Slider Grid.Column="1" Value="{Binding R, Mode=TwoWay}" Background="{Binding Color, Converter={StaticResource colorToComponentScaleConverter}, ConverterParameter=R}"/>
-                        <TextBox Grid.Column="2" Text="{Binding R}"/>
+                        <Slider Grid.Column="1" Value="{Binding ColorViewModel.R, Mode=TwoWay}" Background="{Binding SelectedColor, Converter={StaticResource colorToComponentScaleConverter}, ConverterParameter=R}"/>
+                        <TextBox Grid.Column="2" Text="{Binding ColorViewModel.R}"/>
                     </Grid>
 
                     <!-- G -->
-                    <Grid Grid.Row="1" Visibility="{Binding ElementName=userControl, Path=ColorSlidersVisible, Converter={StaticResource boolToVisConverter}}">
+                    <Grid Grid.Row="1" Visibility="{Binding Path=ColorSlidersVisible, Converter={StaticResource boolToVisConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
                             <ColumnDefinition Width="*"/>
@@ -141,12 +141,12 @@
                         </Grid.ColumnDefinitions>
 
                         <Label Grid.Column="0">G</Label>
-                        <Slider Grid.Column="1" Value="{Binding G, Mode=TwoWay}" Background="{Binding Color, Converter={StaticResource colorToComponentScaleConverter}, ConverterParameter=G}"/>
-                        <TextBox Grid.Column="2" Text="{Binding G}"/>
+                        <Slider Grid.Column="1" Value="{Binding ColorViewModel.G, Mode=TwoWay}" Background="{Binding SelectedColor, Converter={StaticResource colorToComponentScaleConverter}, ConverterParameter=G}"/>
+                        <TextBox Grid.Column="2" Text="{Binding ColorViewModel.G}"/>
                     </Grid>
 
                     <!-- B -->
-                    <Grid Grid.Row="2" Visibility="{Binding ElementName=userControl, Path=ColorSlidersVisible, Converter={StaticResource boolToVisConverter}}">
+                    <Grid Grid.Row="2" Visibility="{Binding Path=ColorSlidersVisible, Converter={StaticResource boolToVisConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="Labels"/>
                             <ColumnDefinition Width="*"/>
@@ -154,8 +154,8 @@
                         </Grid.ColumnDefinitions>
 
                         <Label Grid.Column="0">B</Label>
-                        <Slider Grid.Column="1" Value="{Binding B, Mode=TwoWay}" Background="{Binding Color, Converter={StaticResource colorToComponentScaleConverter}, ConverterParameter=B}"/>
-                        <TextBox Grid.Column="2" Text="{Binding B}"/>
+                        <Slider Grid.Column="1" Value="{Binding ColorViewModel.B, Mode=TwoWay}" Background="{Binding SelectedColor, Converter={StaticResource colorToComponentScaleConverter}, ConverterParameter=B}"/>
+                        <TextBox Grid.Column="2" Text="{Binding ColorViewModel.B}"/>
                     </Grid>
                 </Grid>
             </Grid>

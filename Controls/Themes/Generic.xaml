@@ -6,7 +6,8 @@
 	xmlns:data="clr-namespace:ImagingSIMS.Data;assembly=Data"
 	xmlns:base="clr-namespace:ImagingSIMS.Controls.BaseControls"
 	xmlns:tabs="clr-namespace:ImagingSIMS.Controls.Tabs"
-	xmlns:fusion="clr-namespace:ImagingSIMS.Data.Fusion;assembly=Data">
+	xmlns:fusion="clr-namespace:ImagingSIMS.Data.Fusion;assembly=Data"
+    xmlns:imaging="clr-namespace:ImagingSIMS.Data.Imaging;assembly=Data">
 
 	<BooleanToVisibilityConverter x:Key="boolVisConverter"/>
 
@@ -19,15 +20,57 @@
 	<converters:Data2DToBitmapSourceConverter x:Key="data2DToBitmapSourceConverter"/>
 	<converters:EnumDescriptionConverter x:Key="enumDescriptionConverter"/>
 	<converters:DataMaximumToSliderRangeConverter x:Key="dataMaximumToSliderRangeConverter"/>
-    <converters:ColorToNotifiableColorConverter x:Key="colorToNotifiableColorConverter"/>
+    <converters:IsNotNullToVisibilityConverter x:Key="isNotNullToVisibilityConverter"/>
+    <converters:Data2DConversionTypeToVisibilityConverter x:Key="data2DConversionTypeToVisibilityConverter"/>
 
     <ObjectDataProvider x:Key="fusionFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
 		<ObjectDataProvider.MethodParameters>
 			<x:Type TypeName="fusion:FusionType"/>
 		</ObjectDataProvider.MethodParameters>
 	</ObjectDataProvider>
+    <ObjectDataProvider x:Key="data2DConversionFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="imaging:Data2DConverionType"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+    <ObjectDataProvider x:Key="mathOpsFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="data:MathOperations"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+    <ObjectDataProvider x:Key="pointRegistrationItemsSource" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="imaging:PointRegistrationType"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
 
-	<!-- Fill Brushes -->
+	<!-- Close tab icon -->
+	<DrawingImage x:Key="IconClose" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+		<DrawingImage.Drawing>
+			<DrawingGroup>
+				<DrawingGroup.Children>
+					<GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+					<GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M8.0001,5.1721L3.4571,0.6291 0.629099999999999,3.4571 5.1721,8.0001 0.629099999999999,12.5431 3.4571,15.3711 8.0001,10.8281 12.5431,15.3711 15.3711,12.5431 10.8281,8.0001 15.3711,3.4571 12.5431,0.6291z" />
+					<GeometryDrawing Brush="#FF424242" Geometry="F1M9.4141,8L13.9571,12.543 12.5431,13.957 8.0001,9.414 3.4571,13.957 2.0431,12.543 6.5861,8 2.0431,3.457 3.4571,2.043 8.0001,6.586 12.5431,2.043 13.9571,3.457z" />
+				</DrawingGroup.Children>
+			</DrawingGroup>
+		</DrawingImage.Drawing>
+	</DrawingImage>
+    <DrawingImage x:Key="IconCloseRed" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Children>
+                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M8.0001,5.1721L3.4571,0.6291 0.629099999999999,3.4571 5.1721,8.0001 0.629099999999999,12.5431 3.4571,15.3711 8.0001,10.8281 12.5431,15.3711 15.3711,12.5431 10.8281,8.0001 15.3711,3.4571 12.5431,0.6291z" />
+                    <GeometryDrawing Brush="#FF990000" Geometry="F1M9.4141,8L13.9571,12.543 12.5431,13.957 8.0001,9.414 3.4571,13.957 2.0431,12.543 6.5861,8 2.0431,3.457 3.4571,2.043 8.0001,6.586 12.5431,2.043 13.9571,3.457z" />
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Fill Brushes -->
+	<SolidColorBrush x:Key="ToolTipBackground" Color="#FF292929"/>
+	<SolidColorBrush x:Key="ToolTipBorderBrush" Color="#FF007ACC"/>
 
 	<!-- Miscellaneous Brushes -->
 	<SolidColorBrush x:Key="GlyphBrush" Color="#444" />
@@ -58,8 +101,8 @@
 		<Setter Property="VerticalAlignment" Value="Center"/>
 	</Style>
 	<Style TargetType="{x:Type ToolTip}">
-		<Setter Property="Background" Value="{StaticResource MenuBackground}"/>
-		<Setter Property="BorderBrush" Value="#FF4D5578"/>
+		<Setter Property="Background" Value="{StaticResource ToolTipBackground}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource ToolTipBorderBrush}"/>
 		<Setter Property="Foreground" Value="White"/>
 	</Style>
 	<Style TargetType="{x:Type TextBox}">
@@ -92,41 +135,50 @@
 		</Setter>
 	</Style>
 
-    <Style x:Key="CloseButtonStyle" TargetType="{x:Type Button}">
-        <Setter Property="SnapsToDevicePixels" Value="true"/>
-        <Setter Property="OverridesDefaultStyle" Value="true"/>
-        <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Content" Value="X"/>
-        <Setter Property="FontSize" Value="11"/>
-        <Setter Property="FontFamily" Value="SegoeUI"/>
-        <Setter Property="Template">
+	<Style x:Key="CloseButtonStyle" TargetType="{x:Type Button}">
+		<Setter Property="SnapsToDevicePixels" Value="true"/>
+		<Setter Property="OverridesDefaultStyle" Value="true"/>
+		<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+		<Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Content">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="Border"
-							Margin="2"
-							CornerRadius="7" BorderThickness="0" 
-							Background="Transparent" BorderBrush="Transparent">
-                        <ContentPresenter x:Name="ContentPresenter" Margin="0,0,0,0" 
-										  HorizontalAlignment="Center" VerticalAlignment="Center"
-										  RecognizesAccessKey="True"/>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonHoverBackground}"/>
-                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource ButtonHoverForeground}"/>
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="true">
-                            <Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonClickBackground}"/>
-                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource ButtonClickForeground}"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
+                <Image Source="{StaticResource IconClose}"/>
             </Setter.Value>
         </Setter>
-    </Style>
+        <Setter Property="FontSize" Value="11"/>
+		<Setter Property="FontFamily" Value="SegoeUI"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+					<Border x:Name="Border"
+							Margin="2" Padding="2"
+							CornerRadius="0" BorderThickness="0" 
+							Background="Transparent" BorderBrush="Transparent">
+						<ContentPresenter x:Name="ContentPresenter" Margin="0,0,0,0" 
+										  HorizontalAlignment="Center" VerticalAlignment="Center"
+										  RecognizesAccessKey="True"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="true">
+							<Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonHoverBackground}"/>
+							<Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource ButtonHoverForeground}"/>
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <Image Source="{StaticResource IconCloseRed}"/>
+                                </Setter.Value>
+                            </Setter>
+						</Trigger>
+						<Trigger Property="IsPressed" Value="true">
+							<Setter TargetName="Border" Property="Background" Value="{StaticResource ButtonClickBackground}"/>
+							<Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="{StaticResource ButtonClickForeground}"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 
-    <Style TargetType="{x:Type tabs:ClosableTabItem}">
+	<Style TargetType="{x:Type tabs:ClosableTabItem}">
 		<Setter Property="FocusVisualStyle" Value="{StaticResource TabItemFocusVisual}"/>
 		<Setter Property="MinWidth" Value="40"/>
 		<Setter Property="Width" Value="Auto"/>
@@ -136,8 +188,8 @@
 		<Setter Property="BorderBrush" Value="Transparent"/>
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-        <Setter Property="Template">
+		<Setter Property="VerticalContentAlignment" Value="Stretch"/>
+		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type tabs:ClosableTabItem}">
 					<Grid x:Name="TabGrid" SnapsToDevicePixels="true" Height="23" MinWidth="95">
@@ -148,9 +200,9 @@
 						<Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}"
 								BorderThickness="0,0,0,0" Padding="{TemplateBinding Padding}" Grid.ColumnSpan="2" CornerRadius="0,0,0,0" MinWidth="95" Margin="0"
 								Background="Transparent"/>
-                        <Border x:Name="DropAdorner" BorderThickness="0" Padding="{TemplateBinding Padding}" Grid.ColumnSpan="2" CornerRadius="0,0,0,0" MinWidth="95" Margin="0"
-                                Background="#7FFF0000" Visibility="Collapsed"/>
-                        <Button x:Name="ButtonClose" Style="{StaticResource CloseButtonStyle}" Width="20" Height="20" Margin="0" 
+						<Border x:Name="DropAdorner" BorderThickness="0" Padding="{TemplateBinding Padding}" Grid.ColumnSpan="2" CornerRadius="0,0,0,0" MinWidth="95" Margin="0"
+								Background="#7FFF0000" Visibility="Collapsed"/>
+						<Button x:Name="ButtonClose" Style="{StaticResource CloseButtonStyle}" Width="20" Height="20" Margin="0" 
 								HorizontalAlignment="Center" VerticalAlignment="Center" 
 								Panel.ZIndex="1" Grid.Column="1" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
 								VerticalContentAlignment="Center" Padding="0" ToolTip="Close">
@@ -180,9 +232,9 @@
 							<Setter Property="Panel.ZIndex" Value="1"/>
 							<Setter Property="Background" TargetName="Bd" Value="{StaticResource TabItemSelectedBackground}"/>
 						</Trigger>
-                        <Trigger Property="IsCurrentDragTarget" Value="True">
-                            <Setter TargetName="DropAdorner" Property="Visibility" Value="Visible"/>
-                        </Trigger>
+						<Trigger Property="IsCurrentDragTarget" Value="True">
+							<Setter TargetName="DropAdorner" Property="Visibility" Value="Visible"/>
+						</Trigger>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsSelected" Value="false"/>

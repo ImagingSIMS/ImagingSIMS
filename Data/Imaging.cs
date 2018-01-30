@@ -195,13 +195,19 @@ namespace ImagingSIMS.Data.Imaging
     //                {
     //                    array[x, y] = pixels[pos];
 
-    //                    pos += 1;
-    //                }
-    //                else if (pf == PixelFormats.Bgr24)
-    //                {
-    //                    byte b = pixels[pos + 0];      //Blue
-    //                    byte g = pixels[pos + 1];      //Green
-    //                    byte r = pixels[pos + 2];      //Red
+                    //    pos += 1;
+                    //}
+                    //else if (pf == PixelFormats.Gray16)
+                    //{
+                    //    array[x, y] = BitConverter.ToUInt16(pixels, pos);
+
+                    //    pos += 2;
+                    //}
+                    //else if (pf == PixelFormats.Bgr24)
+                    //{
+                    //    byte b = pixels[pos + 0];      //Blue
+                    //    byte g = pixels[pos + 1];      //Green
+                    //    byte r = pixels[pos + 2];      //Red
 
     //                    array[x, y] = MathEx.Average(r, g, b);
 
@@ -292,13 +298,22 @@ namespace ImagingSIMS.Data.Imaging
     //                    g = pixels[pos];
     //                    r = pixels[pos];
 
-    //                    pos += 1;
-    //                }
-    //                else if (pf == PixelFormats.Bgr24)
-    //                {
-    //                    b = pixels[pos + 0];      //Blue
-    //                    g = pixels[pos + 1];      //Green
-    //                    r = pixels[pos + 2];      //Red
+                    //    pos += 1;
+                    //}
+                    //else if (pf == PixelFormats.Gray16)
+                    //{
+                    //    byte pixelVal = (byte)(BitConverter.ToInt16(pixels, pos) / 2);
+
+                    //    b = pixelVal;
+                    //    g = pixelVal;
+                    //    r = pixelVal;
+                    //    pos += 2;
+                    //}
+                    //else if (pf == PixelFormats.Bgr24)
+                    //{
+                    //    b = pixels[pos + 0];      //Blue
+                    //    g = pixels[pos + 1];      //Green
+                    //    r = pixels[pos + 2];      //Red
 
     //                    pos += 3;
     //                }
@@ -1132,9 +1147,19 @@ namespace ImagingSIMS.Data.Imaging
             get { return this.GetHashCode(); }
         }
     }
-    public sealed class DisplaySeries : Data, ISavable
+    public sealed class DisplaySeries : Data, ISavable, IWorkspaceData
     {
         ObservableCollection<DisplayImage> _images;
+
+        public override string SizeString
+        {
+            get
+            {
+                if (_images.Count == 0)
+                    return "Empty";
+                else return $"W: {_images[0].Width} H: {_images[0].Height} Count: {_images.Count}";
+            }
+        }
 
         public string SeriesName
         {
@@ -1314,6 +1339,16 @@ namespace ImagingSIMS.Data.Imaging
     {
         ObservableCollection<Image> _images;
         string[] _titles;
+
+        public override string SizeString
+        {
+            get
+            {
+                if (_images.Count == 0)
+                    return "Empty";
+                else return $"W: {_images[0].Width} H: {_images[0].Height} Count: {_images.Count}";
+            }
+        }
 
         public string SeriesName
         {
@@ -2419,6 +2454,282 @@ namespace ImagingSIMS.Data.Imaging
             }
 
             return cdfNorm;
+        }
+
+        public static double[,] Match(double[,] target, double[,] reference, int numberBins, bool scale = false)
+        {
+            double[] arrayTarget = new double[target.GetLength(0) * target.GetLength(1)];
+            double[] arrayRef = new double[reference.GetLength(0) * reference.GetLength(1)];
+
+            for (int x = 0; x < target.GetLength(0); x++)
+            {
+                for (int y = 0; y < target.GetLength(1); y++)
+                {
+                    int index = x * target.GetLength(1) + y;
+                    arrayTarget[index] = target[x, y];
+                }
+            }
+            for (int x = 0; x < reference.GetLength(0); x++)
+            {
+                for (int y = 0; y < reference.GetLength(1); y++)
+                {
+                    int index = x * reference.GetLength(1) + y;
+                    arrayRef[index] = reference[x, y];
+                }
+            }
+
+            var arrayMatched = Match(arrayTarget, arrayRef, numberBins, scale);
+            double[,] matched = new double[target.GetLength(0), target.GetLength(1)];
+
+            for (int x = 0; x < target.GetLength(0); x++)
+            {
+                for (int y = 0; y < target.GetLength(1); y++)
+                {
+                    int index = x * target.GetLength(1) + y;
+                    matched[x, y] = (float)arrayMatched[index];
+                }
+            }
+
+            return matched;
+        }
+        public static Data2D Match(Data2D target, Data2D reference, int numberBins, bool scale = false)
+        {
+            double[] arrayTarget = new double[target.Width * target.Height];
+            double[] arrayRef = new double[reference.Width * reference.Height];
+
+            for (int x = 0; x < target.Width; x++)
+            {
+                for (int y = 0; y < target.Height; y++)
+                {
+                    int index = x * target.Height + y;
+                    arrayTarget[index] = target[x, y];
+                }
+            }
+            for (int x = 0; x < reference.Width; x++)
+            {
+                for (int y = 0; y < reference.Height; y++)
+                {
+                    int index = x * reference.Height + y;
+                    arrayRef[index] = reference[x, y];
+                }
+            }
+
+            var arrayMatched = Match(arrayTarget, arrayRef, numberBins, scale);
+            Data2D matched = new Data2D(target.Width, target.Height);
+
+            for (int x = 0; x < target.Width; x++)
+            {
+                for (int y = 0; y < target.Height; y++)
+                {
+                    int index = x * target.Height + y;
+                    matched[x, y] = (float)arrayMatched[index];
+                }
+            }
+
+            return matched;
+        }
+        public static double[] Match(double[] target, double[] reference, int numberBins, bool scale = false)
+        {
+            // Get min/max of each array
+            double targetMin = double.MaxValue;
+            double targetMax = double.MinValue;
+            double refMin = double.MaxValue;
+            double refMax = double.MinValue;
+
+            for (int i = 0; i < target.Length; i++)
+            {
+                if (target[i] < targetMin) targetMin = target[i];
+                if (target[i] > targetMax) targetMax = target[i];
+            }
+            for (int i = 0; i < reference.Length; i++)
+            {
+                if (reference[i] < refMin) refMin = reference[i];
+                if (reference[i] > refMax) refMax = reference[i];
+            }
+
+            double targetRange = targetMax - targetMin;
+            double targetStep = targetRange / numberBins;
+            double refRange = refMax - refMin;
+            double refStep = refRange / numberBins;
+
+            // 0: Normalized value [0,1]
+            // 1: Original value [arrayMin, arrayMax]
+            // 2: Histogram [0, maxUniqueCounts]
+            // 3: Normalized umulative dist function [0, 1]
+            double[,] histTarget = new double[numberBins, 4];
+            double[,] histRef = new double[numberBins, 4];
+
+            // Fill normalized and original lookup values
+            for (int i = 0; i < numberBins; i++)
+            {
+                histTarget[i, 0] = i / (double)numberBins;
+                histTarget[i, 1] = targetStep * i + targetMin;
+                histRef[i, 0] = i / (double)numberBins;
+                histRef[i, 1] = refStep * i + refMin;
+            }
+
+            // Create histogram for target array
+            for (int i = 0; i < target.Length; i++)
+            {
+                int index = (int)((target[i] - targetMin) / targetStep);
+                if (index >= numberBins) index = numberBins - 1;
+                histTarget[index, 2]++;
+            }
+            // Create histogram for reference array
+            for (int i = 0; i < reference.Length; i++)
+            {
+                int index = (int)((reference[i] - refMin) / refStep);
+                if (index >= numberBins) index = numberBins - 1;
+                histRef[index, 2]++;
+            }
+
+            // Create cumulative distribution function
+            double targetSum = 0;
+            double refSum = 0;
+            for (int i = 0; i < numberBins; i++)
+            {
+                targetSum += histTarget[i, 2];
+                refSum += histRef[i, 2];
+                histTarget[i, 3] = targetSum;
+                histRef[i, 3] = refSum;
+            }
+            // Normalize distribution function
+            for (int i = 0; i < numberBins; i++)
+            {
+                histTarget[i, 3] /= targetSum;
+                histRef[i, 3] /= refSum;
+            }
+
+            int[] lookup = new int[numberBins];
+            for (int i = 0; i < numberBins; i++)
+            {
+                double value = histTarget[i, 3];
+                int index = 0;
+                for (; index < numberBins; index++)
+                {
+                    if (histRef[index, 3] > value) break;
+                    if (index + 1 >= numberBins) break;
+                    if (histRef[index, 3] <= value && histRef[index + 1, 3] > value) break;
+                }
+                lookup[i] = index;
+            }
+
+            double[] matched = new double[target.Length];
+
+            // If return scaled version is set to true, use 
+            // index 0 from histogram array, otherwise 1 for orignal values
+            int lookupIndex = scale ? 0 : 1;
+            for (int i = 0; i < matched.Length; i++)
+            {
+                double value = (target[i] - targetMin) / targetRange;
+                int index = 0;
+                for(; index < numberBins; index++)
+                {
+                    if (histTarget[index, 0] > value) break;
+                    if (index + 1 >= numberBins) break;
+                    if (histTarget[index, 0] <= value && histTarget[index + 1, 0] > value) break;
+                }
+                matched[i] = histRef[lookup[index], lookupIndex];
+            }
+            return matched;
+        }
+        public static double[] _Match(double[] target, double[] reference, int numberBins)
+        {
+            // Get min/max of each array
+            double targetMin = double.MaxValue;
+            double targetMax = double.MinValue;
+            double refMin = double.MaxValue;
+            double refMax = double.MinValue;
+
+            for (int i = 0; i < target.Length; i++)
+            {
+                if (target[i] < targetMin) targetMin = target[i];
+                if (target[i] > targetMax) targetMax = target[i];
+            }
+            for (int i = 0; i < reference.Length; i++)
+            {
+                if (reference[i] < refMin) refMin = reference[i];
+                if (reference[i] > refMax) refMax = reference[i];
+            }
+
+            double targetRange = targetMax - targetMin;
+            double refRange = refMax - refMin;
+            
+            // Scale the arrays into range [0,1]
+            double[] targetScaled = new double[target.Length];
+            double[] refScaled = new double[reference.Length];
+
+            for (int i = 0; i < target.Length; i++)
+            {
+                targetScaled[i] = target[i] / targetRange;
+            }
+            for (int i = 0; i < reference.Length; i++)
+            {
+                refScaled[i] = reference[i] / refRange;
+            }
+
+            double targetStep = targetRange / numberBins;
+            double refStep = refRange/ numberBins;
+
+            // Create histogram for each array with numberBins
+            double[,] histTarget = new double[numberBins, 2];
+            double[,] histRef = new double[numberBins, 2];
+
+            // Store at [index, 0] the original values
+            for (int i = 0; i < numberBins; i++)
+            {
+                histTarget[i, 0] = targetStep * i + targetMin;
+                histRef[i, 0] = refStep * i + refMin;
+            }
+
+            for (int i = 0; i < target.Length; i++)
+            {
+                int index = (int)((target[i] - targetMin) / targetStep);
+                if (index >= numberBins) index = numberBins - 1;
+                histTarget[index, 1]++;
+            }
+            for (int i = 0; i < reference.Length; i++)
+            {
+                int index = (int)((reference[i] - refMin) / refStep);
+                if (index >= numberBins) index = numberBins - 1;
+                histRef[index, 1]++;
+            }
+
+            // Create cumulative distribution function for each
+            double[] cdfTarget = new double[numberBins];
+            double[] cdfRef = new double[numberBins];
+
+            double targetSum = 0;
+            double refSum = 0;
+            for (int i = 0; i < numberBins; i++)
+            {
+                targetSum += histTarget[i, 1];
+                refSum += histRef[i, 1];
+                cdfTarget[i] = targetSum;
+                cdfRef[i] = refSum;
+            }
+            for (int i = 0; i < numberBins; i++)
+            {
+                cdfTarget[i] /= targetSum;
+                cdfRef[i] /= refSum;
+            }
+
+            double[] matched = new double[target.Length];
+            for (int i = 0; i < target.Length; i++)
+            {
+                double value = targetScaled[i];
+                int index = 0;
+                for (; index < numberBins; index++)
+                {
+                    if (cdfTarget[index] > value) break;
+                    if (index + 1 >= numberBins) break;
+                    if (cdfTarget[index] <= value && cdfTarget[index + 1] > value) break;
+                }
+                //int index = (int)((target[i] - targetMin) / targetStep);
+                matched[i] = histRef[index, 0];
+            }
+
+            return matched;
         }
     }
 

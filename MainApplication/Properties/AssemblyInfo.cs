@@ -8,12 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ImagingSIMS")]
-[assembly: AssemblyDescription("ImagingSIMS is open source software and its use, modification, and redistribution is covered under the Mozilla Public License, version 2.0. " + 
-    "A copy of the Mozilla Public License 2.0 is provided below and in the EULA file in the installation directory of this program.")]
+[assembly: AssemblyDescription("ImagingSIMS is open source software and its use, modification, and redistribution is covered under the BSD license, a copy of which is provided below. This license defines your rights as a user of ImagingSIMS to use, modify, and redistribute this software. By installing ImagingSIMS, you agree to the terms of this licenses agreement.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ImagingSIMS")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -52,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.6.1.*")]
-[assembly: AssemblyFileVersion("3.6.1")]
+[assembly: AssemblyVersion("3.7.1.*")]
+[assembly: AssemblyFileVersion("3.7.1")]

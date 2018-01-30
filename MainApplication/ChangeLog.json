@@ -110,5 +110,66 @@
       "Inlcude support for color scales in range of [-1, +1].",
       "Minor improvement in image rendering speed."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 10
+    },
+    "Updates": [
+      "A new logo and animated splash screen while the application loads.",
+      "Fixed an issue with the color selector.",
+      "Some under the hood changes to set up some future improvements."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 7,
+      "Build": 1,
+      "Revision": 1
+    },
+    "Updates": [
+      "Support for CAMECA NanoSIMS files.",
+      "Ability to stitch tables and volumes.",
+      "Create ratio tables of loaded data.",
+      "Perform user defined mathematical operations to data tables.",
+      "New image fusion tab to incorporate point based image registration as well as update images from data tables on the fly."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 7,
+      "Build": 1,
+      "Revision": 2
+    },
+    "Updates": [
+      "Application name reflects new version."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 7,
+      "Build": 1,
+      "Revision": 3
+    },
+    "Updates": [
+      "About window displays correct license name."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 7,
+      "Build": 1,
+      "Revision": 4
+    },
+    "Updates": [
+      "Fix issue with default program setting preventing certain spectrum file filters populating."
+    ]
   }
 ]

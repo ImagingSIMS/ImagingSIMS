@@ -273,7 +273,7 @@ namespace ImagingSIMS.Controls.BaseControls
         private void contentButtonSave_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Bitmap Images (.bmp)|*.bmp";
+            sfd.Filter = "Bitmap Images (.bmp)|*.bmp|PNG Images (.png)|*.png|Jpeg Images (.jpeg,.jpeg)|*.jpg;*.jpeg|Tiff Images (.tiff,.tif)|*.tif;*.tiff";
 
             if (sfd.ShowDialog() != true) return;
 

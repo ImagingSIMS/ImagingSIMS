@@ -50,20 +50,26 @@ namespace ImagingSIMS.Common.Dialogs
             InitializeComponent();
 
             this.Message = Message;
-            this.EnteredText = OriginalText;
+            EnteredText = OriginalText;
 
             textBoxEntry.SelectAll();
         }
 
         private void buttonOk_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
-            this.Close();
+            DialogResult = true;
+            Close();
         }
         private void buttonCancel_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
-            this.Close();
+            DialogResult = false;
+            Close();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            textBoxEntry.Focus();
+            textBoxEntry.SelectAll();
         }
     }
 }

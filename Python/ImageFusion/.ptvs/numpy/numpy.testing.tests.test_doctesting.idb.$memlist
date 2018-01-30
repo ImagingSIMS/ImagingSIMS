@@ -1,0 +1,11 @@
+check_whitespace_enabled
+nose
+absolute_import
+check_random_directive
+NumpyDoctest
+check_skip
+division
+print_function
+argv
+check_implicit_np
+check_empty_output

@@ -408,8 +408,7 @@ namespace ImagingSIMS.Data.Converters
         }
         public static RGB IHStoRGB(IHS ihs)
         {
-            if (ihs.I < 0 || ihs.I > 3 || ihs.H < 0 || ihs.H > 3 || ihs.S < 0 || ihs.S > 1)
-                throw new ArgumentException("Invalid IHS color. Color channels not scaled to [0,3) [0,3) [0,1).");
+            ihs = ihs.ClampIfNecessary(0.5);
 
             // http://ij.ms3d.de/pdf/ihs_transforms.pdf
 
@@ -488,8 +487,7 @@ namespace ImagingSIMS.Data.Converters
         }
         public static RGB HSLtoRGB(HSL hsl)
         {
-            if (hsl.H < 0 || hsl.H > 360 || hsl.S < 0 || hsl.S > 1 || hsl.L < 0 || hsl.L > 1)
-                throw new ArgumentException("Invalid HSL color. Color channels not scaled to [0,360) [0,1) [0,1).");
+            hsl = hsl.ClampIfNecessary();
 
             // http://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
 
@@ -596,11 +594,11 @@ namespace ImagingSIMS.Data.Colors
             S = ihs[2];
         }
 
-        public IHS ClampIfNecessary(double tolerance = 0.001)
+        public IHS ClampIfNecessary(double tolerance = 0.1)
         {
             return ClampIfNecessary(this, tolerance);
         }
-        public static IHS ClampIfNecessary(IHS ihs, double tolerance = 0.001)
+        public static IHS ClampIfNecessary(IHS ihs, double tolerance = 0.1)
         {
             double i = ihs.I;
             double h = ihs.H;
@@ -653,11 +651,11 @@ namespace ImagingSIMS.Data.Colors
             L = hsl[2];
         }
 
-        public HSL ClampIfNecessary(double tolerance = 0.001)
+        public HSL ClampIfNecessary(double tolerance = 0.1)
         {
             return ClampIfNecessary(this, tolerance);
         }
-        public static HSL ClampIfNecessary(HSL hsl, double tolerance = 0.001)
+        public static HSL ClampIfNecessary(HSL hsl, double tolerance = 0.1)
         {
             double h = hsl.H;
             double s = hsl.S;
@@ -742,11 +740,11 @@ namespace ImagingSIMS.Data.Colors
             }
         }
 
-        public RGB ClampIfNecessary(double tolerance = 0.001)
+        public RGB ClampIfNecessary(double tolerance = 0.1)
         {
             return ClampIfNecessary(this, tolerance);
         }
-        public static RGB ClampIfNecessary(RGB rgb, double tolerance = 0.001)
+        public static RGB ClampIfNecessary(RGB rgb, double tolerance = 0.1)
         {
             double r = rgb.R;
             double g = rgb.G;

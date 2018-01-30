@@ -297,6 +297,21 @@ namespace ImagingSIMS.Controls.Tabs
             AnalysisOutputText = sb.ToString();
 
             expanderStatsOutput.IsExpanded = true;
+            tabOutput.SelectedItem = tabItemAnalysis;
+        }
+        private void calculateRatios_Click(object sender, RoutedEventArgs e)
+        {
+            string[] labels = DisplayItems.Select(di => di.DataSource.DataName).ToArray();
+            float[] values = DisplayItems.Select(di => (float)di.ViewableDataSource.TotalCounts).ToArray();
+
+            ratioGrid.SetValues(labels, values);
+
+            expanderStatsOutput.IsExpanded = true;
+            tabOutput.SelectedItem = tabItemRatios;
+        }
+        private void copyRatios_Click(object sender, RoutedEventArgs e)
+        {
+            ratioGrid.CopyRatios();
         }
 
         public BitmapSource GetOverlay()
@@ -392,7 +407,7 @@ namespace ImagingSIMS.Controls.Tabs
                     d.SolidColorScale = solid;
                 }
 
-                d.SetLayers(BatchApply.LayerStart, BatchApply.LayerEnd);
+                d.SetLayers(d.LayerStart, d.LayerEnd);
             }
         }
         private void applyColorScaleSelected()
@@ -411,7 +426,7 @@ namespace ImagingSIMS.Controls.Tabs
                     d.SolidColorScale = solid;
                 }
 
-                d.SetLayers(BatchApply.LayerStart, BatchApply.LayerEnd);
+                d.SetLayers(d.LayerStart, d.LayerEnd);
             }
         }
 

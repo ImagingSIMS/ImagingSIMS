@@ -31,6 +31,10 @@ using ImagingSIMS.Controls.BaseControls;
 using ImagingSIMS.Controls.BaseControls.SpectrumView;
 using ImagingSIMS.Direct3DRendering.DrawingObjects;
 using ImagingSIMS.Direct3DRendering.Controls;
+using System.Threading.Tasks;
+using System.Windows.Interop;
+using Accord.Math;
+using Accord.Math.Decompositions;
 
 namespace ImagingSIMS.MainApplication
 {
@@ -51,6 +55,7 @@ namespace ImagingSIMS.MainApplication
         //BackgroundWorker bw;
         ProgressWindow pw;
         TraceListenerWindow tlw;
+        Splash _splashScreen;
 
         public Workspace Workspace
         {
@@ -72,11 +77,14 @@ namespace ImagingSIMS.MainApplication
 
         #region Load
         public MainWindow()
-        {            
+        {
+            _splashScreen = new Splash();
+            _splashScreen.Show();
 #if DEBUG
             IsDebug = true;
 #endif          
             Workspace = new Workspace();
+
 
             InitializeComponent();
 
@@ -116,7 +124,7 @@ namespace ImagingSIMS.MainApplication
                 StartupTab st = new StartupTab();
                 st.RecentFileClicked += startupTab_RecentFileClicked;
                 st.RecentFileRemoveClicked += startupTab_RecentFileRemoveClicked;
-                tabMain.Items.Add(ClosableTabItem.Create(st, TabType.Startup, true));
+                tabMain.Items.Add(ClosableTabItem.Create(st, TabType.Startup));
                 tabMain.SelectedIndex = 0;
             }
 
@@ -245,6 +253,8 @@ namespace ImagingSIMS.MainApplication
             AvailableHost.AvailableSpectraSource = this;
 
             Trace.WriteLine("Window load complete.");
+
+            _splashScreen?.Close();
         }
         #endregion
 
@@ -313,7 +323,7 @@ namespace ImagingSIMS.MainApplication
         #region Application Menu
         private void ribbonButtonOptions_Click(object sender, RoutedEventArgs e)
         {
-            ClosableTabItem cti = ClosableTabItem.Create(new SettingsTab(Workspace.Registry), TabType.Settings, true);
+            ClosableTabItem cti = ClosableTabItem.Create(new SettingsTab(Workspace.Registry), TabType.Settings);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -697,6 +707,12 @@ namespace ImagingSIMS.MainApplication
                 ofd.Title = "Open J105 Data";
                 ofd.Filter = "Text Files (.txt)|*.txt|All Files|*.*";
             }
+            else if (sender == ribbonButtonDataCamecaAPM)
+            {
+                fileType = FileType.CamecaAPM;
+                ofd.Title = "Open Cameca APM Data";
+                ofd.Filter = "Text File (.txt)|*.txt|All Files |*.*";
+            }
             else if (sender == ribbonButtonDataQStar)
             {
                 fileType = FileType.QStar;
@@ -713,6 +729,12 @@ namespace ImagingSIMS.MainApplication
                 fileType = FileType.CSV;
                 ofd.Title = "Open CSV Data";
                 ofd.Filter = "Comma Separated Values Files (.csv)|*.csv|Text Files (.txt)|*.txt|All Files|*.*";
+            }
+            else if (sender == ribbonButtonDataSeeker)
+            {
+                fileType = FileType.SmartSeekerData;
+                ofd.Title = "Open SmartSeeker Data";
+                ofd.Filter = "Test File (.txt)|*.txt";
             }
             else return;
 
@@ -776,37 +798,19 @@ namespace ImagingSIMS.MainApplication
         {
             e.Handled = true;
 
-            OpenFileDialog ofd = new OpenFileDialog();
-
-            StringBuilder filter = new StringBuilder();
-            string j105 = "Ionoptika compressed V2 files (.zip)|*.zip;*.IonoptikaIA2DspectrV2";
-            string bioToF = "Bio-ToF Spectra Files (.xyt, .dat)|*.xyt;*.dat";
-            switch (Workspace.Registry.DefaultProgram)
+            if (Workspace.Registry.DefaultProgram == DefaultProgram.NotSpecified)
             {
-                case DefaultProgram.BioToF:
-                    filter.Append(bioToF);
-                    filter.Append("|");
-                    filter.Append(j105);
-                    break;
-                case DefaultProgram.J105:
-                    filter.Append(j105);
-                    filter.Append("|");
-                    filter.Append(bioToF);
-                    break;
-                case DefaultProgram.NotSpecified:
-                    filter.Append(bioToF);
-                    filter.Append("|");
-                    filter.Append(j105);
-                    break;
-                default:
-                    filter.Append(bioToF);
-                    filter.Append("|");
-                    filter.Append(j105);
-                    break;
+                DialogBox.Show("No default program selected.",
+                    "Please choose a default program in the Options tab and try again.", "Load", DialogIcon.Error);
+                return;
             }
 
+            var filter = SpectrumFileExtensions.GetFilterForDefaultProgram(Workspace.Registry.DefaultProgram);
+
+            OpenFileDialog ofd = new OpenFileDialog();
+
             ofd.Title = "Open Spectra";
-            ofd.Filter = filter.ToString();
+            ofd.Filter = filter;
             ofd.Multiselect = true;
             Nullable<bool> result = ofd.ShowDialog();
             if (result != true) return;
@@ -814,13 +818,21 @@ namespace ImagingSIMS.MainApplication
             LoadMSArguments args = new LoadMSArguments();
 
             string extension = Path.GetExtension(ofd.FileName).ToLower();
-            if (extension.ToLower().Contains("xyt") || extension.ToLower().Contains("dat"))
+
+            var spectrumType = SpectrumFileExtensions.GetTypeForFileExtension(extension);
+
+            if (spectrumType == SpectrumType.None)
+            {
+                throw new ArgumentException("Could not determine the spectrum type from the file extension");
+            }
+
+            if (spectrumType == SpectrumType.BioToF)
             {
                 args.NumberFiles = ofd.FileNames.Length;
                 args.FileNames = ofd.FileNames;
-                args.Type = SpectrumType.BioToF;
+                args.Type = spectrumType;
             }
-            else if (extension.ToLower().Contains("zip") || extension.ToLower().Contains("IonoptikaIA2DspectrV2".ToLower()))
+            else if (spectrumType == SpectrumType.J105)
             {
                 if (ofd.FileNames.Length > 1)
                 {
@@ -831,8 +843,20 @@ namespace ImagingSIMS.MainApplication
                 }
                 args.NumberFiles = 1;
                 args.FileName = ofd.FileName;
-                args.Type = SpectrumType.J105;
+                args.Type = spectrumType;
                 args.SaveQuickLoadFile = Workspace.Registry.SaveQuickLoad;
+            }
+            else if (spectrumType == SpectrumType.Cameca1280)
+            {
+                args.NumberFiles = ofd.FileName.Length;
+                args.FileNames = ofd.FileNames;
+                args.Type = spectrumType;
+            }
+            else if (spectrumType == SpectrumType.CamecaNanoSIMS)
+            {
+                args.NumberFiles = ofd.FileName.Length;
+                args.FileNames = ofd.FileNames;
+                args.Type = spectrumType;
             }
 
             pw = new ProgressWindow("Loading " + System.IO.Path.GetFileName(ofd.FileName), "Load");
@@ -877,6 +901,32 @@ namespace ImagingSIMS.MainApplication
                     e.Result = btspec;
                 }
                 catch (Exception ex)
+                {
+                    e.Result = ex;
+                }
+            }
+            else if(args.Type == SpectrumType.Cameca1280)
+            {
+                try
+                {
+                    Cameca1280Spectrum camecaSpec = new Cameca1280Spectrum(System.IO.Path.GetFileNameWithoutExtension(args.FileName));
+                    camecaSpec.LoadFromFile(args.FileNames, sender as BackgroundWorker);
+                    e.Result = camecaSpec;
+                }
+                catch(Exception ex)
+                {
+                    e.Result = ex;
+                }
+            }
+            else if(args.Type == SpectrumType.CamecaNanoSIMS)
+            {
+                try
+                {
+                    CamecaNanoSIMSSpectrum nanosimsSpec = new CamecaNanoSIMSSpectrum(Path.GetFileNameWithoutExtension(args.FileName));
+                    nanosimsSpec.LoadFromFile(args.FileNames, sender as BackgroundWorker);
+                    e.Result = nanosimsSpec;
+                }
+                catch(Exception ex)
                 {
                     e.Result = ex;
                 }
@@ -957,7 +1007,7 @@ namespace ImagingSIMS.MainApplication
 
             DisplayTab it = new DisplayTab();
             it.CurrentSeries = series;
-            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.Display, series.SeriesName, true);
+            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.Display, series.SeriesName);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
@@ -1471,6 +1521,13 @@ namespace ImagingSIMS.MainApplication
         #endregion
 
         #region Ribbon Interactions
+        private void ribbonEditWorkspace_Click(object sender, RoutedEventArgs e)
+        {
+            var editTab = new ManageWorkspaceTab(Workspace);
+            var cti = ClosableTabItem.Create(editTab, TabType.EditWorkspace, "Edit Workspace");
+            AddTabItemAndNavigate(cti);
+        }
+
         private void ribbonOpenSumTab_Click(object sender, RoutedEventArgs e)
         {
             TableSumTab tst = new TableSumTab();
@@ -1506,6 +1563,28 @@ namespace ImagingSIMS.MainApplication
             ClosableTabItem cti = ClosableTabItem.Create(dpt, TabType.DepthProfile, "Depth Profile");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
+        }
+        private void ribbonOpenRatioTab_Click(object sender, RoutedEventArgs e)
+        {
+            RatioTab rt = new RatioTab();
+            ClosableTabItem cti = ClosableTabItem.Create(rt, TabType.Ratio, "Ratio");
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+        }
+        private void ribbonOpenStitchTab_Click(object sender, RoutedEventArgs e)
+        {
+            ImageStitchTab ist = new ImageStitchTab();
+            ist.Workspace = Workspace;
+
+            ClosableTabItem cti = ClosableTabItem.Create(ist, TabType.ImageStitch, "Image Stitch");
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+        }
+        private void ribbonOpenDataMathTab_Click(object sender, RoutedEventArgs e)
+        {
+            var dmt = new DataMathTab();
+            var cti = ClosableTabItem.Create(dmt, TabType.DataMath, "Data Math");
+            AddTabItemAndNavigate(cti);
         }
         private void NewSampleData(object sender, RoutedEventArgs e)
         {
@@ -1543,7 +1622,7 @@ namespace ImagingSIMS.MainApplication
             StartupTab st = new StartupTab();
             st.RecentFileClicked += startupTab_RecentFileClicked;
             st.RecentFileRemoveClicked += startupTab_RecentFileClicked;
-            ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Startup, true);
+            ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Startup);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -1730,13 +1809,13 @@ namespace ImagingSIMS.MainApplication
             DisplayTab it = new DisplayTab();
             it.CurrentSeries = series;
 
-            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.Display, it.CurrentSeries.SeriesName, true);
+            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.Display, it.CurrentSeries.SeriesName);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
         private void NewOverlay(object sender, RoutedEventArgs e)
         {
-            ClosableTabItem cti = ClosableTabItem.Create(new DisplayTab(), TabType.Display, "Image Display", true);
+            ClosableTabItem cti = ClosableTabItem.Create(new DisplayTab(), TabType.Display, "Image Display");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -1819,7 +1898,7 @@ namespace ImagingSIMS.MainApplication
                 DisplayTab dt = new DisplayTab();
                 dt.CurrentSeries = series;
 
-                ClosableTabItem cti2 = ClosableTabItem.Create(dt, TabType.Display, series.SeriesName, true);
+                ClosableTabItem cti2 = ClosableTabItem.Create(dt, TabType.Display, series.SeriesName);
                 tabMain.Items.Add(cti2);
                 tabMain.SelectedItem = cti2;
 
@@ -2071,7 +2150,7 @@ namespace ImagingSIMS.MainApplication
         private void CreateVolume(object sender, RoutedEventArgs e)
         {
             VolumeTab vt = new VolumeTab();
-            ClosableTabItem cti = ClosableTabItem.Create(vt, TabType.RenderObject, "New Volume", true);
+            ClosableTabItem cti = ClosableTabItem.Create(vt, TabType.RenderObject, "New Volume");
 
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
@@ -2464,7 +2543,7 @@ namespace ImagingSIMS.MainApplication
         private void createDepthRender_Click(object sender, RoutedEventArgs e)
         {
             ClosableTabItem cti = ClosableTabItem.Create(new HeightMapTab(),
-                TabType.HeightMap, "Depth Render", true);
+                TabType.HeightMap, "Depth Render");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -2473,7 +2552,7 @@ namespace ImagingSIMS.MainApplication
         #region Spectra Tab
         private void ribbonButtonSpecCrop_Click(object sender, RoutedEventArgs e)
         {
-            ClosableTabItem cti = ClosableTabItem.Create(new SpectrumCropTab(), TabType.SpectrumCrop, "Spectrum Crop", false);
+            ClosableTabItem cti = ClosableTabItem.Create(new SpectrumCropTab(), TabType.SpectrumCrop, "Spectrum Crop");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -2503,10 +2582,10 @@ namespace ImagingSIMS.MainApplication
                 // Text clears does not clear ranges
                 try
                 {
-                    List<MassRangePair> ranges = MassRangePair.ParseString(currentRange);
-                    ranges.Add(new MassRangePair(e.MassStart, e.MassEnd));
+                    List<MassRange> ranges = MassRange.ParseString(currentRange);
+                    ranges.Add(new MassRange(e.MassStart, e.MassEnd));
                     ranges.Sort();
-                    currentRange = MassRangePair.CreateString(ranges);
+                    currentRange = MassRange.CreateString(ranges);
                 }
                 finally
                 {
@@ -2532,11 +2611,11 @@ namespace ImagingSIMS.MainApplication
             // [2]: (bool)              Omit data numbering
             // [2]: (MassRangePair[])   Mass ranges   
 
-            MassRangePair[] massRanges = new MassRangePair[1];
+            MassRange[] massRanges = new MassRange[1];
 
             if (radioSpecSingleRange.IsChecked == true)
             {
-                massRanges[0] = new MassRangePair()
+                massRanges[0] = new MassRange()
                 {
                     StartMass = Workspace.SpectraMassStart,
                     EndMass = Workspace.SpectraMassEnd
@@ -2547,7 +2626,7 @@ namespace ImagingSIMS.MainApplication
             {
                 try
                 {
-                    massRanges = MassRangePair.ParseString(Workspace.SpectraCustomRange).ToArray();
+                    massRanges = MassRange.ParseString(Workspace.SpectraCustomRange).ToArray();
                 }
                 catch (ArgumentException ARex)
                 {
@@ -2599,7 +2678,7 @@ namespace ImagingSIMS.MainApplication
             // Validate all mass ranges
             try
             {
-                foreach (MassRangePair range in massRanges)
+                foreach (MassRange range in massRanges)
                 {
                     double start = range.StartMass;
                     double end = range.EndMass;
@@ -2658,11 +2737,11 @@ namespace ImagingSIMS.MainApplication
             // [1]: (string)            Output base name
             // [2]: (MassRangePair[])   Mass ranges        
 
-            MassRangePair[] massRanges = new MassRangePair[1];
+            MassRange[] massRanges = new MassRange[1];
 
             if (radioSpecSingleRange.IsChecked == true)
             {
-                massRanges[0] = new MassRangePair()
+                massRanges[0] = new MassRange()
                 {
                     StartMass = Workspace.SpectraMassStart,
                     EndMass = Workspace.SpectraMassEnd
@@ -2673,7 +2752,7 @@ namespace ImagingSIMS.MainApplication
             {
                 try
                 {
-                    massRanges = MassRangePair.ParseString(Workspace.SpectraCustomRange).ToArray();
+                    massRanges = MassRange.ParseString(Workspace.SpectraCustomRange).ToArray();
                 }
                 catch (ArgumentException ARex)
                 {
@@ -2718,7 +2797,7 @@ namespace ImagingSIMS.MainApplication
             // Validate all mass ranges
             try
             {
-                foreach (MassRangePair range in massRanges)
+                foreach (MassRange range in massRanges)
                 {
                     double start = range.StartMass;
                     double end = range.EndMass;
@@ -2781,7 +2860,7 @@ namespace ImagingSIMS.MainApplication
             Spectrum spectrum = (Spectrum)args[0];
             string baseName = (string)args[1];
             bool omitNumbering = (bool)args[2];
-            MassRangePair[] ranges = (MassRangePair[])args[3];
+            MassRange[] ranges = (MassRange[])args[3];
 
             List<Data2D> tables = new List<Data2D>();
 
@@ -2789,7 +2868,7 @@ namespace ImagingSIMS.MainApplication
 
             for (int i = 0; i < ranges.Length; i++)
             {
-                MassRangePair range = ranges[i];
+                MassRange range = ranges[i];
                 double startMass = range.StartMass;
                 double endMass = range.EndMass;
 
@@ -2799,7 +2878,7 @@ namespace ImagingSIMS.MainApplication
                         (i + 1).ToString(), numberRanges, startMass, endMass))
                 );
 
-                tables.AddRange(spectrum.FromMassRange(new MassRangePair(range.StartMass, range.EndMass),
+                tables.AddRange(spectrum.FromMassRange(new MassRange(range.StartMass, range.EndMass),
                     baseName, omitNumbering, sender as BackgroundWorker));
             }
 
@@ -2846,14 +2925,14 @@ namespace ImagingSIMS.MainApplication
 
             Spectrum spectrum = (Spectrum)args[0];
             string baseSavePath = (string)args[1];
-            MassRangePair[] ranges = (MassRangePair[])args[2];
+            MassRange[] ranges = (MassRange[])args[2];
 
             int numberRanges = ranges.Length;
 
             List<string> savedPaths = new List<string>();
             for (int i = 0; i < ranges.Length; i++)
             {
-                MassRangePair range = ranges[i];
+                MassRange range = ranges[i];
                 double startMass = range.StartMass;
                 double endMass = range.EndMass;
 
@@ -2862,7 +2941,7 @@ namespace ImagingSIMS.MainApplication
                         (i + 1).ToString(), numberRanges, startMass, endMass))
                 );
 
-                double[] depthProfile = spectrum.CreateDepthProfile(new MassRangePair(startMass, endMass), sender as BackgroundWorker);
+                double[] depthProfile = spectrum.CreateDepthProfile(new MassRange(startMass, endMass), sender as BackgroundWorker);
 
                 string rangeString = startMass.ToString("0.000") + "-" + endMass.ToString("0.000");
                 string savePath = baseSavePath.Insert(baseSavePath.Length - 4, rangeString);
@@ -2985,6 +3064,90 @@ namespace ImagingSIMS.MainApplication
             if (sfd.ShowDialog() != true) return;
 
             s.SaveText(sfd.FileName, binSize);
+        }
+
+        private void SpecDeadTimeCorrect_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            var canCorrect = GetAvailableSpectra().Where(s => s.SpectrumType == SpectrumType.CamecaNanoSIMS);
+
+            e.CanExecute = canCorrect.Count() > 0;
+        }
+        private void SpecDeadTimeCorrect_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            bool isCorrect = true;
+            try
+            {
+                string param = (string)e.Parameter;
+                if (param.ToLower() == "revert") isCorrect = false;                
+            }
+            catch (Exception)
+            {
+                isCorrect = true;
+            }
+
+
+            var toProcess = GetSelectedSpectra()
+                .Where(s => s.SpectrumType == SpectrumType.CamecaNanoSIMS)
+                .Select(s => s as CamecaNanoSIMSSpectrum);
+
+            if(toProcess.Count() == 0)
+            {
+                DialogBox.Show("No spectra selected.", "Only Cameca NanoSIMS spectra can be corrected.", "Dead Time Correction", DialogIcon.Warning);
+                return;
+            }
+
+            Dictionary<CamecaNanoSIMSSpectrum, string> notProcessed = new Dictionary<CamecaNanoSIMSSpectrum, string>();
+            foreach (var spec in toProcess)
+            {
+                try
+                {
+                    if (isCorrect)
+                    {
+                        if (spec.IsDeadTimeCorrected)
+                        {
+                            notProcessed.Add(spec, "Already dead time corrected");
+                        }
+                        else spec.DeadTimeCorrect();
+                    }
+                    else
+                    {
+                        if (!spec.IsDeadTimeCorrected)
+                        {
+                            notProcessed.Add(spec, "Not dead time corrected");
+                        }
+                        else spec.RemoveDeadTimeCorrection();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    notProcessed.Add(spec, ex.Message);
+                }
+            }
+
+            if (notProcessed.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (var item in notProcessed)
+                {
+                    sb.Append($"{item.Key.Name}: {item.Value}\n");
+                }
+
+                string list = sb.Remove(sb.Length - 1, 1).ToString();
+
+                DialogBox.Show("The following spectra could not be processed. Spectra not listed below were processed succesfully", 
+                    list, "Dead Time Correction", DialogIcon.Error);
+            }
+            else
+            {
+                string message = string.Empty;
+                if (isCorrect)
+                {
+                    message = "Selected spectra were dead time corrected successfully.";
+                }
+                else message = "Dead time correction revered successfully for the selected spectra.";
+
+                DialogBox.Show(message, "", "Dead Time Correction", DialogIcon.Ok);
+            }
         }
         #endregion
 
@@ -3140,7 +3303,7 @@ namespace ImagingSIMS.MainApplication
         }
         private void openClusterTab_Click(object sender, RoutedEventArgs e)
         {
-            ClosableTabItem cti = ClosableTabItem.Create(new ClusterTab(), TabType.Cluster, "Clusters", true);
+            ClosableTabItem cti = ClosableTabItem.Create(new ClusterTab(), TabType.Cluster, "Clusters");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -3149,9 +3312,20 @@ namespace ImagingSIMS.MainApplication
         #region Fusion Tab
         private void OpenFusionTab(object sender, RoutedEventArgs e)
         {
-            ClosableTabItem cti = ClosableTabItem.Create(new FusionTab(), TabType.Fusion, true);
-            tabMain.Items.Add(cti);
-            tabMain.SelectedItem = cti;
+            var button = sender as RibbonButton;
+            if (sender == null) return;
+
+            if(button == fusionNew)
+            {
+                ClosableTabItem cti = ClosableTabItem.Create(new FusionTab(), TabType.Fusion);
+                tabMain.Items.Add(cti);
+                tabMain.SelectedItem = cti;
+            }
+            else if(button == fusionPointNew)
+            {
+                var cti = ClosableTabItem.Create(new FusionPointTab(), TabType.FusionPoint, "Fusion");
+                AddTabItemAndNavigate(cti);
+            }
         }
         private void LoadFusionHigh(object sender, RoutedEventArgs e)
         {
@@ -3169,7 +3343,8 @@ namespace ImagingSIMS.MainApplication
             src.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
             src.EndInit();
 
-            FusionTab ft;
+            FusionTab ft = null;
+            FusionPointTab frt = null;
             ClosableTabItem cti = tabMain.SelectedItem as ClosableTabItem;
             if (cti == null) goto NewTab;
             else
@@ -3183,19 +3358,30 @@ namespace ImagingSIMS.MainApplication
 
                     ft = cti.Content as FusionTab;
                     if (ft != null) goto UseTab;
+
+                    frt = cti.Content as FusionPointTab;
+                    if (frt != null) goto UseTab;
                 }
             }
 
             NewTab:
             {
-                ft = new FusionTab();
-                cti = ClosableTabItem.Create(ft, TabType.Fusion, true);
+                frt = new FusionPointTab();
+                cti = ClosableTabItem.Create(frt, TabType.FusionPoint);
                 tabMain.Items.Add(cti);
                 goto UseTab;
             }
             UseTab:
             {
-                ft.SetHighRes(src);
+                if(ft != null)
+                {
+                    ft.SetHighRes(src);
+                }
+                else if(frt != null)
+                {
+                    frt.SetImage(src, true);
+                }
+
                 tabMain.SelectedItem = cti;
             }
         }
@@ -3215,7 +3401,8 @@ namespace ImagingSIMS.MainApplication
             src.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
             src.EndInit();
 
-            FusionTab ft;
+            FusionTab ft = null;
+            FusionPointTab frt = null;
             ClosableTabItem cti = tabMain.SelectedItem as ClosableTabItem;
             if (cti == null) goto NewTab;
             else
@@ -3229,19 +3416,30 @@ namespace ImagingSIMS.MainApplication
 
                     ft = cti.Content as FusionTab;
                     if (ft != null) goto UseTab;
+
+                    frt = cti.Content as FusionPointTab;
+                    if (frt != null) goto UseTab;
                 }
             }
 
             NewTab:
             {
                 ft = new FusionTab();
-                cti = ClosableTabItem.Create(ft, TabType.Fusion, true);
+                cti = ClosableTabItem.Create(ft, TabType.Fusion);
                 tabMain.Items.Add(cti);
                 goto UseTab;
             }
             UseTab:
             {
-                ft.SetLowRes(src);
+                if (ft != null)
+                {
+                    ft.SetLowRes(src);
+                }
+                else if(frt != null)
+                {
+                    frt.SetImage(src, false);
+                }
+
                 tabMain.SelectedItem = cti;
             }
         }
@@ -3251,18 +3449,8 @@ namespace ImagingSIMS.MainApplication
             ClosableTabItem cti = tabMain.SelectedItem as ClosableTabItem;
             if (cti == null)
             {
-                DialogBox db = new DialogBox("No document available to save.",
+                DialogBox.Show("No document available to save.",
                     "Navigate to or open a new fusion tab and try again.", "Save", DialogIcon.Error);
-                db.ShowDialog();
-                return;
-            }
-
-            FusionTab ft = cti.Content as FusionTab;
-            if (ft == null)
-            {
-                DialogBox db = new DialogBox("No fusion document available to save.",
-                    "Navigate to or open a new fusion tab and try again.", "Save", DialogIcon.Error);
-                db.ShowDialog();
                 return;
             }
 
@@ -3283,35 +3471,56 @@ namespace ImagingSIMS.MainApplication
 
             if (parameter == FusionSaveParameter.None)
             {
-                DialogBox db = new DialogBox("Could not perform the selected operation.",
+                DialogBox.Show("Could not perform the selected operation.",
                     "For some reason, the save parameter could not be determined.", "Save", DialogIcon.Error);
-                db.ShowDialog();
                 return;
             }
 
-            ft.CallSave(parameter);
+            FusionTab ft = cti.Content as FusionTab;
+            if (ft != null)
+            {
+                ft.CallSave(parameter);
+                return;
+            }
+
+            FusionPointTab frt = cti.Content as FusionPointTab;
+            if (frt != null)
+            {
+                frt.SaveImage(parameter);
+                return;
+            }
+
+            DialogBox.Show("No fusion document available to save.",
+                "Navigate to or open a new fusion tab and try again.", "Save", DialogIcon.Error);
+            return;
+            
         }
         private void ribbonFusionSaveSeries_Click(object sender, RoutedEventArgs e)
         {
             ClosableTabItem cti = tabMain.SelectedItem as ClosableTabItem;
             if (cti == null)
             {
-                DialogBox db = new DialogBox("No document available to save.",
+                DialogBox.Show("No document available to save.",
                     "Navigate to or open a new fusion tab and try again.", "Save", DialogIcon.Error);
-                db.ShowDialog();
                 return;
             }
 
             FusionTab ft = cti.Content as FusionTab;
-            if (ft == null)
+            if (ft != null)
             {
-                DialogBox db = new DialogBox("No fusion document available to save.",
-                    "Navigate to or open a new fusion tab and try again.", "Save", DialogIcon.Error);
-                db.ShowDialog();
+                ft.CallSave(FusionSaveParameter.Series);
                 return;
             }
 
-            ft.CallSave(FusionSaveParameter.Series);
+            FusionPointTab frt = cti.Content as FusionPointTab;
+            if (frt != null)
+            {
+                frt.SaveSeries();
+                return;
+            }
+
+            DialogBox.Show("No fusion document available to save.",
+                "Navigate to or open a new fusion tab and try again.", "Save", DialogIcon.Error);
         }
 
         private void ribbonRegistrationOverlay_Click(object sender, RoutedEventArgs e)
@@ -3343,6 +3552,17 @@ namespace ImagingSIMS.MainApplication
                             "Registration", DialogIcon.Error);
                 }
                 dt.OpenOverlay();
+            }
+            else if (cti.TabType == TabType.FusionPoint)
+            {
+                FusionPointTab ft = cti.Content as FusionPointTab;
+                if (ft == null)
+                {
+                    DialogBox.Show("Not a valid fusion document.", "Navigate to a fusion tab and try again.",
+                        "Registration", DialogIcon.Error);
+                    return;
+                }
+                ft.OpenOverlay();
             }
 
             else
@@ -3513,7 +3733,7 @@ namespace ImagingSIMS.MainApplication
             //Data2DDisplayTab it = new Data2DDisplayTab(data, type);
             DataDisplayTab it = new DataDisplayTab(type);
 
-            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.DataDisplay, title, true);
+            ClosableTabItem cti = ClosableTabItem.Create(it, TabType.DataDisplay, title);
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
@@ -3614,20 +3834,49 @@ namespace ImagingSIMS.MainApplication
             return;
         }
 
-        private void CMSpecView(object sender, RoutedEventArgs e)
+        private async void CMSpecView(object sender, RoutedEventArgs e)
         {
             try
             {
                 foreach (object obj in listViewSpectra.SelectedItems)
                 {
                     Spectrum s = (Spectrum)obj;
-                    if (s == null) continue;
+                    if (s == null) continue;                    
 
-                    SpectrumTab st = new SpectrumTab();
-                    st.SetData(s.Name, s);
-                    ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Spectrum, s.Name, true);
-                    tabMain.Items.Add(cti);
-                    tabMain.SelectedItem = cti;
+                    if (s.SpectrumType == SpectrumType.Cameca1280 || s.SpectrumType == SpectrumType.CamecaNanoSIMS)
+                    {
+                        CamecaSpectrum cSpec = (CamecaSpectrum)s;
+
+                        DataDisplayTab dt = new DataDisplayTab();
+                        ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, cSpec.Name);
+                        tabMain.Items.Add(cti);
+                        tabMain.SelectedItem = cti;
+
+                        pw = new ProgressWindow($"Generating images from spectrum {s.Name}. Please wait.", "Spectrum");
+                        pw.Show();
+
+                        int counter = 0;
+                        int numSpec = cSpec.NumberSpecies;
+
+                        foreach(CamecaSpecies species in cSpec.Species)
+                        {
+                            Data3D d = await cSpec.FromSpeciesAsync(species, cSpec.Name + " - " + species.Label);
+                            await dt.AddDataSourceAsync(d);
+                            pw.UpdateProgress(++counter * 100 / numSpec);
+                        }
+
+                        pw.Close();
+                        pw = null;
+                    }
+                    else
+                    {
+                        SpectrumTab st = new SpectrumTab();
+                        st.SetData(s.Name, s);
+
+                        ClosableTabItem cti = ClosableTabItem.Create(st, TabType.Spectrum, s.Name);
+                        tabMain.Items.Add(cti);
+                        tabMain.SelectedItem = cti;
+                    }           
 
                     Ribbon.SelectedIndex = 3;
                 }
@@ -3701,7 +3950,7 @@ namespace ImagingSIMS.MainApplication
 
             PCATab pca = new PCATab();
             pca.OriginalSpectrum = s;
-            ClosableTabItem cti = ClosableTabItem.Create(pca, TabType.PCA, $"PCA - {s.Name}", true);
+            ClosableTabItem cti = ClosableTabItem.Create(pca, TabType.PCA, $"PCA - {s.Name}");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
         }
@@ -3952,7 +4201,7 @@ namespace ImagingSIMS.MainApplication
             var selected = GetSelectedVolumes();
 
             DataDisplayTab dt = new DataDisplayTab();
-            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Volume Preview", true);
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Volume Preview");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
@@ -4376,7 +4625,7 @@ namespace ImagingSIMS.MainApplication
                 drt.SetRegisteredImages(ft.HighResImage.ImageSource, ft.LowResImage.ImageSource);
             }
 
-            ClosableTabItem ctiDrt = ClosableTabItem.Create(drt, TabType.DataRegistration, "Data Transform", true);
+            ClosableTabItem ctiDrt = ClosableTabItem.Create(drt, TabType.DataRegistration, "Data Transform");
             tabMain.Items.Add(ctiDrt);
             tabMain.SelectedItem = ctiDrt;
         }
@@ -4386,24 +4635,18 @@ namespace ImagingSIMS.MainApplication
 #pragma warning disable 1998
         private async void test1_Click(object sender, RoutedEventArgs e)
         {
+            Spectrum s = listViewSpectra.SelectedItem as Spectrum;
 
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "OS/2 Retro Files (.xyt)|*.xyt";
-            if (ofd.ShowDialog() != true) return;
+            float[] masses;
+            uint[] intensities = s.GetSpectrum(out masses);
 
-            string[] fileNames = ofd.FileNames;
-
-            ofd.Filter = "Bio-ToF Header File (.hdr)|*.hdr";
-            string headerPath = null;
-            if (ofd.ShowDialog() == true)
+            using (StreamWriter sw = new StreamWriter(@"D:\spec.txt"))
             {
-                headerPath = ofd.FileName;
+                for (int i = 0; i < masses.Length; i++)
+                {
+                    sw.WriteLine($"{masses[i]},{intensities[i]},");
+                }
             }
-
-            BioToFSpectrum bts = new BioToFSpectrum(Path.GetFileNameWithoutExtension(fileNames[0]));
-            bts.LoadFromFile(fileNames, null, true, headerPath);
-            Workspace.Spectra.Add(bts);
-
         }
         private async void test2_Click(object sender, RoutedEventArgs e)
         {
@@ -4433,36 +4676,1003 @@ namespace ImagingSIMS.MainApplication
         }
         private async void test4_Click(object sender, RoutedEventArgs e)
         {
-            SampleData sd = new SampleData(256, 256, 30);
-            sd.CreateSphere(128, 128, 15, 10);
-            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalWarm);
-            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Test", true);
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Text Files (.txt)|*.txt";
+            ofd.Multiselect = true;
+
+            if (ofd.ShowDialog() != true) return;
+
+            List<Data2D> readIn = new List<Data2D>();
+
+            var filesToLoad = ofd.FileNames;
+
+            foreach (var file in filesToLoad)
+            {
+                using (StreamReader sr = new StreamReader(file))
+                {
+                    string[] parameters = sr.ReadLine().Split('\t');
+
+                    int sizeX = int.Parse(parameters[0]);
+                    int sizeY = int.Parse(parameters[1]);
+                    int fovNumber = int.Parse(parameters[2]);
+                    int stageX = int.Parse(parameters[3]);
+                    int stageY = int.Parse(parameters[4]);
+                    int fileType = int.Parse(parameters[5]);
+
+                    float[,] matrix = new float[sizeX, sizeY];
+
+                    for (int y = 0; y < sizeY; y++)
+                    {
+                        string[] parts = sr.ReadLine().Split('\t');
+                        for (int x = 0; x < sizeX; x++)
+                        {
+                            matrix[x, y] = float.Parse(parts[x]);
+                        }
+                    }
+
+                    Data2D d = new Data2D(matrix);
+                    d.DataName = Path.GetFileNameWithoutExtension(file);
+
+                    readIn.Add(d);
+
+                    //float mean = d.NonSparseMean;
+                    //float stdDev = d.NonSparseStdDev;
+
+                    //float cutoff = mean;// - 2 * stdDev;
+
+                    //Data2D binary = new Data2D(d.Width, d.Height);
+                    //for (int x = 0; x < d.Width; x++)
+                    //{
+                    //    for (int y = 0; y < d.Height; y++)
+                    //    {
+                    //        binary[x, y] = d[x, y] >= cutoff ? 1.0f : 0.0f;
+                    //    }
+                    //}
+                    //binary.DataName = "Binary: " + d.DataName;
+
+                    //readIn.Add(binary);
+                }
+            }
+
+            DataDisplayTab dt = new DataDisplayTab(ColorScaleTypes.ThermalCold);
+            ClosableTabItem cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "Data");
             tabMain.Items.Add(cti);
             tabMain.SelectedItem = cti;
 
-            await dt.AddDataSourceAsync(sd.SphereData);
-
-
+            foreach (var d in readIn)
+            {
+                await dt.AddDataSourceAsync(d);
+            }
         }
         private async void test5_Click(object sender, RoutedEventArgs e)
         {
-            
+            int numBoxes = 6;
+            int sizeX = 256;
+            int sizeY = 256;
+            int boxSizeX = 50;
+            int boxSizeY = 50;
+            int minBoxCounts = 50;
+            int maxBoxCounts = 100;
+            int minSubstrateCounts = 25;
+            int maxSubstrateCounts = 40;
+
+            Random rand = new Random();
+
+            List<Point> centers = new List<Point>()
+            {
+                new Point(65, 35),
+                new Point(125, 35),
+                new Point(190, 35),
+
+                new Point(65, 135),
+                new Point(125, 135),
+                new Point(190, 135),
+            };
+
+            List<double> masses = new List<double>()
+            {
+                10d, 25d, 50d, 75d, 100d, 150d, 5d
+            };
+
+            bool[,] hasSquare = new bool[sizeX, sizeY];
+
+            // Create mass channels
+            List<Data2D> massChannels = new List<Data2D>();
+            // Create substrate channel
+            Data2D substrate = new Data2D(sizeX, sizeY);
+            Data2D ideal = new Data2D(sizeX, sizeY);
+
+            for (int i = 0; i < numBoxes; i++)
+            {
+                int[,] temp = new int[boxSizeX, boxSizeY];
+
+                for (int x = 0; x < boxSizeX; x++)
+                {
+                    for (int y = 0; y < boxSizeY; y++)
+                    {
+                        temp[x, y] = rand.Next(minBoxCounts, maxBoxCounts);
+                    }
+                }
+
+                int[,] matrix = new int[boxSizeX, boxSizeY];
+                for (int x = 0; x < boxSizeX; x++)
+                {
+                    for (int y = 0; y < boxSizeY; y++)
+                    {
+                        int sum = 0;
+                        int startX = x - 3;
+                        int startY = y - 3;
+
+                        for (int a = 0; a < 7; a++)
+                        {
+                            for (int b = 0; b < 7; b++)
+                            {
+                                int xx = startX + a;
+                                int yy = startY + b;
+
+                                if (xx < 0 || xx >= boxSizeX ||
+                                    yy < 0 || yy >= boxSizeY) continue;
+
+                                sum += temp[xx, yy];
+                            }
+                        }
+
+                        matrix[x, y] = (int)(sum / 49d);
+                    }
+                }
+
+                Data2D massChannel = new Data2D(sizeX, sizeY);
+
+                int boxStartX = (int)centers[i].X - (boxSizeX / 2);
+                int boxStartY = (int)centers[i].Y - (boxSizeY / 2);
+
+                for (int x = 0; x < boxSizeX; x++)
+                {
+                    for (int y = 0; y < boxSizeY; y++)
+                    {
+                        massChannel[boxStartX + x, boxStartY + y] = matrix[x, y];
+                        hasSquare[boxStartX + x, boxStartY + y] = true;
+
+                        ideal[boxStartX + x, boxStartY + y] = maxBoxCounts;
+
+                        if (temp[x, y] - matrix[x, y] > 0)
+                            substrate[boxStartX + x, boxStartY + y] += temp[x, y] - matrix[x, y];
+                    }
+                }
+
+                massChannels.Add(massChannel);
+            }
+
+            // Fill in rest of subtrate channel
+            for (int x = 0; x < sizeX; x++)
+            {
+                for (int y = 0; y < sizeY; y++)
+                {
+                    if (!hasSquare[x, y])
+                    {
+                        substrate[x, y] += rand.Next(minSubstrateCounts, maxSubstrateCounts);
+                        ideal[x, y] = maxSubstrateCounts;
+                    }
+                }
+            }
+
+            massChannels.Add(substrate);
+
+            SimulatedCameca1280Spectrum spec = new SimulatedCameca1280Spectrum();
+            foreach (var mass in masses)
+            {
+                CamecaSpecies species = new CamecaSpecies()
+                {
+                    Mass = mass,
+                    Label = $"Mass {mass.ToString("0.00")}"
+                };
+                spec.Species.Add(species);
+            }
+
+            spec.SetMatrixData(massChannels);
+
+            AvailableHost.AvailableSpectraSource.AddSpectrum(spec);
+
+
+            Data2D totalIon = new Data2D(sizeX, sizeY)
+            {
+                DataName = "Total Ion"
+            };
+            foreach (var d in massChannels)
+            {
+                totalIon += d;
+            }
+
+            var upscaled = ideal.Resize(totalIon.Width * 2, totalIon.Height * 2);
+            upscaled.DataName = "Upscalaed";
+
+            var enhanced = Filter.DoFilter(upscaled, FilterType.MedianSmooth);
+            enhanced.DataName = "Enhanced";
+
+            AvailableHost.AvailableTablesSource.AddTable(enhanced);
+            AvailableHost.AvailableTablesSource.AddTable(upscaled);
         }
+        public class SimulatedCameca1280Spectrum : Cameca1280Spectrum
+        {
+            public SimulatedCameca1280Spectrum()
+                : base("Simulated")
+            {
+                _species = new List<CamecaSpecies>();
+            }
+
+            public void SetMatrixData(List<Data2D> data)
+            {
+                _matrix = new List<Data2D[]>()
+                {
+                    data.ToArray()
+                };
+
+                _sizeX = data[0].Width;
+                _sizeY = data[0].Height;
+                _sizeZ = 1;
+
+                _intensities = GetSpectrum(out _masses);
+
+                _startMass = (float)_species.Min(s => s.Mass);
+                _endMass = (float)_species.Max(s => s.Mass);
+            }
+        }
+        private double[,] GuidedFilter(double[,] guide, double[,] matrix, int r = 2, double eps = 0.05)
+        {
+            int sizeX = guide.GetLength(0);
+            int sizeY = guide.GetLength(1);
+
+            double[,] meanG = new double[sizeX, sizeY];
+            double[,] meanM = new double[sizeX, sizeY];
+            double[,] meanGM = new double[sizeX, sizeY];
+            double[,] meanGG = new double[sizeX, sizeY];
+
+            for (int x = 0 ; x < sizeX; x++)
+            {
+                for (int y = 0; y < sizeY; y++)
+                {
+                    int bcArea = 0;
+
+                    for (int xx = x - r; xx <= x + r; xx++)
+                    {
+                        if (xx < 0 || xx >= sizeX) continue;
+                        for (int yy = y - r; yy <= y + r; yy++)
+                        {
+                            if (yy < 0 || yy >= sizeY) continue;
+
+                            meanG[x, y] += guide[xx, yy];
+                            meanM[x, y] += matrix[xx, yy];
+                            meanGM[x, y] += guide[xx, yy] * matrix[xx, yy];
+                            meanGG[x, y] += guide[xx, yy] * guide[xx, yy];
+
+                            bcArea++;
+                        }
+                    }
+
+                    meanG[x, y] /= bcArea;
+                    meanM[x, y] /= bcArea;
+                    meanGM[x, y] /= bcArea;
+                    meanGG[x, y] /= bcArea;
+                }
+            }
+
+            var covGM = Elementwise.Subtract(meanGM, Elementwise.Multiply(meanG, meanM));
+            var varG = Elementwise.Subtract(meanGG, Elementwise.Multiply(meanG, meanG));
+
+            var a = Elementwise.Divide(covGM, varG.Add(eps));
+            var b = Elementwise.Subtract(meanM, Elementwise.Multiply(a, meanG));
+
+            double[,] meanA = new double[sizeX, sizeY];
+            double[,] meanB = new double[sizeX, sizeY];
+
+            for (int x = 0 ; x < sizeX; x++)
+            {
+                for (int y = 0; y < sizeY; y++)
+                {
+                    int bcArea = 0;
+
+                    for (int xx = x - r; xx <= x + r; xx++)
+                    {
+                        if (xx < 0 || xx >= sizeX) continue;
+                        for (int yy = y - r; yy <= y + r; yy++)
+                        {
+                            if (yy < 0 || yy >= sizeY) continue;
+
+                            meanA[x, y] += a[xx, yy];
+                            meanB[x, y] += b[xx, yy];
+
+                            bcArea++;
+                        }
+                    }
+
+                    meanA[x, y] /= bcArea;
+                    meanB[x, y] /= bcArea;
+                }
+            }
+
+            var q = Elementwise.Add(Elementwise.Multiply(meanA, guide), meanB);
+
+            return  q;
+        }
+        private double[] SoftThreshold(double[] array, double lambda)
+        {
+            double th = lambda / 2;
+            double[] temp = new double[array.Length];
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] > th)
+                    temp[i] = array[i] - th;
+                else if (array[i] < -th)
+                    temp[i] = array[i] + th;
+                else
+                    temp[i] = 0;
+            }
+
+            return temp;
+        }
+
         private async void test6_Click(object sender, RoutedEventArgs e)
         {
+            var pan = AvailableHost.AvailableTablesSource.GetAvailableTables()[0];
+            pan /= pan.Maximum;
 
+            var spec = AvailableHost.AvailableSpectraSource.GetAvailableSpectra()[0] as Cameca1280Spectrum;
+
+            var masses = new List<Data2D>();
+            foreach (var species in spec.Species)
+            {
+                masses.Add(spec.FromSpecies(species));
+            }
+
+            int lrSizeX = spec.SizeX;
+            int lrSizeY = spec.SizeY;
+            int lrPixels = spec.SizeX * spec.SizeY;
+            int hrSizeX = pan.Width;
+            int hrSizeY = pan.Height;
+            int hrPixels = pan.Width * pan.Height;
+            int numMasses = masses.Count;
+
+            // Normalize each mass to [0,1]
+            double[,] hsMatrix = new double[lrPixels, numMasses];
+            for (int i = 0; i < numMasses; i++)
+            {
+                for (int x = 0; x < lrSizeX; x++)
+                {
+                    for (int y = 0; y < lrSizeY; y++)
+                    {
+                        hsMatrix[x * lrSizeY + y, i] = masses[i][x, y];// / masses[i].Maximum;
+                    }
+                }
+            }
+            double[,] panArray = new double[hrSizeX, hrSizeY];
+            for (int x = 0; x < hrSizeX; x++)
+            {
+                for (int y = 0; y < hrSizeY; y++)
+                {
+                    panArray[x, y] = pan[x, y];
+                }
+            }
+
+            // Mean center the columns
+            double[] means = new double[numMasses];
+            for (int i = 0; i < numMasses; i++)
+            {
+                double sum = 0;
+                for (int j = 0; j < lrPixels; j++)
+                {
+                    sum += hsMatrix[j, i];
+                }
+                means[i] = sum / lrPixels;
+                for (int j = 0; j < lrPixels; j++)
+                {
+                    hsMatrix[j, i] -= means[i];
+                }
+            }
+
+            var svd = new SingularValueDecomposition(hsMatrix, true, true, false, false);
+            var u = svd.LeftSingularVectors;
+            var d = svd.Diagonal;
+
+            double[] pctExplained = new double[numMasses];
+            double sumSv = d.Sum();
+            for (int i = 0; i < numMasses; i++)
+            {
+                pctExplained[i] = d[i] / sumSv;
+            }
+
+            double sumPct = 0;
+            int p = 0;
+            for (int i = 0; i < numMasses; i++)
+            {
+                sumPct += pctExplained[i];
+                if (sumPct >= 0.75)
+                {
+                    p = i;
+                    break;
+                }
+            }
+
+            double[,] upsampledMatrix = new double[hrPixels, numMasses];
+
+            double[] crossCorrelations = new double[numMasses];
+            Parallel.For(0, numMasses, i =>
+            {
+                double[,] pcReshaped = new double[lrSizeX, lrSizeY];
+                for (int x = 0; x < lrSizeX; x++)
+                {
+                    for (int y = 0; y < lrSizeY; y++)
+                    {
+                        pcReshaped[x, y] = u[x * lrSizeY + y, i];
+                    }
+                }
+
+                var upscaled = pcReshaped.Upscale(hrSizeX, hrSizeY, false);
+
+                double numerator = 0;
+                double sHigh = 0;
+                double sLow = 0;
+                double meanPc = upscaled.Sum() / upscaled.Length;
+                double meanPan = pan.Mean;
+
+                for (int x = 0; x < hrSizeX; x++)
+                {
+                    for (int y = 0; y < hrSizeY; y++)
+                    {
+                        numerator += (upscaled[x, y] - meanPc) * (pan[x, y] - meanPan);
+                        sHigh += (pan[x, y] - meanPan) * (pan[x, y] - meanPan);
+                        sLow += (upscaled[x, y] - meanPc) * (upscaled[x, y] - meanPc);
+                    }
+                }
+
+                crossCorrelations[i] = numerator / Math.Sqrt(sHigh * sLow);
+            });
+
+            int pcIndex = 0;
+            bool pcIsNeg = false;
+            double pcMax = 0;
+            for (int i = 0; i < numMasses; i++)
+            {
+                if(Math.Abs(crossCorrelations[i]) > pcMax)
+                {
+                    pcMax = Math.Abs(crossCorrelations[i]);
+                    pcIndex = i;
+                    pcIsNeg = crossCorrelations[i] < 0;
+                }
+            }
+
+            double[,] pcs = new double[hrPixels, numMasses];
+
+            List<Data2D> pcImages = new List<Data2D>();
+
+            Parallel.For(0, numMasses, i =>
+            {
+                double[,] pcReshaped = new double[lrSizeX, lrSizeY];
+                for (int x = 0; x < lrSizeX; x++)
+                {
+                    for (int y = 0; y < lrSizeY; y++)
+                    {
+                        pcReshaped[x, y] = u[x * lrSizeY + y, i];
+                    }
+                }
+                var upscaled = pcReshaped.Upscale(hrSizeX, hrSizeY, false);
+
+                Data2D upscaledData = new Data2D(hrSizeX, hrSizeY)
+                {
+                    DataName = $"PC {i}"
+                };
+
+                for (int x = 0; x < hrSizeX; x++)
+                {
+                    for (int y = 0; y < hrSizeY; y++)
+                    {
+                        upscaledData[x, y] = (float)upscaled[x, y];
+                    }
+                }
+
+                pcImages.Add(upscaledData);                  
+
+                //var gfpc = GuidedFilter(matched, upscaled, 2, 0.1);
+                //for (int x = 0; x < hrSizeX; x++)
+                //{
+                //    for (int y = 0; y < hrSizeY; y++)
+                //    {
+                //        pcs[x * hrSizeY + y, i] = upscaled[x, y];
+                //        //upsampledMatrix[x * hrSizeY + y, i] = gfpc[x, y];
+                //        upsampledMatrix[x * hrSizeY + y, i] = matched[x, y];
+                //    }
+                //}
+
+                if (i == pcIndex)
+                //if(i <= p)
+                {
+                    var matched = HistogramMatching.Match((double[,])pan, upscaled, 1000);
+
+                    //bool isNeg = crossCorrelations[i] < 0;
+                    for (int x = 0; x < hrSizeX; x++)
+                    {
+                        for (int y = 0; y < hrSizeY; y++)
+                        {
+                            pcs[x * hrSizeY + y, i] = upscaled[x, y];
+
+                            upscaled[x, y] = pcIsNeg ? upscaled[x, y] - matched[x, y] : upscaled[x, y] + matched[x, y];
+                            //upscaled[x, y] = pcIsNeg ? -matched[x, y] : matched[x, y];
+                            //upscaled[x, y] = isNeg ? -matched[x, y] : matched[x, y];
+                        }
+                    }
+                }
+
+                for (int x = 0; x < hrSizeX; x++)
+                {
+                    for (int y = 0; y < hrSizeY; y++)
+                    {
+                        pcs[x * hrSizeY + y, i] = upscaled[x, y];
+                        upsampledMatrix[x * hrSizeY + y, i] = upscaled[x, y];
+                    }
+                }
+            });
+
+
+            //Parallel.For(0, numMasses, i =>
+            //{
+            //    double[,] pcReshaped = new double[lrSizeX, lrSizeY];
+            //    for (int x = 0; x < lrSizeX; x++)
+            //    {
+            //        for (int y = 0; y < lrSizeY; y++)
+            //        {
+            //            pcReshaped[x, y] = u[x * lrSizeY + y, i];
+            //        }
+            //    }
+
+            //    var upscaled = pcReshaped.Upscale(hrSizeX, hrSizeY, false);
+            //    double[] hrPc = new double[hrPixels];
+
+            //    if (i == 0)
+            //    {
+            //        for (int x = 0; x < hrSizeX; x++)
+            //        {
+            //            for (int y = 0; y < hrSizeY; y++)
+            //            {
+            //                hrPc[x * hrSizeY + y] = (pan[x, y] + upscaled[x, y]) / 2;
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        for (int x = 0; x < hrSizeX; x++)
+            //        {
+            //            for (int y = 0; y < hrSizeY; y++)
+            //            {
+            //                hrPc[x * hrSizeY + y] = upscaled[x, y];
+            //            }
+            //        }
+            //    }
+
+
+            //    for (int j = 0; j < hrPixels; j++)
+            //    {
+            //        upsampledMatrix[j, i] = hrPc[j];
+            //    }
+
+            //});
+
+            var reverted = upsampledMatrix.Dot(svd.DiagonalMatrix).DotWithTransposed(svd.RightSingularVectors);
+
+            // Revert mean centering
+            for (int i = 0; i < hrPixels; i++)
+            {
+                for (int j = 0; j < numMasses; j++)
+                {
+                    reverted[i, j] += means[j];
+                }
+            }
+
+            List<Data2D> fused = new List<Data2D>();
+            for (int i = 0; i < numMasses; i++)
+            {
+                Data2D f = new Data2D(hrSizeX, hrSizeY)
+                {
+                    DataName = masses[i].DataName + "-Fused"
+                };
+
+                for (int x = 0; x < hrSizeX; x++)
+                {
+                    for (int y = 0; y < hrSizeY; y++)
+                    {
+                        f[x, y] = (float)reverted[x * hrSizeY + y, i];
+                    }
+                }
+
+                fused.Add(f);
+            }
+
+            //List<Data2D> pcImages = new List<Data2D>();
+            //for (int i = 0; i < numMasses; i++)
+            //{
+            //    Data2D pc = new Data2D(hrSizeX, hrSizeY)
+            //    {
+            //        DataName = $"PC {i}"
+            //    };
+
+            //    for (int x = 0; x < hrSizeX; x++)
+            //    {
+            //        for (int y = 0; y < hrSizeY; y++)
+            //        {
+            //            pc[x, y] = (float)pcs[x * hrSizeY + y, i];
+            //        }
+            //    }
+
+            //    pcImages.Add(pc);
+            //}
+
+            var sortedPcs = pcImages.OrderBy(pc => pc.DataName);
+
+            AvailableHost.AvailableTablesSource.AddTables(fused);
+            AvailableHost.AvailableTablesSource.AddTables(sortedPcs);
+
+            var dt = new DataDisplayTab();
+            var cti = ClosableTabItem.Create(dt, TabType.DataDisplay, "GFPCA");
+            tabMain.Items.Add(cti);
+            tabMain.SelectedItem = cti;
+            foreach (var f in fused)
+            {
+                await dt.AddDataSourceAsync(f);
+            }
+            
         }
+        // GFPCA:
+        //double[,] pcResahped = new double[lrSizeX, lrSizeY];
+        //for (int x = 0; x<lrSizeX; x++)
+        //{
+        //    for (int y = 0; y<lrSizeY; y++)
+        //    {
+        //        int index = x * lrSizeY + y;
+        //pcResahped[x, y] = u[index, i];
+        //    }
+        //}
+
+        //var upscaled = pcResahped.Upscale(hrSizeX, hrSizeY, false);
+        //double[] hrPc = new double[hrPixels];
+
+        //// If PC number is less than p, upscale and do guided filter
+        //if (i <= p)
+        //{
+        //    // Do guided filter
+        //    var gfpc = GuidedFilter(panArray, upscaled, 2, 0.5);
+        //    for (int x = 0; x<hrSizeX; x++)
+        //    {
+        //        for (int y = 0; y<hrSizeY; y++)
+        //        {
+        //            int index = x * hrSizeY + y;
+        //hrPc[index] = gfpc[x, y];
+        //        }
+        //    }
+        //}
+
+        //// Otherwise just upscale and threshold
+        //else
+        //{
+        //    for (int x = 0; x<hrSizeX; x++)
+        //    {
+        //        for (int y = 0; y<hrSizeY; y++)
+        //        {
+        //            int index = x * hrSizeY + y;
+        //hrPc[index] = upscaled[x, y];
+        //        }
+        //    }
+
+        //    //hrPc = SoftThreshold(hrPc, 0.01);
+        //}
+
+        //// Place into matrix
+        //for (int j = 0; j<hrPixels; j++)
+        //{
+        //    upsampledMatrix[j, i] = hrPc[j];
+        //}
+
         private async void test7_Click(object sender, RoutedEventArgs e)
         {
+            var fixedImage = ImageGenerator.Instance.FromFile(@"D:\Data\Control Point Test\Fixed.png");
+            var movingImage = ImageGenerator.Instance.FromFile(@"D:\Data\Control Point Test\Moving.png");
 
+            var fixedData = ImageGenerator.Instance.ConvertToData2D(fixedImage);
+            var movingData = ImageGenerator.Instance.ConvertToData2D(movingImage);
+
+            fixedData.DataName = "Fixed";
+            movingData.DataName = "Moving";
+
+            var fixedData256x256 = fixedData.Downscale(256, 256);
+            var movingData256x256 = movingData.Downscale(256, 256);
+
+            var fixedData1769x2043 = fixedData.Upscale(1769, 2043);
+            var movingData1769x2043 = movingData.Upscale(1769, 2043);
+
+            AddTables(new Data2D[] { fixedData, movingData, fixedData256x256, movingData256x256, fixedData1769x2043, movingData1769x2043 });
+            return;
+
+            var spec = AvailableHost.AvailableSpectraSource.GetAvailableSpectra()[0] as Cameca1280Spectrum;
+
+            var masses = new List<Data2D>();
+            foreach (var species in spec.Species)
+            {
+                masses.Add(spec.FromSpecies(species));
+            }
+
+            int lrSizeX = spec.SizeX;
+            int lrSizeY = spec.SizeY;
+            int lrPixels = spec.SizeX * spec.SizeY;
+            int hrSizeX = lrSizeX * 2;
+            int hrSizeY = lrSizeY * 2;
+            int hrPixels = hrSizeX * hrSizeY;
+            int numMasses = masses.Count;
+
+            // Normalize each mass to [0,1]
+            double[,] hsMatrix = new double[lrPixels, numMasses];
+            for (int i = 0; i < numMasses; i++)
+            {
+                for (int x = 0; x < lrSizeX; x++)
+                {
+                    for (int y = 0; y < lrSizeY; y++)
+                    {
+                        hsMatrix[x * lrSizeY + y, i] = masses[i][x, y];// / masses[i].Maximum;
+                    }
+                }
+            }
+
+            // Mean center the columns
+            double[] means = new double[numMasses];
+            for (int i = 0; i < numMasses; i++)
+            {
+                double sum = 0;
+                for (int j = 0; j < lrPixels; j++)
+                {
+                    sum += hsMatrix[j, i];
+                }
+                means[i] = sum / lrPixels;
+                for (int j = 0; j < lrPixels; j++)
+                {
+                    hsMatrix[j, i] -= means[i];
+                }
+            }
+
+            var svd = new SingularValueDecomposition(hsMatrix, true, true, false, false);
+            var u = svd.LeftSingularVectors;
+            var d = svd.Diagonal;
+
+            double[,] upsampledMatrix = new double[hrPixels, numMasses];
+            for (int i = 0; i < numMasses; i++)
+            {
+                double[,] pcReshaped = new double[lrSizeX, lrSizeY];
+                for (int x = 0; x < lrSizeX; x++)
+                {
+                    for (int y = 0; y < lrSizeY; y++)
+                    {
+                        pcReshaped[x, y] = u[x * lrSizeY + y, i];
+                    }
+                }
+
+                var upscaled = pcReshaped.Upscale(hrSizeX, hrSizeY, false);
+
+                for (int x = 0; x < hrSizeX; x++)
+                {
+                    for (int y = 0; y < hrSizeY; y++)
+                    {
+                        upsampledMatrix[x * hrSizeY + y, i] = upscaled[x, y];
+                    }
+                }
+            }
+
+            var reverted = upsampledMatrix.Dot(svd.DiagonalMatrix).DotWithTransposed(svd.RightSingularVectors);
+
+            for (int i = 0; i < numMasses; i++)
+            {
+                Data2D b = new Data2D(hrSizeX, hrSizeY);
+                for (int x = 0; x < hrSizeX; x++)
+                {
+                    for (int y = 0; y < hrSizeY; y++)
+                    {
+                        b[x, y] = (float)reverted[x * hrSizeY + y, i];
+                    }
+                }
+                AddTable(b);
+            }
+
+            //var tables = await Task.Run(async () =>
+            //{
+            //    List<Data2D> tablesToReturn = new List<Data2D>();
+
+            //    var bsHighRes = ImageGenerator.Instance.FromFile(@"D:\Data\10-01-12\1a.bmp");
+            //    var bsLowRes = ImageGenerator.Instance.FromFile(@"D:\Data\10-01-12\3_64.bmp");
+
+            //    //var bsHighRes = ImageGenerator.Instance.FromFile(@"D:\Data\Al-Li Alloy\Hyperspectral\Registered_800.png");
+
+            //    var highRes = ImageGenerator.Instance.ConvertToData2D(bsHighRes);
+            //    highRes.DataName = "High Res";
+            //    //var lowRes = await Data2D.LoadData2DAsync(@"D:\Data\Al-Li Alloy\Hyperspectral\28.txt", FileType.CSV);
+            //    var lowRes = ImageGenerator.Instance.ConvertToData2D(bsLowRes, Data2DConverionType.Color, Color.FromArgb(255, 0, 255, 0));
+            //    lowRes.DataName = "Low Res";
+
+            //    tablesToReturn.Add(highRes);
+            //    tablesToReturn.Add(lowRes);
+
+            //    float hrMax = highRes.Maximum;
+            //    float lrMax = lowRes.Maximum;
+
+            //    // Normalize
+            //    highRes /= hrMax;
+            //    lowRes /= lrMax;
+
+            //    int resolutionRatio = (int)Math.Min(
+            //        Math.Ceiling((double)highRes.Width / lowRes.Width),
+            //        Math.Ceiling((double)highRes.Height / lowRes.Height));
+
+            //    int numDecompositions = (int)Math.Log(resolutionRatio, 2);
+
+            //    Data2D[] s = new Data2D[numDecompositions + 1];
+            //    Data2D[] g = new Data2D[numDecompositions + 1];
+            //    Data2D[] l = new Data2D[numDecompositions + 1];
+
+            //    for (int i = 0; i < numDecompositions + 1; i++)
+            //    {
+            //        s[i] = i == 0 ? highRes : s[i - 1].Downscale(g[i - 1].Width / 2, g[i - 1].Height / 2);
+            //        g[i] = Filter.DoFilter(s[i], FilterType.Gauissian);
+            //        l[i] = s[i] - g[i];
+
+            //        s[i].DataName = $"S {i}";
+            //        tablesToReturn.Add(s[i]);
+            //        g[i].DataName = $"G {i}";
+            //        tablesToReturn.Add(g[i]);
+            //        l[i].DataName = $"L {i}";
+            //        tablesToReturn.Add(l[i]);
+            //    }
+
+            //    Data2D[] r = new Data2D[numDecompositions + 1];
+            //    for (int i = numDecompositions; i >= 0; i--)
+            //    {
+            //        if (i == numDecompositions)
+            //        {
+            //            if (lowRes.Width != l[i].Width || lowRes.Height != l[i].Height)
+            //            {
+            //                lowRes = lowRes.Resize(l[i].Width, l[i].Height);
+            //            }
+            //            r[i] = lowRes + l[i];
+            //        }
+            //        else
+            //        {
+            //            var upscaled = EmptyUpscale(r[i + 1], 2);
+            //            upscaled = Filter.DoFilter(upscaled, FilterType.Gauissian) * 4f;
+            //            r[i] = upscaled + l[i];
+            //        }
+            //        r[i].DataName = $"R {i}";
+            //    }
+
+            //    tablesToReturn.AddRange(r);
+
+            //    // Unnormalize
+            //    var fused = r[0] *= lrMax;
+            //    fused += -fused.Minimum;
+            //    fused.DataName = "Fused";
+            //    tablesToReturn.Add(fused);
+
+            //    return tablesToReturn;
+            //});
         }
         private async void test8_Click(object sender, RoutedEventArgs e)
         {
+            var fixedImage = ImageGenerator.Instance.FromFile(@"D:\Data\Control Point Test\f.bmp");
+            var fixedData = ImageGenerator.Instance.ConvertToData2D(fixedImage);
+            fixedData.DataName = "Fixed";
 
+            var movingImage = ImageGenerator.Instance.FromFile(@"D:\Data\Control Point Test\m.bmp");
+            var movingData = ImageGenerator.Instance.ConvertToData2D(movingImage);
+            movingData.DataName = "Moving";
+
+            AddTables(new Data2D[] { fixedData, movingData });
+
+            var fpt = new FusionPointTab();
+            fpt.ViewModel.FixedImageViewModel.DataSource = fixedData;
+            fpt.ViewModel.MovingImageViewModel.DataSource = movingData;
+            var cti = ClosableTabItem.Create(fpt, TabType.FusionPoint);
+            AddTabItemAndNavigate(cti);
+            return;
+
+            var ft = tabMain.SelectedContent as FusionPointTab;
+            await ft.TestRegistration();
+
+            return;
+
+            var data256x256 = new Data2D(256, 256) { DataName = "256x256" };
+            var data512x256 = new Data2D(512, 256) { DataName = "512x256" };
+            var data256x512 = new Data2D(256, 512) { DataName = "256x512" };
+            var data512x512 = new Data2D(512, 512) { DataName = "512x512" };
+
+            for (int x = 0; x < data256x256.Width; x++)
+            {
+                for (int y = 0; y < data256x256.Width; y++)
+                {
+                    if (x > data256x256.Width / 2 - 16 && x < data256x256.Width / 2 + 16) data256x256[x, y] = 100;
+                    if (y > data256x256.Height / 2 - 16 && y < data256x256.Height / 2 + 16) data256x256[x, y] = 100;
+
+                    if (IsInCircle(x, y, 10, 10, 5)) data256x256[x, y] = 100;
+                    if (IsInCircle(x, y, 10, 246, 5)) data256x256[x, y] = 100;
+                    if (IsInCircle(x, y, 246, 10, 5)) data256x256[x, y] = 100;
+                    if (IsInCircle(x, y, 246, 246, 5)) data256x256[x, y] = 100;
+                }
+            }
+
+            for (int x = 0; x < data512x256.Width; x++)
+            {
+                for (int y = 0; y < data512x256.Height; y++)
+                {
+                    if (x > data512x256.Width / 2 - 32 && x < data512x256.Width / 2 + 32) data512x256[x, y] = 100;
+                    if (y > data512x256.Height / 2 - 16 && y < data512x256.Height / 2 + 16) data512x256[x, y] = 100;
+
+                    if (IsInCircle(x, y, 20, 10, 5)) data512x256[x, y] = 100;
+                    if (IsInCircle(x, y, 20, 246, 5)) data512x256[x, y] = 100;
+                    if (IsInCircle(x, y, 492, 10, 5)) data512x256[x, y] = 100;
+                    if (IsInCircle(x, y, 492, 246, 5)) data512x256[x, y] = 100;
+                }
+            }
+
+            for (int x = 0; x < data256x512.Width; x++)
+            {
+                for (int y = 0; y < data256x512.Height; y++)
+                {
+                    if (x > data256x512.Width / 2 - 16 && x < data256x512.Width / 2 + 16) data256x512[x, y] = 100;
+                    if (y > data256x512.Height / 2 - 32 && y < data256x512.Height / 2 + 32) data256x512[x, y] = 100;
+
+                    if (IsInCircle(x, y, 10, 20, 5)) data256x512[x, y] = 100;
+                    if (IsInCircle(x, y, 10, 492, 5)) data256x512[x, y] = 100;
+                    if (IsInCircle(x, y, 246, 20, 5)) data256x512[x, y] = 100;
+                    if (IsInCircle(x, y, 246, 492, 5)) data256x512[x, y] = 100;
+                }
+            }
+
+            for (int x = 0; x < data512x512.Width; x++)
+            {
+                for (int y = 0; y < data512x512.Height; y++)
+                {
+                    if (x > data512x512.Width / 2 - 32 && x < data512x512.Width / 2 + 32) data512x512[x, y] = 100;
+                    if (y > data512x512.Height / 2 - 32 && y < data512x512.Height / 2 + 32) data512x512[x, y] = 100;
+
+                    if (IsInCircle(x, y, 20, 20, 5)) data512x512[x, y] = 100;
+                    if (IsInCircle(x, y, 20, 492, 5)) data512x512[x, y] = 100;
+                    if (IsInCircle(x, y, 492, 20, 5)) data512x512[x, y] = 100;
+                    if (IsInCircle(x, y, 492, 492, 5)) data512x512[x, y] = 100;
+                }
+            }
+
+            AddTables(new Data2D[] { data256x256, data512x256, data256x512, data512x512 });
+
+            var dt = new DataDisplayTab(ColorScaleTypes.ThermalCold);
+            foreach (var table in GetAvailableTables())
+            {
+                dt.AddDataSource(table);
+            }
+            AddTabItemAndNavigate(ClosableTabItem.Create(dt, TabType.DataDisplay));
         }
+        private bool IsInCircle(int x, int y, int cx, int cy, int radius)
+        {
+            return ((x - cx) * (x - cx) + (y - cy) * (y - cy)) <= radius * radius;
+        }
+
         private async void test9_Click(object sender, RoutedEventArgs e)
         {
+            //var dt = new DataDisplayTab(ColorScaleTypes.ThermalCold);
+            //var cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
+            //AddTabItemAndNavigate(cti);
 
+            //var selected = GetSelectedTables();
+
+            //selected[0].FlipHorizontal();
+            //selected[1].FlipVertical();
+            //selected[2].FlipDiagonal(false);
+            //selected[3].FlipDiagonal(true);
+
+            //await dt.AddDataSourceAsync(selected);
+
+            HwndSource hwnd = new HwndSource(0, 0x12cf0000, 0, 50, 50, 250, 250, "Test Window", IntPtr.Zero);
+            hwnd.RootVisual = new System.Windows.Shapes.Rectangle() { Fill = Brushes.GreenYellow, Width = 100, Height = 100 };
         }
         private async void test10_Click(object sender, RoutedEventArgs e)
         {
@@ -4476,7 +5686,7 @@ namespace ImagingSIMS.MainApplication
             //    }
             //}
             var dt = new DataDisplayTab(ColorScaleTypes.Solid);
-            var cti = ClosableTabItem.Create(dt, TabType.Data,  "GPU", true);
+            var cti = ClosableTabItem.Create(dt, TabType.Data, "GPU");
             AddTabItemAndNavigate(cti);
 
             foreach (var table in tables)
@@ -4508,7 +5718,7 @@ namespace ImagingSIMS.MainApplication
                     }
                 }
 
-                cti = ClosableTabItem.Create(new SettingsTab(Workspace.Registry), TabType.Settings, true);
+                cti = ClosableTabItem.Create(new SettingsTab(Workspace.Registry), TabType.Settings);
                 tabMain.Items.Add(cti);
                 tabMain.SelectedItem = cti;
             }
@@ -4643,7 +5853,7 @@ namespace ImagingSIMS.MainApplication
                     sb.ToString(), "Add", DialogIcon.Alert);
             }
         }
-        public void AddTables(Data2D[] tablesToAdd)
+        public void AddTables(params Data2D[] tablesToAdd)
         {
             List<Data2D> notAdded = new List<Data2D>();
 

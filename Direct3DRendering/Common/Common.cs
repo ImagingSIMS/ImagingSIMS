@@ -11,7 +11,7 @@ namespace ImagingSIMS.Direct3DRendering
 {
     public enum RenderType
     {
-        Volume, HeightMap, Isosurface, NotSpecified
+        Volume, HeightMap, Isosurface, NotSpecified, CombinedVolume
     }
     public enum MoveDirection
     {
@@ -581,7 +581,7 @@ namespace ImagingSIMS.Direct3DRendering
                     break;
             }
         }
-        public void UpdatePointLight(int index, NotifiableColor color)
+        public void UpdatePointLight(int index, System.Windows.Media.Color color)
         {
             switch (index)
             {
@@ -671,7 +671,7 @@ namespace ImagingSIMS.Direct3DRendering
                     break;
             }
         }
-        public void UpdatePointLight(int index, bool isEnabled, Vector4 location, NotifiableColor color, float intensity)
+        public void UpdatePointLight(int index, bool isEnabled, Vector4 location, System.Windows.Media.Color color, float intensity)
         {
             UpdatePointLight(index, isEnabled);
             UpdatePointLight(index, location);
@@ -682,7 +682,7 @@ namespace ImagingSIMS.Direct3DRendering
         {
             UpdatePointLight(index, isEnabled);
             UpdatePointLight(index, location);
-            UpdatePointLight(index, color);
+            UpdatePointLight(index, color.ToMediaColor());
             UpdatePointLight(index, intensity);
         }
         public void UpdatePointLight(int index, PointLightSource lightSource)
@@ -784,17 +784,9 @@ namespace ImagingSIMS.Direct3DRendering
         {
             return new Vector4(plane.ToArray());
         }
-        public static Vector4 ToVector4(this NotifiableColor c)
+        public static Vector4 ToVector4(this System.Windows.Media.Color c)
         {
-            return new Vector4(c.R / 255f, c.G / 255f, c.B / 255f, c.A / 255f);
-        }
-        public static NotifiableColor ToNotifiableColor(this Color c)
-        {
-            return NotifiableColor.FromArgb(c.A, c.R, c.G, c.B);
-        }
-        public static Color ToSharpDXColor(this NotifiableColor c)
-        {
-            return new Color(c.R, c.G, c.B, c.A);
+            return new Vector4(c.R, c.G, c.B, c.A);
         }
 
         public static Color ToSharpDXColor(this System.Windows.Media.Color c)

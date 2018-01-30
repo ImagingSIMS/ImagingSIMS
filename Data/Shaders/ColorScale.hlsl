@@ -1,4 +1,4 @@
-Texture2D<float> Buffer0 : register(t0);
+﻿Texture2D<float> Buffer0 : register(t0);
 RWTexture2D<float4> BufferOut : register(u0);
 
 cbuffer RenderParams : register(b0)

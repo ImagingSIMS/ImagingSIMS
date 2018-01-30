@@ -4,8 +4,9 @@ static const uint maxNumVolumes = 8;
 
 Texture2D<float>		txPositionFront				: register(t0);
 Texture2D<float>		txPositionBack				: register(t1);
-Texture3D<float>		txActiveVoxels				: register(t2);
-Texture3D<float>		txVolumes[maxNumVolumes]	: register(t3);
+Texture3D<bool>			txActiveVoxels				: register(t2);
+Texture3D<bool>			txClippedVoxels				: register(t3);
+Texture3D<float>		txVolumes[maxNumVolumes]	: register(t4);
 
 SamplerState			samplerLinear				: register(s0);
 
@@ -27,7 +28,7 @@ cbuffer RenderParams : register(b0)
 	float4		MaxClipCoords;				//16 x 1 =  16
 }
 
-cbuffer IsosurfaceParams : register(b1)
+cbuffer CombinedVolumeParams : register(b1)
 {
 	float4		IsosurfaceColor[8];			//16 x 8 = 128
 	float		NumIsosurfaces;				// 4 x 1 =   4
@@ -41,6 +42,14 @@ struct ISOSURFACE_VS_Input{
 };
 
 struct ISOSURFACE_VS_Output {
+
+};
+
+struct RAYCAST_VS_Input {
+
+};
+
+struct RAYCAST_VS_Output {
 
 };
 

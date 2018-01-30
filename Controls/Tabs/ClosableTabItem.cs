@@ -314,70 +314,40 @@ namespace ImagingSIMS.Controls.Tabs
             }
         }
 
+        /// <summary>
+        /// Creates a ClosableTabItem for the given user control
+        /// </summary>
+        /// <param name="Control">Content for the TabItem</param>
+        /// <param name="TabType">Type of TabItem to create</param>
+        /// <returns>A ClosableTabItem that can be added to a TabControl</returns>
         public static ClosableTabItem Create(UserControl Control, TabType TabType)
         {
             ClosableTabItem cti = new ClosableTabItem(TabType);
             cti.Header = TabType.ToString();
 
             Control.Margin = new Thickness(0);
-            Control.HorizontalAlignment = HorizontalAlignment.Left;
-            Control.VerticalAlignment = VerticalAlignment.Top;
+            Control.HorizontalAlignment = HorizontalAlignment.Stretch;
+            Control.VerticalAlignment = VerticalAlignment.Stretch;
 
             cti.Content = Control;
 
             return cti;
         }
+        /// <summary>
+        /// Creates a ClosableTabItem for the given user control
+        /// </summary>
+        /// <param name="Control">Content for the TabItem</param>
+        /// <param name="TabType">Type of TabItem to create</param>
+        /// <param name="Header">Header to appear in the TabItem</param>
+        /// <returns>A ClosableTabItem that can be added to a TabControl</returns>
         public static ClosableTabItem Create(UserControl Control, TabType TabType, string Header)
         {
             ClosableTabItem cti = new ClosableTabItem(TabType);
             cti.Header = Header;
 
             Control.Margin = new Thickness(0);
-            Control.HorizontalAlignment = HorizontalAlignment.Left;
-            Control.VerticalAlignment = VerticalAlignment.Top;
-
-            cti.Content = Control;
-
-            return cti;
-        }
-        public static ClosableTabItem Create(UserControl Control, TabType TabType, bool Stretch)
-        {
-            ClosableTabItem cti = new ClosableTabItem(TabType);
-            cti.Header = TabType.ToString();
-
-            Control.Margin = new Thickness(0);
-            if (Stretch)
-            {
-                Control.HorizontalAlignment = HorizontalAlignment.Stretch;
-                Control.VerticalAlignment = VerticalAlignment.Stretch;
-            }
-            else
-            {
-                Control.HorizontalAlignment = HorizontalAlignment.Left;
-                Control.VerticalAlignment = VerticalAlignment.Top;
-            }
-
-
-            cti.Content = Control;
-
-            return cti;
-        }
-        public static ClosableTabItem Create(UserControl Control, TabType TabType, string Header, bool Stretch)
-        {
-            ClosableTabItem cti = new ClosableTabItem(TabType);
-            cti.Header = Header;
-
-            Control.Margin = new Thickness(0);
-            if (Stretch)
-            {
-                Control.HorizontalAlignment = HorizontalAlignment.Stretch;
-                Control.VerticalAlignment = VerticalAlignment.Stretch;
-            }
-            else
-            {
-                Control.HorizontalAlignment = HorizontalAlignment.Left;
-                Control.VerticalAlignment = VerticalAlignment.Top;
-            }
+            Control.HorizontalAlignment = HorizontalAlignment.Stretch;
+            Control.VerticalAlignment = VerticalAlignment.Stretch;
 
             cti.Content = Control;
 
@@ -389,13 +359,13 @@ namespace ImagingSIMS.Controls.Tabs
     {
         Startup, Data, Spectrum,
         Component, Display,
-        Rendering, Fusion, Settings,
+        Rendering, Fusion, Settings, FusionPoint,
         TableSelector, PCA,
         Crop, SEM, RenderObject,
         Correction, ZCorrection, SpectrumCrop,
         HeightMap, DataDisplay, Cluster,
-        DataRegistration, DepthProfile,
-        
+        DataRegistration, DepthProfile, EditWorkspace,
+        Ratio, ImageStitch, DataMath
     }
 
 

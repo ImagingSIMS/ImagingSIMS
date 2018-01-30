@@ -17,11 +17,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\Themes\Generic.xaml"/>
                 <ResourceDictionary>
-                    <Style TargetType="{x:Type ToolTip}">
-                        <Setter Property="Background" Value="{StaticResource ToolTipBackground}"/>
-                        <Setter Property="BorderBrush" Value="{StaticResource ToolTipBorderBrush}"/>
-                        <Setter Property="Margin" Value="4"/>
-                    </Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Margin" Value="4"/>
                         <Setter Property="Width" Value="75"/>
@@ -30,12 +25,12 @@
                     <Style x:Key="extendedStyle" BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
                         <Setter Property="HorizontalAlignment" Value="Center"/>
                     </Style>
-                    <converters:Data3DToSizeStringConverter x:Key="data3DToSizeStringConverter"/>
-                    <converters:Data3DToMinMaxStringConverter x:Key="data3DToMinMaxStringConverter"/>
                     <converters:ColorScaleToBoolConverter x:Key="colorScaleToBoolConverter"/>
                     <converters:ColorScaleToBitmapSourceConverter x:Key="colorScaleToBitmapSourceConverter"/>
                     <converters:Data3DToRangeSliderMinMaxConverter x:Key="data3DToRangeSliderMinMaxConverter"/>
                     <converters:Data3DDepthToVisibilityConverter x:Key="data3DDepthToVisibilityConverter"/>
+                    <converters:Data3DDisplayViewModelToSizeConverter x:Key="data3DDisplayViewModelToSizeConverter"/>
+                    <converters:Data3DDisplayViewModelToMinMaxConverter x:Key="data3DDisplayViewModelToMinMaxConverter"/>
                     <ObjectDataProvider x:Key="colorScaleFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
                         <ObjectDataProvider.MethodParameters>
                             <x:Type TypeName="data:ColorScaleTypes"/>
@@ -76,8 +71,8 @@
                     <ToolTip DataContext="{Binding Path=PlacementTarget.Parent.Parent.Parent, RelativeSource={x:Static RelativeSource.Self}}">
                         <StackPanel Orientation="Vertical">
                             <TextBlock Text="{Binding DisplayItem.DataSource.DataName}"/>
-                            <TextBlock Text="{Binding DisplayItem.DataSource, Converter={StaticResource data3DToSizeStringConverter}}"/>
-                            <TextBlock Text="{Binding DisplayItem.DataSource, Converter={StaticResource data3DToMinMaxStringConverter}}"/>
+                            <TextBlock Text="{Binding DisplayItem, Converter={StaticResource data3DDisplayViewModelToSizeConverter}}"/>
+                            <TextBlock Text="{Binding DisplayItem, Converter={StaticResource data3DDisplayViewModelToMinMaxConverter}}"/>
                         </StackPanel>
                     </ToolTip>
                 </Image.ToolTip>
@@ -122,7 +117,7 @@
                         <MultiBinding Converter="{StaticResource colorScaleToBitmapSourceConverter}">
                             <Binding Path="DisplayItem.ColorScale" ElementName="userControl"/>
                             <Binding Path="DisplayItem.SolidColorScale" ElementName="userControl"/>
-                            <Binding Path="DisplayItem.DataSource.SingluarMaximum" ElementName="userControl"/>
+                            <Binding Path="DisplayItem.ViewableDataSource.Maximum" ElementName="userControl"/>
                             <Binding Path="DisplayItem.Saturation" ElementName="userControl"/>
                         </MultiBinding>
                     </Image.Source>
@@ -187,16 +182,6 @@
                                            IsEnabled="{Binding DisplayItem.ColorScale, Converter={StaticResource colorScaleToBoolConverter}, ElementName=userControl}"
                                            SelectedColor="{Binding DisplayItem.SolidColorScale, ElementName=userControl, Mode=TwoWay}"                                           
                                            IsAlphaEnabled="False"/>
-                <!--<Button x:Name="buttonShowColor" Grid.Column="2" Width="20" Height="20" Margin="4" 
-                        IsEnabled="{Binding DisplayItem.ColorScale, Converter={StaticResource colorScaleToBoolConverter}, ElementName=userControl}"
-                        MouseEnter="buttonShowColor_MouseEnter">
-                    <Image Source="..\Images\PaintPalette.ico"/>
-                </Button>
-                <Popup x:Name="popupSolidColorScale" IsOpen="False" PlacementTarget="{Binding ElementName=buttonShowColor}" StaysOpen="False">
-                    <Grid Background="{StaticResource MenuBackground}">
-                        <cc:ColorSelector SelectedColor="{Binding DisplayItem.SolidColorScale, Mode=TwoWay, ElementName=userControl}" IsAlphaEnabled="False"/>
-                    </Grid>
-                </Popup>-->
             </Grid>         
             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Width="20" Height="20" Click="contentButtonRemove_Click" Margin="4" ToolTip="Delete">

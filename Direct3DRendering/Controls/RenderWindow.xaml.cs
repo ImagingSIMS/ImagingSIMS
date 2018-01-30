@@ -148,7 +148,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        RenderWindowView.VolumeColors[i] = Volumes[i].Color.ToNotifiableColor();
+                        RenderWindowView.VolumeColors[i] = Volumes[i].Color;
                     });
                 }
             }
@@ -157,7 +157,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
                 for (int i = 0; i < Volumes.Length; i++)
                 {
-                    RenderWindowView.VolumeColors[i] = Volumes[i].Color.ToNotifiableColor();
+                    RenderWindowView.VolumeColors[i] = Volumes[i].Color;
                 }
             }
 
@@ -185,7 +185,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        RenderWindowView.VolumeColors[i] = Volumes[i].Color.ToNotifiableColor();
+                        RenderWindowView.VolumeColors[i] = Volumes[i].Color;
                     });
                 }
             }
@@ -194,7 +194,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
                 for (int i = 0; i < Volumes.Count; i++)
                 {
-                    RenderWindowView.VolumeColors[i] = Volumes[i].Color.ToNotifiableColor();
+                    RenderWindowView.VolumeColors[i] = Volumes[i].Color;
                 }
             }
 
@@ -222,7 +222,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        RenderWindowView.VolumeColors[i] = Isosurfaces[i].InitialColor.ToNotifiableColor();
+                        RenderWindowView.VolumeColors[i] = Isosurfaces[i].InitialColor;
                     });
                 }
             }
@@ -231,7 +231,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 RenderWindowView = RenderingViewModel.DefaultIsosurfaceParameters;
                 for (int i = 0; i < Isosurfaces.Count; i++)
                 {
-                    RenderWindowView.VolumeColors[i] = Isosurfaces[i].InitialColor.ToNotifiableColor();
+                    RenderWindowView.VolumeColors[i] = Isosurfaces[i].InitialColor;
                 }
             }
 

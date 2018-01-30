@@ -8,7 +8,9 @@
     <converters:TabToVisConverter x:Key="tabVisConverter"/>
     <converters:EnumDescriptionConverter x:Key="enumDescriptionConverter"/>
     <converters:ColorScaleToBoolConverter x:Key="colorScaleToBoolConverter"/>
-    
+
+    <SolidColorBrush x:Key="ThemeBlueBrush" Color="#FF007ACC"/>
+
     <ObjectDataProvider x:Key="colorScaleFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
         <ObjectDataProvider.MethodParameters>
             <x:Type TypeName="data:ColorScaleTypes"/>

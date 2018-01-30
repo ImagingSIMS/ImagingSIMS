@@ -11,7 +11,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ImagingSIMS.Common;
 using ImagingSIMS.Data;
-using ImagingSIMS.Data.Colors;
 using ImagingSIMS.Data.Converters;
 using ImagingSIMS.Data.Imaging;
 using SharpDX;
@@ -21,10 +20,18 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
 using Device = SharpDX.Direct3D11.Device;
+using ImagingSIMS.Common;
+using ImagingSIMS.Data.Imaging;
+
+using Accord;
+using Accord.Imaging;
+using Accord.Math;
+
+using System.Globalization;
 
 namespace ConsoleApp
 {
-    class Program
+    partial class Program
     {
         static void Main(string[] args)
         {
@@ -105,41 +112,7 @@ namespace ConsoleApp
 
             Console.Write("Press any key to exit.");
             Console.ReadLine();
-        }
-
-        private static int readLine(string line, out int type)
-        {
-            string[] parts = line.Split(' ');
-
-            if (parts == null || parts.Length == 0)
-            {
-                type = 0;
-                return 0;
-            }
-
-            type = int.Parse(parts[0]);
-
-            if (parts.Length == 1 || parts[1] == null) return 0;
-
-            return int.Parse(parts[1]);
-        }
-    }
-
-    internal static class TestSpec
-    {
-        public static int[,] Generate()
-        {
-            int[,] spec = new int[10000, 2];
-
-            Random r = new Random();
-            int startTime = 5256;
-            for (int x = 0; x < 10000; x++)
-            {
-                spec[x, 0] = startTime + x;
-                spec[x, 1] = r.Next(0, 1000);
-            }
-
-            return spec;
-        }
+        }     
     }
 }
+

@@ -5,6 +5,7 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         SizeToContent="Height" WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
         WindowStyle="None"
+        Loaded="Window_Loaded"
         Background="#FF414141">
     <Grid>
         <Grid.RowDefinitions>

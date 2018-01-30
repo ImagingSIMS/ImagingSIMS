@@ -32,6 +32,14 @@ namespace ImagingSIMS.Data.Isosurfacing
 
         bool _isSelected;
 
+        public override string SizeString
+        {
+            get
+            {
+                return $"W: {_sizeX} H: {_sizeY} D: {_sizeZ}";
+            }
+        }
+
         public float this[int x, int y, int z]
         {
             get

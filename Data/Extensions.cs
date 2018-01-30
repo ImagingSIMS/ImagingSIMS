@@ -306,4 +306,62 @@ namespace ImagingSIMS.Data
             return d + frac * (c + frac * (b + frac * a));
         }
     }
+
+    public static class MathExtensions
+    {
+        public static int Clamp(this int i, int min, int max)
+        {
+            if (i < min) return min;
+            if (i > max) return max;
+            return i;
+        }
+        public static float Clamp(this float f, float min, float max)
+        {
+            if (f < min) return min;
+            if (f > max) return max;
+            return f;
+        }
+        public static double Clamp(this double d, double min, double max)
+        {
+            if (d < min) return min;
+            if (d > max) return max;
+            return d;
+        }
+
+        public static int EnsureValidIndex(this int i, int length, DimensionMode mode = DimensionMode.Truncate)
+        {
+            if(i <= 0)
+            {
+                switch (mode)
+                {
+                    case DimensionMode.Reflect:
+                        return -i;
+                    case DimensionMode.Truncate:
+                        return 0;
+                    default:
+                        return 0;
+                }
+            }
+            if(i >= length)
+            {
+                switch (mode)
+                {
+                    case DimensionMode.Reflect:
+                        return 2 * length - i - 1;
+                    case DimensionMode.Truncate:
+                        return length - 1;
+                    default:
+                        return length - 1;
+                }
+            }
+
+            return i;
+        }
+
+        public enum DimensionMode
+        {
+            Reflect,
+            Truncate
+        }
+    }
 }

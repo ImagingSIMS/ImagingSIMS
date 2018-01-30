@@ -98,7 +98,7 @@
                                                 <StackPanel Grid.Column="1" Orientation="Vertical">
                                                     <StackPanel Grid.Column="3" Orientation="Vertical">
                                                         <Label>Back Color:</Label>
-                                                        <cc:CollapsedColorSelector IsAlphaEnabled="False" SelectedColor="{Binding BackColor, Mode=TwoWay}"/>
+                                                        <cc:CollapsedColorSelector IsAlphaEnabled="False" SelectedColor="{Binding BackColor, Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </Grid>
@@ -190,7 +190,7 @@
                                                         </Grid>
                                                         <StackPanel Orientation="Horizontal" IsEnabled="{Binding EnableAmbientLighting}">
                                                             <TextBlock>Color:</TextBlock>
-                                                            <cc:CollapsedColorSelector IsAlphaEnabled="False" SelectedColor="{Binding AmbientLightColor}"/>
+                                                            <cc:CollapsedColorSelector IsAlphaEnabled="False" SelectedColor="{Binding AmbientLightColor, Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </GroupBox>
@@ -365,44 +365,36 @@
                                         </Grid.RowDefinitions>
 
                                         <StackPanel Grid.Row="0" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=0}">
-                                            <Label Foreground="{Binding VolumeColors[0], Converter={StaticResource notifiableColorToBrushConverter}}">1:</Label>
-                                            <cc:CollapsedColorSelector 
-                                    SelectedColor="{Binding VolumeColors[0], Mode=TwoWay}"/>
+                                            <Label Foreground="{Binding VolumeColors[0]}">1:</Label>
+                                            <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[0], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
                                         <StackPanel Grid.Row="1" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=1}">
-                                            <Label Foreground="{Binding VolumeColors[1], Converter={StaticResource notifiableColorToBrushConverter}}">2:</Label>
-                                            <cc:CollapsedColorSelector 
-                                    SelectedColor="{Binding VolumeColors[1], Mode=TwoWay}"/>
+                                            <Label Foreground="{Binding VolumeColors[1]}">2:</Label>
+                                            <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[1], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
                                         <StackPanel Grid.Row="2" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=2}">
-                                            <Label Foreground="{Binding VolumeColors[2], Converter={StaticResource notifiableColorToBrushConverter}}">3:</Label>
-                                            <cc:CollapsedColorSelector 
-                                    SelectedColor="{Binding VolumeColors[2], Mode=TwoWay}"/>
+                                            <Label Foreground="{Binding VolumeColors[2]}">3:</Label>
+                                            <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[2], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
                                         <StackPanel Grid.Row="3" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=3}">
-                                            <Label Foreground="{Binding VolumeColors[3], Converter={StaticResource notifiableColorToBrushConverter}}">4:</Label>
-                                            <cc:CollapsedColorSelector 
-                                    SelectedColor="{Binding VolumeColors[3], Mode=TwoWay}"/>
+                                            <Label Foreground="{Binding VolumeColors[3]}">4:</Label>
+                                            <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[3], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
                                         <StackPanel  Grid.Row="4" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=4}">
-                                            <Label Foreground="{Binding VolumeColors[4], Converter={StaticResource notifiableColorToBrushConverter}}">5:</Label>
-                                            <cc:CollapsedColorSelector 
-                                    SelectedColor="{Binding VolumeColors[4], Mode=TwoWay}"/>
+                                            <Label Foreground="{Binding VolumeColors[4]}">5:</Label>
+                                            <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[4], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
                                         <StackPanel Grid.Row="5" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=5}">
-                                            <Label Foreground="{Binding VolumeColors[5], Converter={StaticResource notifiableColorToBrushConverter}}">6:</Label>
-                                            <cc:CollapsedColorSelector 
-                                    SelectedColor="{Binding VolumeColors[5], Mode=TwoWay}"/>
+                                            <Label Foreground="{Binding VolumeColors[5]}">6:</Label>
+                                            <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[5], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
                                         <StackPanel Grid.Row="6" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=6}">
-                                            <Label Foreground="{Binding VolumeColors[6], Converter={StaticResource notifiableColorToBrushConverter}}">7:</Label>
-                                            <cc:CollapsedColorSelector 
-                                    SelectedColor="{Binding VolumeColors[6], Mode=TwoWay}"/>
+                                            <Label Foreground="{Binding VolumeColors[6]}">7:</Label>
+                                            <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[6], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
                                         <StackPanel Grid.Row="7" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=7}">
-                                            <Label Foreground="{Binding VolumeColors[7], Converter={StaticResource notifiableColorToBrushConverter}}">8:</Label>
-                                            <cc:CollapsedColorSelector 
-                                    SelectedColor="{Binding VolumeColors[7], Mode=TwoWay}" />
+                                            <Label Foreground="{Binding VolumeColors[7]}">8:</Label>
+                                            <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[7], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}" />
                                         </StackPanel>
                                     </Grid>
                                 </ScrollViewer>
