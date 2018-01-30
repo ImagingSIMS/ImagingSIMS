@@ -160,5 +160,16 @@
     "Updates": [
       "About window displays correct license name."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 7,
+      "Build": 1,
+      "Revision": 4
+    },
+    "Updates": [
+      "Fix issue with default program setting preventing certain spectrum file filters populating."
+    ]
   }
 ]
