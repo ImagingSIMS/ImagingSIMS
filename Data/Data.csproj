@@ -94,6 +94,10 @@
       <HintPath>..\packages\SharpDX.3.1.1\lib\net45\SharpDX.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SharpDX.D3DCompiler, Version=3.1.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.D3DCompiler.3.1.1\lib\net45\SharpDX.D3DCompiler.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="SharpDX.Direct3D11, Version=3.1.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.Direct3D11.3.1.1\lib\net45\SharpDX.Direct3D11.dll</HintPath>
       <Private>True</Private>
@@ -140,6 +144,7 @@
     <Compile Include="HeightMap.cs" />
     <Compile Include="Imaging.cs" />
     <Compile Include="Imaging\CPUImageGenerator.cs" />
+    <Compile Include="Imaging\DIsposer.cs" />
     <Compile Include="Imaging\GPUImageGenerator.cs" />
     <Compile Include="Imaging\BaseImageGenerator.cs" />
     <Compile Include="Imaging\ImageGenerator.cs" />
@@ -188,6 +193,9 @@
   <ItemGroup>
     <Content Include="License-LGPL.txt" />
     <Content Include="OldPCA.txt" />
+    <Content Include="Shaders\ColorScale.hlsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

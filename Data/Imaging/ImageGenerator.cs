@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
+using ImagingSIMS.Common.Registry;
 
 namespace ImagingSIMS.Data.Imaging
 {
@@ -21,15 +22,23 @@ namespace ImagingSIMS.Data.Imaging
 
         static ImageGenerator()
         {
-            // Uncomment when GPU is fully implemented
-            //if (SupportsComputShader())
-            //    _generator = new GPUImageGenerator();
-            //else _generator = new CPUImageGenerator();
+            if (!SettingsManager.RegSettings.UseGPURendering)
+                _generator = new CPUImageGenerator();
 
-            _generator = new CPUImageGenerator();
+            else
+            {
+                // TODO: Implement smart generator to determine
+                if (SupportsComputeShader())
+                    _generator = new GPUImageGenerator();
+                else _generator = new CPUImageGenerator();
+
+            }
+
+            var instanceType = _generator.GetType();
+            Trace.WriteLine($"Using {instanceType.ToString()}");
         }
 
-        static bool SupportsComputShader()
+        static bool SupportsComputeShader()
         {
             Device device = new Device(DriverType.Hardware, DeviceCreationFlags.None);
             return device.CheckFeatureSupport(Feature.ComputeShaders);

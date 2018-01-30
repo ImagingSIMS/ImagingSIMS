@@ -199,7 +199,11 @@ namespace ImagingSIMS.Controls.Tabs
         }
         private void ClosableTabItem_DragEnter(object sender, DragEventArgs e)
         {
-            IsCurrentDragTarget = true;
+            AllowDrop = Content as IDroppableTab != null;
+            if (AllowDrop)
+            {
+                IsCurrentDragTarget = true;
+            }
         }
         private void ClosableTabItem_DragLeave(object sender, DragEventArgs e)
         {

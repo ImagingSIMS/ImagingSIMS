@@ -168,6 +168,17 @@ namespace ImagingSIMS.Controls.Tabs
             }
             else traceMessage.Visibility = Visibility.Hidden;
         }
+
+        private void useGPU_CheckChanged(object sender, RoutedEventArgs e)
+        {
+            if (!this.IsLoaded)
+                return;
+
+            CheckBox cb = sender as CheckBox;
+            if (cb == null) return;
+
+            gpuMessage.Visibility = Visibility.Visible;
+        }
     }
 
 }

@@ -10,38 +10,6 @@ namespace ImagingSIMS.Data.Imaging
 {
     public class CPUImageGenerator : BaseImageGenerator
     {
-        public override BitmapSource Create(Data3D channelData)
-        {
-            int sizeX = channelData.Width;
-            int sizeY = channelData.Height;
-
-            int pos = 0;
-
-            PixelFormat pf = PixelFormats.Bgr32;
-            int byteStride = 4;
-            if (channelData.LayerMaximum(3) != float.MinValue)
-            {
-                pf = PixelFormats.Bgra32;
-                byteStride = 4;
-            }
-
-            int rawStride = (sizeX * pf.BitsPerPixel) / 8;
-            byte[] rawImage = new byte[rawStride * sizeY];
-
-            for (int y = 0; y < sizeY; y++)
-            {
-                for (int x = 0; x < sizeX; x++)
-                {
-                    for (int i = 0; i < byteStride; i++)
-                    {
-                        rawImage[pos + i] = (byte)channelData[x, y, i];
-                    }
-                    pos += byteStride;
-                }
-            }
-
-            return BitmapSource.Create(sizeX, sizeY, 96, 96, pf, null, rawImage, rawStride);
-        }
         public override BitmapSource[] Create(ImageComponent[] components, ImagingParameters parameters)
         {
             int numComps = components.Length;

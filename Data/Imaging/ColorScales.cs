@@ -534,72 +534,102 @@ namespace ImagingSIMS.Data.Imaging
         }
     }
 
+    [AttributeUsage(AttributeTargets.Field)]
+    public class GPUShaderDescriptionAttribute : Attribute
+    {
+        public string ShaderEntryPoint { get; set; }
+        public string ShaderName { get; set; }
+
+        public GPUShaderDescriptionAttribute(string entryPoint)
+        {
+            ShaderName = "ColorScale.hlsl";
+            ShaderEntryPoint = entryPoint;
+        }
+    }
 
     public enum ColorScaleTypes
     {
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
+        [GPUShaderDescription("CS_RenderSolidColorImage")]
         Solid,
 
         [Description("Thermal Warm")]
+        [GPUShaderDescription("CS_RenderThermalWarmImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         ThermalWarm,
 
         [Description("Thermal Cold")]
+        [GPUShaderDescription("CS_RenderThermalColdImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         ThermalCold,
 
+        [GPUShaderDescription("CS_RenderNeonImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         Neon,
 
+        [GPUShaderDescription("CS_RenderRetroImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         Retro,
 
+        [GPUShaderDescription("CS_RenderGrayImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         Gray,
 
         [Description("Red-White")]
+        [GPUShaderDescription("CS_RenderRedWhiteImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         RedWhite,
 
         [Description("Green-White")]
+        [GPUShaderDescription("CS_RenderGreenWhiteImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         GreenWhite,
 
         [Description("Blue-White")]
+        [GPUShaderDescription("CS_RenderBlueWhiteImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         BlueWhite,
 
         [Description("Magenta-White")]
+        [GPUShaderDescription("CS_RenderMagentaWhiteImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         MagentaWhite,
 
         [Description("Yellow-White")]
+        [GPUShaderDescription("CS_RenderYellowWhiteImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         YellowWhite,
 
         [Description("Cyan-White")]
+        [GPUShaderDescription("CS_RenderCyanWhiteImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         CyanWhite,
 
+        [GPUShaderDescription("CS_RenderRainbowImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         Rainbow,
 
         [Description("Heat Map")]
+        [GPUShaderDescription("CS_RenderHeatMapImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         HeatMap,
 
+        [GPUShaderDescription("CS_RenderViridisImage")]
         [ColorScaleRange(ColorScaleRangeType.ZeroToOne)]
         Viridis,
 
         [Description("Red-Black-Green")]
+        [GPUShaderDescription("CS_RenderRedBlackGreenImage")]
         [ColorScaleRange(ColorScaleRangeType.NegOneToOne)]
         RedBlackGreen,
 
         [Description("Red-Black-Blue")]
+        [GPUShaderDescription("CS_RenderRedBlackBlueImage")]
         [ColorScaleRange(ColorScaleRangeType.NegOneToOne)]
         RedBlackBlue,
 
         [Description("Green-Black-Blue")]
+        [GPUShaderDescription("CS_RenderGreenBlackBlueImage")]
         [ColorScaleRange(ColorScaleRangeType.NegOneToOne)]
         GreenBlackBlue,
     }
