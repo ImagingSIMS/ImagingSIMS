@@ -78,6 +78,8 @@ namespace ImagingSIMS.Common.Registry
             typeof(double), typeof(RegSettings));
         public static readonly DependencyProperty VersionLastReportedProperty = DependencyProperty.Register("VersionLastReported",
             typeof(Version), typeof(RegSettings));
+        public static readonly DependencyProperty UseGPURenderingProperty = DependencyProperty.Register("UseGPURendering",
+            typeof(bool), typeof(RegSettings));
 
         public FileList RecentFiles
         {
@@ -144,6 +146,11 @@ namespace ImagingSIMS.Common.Registry
             get { return (Version)GetValue(VersionLastReportedProperty); }
             set { SetValue(VersionLastReportedProperty, value); }
         }
+        public bool UseGPURendering
+        {
+            get { return (bool)GetValue(UseGPURenderingProperty); }
+            set { SetValue(UseGPURenderingProperty, value); }
+        }
 
         public RegSettings()
         {
@@ -178,6 +185,8 @@ namespace ImagingSIMS.Common.Registry
                 keyOptions.SetValue("DataDisplayWidth", DataDisplayWidth);
 
                 keyUpdate.SetValue("LastReported", VersionLastReported);
+
+                keyOptions.SetValue("UseGPURendering", BoolInt.Convert(UseGPURendering));
             }
             catch (Exception)
             {
@@ -218,6 +227,7 @@ namespace ImagingSIMS.Common.Registry
                 SuppressRegistrationWarnings = BoolInt.Convert((int)keyOptions.GetValue("SuppressRegistrationWarnings", 0));
                 DataDisplayWidth = double.Parse((string)keyOptions.GetValue("DataDisplayWidth", 225d));
                 VersionLastReported = Version.Parse((string)keyUpdate.GetValue("LastReported", "3.6.2.0"));
+                UseGPURendering = BoolInt.Convert((int)keyOptions.GetValue("UseGPURendering", false));
 
                 HasCrashed = BoolInt.Convert((int)keyCrash.GetValue("HasCrashed", 0));
                 if (HasCrashed)

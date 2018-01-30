@@ -70,6 +70,11 @@
                           Content="Clear plugin data on close" Foreground="White" IsChecked="{Binding RegSettings.ClearPluginData}"/>
                     <CheckBox Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left"
                           Content="Hide registration warning dialogs" Foreground="White" IsChecked="{Binding RegSettings.SuppressRegistrationWarnings}"/>
+                    <CheckBox Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left"
+                          Content="Use GPU rendering for images" Foreground="White" IsChecked="{Binding RegSettings.UseGPURendering}"
+                              Checked="useGPU_CheckChanged" Unchecked="useGPU_CheckChanged"/>
+                    <TextBlock x:Name="gpuMessage" Margin="32,4,4,4" Grid.Row="1" Foreground="Yellow" Visibility="Hidden" 
+                               Grid.ColumnSpan="2">This setting will take effect the next time ImagingSIMS is launched.</TextBlock>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="57*"/>
