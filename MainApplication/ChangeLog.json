@@ -171,5 +171,17 @@
     "Updates": [
       "Fix issue with default program setting preventing certain spectrum file filters populating."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 7,
+      "Build": 1,
+      "Revision": 5
+    },
+    "Updates": [
+      "Support version format change in J105 V2 files.",
+      "Switch y tile ordering in J105 V2 tiled spectra."
+    ]
   }
 ]

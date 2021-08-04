@@ -161,7 +161,7 @@ namespace ImagingSIMS.Data.Spectra
             }
             catch (Exception ex)
             {
-                Trace.WriteLine("Failed to open J105 stream. " + ex.Message);
+                Trace.WriteLine("Failed to open J105 stream. " + ex.Message + "\n" + ex.StackTrace);
                 return false;
             }
             IsStreamOpen = true;
@@ -273,18 +273,8 @@ namespace ImagingSIMS.Data.Spectra
             {
                 if (s.Contains("Versin"))
                 {
-                    char[] delim = new char[1] { '.' };
-                    string[] parts = s.Split(delim);
-
-                    int[] values = new int[4];
-                    values[0] = ValueFromLine(parts[0]);
-                    for (int i = 1; i < 4; i++)
-                    {
-                        int t;
-                        if (int.TryParse(parts[i], out t)) values[i] = t;
-                        else values[i] = -1;
-                    }
-                    J105Parameters.Version = new Version(values[0], values[1], values[2], values[3]);
+                    char[] delim = new char[1] { '=' };
+                    J105Parameters.Version = Version.Parse(s.Split(delim)[1]);
                     break;
                 }
                 else if (s.Contains("XYSubSample"))

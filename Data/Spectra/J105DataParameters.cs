@@ -23,7 +23,14 @@ namespace ImagingSIMS.Data.Spectra
         public Version Version
         {
             get { return _version; }
-            set { _version = value; }
+            set 
+            {
+                if (value.Revision != -1) _version = value;
+                else
+                {
+                    _version = new Version(value.Major, value.Minor, value.Build, 1);
+                }
+            }
         }
         public int XYSubSample
         {

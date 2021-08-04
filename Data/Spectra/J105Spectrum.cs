@@ -137,6 +137,8 @@ namespace ImagingSIMS.Data.Spectra
 
             if (bw != null && bw.CancellationPending) return dt;
 
+            bw?.ReportProgress(0);
+
             for (int x = 0; x < _sizeX; x++)
             {
                 for (int y = 0; y < _sizeY; y++)
@@ -149,7 +151,7 @@ namespace ImagingSIMS.Data.Spectra
                     dt[x, y] = sum;
                 }
                 if (bw != null && bw.CancellationPending) return dt;
-                if (bw != null) bw.ReportProgress(Percentage.GetPercent(x, totalSteps));
+                bw?.ReportProgress(Percentage.GetPercent(x, totalSteps));
             }
             dt.DataName = string.Format("{0} {1}-{2}", Name, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"));
             return dt;
@@ -180,7 +182,8 @@ namespace ImagingSIMS.Data.Spectra
                             Parallel.For(0, _pixelsY,
                                 y =>
                                 {
-                                    int yIndex = (ty * _pixelsY) + y;
+                                    // int yIndex = (ty * _pixelsY) + y;
+                                    int yIndex = ((_tilesY - ty - 1) * _pixelsY) + y;
 
                                     dt[xIndex, yIndex] = _stream.IntensityFromMassRange(Layer, ty, tx, y, x, (float)MassRange.StartMass, (float)MassRange.EndMass);
                                 }
@@ -230,7 +233,7 @@ namespace ImagingSIMS.Data.Spectra
             if (!_stream.IsStreamOpen) throw new ArgumentException("No V2 stream has been initialized.");
 
             int ct = 0;
-            double totalSteps = _sizeZ * _tilesX * _pixelsX;
+            double totalSteps = _sizeZ * _tilesX * _tilesY * _pixelsX;
 
             if (bw != null) bw.ReportProgress(0);
 
@@ -245,29 +248,24 @@ namespace ImagingSIMS.Data.Spectra
 
                 for (int tx = 0; tx < _tilesX; tx++)
                 {
-                    for (int x = 0; x < _pixelsX; x++)
+                    for (int ty = 0; ty < _tilesY; ty++)
                     {
-                        int xIndex = (tx * _pixelsX) + x;
-                        Parallel.For(0, _tilesY,
-                            ty =>
+                        Parallel.For(0, _pixelsX, x =>
+                        {
+                            int xIndex = (tx * _pixelsX) + x;
+                            Parallel.For(0, _pixelsY, y =>
                             {
-                                //for (int ty = 0; ty < _tilesY; ty++)
-                                //{
-                                //for (int y = 0; y < _pixelsY; y++)
-                                Parallel.For(0, _pixelsY,
-                                    y =>
-                                    {
-                                        int yIndex = (ty * _pixelsY) + y;
-
-                                        dt[xIndex, yIndex] = _stream.IntensityFromMassRange(z, ty, tx, y, x,
-                                            (float)MassRange.StartMass, (float)MassRange.EndMass);
-                                    }
-                                );
-                                //}
-                                ct++;
-                                if (bw != null) bw.ReportProgress(Percentage.GetPercent(ct, totalSteps));
-                                //if (bw.CancellationPending) return returnTables;
+                                // int yIndex = (ty * _pixelsY) + y;
+                                // int yIndex = 0;
+                                // if (ty == 0) yIndex = (1 * _pixelsY) + y;
+                                // else yIndex = (0 * _pixelsY) + y;
+                                int yIndex = ((_tilesY - ty - 1) * _pixelsY) + y;
+                                dt[xIndex, yIndex] = _stream.IntensityFromMassRange(z, ty, tx, y, x, (float)MassRange.StartMass, (float)MassRange.EndMass);
                             });
+                            ct++;
+                            if (bw != null) bw.ReportProgress(Percentage.GetPercent(ct, totalSteps));
+                            if (bw != null && bw.CancellationPending) return;
+                        });
                         if (bw != null && bw.CancellationPending) return returnTables;
                     }
                 }
@@ -309,7 +307,8 @@ namespace ImagingSIMS.Data.Spectra
                             Parallel.For(0, _pixelsY,
                                 y =>
                                 {
-                                    int yIndex = (ty * _pixelsY) + y;
+                                    //int yIndex = (ty * _pixelsY) + y;
+                                    int yIndex = ((_tilesY - ty - 1) * _pixelsY) + y;
 
                                     dt[xIndex, yIndex] = _stream.IntensityFromMassRange(Layer, ty, tx, y, x, (float)MassRange.StartMass, (float)MassRange.EndMass);
                                 }
