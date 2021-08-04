@@ -1,0 +1,187 @@
+﻿[
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 2
+    },
+    "Updates": [
+      "Dialog icons are updated to Windows 10 style icons.",
+      "Removed available tables from tabs. Now, just highlight the desired tabs in the data sidebar and click Add within the tab.",
+      "Data table visualization tabs load immediately and are more responsive as large sets of data are added.",
+      "Added a preference for image size when viewing data tables. The width of the control can be set in the Settings tab.",
+      "Fixed a with setting the desired output size when resizing images and data tables.",
+      "Additional types of images, including Tiff, can be loaded when using Load Image Series.",
+      "Startup tab now has a link for downloading DirectX runtime if needed.",
+      "Other minor bug fixes and improvements.",
+      "Changed help url to https://github.com/jay5026/ImagingSIMS/wiki"
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 3
+    },
+    "Updates": [
+      "ImagingSIMS is now covered under the Mozilla Public License 2.0.",
+      "Fixed issue converting some images to data tables.",
+      "Version in About window now reflects the version number of the deployment.",
+      "Include missing files for 3D renderings.",
+      "Change window now shows changes for all updates since previous update.",
+      "Fixed an issue with the spectrum crop tab."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 4
+    },
+    "Updates": [
+      "Moved the repository from personal account to organizational account."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 5
+    },
+    "Updates": [
+      "Finalized the update server change."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 6
+    },
+    "Updates": [
+      "Fixed issue with change window showing all updates, not just most recent."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 7
+    },
+    "Updates": [
+      "Moved batch tasks when viewing data tables to a contextual ribbon.",
+      "2D and now 3D data sets can be visualized.",
+      "3D data sets from already created volumes can be visualized.",
+      "Color selector has been cleaned up and now supports collapsed views in certain contexts",
+      "Updated SharpDX to utilize DirectX 11.1.",
+      "Added dialog with help link if d3dcompiler_47.dll cannot be found when creating a 3D rendering.",
+      "Isosurface rendering has been re-implemented.",
+      "The rendering control panel has been redesigned to be simplified and a bit more clean.",
+      "Render controls added for isosurface rendering that include clipping planes and directional lighting."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 8
+    },
+    "Updates": [
+      "Patched an issue with adding new data tables to the DataDisplayTab."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 9
+    },
+    "Updates": [
+      "Added visual effects when dragging and dropping data and tabs.",
+      "Added viridis color scale.",
+      "Inlcude support for color scales in range of [-1, +1].",
+      "Minor improvement in image rendering speed."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 6,
+      "Build": 2,
+      "Revision": 10
+    },
+    "Updates": [
+      "A new logo and animated splash screen while the application loads.",
+      "Fixed an issue with the color selector.",
+      "Some under the hood changes to set up some future improvements."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 7,
+      "Build": 1,
+      "Revision": 1
+    },
+    "Updates": [
+      "Support for CAMECA NanoSIMS files.",
+      "Ability to stitch tables and volumes.",
+      "Create ratio tables of loaded data.",
+      "Perform user defined mathematical operations to data tables.",
+      "New image fusion tab to incorporate point based image registration as well as update images from data tables on the fly."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 7,
+      "Build": 1,
+      "Revision": 2
+    },
+    "Updates": [
+      "Application name reflects new version."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 7,
+      "Build": 1,
+      "Revision": 3
+    },
+    "Updates": [
+      "About window displays correct license name."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 7,
+      "Build": 1,
+      "Revision": 4
+    },
+    "Updates": [
+      "Fix issue with default program setting preventing certain spectrum file filters populating."
+    ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 7,
+      "Build": 1,
+      "Revision": 5
+    },
+    "Updates": [
+      "Support version format change in J105 V2 files.",
+      "Switch y tile ordering in J105 V2 tiled spectra."
+    ]
+  }
+]
