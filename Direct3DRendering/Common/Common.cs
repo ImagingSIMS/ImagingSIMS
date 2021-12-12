@@ -22,7 +22,7 @@ namespace ImagingSIMS.Direct3DRendering
         Right, Left, Up, Down, Reverse, Clockwise, CounterClockwise, None
     }
 
-    [StructLayout(LayoutKind.Explicit, Size = 192)]
+    [StructLayout(LayoutKind.Explicit, Size = 224)]
     public struct RenderParams
     {
         [FieldOffset(0)]
@@ -53,7 +53,7 @@ namespace ImagingSIMS.Direct3DRendering
         public Vector3 CameraUp;
 
         [FieldOffset(124)]
-        private float padding2;
+        private float r_padding2;
 
         [FieldOffset(128)]
         public Vector4 NearClipPlane;
@@ -66,6 +66,12 @@ namespace ImagingSIMS.Direct3DRendering
 
         [FieldOffset(176)]
         public Vector4 MaxClipCoords;
+
+        [FieldOffset(192)]
+        public Vector4 RenderPlanesMin;
+
+        [FieldOffset(208)]
+        public Vector4 RenderPlanesMax;
     }
 
     [StructLayout(LayoutKind.Explicit, Size = 192)]

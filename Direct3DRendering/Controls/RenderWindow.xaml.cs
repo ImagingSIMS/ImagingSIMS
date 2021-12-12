@@ -264,6 +264,18 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 _renderer.NeedsResize = true;
         }
 
+        public void OnZScalingChanged()
+        {
+            if (Renderer is VolumeRenderer)
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    ((VolumeRenderer)Renderer).CreateVolumeVertices(RenderWindowView.ScalingZ);
+                });
+                
+            }
+        }
+
         public void SetTransferFunction(byte[] Function)
         {
 

@@ -13,6 +13,9 @@ using SharpDX.DXGI;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
 using BoundingBox = ImagingSIMS.Direct3DRendering.SceneObjects.BoundingBox;
+using System.Linq;
+using System.Windows.Threading;
+using System.Windows;
 
 namespace ImagingSIMS.Direct3DRendering.Renderers
 {
@@ -46,6 +49,10 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
         string _raycastEffectPath;
         string _modelEffectPath;
+
+        int _voxelsX;
+        int _voxelsY;
+        int _voxelsZ;
 
         public VolumeRenderer(RenderWindow Window)
             : base(Window)
@@ -164,80 +171,16 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             base.InitializeStates();
         }
 
-        public void SetData(List<RenderVolume> Volumes)
+        public void CreateVolumeVertices(float zScaling)
         {
-            //Create new or replace Texture3D so can be changed on fly
-
-            _dataLoaded = false;
-
-            if (_texVolumes != null)
-            {
-                for (int i = 0; i < _texVolumes.Length; i++)
-                {
-                    Disposer.RemoveAndDispose(ref _texVolumes[i]);
-                }
-            }
-            if (_srvVolumes != null)
-            {
-                for (int i = 0; i < _srvVolumes.Length; i++)
-                {
-                    Disposer.RemoveAndDispose(ref _srvVolumes[i]);
-                }
-            }
-
             Disposer.RemoveAndDispose(ref _vertexBufferCube);
             Disposer.RemoveAndDispose(ref _indexBufferCube);
-            Disposer.RemoveAndDispose(ref _boundingBox);
             Disposer.RemoveAndDispose(ref _coordinateBox);
-            Disposer.RemoveAndDispose(ref _volumeParamBuffer);
+            Disposer.RemoveAndDispose(ref _boundingBox);
 
-            int width = -1;
-            int height = -1;
-            int depth = -1;
-            foreach (RenderVolume volume in Volumes)
-            {
-                if (width == -1)
-                {
-                    width = volume.Width;
-                }
-                if (height == -1)
-                {
-                    height = volume.Height;
-                }
-                if (depth == -1)
-                {
-                    depth = volume.Depth;
-                }
-
-                if (volume.Width != width || volume.Height != height || volume.Depth != depth)
-                {
-                    throw new ArgumentException("Not all volumes are the same dimensions.");
-                }
-            }
-
-            int numVolumes = Volumes.Count;
-
-            _srvVolumes = new ShaderResourceView[numVolumes];
-            _texVolumes = new Texture3D[numVolumes];
-
-            _volumeParams = VolumeParams.Empty;
-
-            for (int i = 0; i < numVolumes; i++)
-            {
-                _texVolumes[i] = Volumes[i].CreateTexture(_device, out _srvVolumes[i]);
-                _volumeParams.UpdateColor(i, Volumes[i].Color.ToVector4());
-            }
-
-            _volumeParams.NumVolumes = (uint)numVolumes;
-
-            _volumeParamBuffer = new Buffer(_device, Marshal.SizeOf(typeof(VolumeParams)), ResourceUsage.Default,
-                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
-
-            const float maxSize = 2.0f;
-            float sizeX = maxSize;
-            float sizeY = maxSize;
-            float sizeZ = ((float)depth / (float)width) * maxSize;
-            //sizeZ = sizeX;
+            float sizeX = 2.0f;
+            float sizeY = 2.0f;
+            float sizeZ = ((float)_voxelsZ / (float)_voxelsX) * zScaling * 20f;
 
             float startX = -sizeX / 2f;
             float startY = -sizeY / 2f;
@@ -262,7 +205,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
             _volumeParams.VolumeScaleDenominator = new Vector4(sEndX - sStartX, sEndY - sStartY, sEndZ - sStartZ, 1.0f);
 
-            Vector4[] vertices = new Vector4[8] 
+            Vector4[] vertices = new Vector4[8]
             {
                 new Vector4(startX, startY, startZ, 1.0f),
                 new Vector4(startX, startY, startZ + sizeZ, 1.0f),
@@ -301,6 +244,80 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
             _boundingBox = new BoundingBox(_device, vertices);
             _coordinateBox = new CoordinateBox(_device, vertices);
+        }
+
+        public void SetData(List<RenderVolume> Volumes)
+        {
+            //Create new or replace Texture3D so can be changed on fly
+
+            _dataLoaded = false;
+
+            if (_texVolumes != null)
+            {
+                for (int i = 0; i < _texVolumes.Length; i++)
+                {
+                    Disposer.RemoveAndDispose(ref _texVolumes[i]);
+                }
+            }
+            if (_srvVolumes != null)
+            {
+                for (int i = 0; i < _srvVolumes.Length; i++)
+                {
+                    Disposer.RemoveAndDispose(ref _srvVolumes[i]);
+                }
+            }
+
+            Disposer.RemoveAndDispose(ref _vertexBufferCube);
+            Disposer.RemoveAndDispose(ref _indexBufferCube);
+            Disposer.RemoveAndDispose(ref _boundingBox);
+            Disposer.RemoveAndDispose(ref _coordinateBox);
+            Disposer.RemoveAndDispose(ref _volumeParamBuffer);
+
+            if (Volumes.GroupBy(v => v.Width).Count() != 1 ||
+                Volumes.GroupBy(v => v.Height).Count() != 1 ||
+                Volumes.GroupBy(v => v.Depth).Count() != 1)
+                throw new ArgumentException("Not all volumes are the same dimensions.");
+
+            int width = Volumes[0].Width;
+            int height = Volumes[0].Height;
+            int depth = Volumes[0].Depth;
+
+            _voxelsX = width;
+            _voxelsY = height;
+            _voxelsZ = depth;
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                RenderingViewModel.DataWidth = _voxelsX;
+                RenderingViewModel.DataHeight = _voxelsY;
+                RenderingViewModel.DataDepth = _voxelsZ;
+
+                RenderingViewModel.RenderPlaneMinX = RenderingViewModel.RenderPlaneMinY = RenderingViewModel.RenderPlaneMinZ = 0;
+                RenderingViewModel.RenderPlaneMaxX = _voxelsX;
+                RenderingViewModel.RenderPlaneMaxY = _voxelsY;
+                RenderingViewModel.RenderPlaneMaxZ = _voxelsZ;
+            });
+
+
+            int numVolumes = Volumes.Count;
+
+            _srvVolumes = new ShaderResourceView[numVolumes];
+            _texVolumes = new Texture3D[numVolumes];
+
+            _volumeParams = VolumeParams.Empty;
+
+            for (int i = 0; i < numVolumes; i++)
+            {
+                _texVolumes[i] = Volumes[i].CreateTexture(_device, out _srvVolumes[i]);
+                _volumeParams.UpdateColor(i, Volumes[i].Color.ToVector4());
+            }
+
+            _volumeParams.NumVolumes = (uint)numVolumes;
+
+            _volumeParamBuffer = new Buffer(_device, Marshal.SizeOf(typeof(VolumeParams)), ResourceUsage.Default,
+                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
+
+            CreateVolumeVertices(1.0f);
 
             // Set up active voxel lookup volume
             int lSizeX = width / 3;
@@ -418,8 +435,16 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
         public override void Update(bool targetYAxisOrbiting)
         {
-
             base.Update(targetYAxisOrbiting);
+
+            _renderParams.RenderPlanesMin = new Vector4(
+                RenderingViewModel.RenderPlaneMinX / _voxelsX,
+                RenderingViewModel.RenderPlaneMinY / _voxelsY,
+                RenderingViewModel.RenderPlaneMinZ / RenderingViewModel.ScalingZ / _voxelsZ, 0);
+            _renderParams.RenderPlanesMax = new Vector4(
+                RenderingViewModel.RenderPlaneMaxX / _voxelsX,
+                RenderingViewModel.RenderPlaneMaxY / _voxelsY,
+                RenderingViewModel.RenderPlaneMaxZ  / RenderingViewModel.ScalingZ / _voxelsZ, 0);
         }
 
         public override void Draw()
@@ -432,10 +457,9 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
             if (_dataLoaded)
             {
-                _volumeParams.VolumeScale = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+                _volumeParams.VolumeScale = new Vector4(1.0f, 1.0f, 1 / RenderingViewModel.ScalingZ, 1.0f);
                 for (int i = 0; i < _volumeParams.NumVolumes; i++)
                 {
-                    Vector4 current = _volumeParams.GetColor(i);
                     _volumeParams.UpdateColor(i, _dataContextRenderWindow.RenderWindowView.VolumeColors[i].ToVector4());
                 }
                 context.UpdateSubresource(ref _volumeParams, _volumeParamBuffer);

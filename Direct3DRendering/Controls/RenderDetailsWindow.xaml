@@ -93,6 +93,17 @@
                                                             <TextBlock Grid.Column="1" Margin="2,4,4,4" Text="{Binding ElementName=sliderHeightMapHeight, Path=Value, StringFormat=0.00}"/>
                                                         </Grid>
                                                     </StackPanel>
+                                                    <StackPanel Orientation="Vertical" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Volume|Isosurface}">
+                                                        <TextBlock Margin="4">Z Scaling:</TextBlock>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Slider x:Name="sliderScalingZ" Margin="8,0,0,0" Minimum="0" Maximum="10" SmallChange="0.5" LargeChange="1" Value="{Binding ScalingZ}" ValueChanged="sliderScalingZ_ValueChanged"/>
+                                                            <TextBlock Grid.Column="1" Margin="2,4,4,4" Text="{Binding ElementName=sliderScalingZ, Path=Value, StringFormat=0.00}"/>
+                                                        </Grid>
+                                                    </StackPanel>
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Column="1" Orientation="Vertical">
@@ -116,13 +127,13 @@
                                                         <ColumnDefinition Width="Auto" SharedSizeGroup="LabelValue"/>
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock Grid.Column="0" Foreground="{StaticResource AxisXBrush}">X:</TextBlock>
-                                                    <TextBlock Grid.Column="1" Text="{Binding BoundingBoxLowerX, StringFormat=0.00}"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding RenderPlaneMinX, StringFormat=0.00}"/>
                                                     <xctk:RangeSlider Grid.Column="2" Style="{StaticResource RangeSliderCutoffPlaneStyle}"
-                                                        Minimum="{Binding BoundingBoxMinX}"
-                                                        LowerValue="{Binding BoundingBoxLowerX}"
-                                                        HigherValue="{Binding BoundingBoxUpperX}"
-                                                        Maximum="{Binding BoundingBoxMaxX}"/>
-                                                    <TextBlock Grid.Column="3" Text="{Binding BoundingBoxUpperX, StringFormat=0.00}"/>
+                                                        Minimum="0"
+                                                        LowerValue="{Binding RenderPlaneMinX}"
+                                                        HigherValue="{Binding RenderPlaneMaxX}"
+                                                        Maximum="{Binding DataWidth}"/>
+                                                    <TextBlock Grid.Column="3" Text="{Binding RenderPlaneMaxX, StringFormat=0.00}"/>
                                                 </Grid>
                                                 <!-- Y Plane -->
                                                 <Grid Margin="8,0">
@@ -133,13 +144,13 @@
                                                         <ColumnDefinition Width="Auto" SharedSizeGroup="LabelValue"/>
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock Grid.Column="0" Foreground="{StaticResource AxisYBrush}">Y:</TextBlock>
-                                                    <TextBlock Grid.Column="1" Text="{Binding BoundingBoxLowerY, StringFormat=0.00}"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding RenderPlaneMinY, StringFormat=0.00}"/>
                                                     <xctk:RangeSlider Grid.Column="2" Style="{StaticResource RangeSliderCutoffPlaneStyle}"
-                                                        Minimum="{Binding BoundingBoxMinY}"
-                                                        LowerValue="{Binding BoundingBoxLowerY}"
-                                                        HigherValue="{Binding BoundingBoxUpperY}"
-                                                        Maximum="{Binding BoundingBoxMaxY}"/>
-                                                    <TextBlock Grid.Column="3" Text="{Binding BoundingBoxUpperY, StringFormat=0.00}"/>
+                                                        Minimum="0"
+                                                        LowerValue="{Binding RenderPlaneMinY}"
+                                                        HigherValue="{Binding RenderPlaneMaxY}"
+                                                        Maximum="{Binding DataHeight}"/>
+                                                    <TextBlock Grid.Column="3" Text="{Binding RenderPlaneMaxY, StringFormat=0.00}"/>
                                                 </Grid>
                                                 <!-- X Plane -->
                                                 <Grid Margin="8,0">
@@ -150,13 +161,13 @@
                                                         <ColumnDefinition Width="Auto" SharedSizeGroup="LabelValue"/>
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock Grid.Column="0" Foreground="{StaticResource AxisZBrush}">Z:</TextBlock>
-                                                    <TextBlock Grid.Column="1" Text="{Binding BoundingBoxLowerZ, StringFormat=0.00}"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding RenderPlaneMinZ, StringFormat=0.00}"/>
                                                     <xctk:RangeSlider Grid.Column="2" Style="{StaticResource RangeSliderCutoffPlaneStyle}"
-                                                        Minimum="{Binding BoundingBoxMinZ}"
-                                                        LowerValue="{Binding BoundingBoxLowerZ}"
-                                                        HigherValue="{Binding BoundingBoxUpperZ}"
-                                                        Maximum="{Binding BoundingBoxMaxZ}"/>
-                                                    <TextBlock Grid.Column="3" Text="{Binding BoundingBoxUpperZ, StringFormat=0.00}"/>
+                                                        Minimum="0"
+                                                        LowerValue="{Binding RenderPlaneMinZ}"
+                                                        HigherValue="{Binding RenderPlaneMaxZ}"
+                                                        Maximum="{Binding DataDepth}"/>
+                                                    <TextBlock Grid.Column="3" Text="{Binding RenderPlaneMaxZ, StringFormat=0.00}"/>
                                                 </Grid>
 
                                             </StackPanel>

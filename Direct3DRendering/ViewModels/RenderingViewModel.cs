@@ -107,6 +107,7 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
         bool _targetYAxisOrbiting;
         float _heightMapHeight;
         bool _enableDepthBufering;
+        float _scalingZ;
 
         public bool ShowAxes
         {
@@ -213,6 +214,18 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
                 {
                     _enableDepthBufering = value;
                     NotifyPropertyChanged("EnableDepthBuffering");
+                }
+            }
+        }
+        public float ScalingZ
+        { 
+            get { return _scalingZ; }
+            set
+            {
+                if (_scalingZ != value)
+                {
+                    _scalingZ = value;
+                    NotifyPropertyChanged("ScalingZ");
                 }
             }
         }
@@ -499,6 +512,129 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
             }
         }
 
+        // Render Planes
+        float _renderPlaneMinX;
+        float _renderPlaneMinY;
+        float _renderPlaneMinZ;
+        float _renderPlaneMaxX;
+        float _renderPlaneMaxY;
+        float _renderPlaneMaxZ;
+
+        public float RenderPlaneMinX
+        {
+            get { return _renderPlaneMinX; }
+            set
+            {
+                if (_renderPlaneMinX != value)
+                {
+                    _renderPlaneMinX = value;
+                    NotifyPropertyChanged("RenderPlaneMinX");
+                }
+            }
+        }
+        public float RenderPlaneMinY
+        {
+            get { return _renderPlaneMinY; }
+            set
+            {
+                if (_renderPlaneMinY != value)
+                {
+                    _renderPlaneMinY = value;
+                    NotifyPropertyChanged("RenderPlaneMinY");
+                }
+            }
+        }
+        public float RenderPlaneMinZ
+        {
+            get { return _renderPlaneMinZ; }
+            set
+            {
+                if (_renderPlaneMinZ != value)
+                {
+                    _renderPlaneMinZ = value;
+                    NotifyPropertyChanged("RenderPlaneMinZ");
+                }
+            }
+        }
+        public float RenderPlaneMaxX
+        {
+            get { return _renderPlaneMaxX; }
+            set
+            {
+                if (_renderPlaneMaxX != value)
+                {
+                    _renderPlaneMaxX = value;
+                    NotifyPropertyChanged("RenderPlaneMaxX");
+                }
+            }
+        }
+        public float RenderPlaneMaxY
+        {
+            get { return _renderPlaneMaxY; }
+            set
+            {
+                if (_renderPlaneMaxY != value)
+                {
+                    _renderPlaneMaxY = value;
+                    NotifyPropertyChanged("RenderPlaneMaxY");
+                }
+            }
+        }
+        public float RenderPlaneMaxZ
+        {
+            get { return _renderPlaneMaxZ; }
+            set
+            {
+                if (_renderPlaneMaxZ != value)
+                {
+                    _renderPlaneMaxZ = value;
+                    NotifyPropertyChanged("RenderPlaneMaxZ");
+                }
+            }
+        }
+
+        // Data
+        float _dataWidth;
+        float _dataHeight;
+        float _dataDepth;
+
+        public float DataWidth
+        {
+            get { return _dataWidth; }
+            set
+            {
+                if (_dataWidth != value)
+                {
+                    _dataWidth = value;
+                    NotifyPropertyChanged("DataWidth");
+                }
+            }
+        }
+        public float DataHeight
+        {
+            get { return _dataHeight; }
+            set
+            {
+                if (_dataHeight != value)
+                {
+                    _dataHeight = value;
+                    NotifyPropertyChanged("DataHeight");
+                }
+            }
+        }
+        public float DataDepth
+        {
+            get { return _dataDepth; }
+            set
+            {
+                if (_dataDepth != value)
+                {
+                    _dataDepth = value;
+                    NotifyPropertyChanged("DataDepth");
+                }
+            }
+        }
+
         public RenderingViewModel()
         {
             EnableDepthBuffering = true;
@@ -516,6 +652,8 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
                 Color.Black,
                 Color.Black,
             };
+
+            ScalingZ = 1;
 
             HeightMapHeight = 1.0f;
 

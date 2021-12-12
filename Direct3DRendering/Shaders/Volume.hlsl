@@ -3,14 +3,7 @@ Texture2D<float4>	txPositionBack : register(t1);
 
 Texture3D<float>	txActVoxels : register(t2);
 
-Texture3D<float>	txVolume1 : register(t3);
-Texture3D<float>	txVolume2 : register(t4);
-Texture3D<float>	txVolume3 : register(t5);
-Texture3D<float>	txVolume4 : register(t6);
-Texture3D<float>	txVolume5 : register(t7);
-Texture3D<float>	txVolume6 : register(t8);
-Texture3D<float>	txVolume7 : register(t9);
-Texture3D<float>	txVolume8 : register(t10);
+Texture3D<float>	txVolume[8] : register(t3);
 
 SamplerState		samplerLinear : register(s0);
 
@@ -30,6 +23,8 @@ cbuffer RenderParams : register(b0)
 	float4		FarClipPlane;				//16 x 1 =  16
 	float4		MinClipCoords;				//16 x 1 =  16
 	float4		MaxClipCoords;				//16 x 1 =  16
+	float4		RenderPlaneMin;				//16 x 1 =  16
+	float4		RenderPlaneMax;				//16 x 1 =  16
 }
 
 cbuffer LightingParams : register(b1)
@@ -66,7 +61,6 @@ cbuffer IsosurfaceParams : register(b3)
 	float		i_padding2;					// 4 x 1 =   4
 }
 
-static const uint maxVolumes = 8;
 static const uint maxIterations = 256;
 static const float stepSize = sqrt(3.f) / maxIterations;
 static const uint numPointLights = 8;
@@ -106,7 +100,7 @@ struct ISOSURFACE_VS_Output
 	float4	org : ORIG_POSITION;
 	float4	col : COLOR;
 	float4	nor : NORMAL;
-	int		id : SURFACEID;
+	int		id  : SURFACEID;
 	bool	tra : ISTRANSPARENT;
 	float	pd1 : PADDING1;
 	float	pd2 : PADDING2;
@@ -191,20 +185,17 @@ float4 RAYCAST_PS(RAYCAST_PS_Input input) : SV_TARGET
 	for (uint i = 0; i < maxIterations; i++)
 	{
 		float3 scaledVector = ScaleVector(v);
-		for (uint j = 0; j < maxVolumes; j++)
+		for (uint j = 0; j < NumVolumes; j++)
 		{
 			float intensity = 0;
 
-			if (j >= NumVolumes) break;
-
-			if (j == 0)intensity = txVolume1.Sample(samplerLinear, scaledVector).r;
-			if (j == 1)intensity = txVolume2.Sample(samplerLinear, scaledVector).r;
-			if (j == 2)intensity = txVolume3.Sample(samplerLinear, scaledVector).r;
-			if (j == 3)intensity = txVolume4.Sample(samplerLinear, scaledVector).r;
-			if (j == 4)intensity = txVolume5.Sample(samplerLinear, scaledVector).r;
-			if (j == 5)intensity = txVolume6.Sample(samplerLinear, scaledVector).r;
-			if (j == 6)intensity = txVolume7.Sample(samplerLinear, scaledVector).r;
-			if (j == 7)intensity = txVolume8.Sample(samplerLinear, scaledVector).r;
+			intensity = txVolume[j].Sample(samplerLinear, scaledVector).r;
+			float3 planeLower = scaledVector - RenderPlaneMin.xyz;
+			float3 planeUpper = RenderPlaneMax.xyz - scaledVector;
+			if (planeLower.x < 0 || planeLower.y < 0 || planeLower.z < 0 || 
+				planeUpper.x < 0 || planeUpper.y < 0 || planeUpper.z < 0) {
+				intensity = 0;
+			}
 
 			intensity *= VolumeColor[j].a;
 

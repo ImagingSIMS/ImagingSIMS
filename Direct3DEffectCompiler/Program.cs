@@ -11,11 +11,8 @@ namespace Direct3DEffectCompiler
     internal static class FilePaths
     {
         internal static string executablePath = @"C:\Program Files (x86)\Windows Kits\10\bin\x64\fxc.exe";
-        internal static string sourceFolder = @"C:\Users\taro148\Source\Repos\ImagingSIMS\Direct3DRendering\Shaders\";
-        internal static string outputFolder = @"C:\Users\taro148\Source\Repos\ImagingSIMS\Direct3DRendering\Shaders\";
-        //internal static string sourceFolder = @"C:\Users\jay50\Source\Repos\jay5026\ImagingSIMS3\ImagingSIMS\Direct3DRendering\Shaders\";
-        //internal static string outputFolder = @"C:\Users\jay50\Source\Repos\jay5026\ImagingSIMS3\ImagingSIMS\Direct3DRendering\Shaders\";
-        //internal static _outputFolder = @"C:\Users\jayt\Desktop\test\";
+        internal static string sourceFolder = @"C:\Users\jayta\Source\Repos\ImagingSIMS\Direct3DRendering\Shaders\";
+        internal static string outputFolder = @"C:\Users\jayta\Source\Repos\ImagingSIMS\Direct3DRendering\Shaders\";
     }
     class Program
     {
@@ -159,13 +156,13 @@ namespace Direct3DEffectCompiler
             switch (_shaderType)
             {
                 case ShaderType.Pixel:
-                    sb.Append("ps_4_0 ");
+                    sb.Append("ps_5_0 ");
                     break;
                 case ShaderType.Vertex:
-                    sb.Append("vs_4_0 ");
+                    sb.Append("vs_5_0 ");
                     break;
                 case ShaderType.Geometry:
-                    sb.Append("gs_4_0 ");
+                    sb.Append("gs_5_0 ");
                     break;
             }
 
