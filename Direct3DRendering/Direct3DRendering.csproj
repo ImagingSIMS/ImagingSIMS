@@ -150,6 +150,7 @@
     <Compile Include="Imaging\ColorScaleDrawer.cs" />
     <Compile Include="Imaging\ImageComputeShader.cs" />
     <Compile Include="Renderers\CombinedVolumeRenderer.cs" />
+    <Compile Include="Renderers\RenderModelDescription.cs" />
     <Compile Include="SceneObjects\Axes.cs" />
     <Compile Include="SceneObjects\BoundingBox.cs" />
     <Compile Include="DrawingObjects\Camera.cs" />

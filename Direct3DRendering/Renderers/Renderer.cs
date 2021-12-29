@@ -63,6 +63,8 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
         protected RasterizerState _rasterizerStateCullFront;
         protected RasterizerState _rasterizerStateCullBack;
 
+        protected RenderModelDescription _renderModelDescription;
+
         protected RenderingViewModel RenderingViewModel
         {
             get { return _dataContextRenderWindow.RenderWindowView; }
@@ -245,6 +247,8 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
         public Renderer(RenderWindow Window)
         {
+            _renderModelDescription = new RenderModelDescription();
+
             _dataContextRenderWindow = Window;
             _parent = Window.RenderControl;
 
@@ -369,7 +373,10 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             InitializeShaders();
             InitializeStates();
         }
-        protected abstract void InitializeShaders();
+        protected virtual void InitializeShaders()
+        {
+
+        }
         protected virtual void InitializeStates()
         {
             BlendStateDescription descBlend = new BlendStateDescription();

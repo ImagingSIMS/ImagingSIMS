@@ -17,7 +17,7 @@ namespace ImagingSIMS.Data.Rendering
         float _pixelDepth;
         float _pixelSize;
         float _zSpacing;
-        int _isoValue;
+        float _isoValue;
 
         public float this[int x, int y, int z]
         {
@@ -104,7 +104,7 @@ namespace ImagingSIMS.Data.Rendering
                 }
             }
         }
-        public int IsoValue
+        public float IsoValue
         {
             get { return _isoValue; }
             set

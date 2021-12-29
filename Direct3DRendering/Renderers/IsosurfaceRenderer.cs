@@ -11,6 +11,8 @@ using SharpDX.DXGI;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using BoundingBox = ImagingSIMS.Direct3DRendering.SceneObjects.BoundingBox;
 using ImagingSIMS.Direct3DRendering.SceneObjects;
+using System.Linq;
+using System.Windows;
 
 namespace ImagingSIMS.Direct3DRendering.Renderers
 {
@@ -112,6 +114,34 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             base.InitializeStates();    
         }
 
+        public void CreateVolumeVertices(float zScaling)
+        {
+            Disposer.RemoveAndDispose(ref _coordinateBox);
+            Disposer.RemoveAndDispose(ref _boundingBox);
+
+            _renderModelDescription.ModelSize.X = _renderModelDescription.ModelSize.Y = 2.0f;
+            _renderModelDescription.ModelSize.Z = ((float)_renderModelDescription.DataSize.Z / (float)_renderModelDescription.DataSize.X * zScaling * 20f);
+
+            _renderModelDescription.ModelEnd.X = _renderModelDescription.ModelStart.X + _renderModelDescription.ModelSize.X;
+            _renderModelDescription.ModelEnd.Y = _renderModelDescription.ModelStart.Y + _renderModelDescription.ModelSize.Y;
+            _renderModelDescription.ModelEnd.Z = _renderModelDescription.ModelStart.Z + _renderModelDescription.ModelSize.Z;
+
+            Vector4[] vertices = new Vector4[8]
+            {
+                new Vector4(_renderModelDescription.ModelStart.X, _renderModelDescription.ModelStart.Y, _renderModelDescription.ModelStart.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelStart.X, _renderModelDescription.ModelStart.Y, _renderModelDescription.ModelEnd.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelStart.X, _renderModelDescription.ModelEnd.Y, _renderModelDescription.ModelStart.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelStart.X, _renderModelDescription.ModelEnd.Y, _renderModelDescription.ModelEnd.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelEnd.X, _renderModelDescription.ModelStart.Y, _renderModelDescription.ModelStart.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelEnd.X, _renderModelDescription.ModelStart.Y, _renderModelDescription.ModelEnd.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelEnd.X, _renderModelDescription.ModelEnd.Y, _renderModelDescription.ModelStart.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelEnd.X, _renderModelDescription.ModelEnd.Y, _renderModelDescription.ModelEnd.Z, 1.0f)
+            };
+
+            _boundingBox = new BoundingBox(_device, vertices);
+            _coordinateBox = new CoordinateBox(_device, vertices);
+        }
+
         public void SetData(List<RenderIsosurface> Isosurfaces)
         {
             //Create new or replace Texture3D so can be changed on fly
@@ -120,35 +150,35 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
             Disposer.RemoveAndDispose(ref _boundingBox);
             Disposer.RemoveAndDispose(ref _coordinateBox);
-            int width = -1;
-            int height = -1;
-            int depth = -1;
-            foreach (RenderIsosurface isosurface in Isosurfaces)
-            {
-                if (width == -1)
-                {
-                    width = isosurface.Width;
-                }
-                if (height == -1)
-                {
-                    height = isosurface.Height;
-                }
-                if (depth == -1)
-                {
-                    depth = isosurface.Depth;
-                }
 
-                if (isosurface.Width != width || isosurface.Height != height || isosurface.Depth != depth)
-                {
-                    throw new ArgumentException("Not all volumes are the same dimensions.");
-                }
-            }
+            if (Isosurfaces.GroupBy(i => i.Width).Count() != 1 ||
+                Isosurfaces.GroupBy(i => i.Height).Count() != 1 ||
+                Isosurfaces.GroupBy(i => i.Depth).Count() != 1 )
+                throw new ArgumentException("Not all volumes are the same dimensions.");
+
+            int width = Isosurfaces[0].Width;
+            int height = Isosurfaces[0].Height;
+            int depth = Isosurfaces[0].Depth;
+
+            _renderModelDescription.DataSize.X = Isosurfaces[0].Width;
+            _renderModelDescription.DataSize.Y = Isosurfaces[0].Height;
+            _renderModelDescription.DataSize.Z = Isosurfaces[0].Depth;
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                RenderingViewModel.DataWidth = _renderModelDescription.DataSize.X;
+                RenderingViewModel.DataHeight = _renderModelDescription.DataSize.Y;
+                RenderingViewModel.DataDepth = _renderModelDescription.DataSize.Z;
+
+                RenderingViewModel.RenderPlaneMinX = RenderingViewModel.RenderPlaneMinY = RenderingViewModel.RenderPlaneMinZ = 0;
+                RenderingViewModel.RenderPlaneMaxX = _renderModelDescription.DataSize.X;
+                RenderingViewModel.RenderPlaneMaxY = _renderModelDescription.DataSize.Y;
+                RenderingViewModel.RenderPlaneMaxZ = _renderModelDescription.DataSize.Z;
+            });
+
+            CreateVolumeVertices(1.0f);
 
             const float maxSize = 2.0f;
-            //float sizeX = maxSize;
-            //float sizeY = maxSize;
-            //float sizeZ = ((float)depth / Math.Max(width, height)) * maxSize;
-
 
             float maxDimension = 0;
             // x dimension is largest
@@ -167,7 +197,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 maxDimension = depth;
             }
 
-
             float boxSizeX = width * maxSize / maxDimension;
             float boxSizeY = height * maxSize / maxDimension;
             float boxSizeZ = depth * maxSize / maxDimension;
@@ -183,18 +212,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             float dataStartX = 0;
             float dataStartY = 0;
             float dataStartZ = 0;
-
-            Vector4[] boundingVertices = new Vector4[8]
-            {
-                new Vector4(boxStartX, boxStartY, boxStartZ, 1.0f),
-                new Vector4(boxStartX, boxStartY, boxStartZ + boxSizeZ, 1.0f),
-                new Vector4(boxStartX, boxStartY + boxSizeY, boxStartZ, 1.0f),
-                new Vector4(boxStartX, boxStartY + boxSizeY, boxStartZ + boxSizeZ, 1.0f),
-                new Vector4(boxStartX + boxSizeX, boxStartY, boxStartZ, 1.0f),
-                new Vector4(boxStartX + boxSizeX, boxStartY, boxStartZ + boxSizeZ, 1.0f),
-                new Vector4(boxStartX + boxSizeX, boxStartY + boxSizeY, boxStartZ, 1.0f),
-                new Vector4(boxStartX + boxSizeX, boxStartY + boxSizeY, boxStartZ + boxSizeZ, 1.0f)
-            };
 
             short[] boundingIndices = new short[36]
             {
@@ -217,14 +234,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 7, 4, 6,
             };
 
-            int numTriangles = 0;
-            foreach (RenderIsosurface iso in Isosurfaces)
-            {
-                numTriangles += iso.Triangles.Length;
-            }
-
-            _boundingBox = new BoundingBox(_device, boundingVertices);
-            _coordinateBox = new CoordinateBox(_device, boundingVertices);
+            int numTriangles = Isosurfaces.Sum(i => i.Triangles.Length);
 
             // Number triangles * 3 points per triangle * 2 vectors for each point (location and normal)
             Vector4[] isosurfaceVertices = new Vector4[numTriangles * 3 * 2];
@@ -272,6 +282,21 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 return false;
             }
         }
+
+        public override void Update(bool targetYAxisOrbiting)
+        {
+            base.Update(targetYAxisOrbiting);
+
+            _renderParams.RenderPlanesMin = new Vector4(
+                RenderingViewModel.RenderPlaneMinX / _renderModelDescription.DataSize.X,
+                RenderingViewModel.RenderPlaneMinY / _renderModelDescription.DataSize.Y,
+                RenderingViewModel.RenderPlaneMinZ / RenderingViewModel.ScalingZ / _renderModelDescription.DataSize.Z, 0);
+            _renderParams.RenderPlanesMax = new Vector4(
+                RenderingViewModel.RenderPlaneMaxX / _renderModelDescription.DataSize.X,
+                RenderingViewModel.RenderPlaneMaxY / _renderModelDescription.DataSize.Y,
+                RenderingViewModel.RenderPlaneMaxZ / RenderingViewModel.ScalingZ / _renderModelDescription.DataSize.Z, 0);
+        }
+
         public override void Draw()
         {
             base.Draw();
@@ -288,6 +313,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 {
                     _isosurfaceParams.UpdateColor(i, _dataContextRenderWindow.RenderWindowView.VolumeColors[i].ToVector4());
                 }
+                _isosurfaceParams.IsosurfaceScale = new Vector4(1.0f, 1.0f, _dataContextRenderWindow.RenderWindowView.ScalingZ, 1.0f);
                 context.UpdateSubresource(ref _isosurfaceParams, _isosurfaceParamBuffer);
 
                 context.InputAssembler.InputLayout = _ilIsosurface;

@@ -203,7 +203,7 @@ namespace ImagingSIMS.Direct3DRendering
         }
     }
 
-    [StructLayout(LayoutKind.Explicit, Size = 144)]
+    [StructLayout(LayoutKind.Explicit, Size = 160)]
     public struct IsosurfaceParams
     {
         [FieldOffset(0)]
@@ -234,13 +234,16 @@ namespace ImagingSIMS.Direct3DRendering
         public float NumberIsosurfaces;
 
         [FieldOffset(132)]
-        private float padding0;
+        public float padding0;
 
         [FieldOffset(136)]
         private float padding1;
 
         [FieldOffset(140)]
         private float padding2;
+
+        [FieldOffset(144)]
+        public Vector4 IsosurfaceScale;
 
         public static IsosurfaceParams Empty
         {

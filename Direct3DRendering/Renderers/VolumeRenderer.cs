@@ -39,7 +39,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
         ShaderResourceView[] _srvVolumes;
 
         Texture3D _texActiveVoxels;
-        ShaderResourceView _srvActiveVoxels;
 
         Buffer _vertexBufferCube;
         Buffer _indexBufferCube;
@@ -49,10 +48,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
         string _raycastEffectPath;
         string _modelEffectPath;
-
-        int _voxelsX;
-        int _voxelsY;
-        int _voxelsZ;
 
         public VolumeRenderer(RenderWindow Window)
             : base(Window)
@@ -102,7 +97,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 Disposer.RemoveAndDispose(ref _srvVolumes);
 
                 Disposer.RemoveAndDispose(ref _texActiveVoxels);
-                Disposer.RemoveAndDispose(ref _srvActiveVoxels);
 
                 Disposer.RemoveAndDispose(ref _vertexBufferCube);
                 Disposer.RemoveAndDispose(ref _indexBufferCube);
@@ -178,43 +172,35 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             Disposer.RemoveAndDispose(ref _coordinateBox);
             Disposer.RemoveAndDispose(ref _boundingBox);
 
-            float sizeX = 2.0f;
-            float sizeY = 2.0f;
-            float sizeZ = ((float)_voxelsZ / (float)_voxelsX) * zScaling * 20f;
+            _renderModelDescription.ModelSize.X = _renderModelDescription.ModelSize.Y = 2.0f;
+            _renderModelDescription.ModelSize.Z = ((float)_renderModelDescription.DataSize.Z / (float)_renderModelDescription.DataSize.X * zScaling * 20f);
 
-            float startX = -sizeX / 2f;
-            float startY = -sizeY / 2f;
-            float startZ = -sizeZ / 2f;
+            _renderModelDescription.ModelStart.X = -_renderModelDescription.ModelSize.X / 2f;
+            _renderModelDescription.ModelStart.Y = -_renderModelDescription.ModelSize.Y / 2f;
+            _renderModelDescription.ModelStart.Z = -_renderModelDescription.ModelSize.Z / 2f;
 
-            float maxValue = (float)Math.Max(sizeX, sizeY);
-            maxValue = (float)Math.Max(maxValue, sizeZ);
+            _renderModelDescription.ModelEnd.X = _renderModelDescription.ModelStart.X + _renderModelDescription.ModelSize.X;
+            _renderModelDescription.ModelEnd.Y = _renderModelDescription.ModelStart.Y + _renderModelDescription.ModelSize.Y;
+            _renderModelDescription.ModelEnd.Z = _renderModelDescription.ModelStart.Z + _renderModelDescription.ModelSize.Z;
 
-            float ratioX = sizeX / (2 * maxValue);
-            float ratioY = sizeY / (2 * maxValue);
-            float ratioZ = sizeZ / (2 * maxValue);
+            _volumeParams.VolumeScaleStart = new Vector4(
+                _renderModelDescription.ModelStart.X,
+                _renderModelDescription.ModelStart.Y,
+                _renderModelDescription.ModelStart.Z, 1.0f);
 
-            float sStartX = 0.5f - ratioX;
-            float sStartY = 0.5f - ratioY;
-            float sStartZ = 0.5f - ratioZ;
-
-            float sEndX = 0.5f + ratioX;
-            float sEndY = 0.5f + ratioY;
-            float sEndZ = 0.5f + ratioZ;
-
-            _volumeParams.VolumeScaleStart = new Vector4(sStartX, sStartY, sStartZ, 1.0f);
-
-            _volumeParams.VolumeScaleDenominator = new Vector4(sEndX - sStartX, sEndY - sStartY, sEndZ - sStartZ, 1.0f);
+            _volumeParams.VolumeScaleDenominator = new Vector4(
+                _renderModelDescription.ModelSize, 1.0f);
 
             Vector4[] vertices = new Vector4[8]
             {
-                new Vector4(startX, startY, startZ, 1.0f),
-                new Vector4(startX, startY, startZ + sizeZ, 1.0f),
-                new Vector4(startX, startY + sizeY, startZ, 1.0f),
-                new Vector4(startX, startY + sizeY, startZ + sizeZ, 1.0f),
-                new Vector4(startX + sizeX, startY, startZ, 1.0f),
-                new Vector4(startX + sizeX, startY, startZ + sizeZ, 1.0f),
-                new Vector4(startX + sizeX, startY + sizeY, startZ, 1.0f),
-                new Vector4(startX + sizeX, startY + sizeY, startZ + sizeZ, 1.0f)
+                new Vector4(_renderModelDescription.ModelStart.X, _renderModelDescription.ModelStart.Y, _renderModelDescription.ModelStart.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelStart.X, _renderModelDescription.ModelStart.Y, _renderModelDescription.ModelEnd.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelStart.X, _renderModelDescription.ModelEnd.Y, _renderModelDescription.ModelStart.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelStart.X, _renderModelDescription.ModelEnd.Y, _renderModelDescription.ModelEnd.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelEnd.X, _renderModelDescription.ModelStart.Y, _renderModelDescription.ModelStart.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelEnd.X, _renderModelDescription.ModelStart.Y, _renderModelDescription.ModelEnd.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelEnd.X, _renderModelDescription.ModelEnd.Y, _renderModelDescription.ModelStart.Z, 1.0f),
+                new Vector4(_renderModelDescription.ModelEnd.X, _renderModelDescription.ModelEnd.Y, _renderModelDescription.ModelEnd.Z, 1.0f)
             };
 
             _vertexBufferCube = Buffer.Create(_device, BindFlags.VertexBuffer, vertices);
@@ -278,24 +264,20 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 Volumes.GroupBy(v => v.Depth).Count() != 1)
                 throw new ArgumentException("Not all volumes are the same dimensions.");
 
-            int width = Volumes[0].Width;
-            int height = Volumes[0].Height;
-            int depth = Volumes[0].Depth;
-
-            _voxelsX = width;
-            _voxelsY = height;
-            _voxelsZ = depth;
+            _renderModelDescription.DataSize.X = Volumes[0].Width;
+            _renderModelDescription.DataSize.Y = Volumes[0].Height;
+            _renderModelDescription.DataSize.Z = Volumes[0].Depth;
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                RenderingViewModel.DataWidth = _voxelsX;
-                RenderingViewModel.DataHeight = _voxelsY;
-                RenderingViewModel.DataDepth = _voxelsZ;
+                RenderingViewModel.DataWidth = _renderModelDescription.DataSize.X;
+                RenderingViewModel.DataHeight = _renderModelDescription.DataSize.Y;
+                RenderingViewModel.DataDepth = _renderModelDescription.DataSize.Z;
 
                 RenderingViewModel.RenderPlaneMinX = RenderingViewModel.RenderPlaneMinY = RenderingViewModel.RenderPlaneMinZ = 0;
-                RenderingViewModel.RenderPlaneMaxX = _voxelsX;
-                RenderingViewModel.RenderPlaneMaxY = _voxelsY;
-                RenderingViewModel.RenderPlaneMaxZ = _voxelsZ;
+                RenderingViewModel.RenderPlaneMaxX = _renderModelDescription.DataSize.X;
+                RenderingViewModel.RenderPlaneMaxY = _renderModelDescription.DataSize.Y;
+                RenderingViewModel.RenderPlaneMaxZ = _renderModelDescription.DataSize.Z;
             });
 
 
@@ -318,66 +300,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
 
             CreateVolumeVertices(1.0f);
-
-            // Set up active voxel lookup volume
-            int lSizeX = width / 3;
-            if (width % 3 != 0) lSizeX += 1;
-            int lSizeY = height / 3;
-            if (height % 3 != 0) lSizeY += 1;
-            int lSizeZ = depth / 3;
-            if (depth % 3 != 0) lSizeZ += 1;
-
-            bool[, ,] isActive = new bool[lSizeX, lSizeY, lSizeZ];
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    for (int z = 0; z < depth; z++)
-                    {
-                        int xCoord = x / 3;
-                        int yCoord = y / 3;
-                        int zCoord = z / 3;
-                        for (int i = 0; i < numVolumes; i++)
-                        {
-                            if (Volumes[i][x, y, z] > 0)
-                            {
-                                isActive[xCoord, yCoord, zCoord] = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            float[] activeVolume = new float[lSizeX * lSizeY * lSizeZ];
-            int pos = 0;
-            for (int x = 0; x < lSizeX; x++)
-            {
-                for (int y = 0; y < lSizeY; y++)
-                {
-                    for (int z = 0; z < lSizeZ; z++)
-                    {
-                        activeVolume[pos] = isActive[x, y, z] ? 1f : 0f;
-                        pos++;
-                    }
-                }
-            }
-
-            Texture3DDescription desc = new Texture3DDescription()
-            {
-                Width = lSizeX,
-                Height = lSizeY,
-                Depth = lSizeZ,
-                MipLevels = 1,
-                Format = Format.R32_Float,
-                Usage = ResourceUsage.Immutable,
-                BindFlags = BindFlags.ShaderResource,
-                CpuAccessFlags = CpuAccessFlags.None
-            };
-            DataStream stream = DataStream.Create<float>(activeVolume, true, true);
-            _texActiveVoxels = new Texture3D(_device, desc, new[] { new DataBox(stream.DataPointer, lSizeX * sizeof(float), lSizeX * lSizeY * sizeof(float)) });
-
-            _srvActiveVoxels = new ShaderResourceView(_device, _texActiveVoxels);
 
             _dataLoaded = true;
         }
@@ -438,13 +360,13 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             base.Update(targetYAxisOrbiting);
 
             _renderParams.RenderPlanesMin = new Vector4(
-                RenderingViewModel.RenderPlaneMinX / _voxelsX,
-                RenderingViewModel.RenderPlaneMinY / _voxelsY,
-                RenderingViewModel.RenderPlaneMinZ / RenderingViewModel.ScalingZ / _voxelsZ, 0);
+                RenderingViewModel.RenderPlaneMinX / _renderModelDescription.DataSize.X,
+                RenderingViewModel.RenderPlaneMinY / _renderModelDescription.DataSize.Y,
+                RenderingViewModel.RenderPlaneMinZ / RenderingViewModel.ScalingZ / _renderModelDescription.DataSize.Z, 0);
             _renderParams.RenderPlanesMax = new Vector4(
-                RenderingViewModel.RenderPlaneMaxX / _voxelsX,
-                RenderingViewModel.RenderPlaneMaxY / _voxelsY,
-                RenderingViewModel.RenderPlaneMaxZ  / RenderingViewModel.ScalingZ / _voxelsZ, 0);
+                RenderingViewModel.RenderPlaneMaxX / _renderModelDescription.DataSize.X,
+                RenderingViewModel.RenderPlaneMaxY / _renderModelDescription.DataSize.Y,
+                RenderingViewModel.RenderPlaneMaxZ  / RenderingViewModel.ScalingZ / _renderModelDescription.DataSize.Z, 0);
         }
 
         public override void Draw()
@@ -474,10 +396,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 context.VertexShader.SetConstantBuffer(2, _volumeParamBuffer);
                 context.GeometryShader.Set(_gsPosition);
                 context.PixelShader.Set(_psPosition);
-
-                // Set active voxel lookup volume for both the VS and PS
-                context.VertexShader.SetShaderResources(2, 1, _srvActiveVoxels);
-                context.PixelShader.SetShaderResources(2, 1, _srvActiveVoxels);
 
                 context.Rasterizer.State = _rasterizerStateCullFront;
                 context.OutputMerger.SetRenderTargets(null, _rtvPositions[1]);

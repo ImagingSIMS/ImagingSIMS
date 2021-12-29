@@ -268,11 +268,17 @@ namespace ImagingSIMS.Direct3DRendering.Controls
         {
             if (Renderer is VolumeRenderer)
             {
-                this.Dispatcher.Invoke(() =>
+                Dispatcher.Invoke(() =>
                 {
                     ((VolumeRenderer)Renderer).CreateVolumeVertices(RenderWindowView.ScalingZ);
+                });                
+            }
+            else if (Renderer is IsosurfaceRenderer)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    ((IsosurfaceRenderer)Renderer).CreateVolumeVertices(RenderWindowView.ScalingZ);
                 });
-                
             }
         }
 

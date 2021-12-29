@@ -1,8 +1,6 @@
 Texture2D<float4>	txPositionFront : register(t0);
 Texture2D<float4>	txPositionBack : register(t1);
 
-Texture3D<float>	txActVoxels : register(t2);
-
 Texture3D<float>	txVolume[8] : register(t3);
 
 SamplerState		samplerLinear : register(s0);
@@ -59,6 +57,7 @@ cbuffer IsosurfaceParams : register(b3)
 	float		i_padding0;					// 4 x 1 =   4
 	float		i_padding1;					// 4 x 1 =   4
 	float		i_padding2;					// 4 x 1 =   4
+	float4		IsosurfaceScale;			//16 x 1 =  16
 }
 
 static const uint maxIterations = 256;
@@ -222,8 +221,12 @@ float4 RAYCAST_PS(RAYCAST_PS_Input input) : SV_TARGET
 ISOSURFACE_VS_Output ISOSURFACE_VS(ISOSURFACE_VS_Input input)
 {
 	ISOSURFACE_VS_Output output = (ISOSURFACE_VS_Output)0;
-	output.org = input.pos;
-	output.pos = mul(WorldProjView, input.pos);	
+	float4 scaledPosition = input.pos * IsosurfaceScale;
+	output.org = scaledPosition;
+
+	float4 coord = output.org;
+
+	output.pos = mul(WorldProjView, scaledPosition);	
 	
 	output.id = (int)input.nor.w;
 
@@ -289,9 +292,9 @@ void ISOSURFACE_GS(triangle ISOSURFACE_VS_Output input[3], inout TriangleStream<
 		// return and do not add any vertices to stream
 		float4 coord = input[i].org;
 		
-		if (coord.x < MinClipCoords.x || coord.x > MaxClipCoords.x ||
-			coord.y < MinClipCoords.y || coord.y > MaxClipCoords.y ||
-			coord.z < MinClipCoords.z || coord.z > MaxClipCoords.z)
+		if (coord.x < RenderPlaneMin.x || coord.x > RenderPlaneMax.x ||
+			coord.y < RenderPlaneMin.y || coord.y > RenderPlaneMax.y ||
+			coord.z < RenderPlaneMin.z || coord.z > RenderPlaneMax.z)
 		{
 			return;
 		}
