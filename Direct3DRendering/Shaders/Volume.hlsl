@@ -60,6 +60,14 @@ cbuffer IsosurfaceParams : register(b3)
 	float4		IsosurfaceScale;			//16 x 1 =  16
 }
 
+cbuffer ModelParams : register(b4)
+{
+	float4		DataSize;					//16 x 1 =  16
+	float4		ModelSize;					//16 x 1 =  16
+	float4		ModelStart;					//16 x 1 =  16
+	float4		ModelEnd;					//16 x 1 =  16
+}
+
 static const uint maxIterations = 256;
 static const float stepSize = sqrt(3.f) / maxIterations;
 static const uint numPointLights = 8;
@@ -108,11 +116,13 @@ struct ISOSURFACE_VS_Output
 //Functions
 float3 ScaleVector(float3 inputVector)
 {
-	float x = (inputVector.x - VolumeScaleStart.x) / VolumeScaleDenominator.x;
-	float y = (inputVector.y - VolumeScaleStart.y) / VolumeScaleDenominator.y;
-	float z = (inputVector.z - VolumeScaleStart.z) / VolumeScaleDenominator.z;
+	//float x = (inputVector.x - VolumeScaleStart.x) / VolumeScaleDenominator.x;
+	//float y = (inputVector.y - VolumeScaleStart.y) / VolumeScaleDenominator.y;
+	//float z = (inputVector.z - VolumeScaleStart.z) / VolumeScaleDenominator.z;
 
-	return float3(x, y, z) * VolumeScale.xyz;
+	//return float3(x, y, z) * VolumeScale.xyz;
+	float4 input = float4(inputVector, 0);
+	return (input / ModelSize).xyz;
 }
 
 //MODEL
@@ -121,7 +131,8 @@ MODEL_PS_Input MODEL_VS(MODEL_VS_Input input)
 	MODEL_PS_Input output = (MODEL_PS_Input)0;
 	output.pos = mul(WorldProjView, input.pos);
 
-	output.tex = 0.5 * (input.pos + 1);
+	output.tex = (input.pos - ModelStart) / ModelSize;
+	output.tex.a = 1;
 
 	return output;
 }
@@ -137,8 +148,6 @@ void MODEL_GS(triangle MODEL_PS_Input input[3], inout TriangleStream<MODEL_PS_In
 
 float4 MODEL_PS(MODEL_PS_Input input)		: SV_Target
 {
-	float4 pos = input.pos / 3;
-
 	return input.tex;
 }
 
@@ -183,14 +192,13 @@ float4 RAYCAST_PS(RAYCAST_PS_Input input) : SV_TARGET
 
 	for (uint i = 0; i < maxIterations; i++)
 	{
-		float3 scaledVector = ScaleVector(v);
 		for (uint j = 0; j < NumVolumes; j++)
 		{
 			float intensity = 0;
 
-			intensity = txVolume[j].Sample(samplerLinear, scaledVector).r;
-			float3 planeLower = scaledVector - RenderPlaneMin.xyz;
-			float3 planeUpper = RenderPlaneMax.xyz - scaledVector;
+			intensity = txVolume[j].Sample(samplerLinear, v).r;
+			float3 planeLower = v - RenderPlaneMin.xyz;
+			float3 planeUpper = RenderPlaneMax.xyz - v;
 			if (planeLower.x < 0 || planeLower.y < 0 || planeLower.z < 0 || 
 				planeUpper.x < 0 || planeUpper.y < 0 || planeUpper.z < 0) {
 				intensity = 0;

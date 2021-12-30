@@ -143,6 +143,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                    RenderWindowView.ScalingZ = 20;
                 });
                 for (int i = 0; i < Volumes.Length; i++)
                 {
@@ -155,6 +156,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
             else
             {
                 RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                RenderWindowView.ScalingZ = 20;
                 for (int i = 0; i < Volumes.Length; i++)
                 {
                     RenderWindowView.VolumeColors[i] = Volumes[i].Color;
@@ -180,6 +182,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                    RenderWindowView.ScalingZ = 20;
                 });
                 for (int i = 0; i < Volumes.Count; i++)
                 {
@@ -192,6 +195,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
             else
             {
                 RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                RenderWindowView.ScalingZ = 20;
                 for (int i = 0; i < Volumes.Count; i++)
                 {
                     RenderWindowView.VolumeColors[i] = Volumes[i].Color;
@@ -217,6 +221,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     RenderWindowView = RenderingViewModel.DefaultIsosurfaceParameters;
+                    RenderWindowView.ScalingZ = 1;
                 });
                 for (int i = 0; i < Isosurfaces.Count; i++)
                 {
@@ -229,6 +234,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
             else
             {
                 RenderWindowView = RenderingViewModel.DefaultIsosurfaceParameters;
+                RenderWindowView.ScalingZ = 1;
                 for (int i = 0; i < Isosurfaces.Count; i++)
                 {
                     RenderWindowView.VolumeColors[i] = Isosurfaces[i].InitialColor;

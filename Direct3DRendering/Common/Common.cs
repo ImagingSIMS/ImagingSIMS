@@ -703,6 +703,22 @@ namespace ImagingSIMS.Direct3DRendering
         }
     }
 
+    [StructLayout(LayoutKind.Explicit, Size = 64)]
+    public struct ModelParams
+    {
+        [FieldOffset(0)]
+        public Vector4 DataSize;
+
+        [FieldOffset(16)]
+        public Vector4 ModelSize;
+
+        [FieldOffset(32)]
+        public Vector4 ModelStart;
+
+        [FieldOffset(48)]
+        public Vector4 ModelEnd;
+    }
+
     public static class FeatureLevelHelper
     {
         public static string GetVertexShaderLevel(SharpDX.Direct3D.FeatureLevel featureLevel)

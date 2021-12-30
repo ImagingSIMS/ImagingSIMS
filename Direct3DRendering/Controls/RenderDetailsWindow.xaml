@@ -100,7 +100,7 @@
                                                                 <ColumnDefinition Width="*"/>
                                                                 <ColumnDefinition Width="Auto"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <Slider x:Name="sliderScalingZ" Margin="8,0,0,0" Minimum="0" Maximum="30" SmallChange="0.5" LargeChange="1" Value="{Binding ScalingZ}" ValueChanged="sliderScalingZ_ValueChanged"/>
+                                                            <Slider x:Name="sliderScalingZ" Margin="8,0,0,0" Minimum="0" Maximum="100" SmallChange="0.5" LargeChange="1" Value="{Binding ScalingZ}" ValueChanged="sliderScalingZ_ValueChanged"/>
                                                             <TextBlock Grid.Column="1" Margin="2,4,4,4" Text="{Binding ElementName=sliderScalingZ, Path=Value, StringFormat=0.00}"/>
                                                         </Grid>
                                                     </StackPanel>

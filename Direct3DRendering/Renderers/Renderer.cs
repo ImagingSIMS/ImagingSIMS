@@ -49,8 +49,10 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
         protected RenderParams _renderParams;
         protected LightingParams _lightingParams;
+        protected ModelParams _modelParams;
         protected Buffer _bufferRenderParams;
         protected Buffer _bufferLightingParams;
+        protected Buffer _bufferModelParams;
 
         protected bool _needsResize;
         protected bool _dataLoaded;
@@ -366,6 +368,12 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             _bufferLightingParams = new Buffer(_device, Marshal.SizeOf(typeof(LightingParams)), ResourceUsage.Default,
                 BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
 
+            _modelParams = new ModelParams()
+            {
+            };
+            _bufferModelParams = new Buffer(_device, Marshal.SizeOf(typeof(ModelParams)), ResourceUsage.Default,
+                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
+
             _needsResize = true;
 
             _axes = new Axes(_device);
@@ -523,9 +531,13 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             // Update lighting params
             RenderingViewModel.UpdateLightingParameters(ref _lightingParams);
 
+            // Update model params
+            _modelParams = (ModelParams)_renderModelDescription;
+
             var context = _device.ImmediateContext;
             context.UpdateSubresource(ref _renderParams, _bufferRenderParams);
             context.UpdateSubresource(ref _lightingParams, _bufferLightingParams);
+            context.UpdateSubresource(ref _modelParams, _bufferModelParams);
         }
         public virtual void Draw()
         {
@@ -601,6 +613,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
                 Disposer.RemoveAndDispose(ref _bufferRenderParams);
                 Disposer.RemoveAndDispose(ref _bufferLightingParams);
+                Disposer.RemoveAndDispose(ref _bufferModelParams);
 
                 Disposer.RemoveAndDispose(ref _rasterizerStateCullNone);
                 Disposer.RemoveAndDispose(ref _rasterizerStateCullBack);

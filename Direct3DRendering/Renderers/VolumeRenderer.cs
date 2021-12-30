@@ -52,7 +52,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
         public VolumeRenderer(RenderWindow Window)
             : base(Window)
         {
-            _renderType = RenderType.Volume;
+            _renderType = RenderType.Volume;  
         }
 
         public VolumeParams VolumeParams
@@ -173,7 +173,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             Disposer.RemoveAndDispose(ref _boundingBox);
 
             _renderModelDescription.ModelSize.X = _renderModelDescription.ModelSize.Y = 2.0f;
-            _renderModelDescription.ModelSize.Z = ((float)_renderModelDescription.DataSize.Z / (float)_renderModelDescription.DataSize.X * zScaling * 20f);
+            _renderModelDescription.ModelSize.Z = ((float)_renderModelDescription.DataSize.Z / (float)_renderModelDescription.DataSize.X * zScaling);
 
             _renderModelDescription.ModelStart.X = -_renderModelDescription.ModelSize.X / 2f;
             _renderModelDescription.ModelStart.Y = -_renderModelDescription.ModelSize.Y / 2f;
@@ -268,6 +268,8 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             _renderModelDescription.DataSize.Y = Volumes[0].Height;
             _renderModelDescription.DataSize.Z = Volumes[0].Depth;
 
+            float scalingZ = 0;
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 RenderingViewModel.DataWidth = _renderModelDescription.DataSize.X;
@@ -278,6 +280,8 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 RenderingViewModel.RenderPlaneMaxX = _renderModelDescription.DataSize.X;
                 RenderingViewModel.RenderPlaneMaxY = _renderModelDescription.DataSize.Y;
                 RenderingViewModel.RenderPlaneMaxZ = _renderModelDescription.DataSize.Z;
+
+                scalingZ = RenderingViewModel.ScalingZ;
             });
 
 
@@ -299,7 +303,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             _volumeParamBuffer = new Buffer(_device, Marshal.SizeOf(typeof(VolumeParams)), ResourceUsage.Default,
                 BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
 
-            CreateVolumeVertices(1.0f);
+            CreateVolumeVertices(scalingZ);
 
             _dataLoaded = true;
         }
@@ -362,11 +366,12 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             _renderParams.RenderPlanesMin = new Vector4(
                 RenderingViewModel.RenderPlaneMinX / _renderModelDescription.DataSize.X,
                 RenderingViewModel.RenderPlaneMinY / _renderModelDescription.DataSize.Y,
-                RenderingViewModel.RenderPlaneMinZ / RenderingViewModel.ScalingZ / _renderModelDescription.DataSize.Z, 0);
+                RenderingViewModel.RenderPlaneMinZ / _renderModelDescription.DataSize.Z, 0);
             _renderParams.RenderPlanesMax = new Vector4(
                 RenderingViewModel.RenderPlaneMaxX / _renderModelDescription.DataSize.X,
                 RenderingViewModel.RenderPlaneMaxY / _renderModelDescription.DataSize.Y,
-                RenderingViewModel.RenderPlaneMaxZ  / RenderingViewModel.ScalingZ / _renderModelDescription.DataSize.Z, 0);
+                RenderingViewModel.RenderPlaneMaxZ / _renderModelDescription.DataSize.Z, 0);
+
         }
 
         public override void Draw()
@@ -379,7 +384,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
             if (_dataLoaded)
             {
-                _volumeParams.VolumeScale = new Vector4(1.0f, 1.0f, 1 / RenderingViewModel.ScalingZ, 1.0f);
+                _volumeParams.VolumeScale = new Vector4(1.0f, 1.0f, RenderingViewModel.ScalingZ, 1.0f);
                 for (int i = 0; i < _volumeParams.NumVolumes; i++)
                 {
                     _volumeParams.UpdateColor(i, _dataContextRenderWindow.RenderWindowView.VolumeColors[i].ToVector4());
@@ -394,6 +399,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 context.VertexShader.Set(_vsPosition);
                 context.VertexShader.SetConstantBuffer(0, _bufferRenderParams);
                 context.VertexShader.SetConstantBuffer(2, _volumeParamBuffer);
+                context.VertexShader.SetConstantBuffer(4, _bufferModelParams);
                 context.GeometryShader.Set(_gsPosition);
                 context.PixelShader.Set(_psPosition);
 
@@ -416,6 +422,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 context.PixelShader.SetConstantBuffer(0, _bufferRenderParams);
                 context.PixelShader.SetConstantBuffer(1, _bufferLightingParams);
                 context.PixelShader.SetConstantBuffer(2, _volumeParamBuffer);
+                context.PixelShader.SetConstantBuffer(4, _bufferModelParams);
 
                 context.OutputMerger.SetRenderTargets(_depthView, _renderView);
 

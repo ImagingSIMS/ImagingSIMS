@@ -2176,16 +2176,19 @@ namespace ImagingSIMS.MainApplication
 
         private async void Render3D(object sender, RoutedEventArgs e)
         {
+            List<Volume> volumes = new List<Volume>();
+
             int numberVolumes = listBoxRenderingVolumes.SelectedItems.Count;
             if (numberVolumes == 0)
             {
-                DialogBox db = new DialogBox("No volumes selected.", "Select one or more volumes to render.",
-                    "Rendering", DialogIcon.Error);
-                db.ShowDialog();
-                return;
+                volumes.Add(new Volume(new Data3D(512, 512, 10), Color.FromRgb(0, 0, 0)));
+
+                //DialogBox db = new DialogBox("No volumes selected.", "Select one or more volumes to render.",
+                //    "Rendering", DialogIcon.Error);
+                //db.ShowDialog();
+                //return;
             }
 
-            List<Volume> volumes = new List<Volume>();
             float maxIntensity = 0;
 
             foreach (object obj in listBoxRenderingVolumes.SelectedItems)

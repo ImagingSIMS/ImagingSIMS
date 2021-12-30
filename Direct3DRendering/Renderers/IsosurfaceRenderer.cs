@@ -176,7 +176,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 RenderingViewModel.RenderPlaneMaxZ = _renderModelDescription.DataSize.Z;
             });
 
-            CreateVolumeVertices(1.0f);
+            
 
             const float maxSize = 2.0f;
 
@@ -324,6 +324,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 context.VertexShader.SetConstantBuffer(0, _bufferRenderParams);
                 context.VertexShader.SetConstantBuffer(1, _bufferLightingParams);
                 context.VertexShader.SetConstantBuffer(3, _isosurfaceParamBuffer);
+                context.VertexShader.SetConstantBuffer(4, _bufferModelParams);
 
                 context.GeometryShader.Set(_gsIsosurface);
                 context.GeometryShader.SetConstantBuffer(0, _bufferRenderParams);
@@ -331,6 +332,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 context.PixelShader.Set(_psIsosurface);
                 context.PixelShader.SetConstantBuffer(0, _bufferRenderParams);
                 context.PixelShader.SetConstantBuffer(1, _bufferLightingParams);
+                context.PixelShader.SetConstantBuffer(4, _bufferModelParams);
 
                 // TODO: Remove this
                 context.PixelShader.SetConstantBuffer(3, _isosurfaceParamBuffer);
