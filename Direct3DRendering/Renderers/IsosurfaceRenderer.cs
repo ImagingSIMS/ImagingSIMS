@@ -120,11 +120,10 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             Disposer.RemoveAndDispose(ref _boundingBox);
 
             _renderModelDescription.ModelSize.X = _renderModelDescription.ModelSize.Y = 2.0f;
-            _renderModelDescription.ModelSize.Z = ((float)_renderModelDescription.DataSize.Z / (float)_renderModelDescription.DataSize.X * zScaling * 20f);
+            _renderModelDescription.ModelSize.Z = ((float)_renderModelDescription.DataSize.Z / (float)_renderModelDescription.DataSize.X * zScaling);
 
-            _renderModelDescription.ModelEnd.X = _renderModelDescription.ModelStart.X + _renderModelDescription.ModelSize.X;
-            _renderModelDescription.ModelEnd.Y = _renderModelDescription.ModelStart.Y + _renderModelDescription.ModelSize.Y;
-            _renderModelDescription.ModelEnd.Z = _renderModelDescription.ModelStart.Z + _renderModelDescription.ModelSize.Z;
+            _renderModelDescription.ModelStart = -_renderModelDescription.ModelSize / 2f;
+            _renderModelDescription.ModelEnd = _renderModelDescription.ModelStart + _renderModelDescription.ModelSize;
 
             Vector4[] vertices = new Vector4[8]
             {
@@ -164,6 +163,8 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             _renderModelDescription.DataSize.Y = Isosurfaces[0].Height;
             _renderModelDescription.DataSize.Z = Isosurfaces[0].Depth;
 
+            float scalingZ = 0;
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 RenderingViewModel.DataWidth = _renderModelDescription.DataSize.X;
@@ -174,65 +175,11 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 RenderingViewModel.RenderPlaneMaxX = _renderModelDescription.DataSize.X;
                 RenderingViewModel.RenderPlaneMaxY = _renderModelDescription.DataSize.Y;
                 RenderingViewModel.RenderPlaneMaxZ = _renderModelDescription.DataSize.Z;
+
+                scalingZ = RenderingViewModel.ScalingZ;
             });
 
-            
-
-            const float maxSize = 2.0f;
-
-            float maxDimension = 0;
-            // x dimension is largest
-            if(width >= Math.Max(height, depth))
-            {
-                maxDimension = width;
-            }
-            // y dimension is largest
-            else if(height >= depth)
-            {
-                maxDimension = height;
-            }
-            // z dimension is largest
-            else
-            {
-                maxDimension = depth;
-            }
-
-            float boxSizeX = width * maxSize / maxDimension;
-            float boxSizeY = height * maxSize / maxDimension;
-            float boxSizeZ = depth * maxSize / maxDimension;
-
-            float boxStartX = -boxSizeX / 2f;
-            float boxStartY = -boxSizeY / 2f;
-            float boxStartZ = -boxSizeZ / 2f;
-
-            float dataSizeX = width;
-            float dataSizeY = height;
-            float dataSizeZ = depth;
-
-            float dataStartX = 0;
-            float dataStartY = 0;
-            float dataStartZ = 0;
-
-            short[] boundingIndices = new short[36]
-            {
-                0, 1, 2,
-                2, 1, 3,
-
-                0, 4, 1,
-                1, 4, 5,
-
-                0, 2, 4,
-                4, 2, 6,
-
-                1, 5, 3,
-                3, 5, 7,
-
-                2, 3, 6,
-                6, 3, 7,
-
-                5, 4, 7,
-                7, 4, 6,
-            };
+            CreateVolumeVertices(scalingZ);
 
             int numTriangles = Isosurfaces.Sum(i => i.Triangles.Length);
 
@@ -246,13 +193,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 {
                     foreach (Vector4 point in tri.Vertices)
                     {
-                        isosurfaceVertices[pos++] = new Vector4()
-                        {
-                            X = (((point.X + dataStartX) * boxSizeX) / dataSizeX) + boxStartX,
-                            Y = (((point.Y + dataStartY) * boxSizeY) / dataSizeY) + boxStartY,
-                            Z = (((point.Z + dataStartZ) * boxSizeZ) / dataSizeZ) + boxStartZ,
-                            W = point.W
-                        };
+                        isosurfaceVertices[pos++] = new Vector4(_renderModelDescription.ConvertDataToModelCoordinate(new Vector3(point.X, point.Y, point.Z)), point.W);
                         // Encode the SurfaceId as the w of the normal vector
                         isosurfaceVertices[pos++] = new Vector4(tri.Normal, tri.SurfaceId);
                     }
@@ -287,14 +228,17 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
         {
             base.Update(targetYAxisOrbiting);
 
-            _renderParams.RenderPlanesMin = new Vector4(
-                RenderingViewModel.RenderPlaneMinX / _renderModelDescription.DataSize.X,
-                RenderingViewModel.RenderPlaneMinY / _renderModelDescription.DataSize.Y,
-                RenderingViewModel.RenderPlaneMinZ / RenderingViewModel.ScalingZ / _renderModelDescription.DataSize.Z, 0);
-            _renderParams.RenderPlanesMax = new Vector4(
-                RenderingViewModel.RenderPlaneMaxX / _renderModelDescription.DataSize.X,
-                RenderingViewModel.RenderPlaneMaxY / _renderModelDescription.DataSize.Y,
-                RenderingViewModel.RenderPlaneMaxZ / RenderingViewModel.ScalingZ / _renderModelDescription.DataSize.Z, 0);
+            // Isosurface vertices are in model coordinates, so need to convert from data to model
+            _renderParams.RenderPlanesMin = (Vector4)_renderModelDescription.ConvertDataToModelCoordinate(
+                new Vector3(
+                    RenderingViewModel.RenderPlaneMinX,
+                    RenderingViewModel.RenderPlaneMinY,
+                    RenderingViewModel.RenderPlaneMinZ));
+            _renderParams.RenderPlanesMax = (Vector4)_renderModelDescription.ConvertDataToModelCoordinate(
+                new Vector3(
+                    RenderingViewModel.RenderPlaneMaxX,
+                    RenderingViewModel.RenderPlaneMaxY,
+                    RenderingViewModel.RenderPlaneMaxZ));
         }
 
         public override void Draw()

@@ -276,6 +276,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
                 scalingZ = RenderingViewModel.ScalingZ;
             });
 
+            CreateVolumeVertices(scalingZ);
 
             int numVolumes = Volumes.Count;
 
@@ -294,8 +295,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
             _volumeParamBuffer = new Buffer(_device, Marshal.SizeOf(typeof(VolumeParams)), ResourceUsage.Default,
                 BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
-
-            CreateVolumeVertices(scalingZ);
 
             _dataLoaded = true;
         }
@@ -355,6 +354,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
         {
             base.Update(targetYAxisOrbiting);
 
+            // Clipping occurs on data coordinates since the planes are compared against the data cube
             _renderParams.RenderPlanesMin = new Vector4(
                 RenderingViewModel.RenderPlaneMinX / _renderModelDescription.DataSize.X,
                 RenderingViewModel.RenderPlaneMinY / _renderModelDescription.DataSize.Y,
