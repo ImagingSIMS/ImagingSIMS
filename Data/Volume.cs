@@ -352,7 +352,7 @@ namespace ImagingSIMS.Data.Rendering
                 byte colorR = br.ReadByte();
                 byte colorG = br.ReadByte();
                 byte colorB = br.ReadByte();
-                int isoValue = br.ReadInt32();
+                float isoValue = br.ReadSingle();
 
                 this.VolumeName = volumeName;
                 this.DataColor = Color.FromArgb(colorA, colorR, colorG, colorB);

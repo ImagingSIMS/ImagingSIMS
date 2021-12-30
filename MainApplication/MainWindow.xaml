@@ -803,7 +803,7 @@
                                                 </TextBlock.Foreground>
                                             </TextBlock>
                                             <TextBlock Grid.Column="1" Text="{Binding Path=Depth}" Margin="4,0,4,0" FontSize="14"/>
-                                            <TextBox Grid.Column="2" Text="{Binding Path=IsoValue}" Margin="4,0,4,0"/>
+                                            <TextBox Grid.Column="2" Text="{Binding Path=IsoValue, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:F2}}" Margin="4,0,4,0"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
