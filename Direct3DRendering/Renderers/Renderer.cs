@@ -348,8 +348,8 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
             _orbitCamera = new OrbitCamera(_device, _parent, windowHandle);
 
-            // Set camera position so that (-x, -y, -z) of the volume is the top of the rendering
-            _orbitCamera.SetInitialConditions(new Vector3(0, 5f, 2.5f), new Vector3(0, 1, 0));
+            // Set camera position so that (+x, +y, +z) of the volume is the top of the rendering
+            _orbitCamera.SetInitialConditions(new Vector3(-3f, -3f, 2f), new Vector3(0.6f, 0.6f, 0.4f));
 
             _renderParams = new RenderParams()
             {
