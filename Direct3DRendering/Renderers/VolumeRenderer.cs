@@ -183,14 +183,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             _renderModelDescription.ModelEnd.Y = _renderModelDescription.ModelStart.Y + _renderModelDescription.ModelSize.Y;
             _renderModelDescription.ModelEnd.Z = _renderModelDescription.ModelStart.Z + _renderModelDescription.ModelSize.Z;
 
-            _volumeParams.VolumeScaleStart = new Vector4(
-                _renderModelDescription.ModelStart.X,
-                _renderModelDescription.ModelStart.Y,
-                _renderModelDescription.ModelStart.Z, 1.0f);
-
-            _volumeParams.VolumeScaleDenominator = new Vector4(
-                _renderModelDescription.ModelSize, 1.0f);
-
             Vector4[] vertices = new Vector4[8]
             {
                 new Vector4(_renderModelDescription.ModelStart.X, _renderModelDescription.ModelStart.Y, _renderModelDescription.ModelStart.Z, 1.0f),
@@ -384,7 +376,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
             if (_dataLoaded)
             {
-                _volumeParams.VolumeScale = new Vector4(1.0f, 1.0f, RenderingViewModel.ScalingZ, 1.0f);
                 for (int i = 0; i < _volumeParams.NumVolumes; i++)
                 {
                     _volumeParams.UpdateColor(i, _dataContextRenderWindow.RenderWindowView.VolumeColors[i].ToVector4());

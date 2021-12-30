@@ -9,18 +9,14 @@ cbuffer RenderParams : register(b0)
 {
 	float4x4	WorldProjView;				//64 x 1 =  64
 	float2		InvWindowSize;				// 8 x 1 =   8
-	float		Brightness;					// 4 x 1 =   4
 	float		ClipDistance;				// 4 x 1 =   4
-	float3		CameraPosition;				//12 x 1 =  12
 	float		r_padding0;					// 4 x 1 =   4
-	float3		CameraDirection;			//12 x 1 =  12
+	float3		CameraPosition;				//12 x 1 =  12
 	float		r_padding1;					// 4 x 1 =   4
-	float3		CameraUp;					//12 x 1 =  12
+	float3		CameraDirection;			//12 x 1 =  12
 	float		r_padding2;					// 4 x 1 =   4
-	float4		NearClipPlane;				//16 x 1 =  16
-	float4		FarClipPlane;				//16 x 1 =  16
-	float4		MinClipCoords;				//16 x 1 =  16
-	float4		MaxClipCoords;				//16 x 1 =  16
+	float3		CameraUp;					//12 x 1 =  12
+	float		r_padding3;					// 4 x 1 =   4
 	float4		RenderPlaneMin;				//16 x 1 =  16
 	float4		RenderPlaneMax;				//16 x 1 =  16
 }
@@ -40,10 +36,7 @@ cbuffer LightingParams : register(b1)
 
 cbuffer VolumeParams : register(b2)
 {
-	float4		VolumeScaleStart;			//16 x 1 =   4
 	float4		VolumeColor[8];				//16 x 8 = 128
-	float4		VolumeScale;				//16 x 1 =	16
-	float4		VolumeScaleDenominator;		//16 x 1 =  16
 	uint		NumVolumes;					// 4 x 1 =   4
 	float		v_padding0;					// 4 x 1 =   4
 	float		v_padding1;					// 4 x 1 =   4
@@ -112,18 +105,6 @@ struct ISOSURFACE_VS_Output
 	float	pd1 : PADDING1;
 	float	pd2 : PADDING2;
 };
-
-//Functions
-float3 ScaleVector(float3 inputVector)
-{
-	//float x = (inputVector.x - VolumeScaleStart.x) / VolumeScaleDenominator.x;
-	//float y = (inputVector.y - VolumeScaleStart.y) / VolumeScaleDenominator.y;
-	//float z = (inputVector.z - VolumeScaleStart.z) / VolumeScaleDenominator.z;
-
-	//return float3(x, y, z) * VolumeScale.xyz;
-	float4 input = float4(inputVector, 0);
-	return (input / ModelSize).xyz;
-}
 
 //MODEL
 MODEL_PS_Input MODEL_VS(MODEL_VS_Input input)

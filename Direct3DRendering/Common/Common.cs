@@ -22,7 +22,7 @@ namespace ImagingSIMS.Direct3DRendering
         Right, Left, Up, Down, Reverse, Clockwise, CounterClockwise, None
     }
 
-    [StructLayout(LayoutKind.Explicit, Size = 224)]
+    [StructLayout(LayoutKind.Explicit, Size = 160)]
     public struct RenderParams
     {
         [FieldOffset(0)]
@@ -32,7 +32,7 @@ namespace ImagingSIMS.Direct3DRendering
         public Vector2 InvWindowSize;
 
         [FieldOffset(72)]
-        public float Brightness;
+        private float padding0;
 
         [FieldOffset(76)]
         public float ClipDistance;
@@ -41,85 +41,64 @@ namespace ImagingSIMS.Direct3DRendering
         public Vector3 CameraPositon;
 
         [FieldOffset(92)]
-        private float padding0;
+        private float padding1;
 
         [FieldOffset(96)]
         public Vector3 CameraDirection;
 
         [FieldOffset(108)]
-        private float padding1;
+        private float padding2;
 
         [FieldOffset(112)]
         public Vector3 CameraUp;
 
         [FieldOffset(124)]
-        private float r_padding2;
+        private float r_padding3;
 
         [FieldOffset(128)]
-        public Vector4 NearClipPlane;
-
-        [FieldOffset(144)]
-        public Vector4 FarClipPlane;
-
-        [FieldOffset(160)]
-        public Vector4 MinClipCoords;
-
-        [FieldOffset(176)]
-        public Vector4 MaxClipCoords;
-
-        [FieldOffset(192)]
         public Vector4 RenderPlanesMin;
 
-        [FieldOffset(208)]
+        [FieldOffset(144)]
         public Vector4 RenderPlanesMax;
     }
 
-    [StructLayout(LayoutKind.Explicit, Size = 192)]
+    [StructLayout(LayoutKind.Explicit, Size = 144)]
     public struct VolumeParams
     {
         [FieldOffset(0)]
-        public Vector4 VolumeScaleStart;
-
-        [FieldOffset(16)]
         private Vector4 VolumeColor0;
 
-        [FieldOffset(32)]
+        [FieldOffset(16)]
         private Vector4 VolumeColor1;
 
-        [FieldOffset(48)]
+        [FieldOffset(32)]
         private Vector4 VolumeColor2;
 
-        [FieldOffset(64)]
+        [FieldOffset(48)]
         private Vector4 VolumeColor3;
 
-        [FieldOffset(80)]
+        [FieldOffset(64)]
         private Vector4 VolumeColor4;
 
-        [FieldOffset(96)]
+        [FieldOffset(80)]
         private Vector4 VolumeColor5;
 
-        [FieldOffset(112)]
+        [FieldOffset(96)]
         private Vector4 VolumeColor6;
 
-        [FieldOffset(128)]
+        [FieldOffset(112)]
         private Vector4 VolumeColor7;
 
-        [FieldOffset(144)]
-        public Vector4 VolumeScale;
-
-        [FieldOffset(160)]
-        public Vector4 VolumeScaleDenominator;
-
-        [FieldOffset(176)]
+        [FieldOffset(128)]
         public uint NumVolumes;
 
-        [FieldOffset(180)]
+        [FieldOffset(132)]
         private float padding0;
 
-        [FieldOffset(184)]
+        [FieldOffset(136)]
         private float padding1;
 
-        [FieldOffset(188)]
+        [FieldOffset(140)]
         private float padding2;
 
         public static VolumeParams Empty
@@ -132,7 +111,6 @@ namespace ImagingSIMS.Direct3DRendering
                     padding0 = 0,
                     padding1 = 0,
                     padding2 = 0,
-                    VolumeScaleStart = Vector4.Zero,
                     VolumeColor0 = Vector4.Zero,
                     VolumeColor1 = Vector4.Zero,
                     VolumeColor2 = Vector4.Zero,
@@ -141,8 +119,6 @@ namespace ImagingSIMS.Direct3DRendering
                     VolumeColor5 = Vector4.Zero,
                     VolumeColor6 = Vector4.Zero,
                     VolumeColor7 = Vector4.Zero,
-                    VolumeScale = Vector4.Zero,
-                    VolumeScaleDenominator = Vector4.Zero
                 };
                 return v;
             }

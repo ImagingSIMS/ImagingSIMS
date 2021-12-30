@@ -523,9 +523,6 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             _renderParams.CameraPositon = _orbitCamera.Position;
             _renderParams.CameraUp = _orbitCamera.Up;
 
-            _renderParams.MinClipCoords = MinClipCoords;
-            _renderParams.MaxClipCoords = MaxClipCoords;
-
             _renderParams.InvWindowSize = new Vector2(1f / _parent.ClientSize.Width, 1f / _parent.ClientSize.Height);
 
             // Update lighting params
