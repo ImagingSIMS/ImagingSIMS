@@ -2182,11 +2182,6 @@ namespace ImagingSIMS.MainApplication
             if (numberVolumes == 0)
             {
                 volumes.Add(new Volume(new Data3D(512, 512, 10), Color.FromRgb(0, 0, 0)));
-
-                //DialogBox db = new DialogBox("No volumes selected.", "Select one or more volumes to render.",
-                //    "Rendering", DialogIcon.Error);
-                //db.ShowDialog();
-                //return;
             }
 
             float maxIntensity = 0;

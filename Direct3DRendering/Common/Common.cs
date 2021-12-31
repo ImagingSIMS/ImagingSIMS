@@ -210,7 +210,7 @@ namespace ImagingSIMS.Direct3DRendering
         public float NumberIsosurfaces;
 
         [FieldOffset(132)]
-        public float padding0;
+        private float padding0;
 
         [FieldOffset(136)]
         private float padding1;
