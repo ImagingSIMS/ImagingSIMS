@@ -49,8 +49,10 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
         protected RenderParams _renderParams;
         protected LightingParams _lightingParams;
+        protected ModelParams _modelParams;
         protected Buffer _bufferRenderParams;
         protected Buffer _bufferLightingParams;
+        protected Buffer _bufferModelParams;
 
         protected bool _needsResize;
         protected bool _dataLoaded;
@@ -62,6 +64,8 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
         protected RasterizerState _rasterizerStateCullNone;
         protected RasterizerState _rasterizerStateCullFront;
         protected RasterizerState _rasterizerStateCullBack;
+
+        protected RenderModelDescription _renderModelDescription;
 
         protected RenderingViewModel RenderingViewModel
         {
@@ -245,6 +249,8 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
         public Renderer(RenderWindow Window)
         {
+            _renderModelDescription = new RenderModelDescription();
+
             _dataContextRenderWindow = Window;
             _parent = Window.RenderControl;
 
@@ -342,8 +348,8 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
             _orbitCamera = new OrbitCamera(_device, _parent, windowHandle);
 
-            // Set camera position so that (-x, -y, -z) of the volume is the top of the rendering
-            _orbitCamera.SetInitialConditions(new Vector3(0, 5f, 2.5f), new Vector3(0, 1, 0));
+            // Set camera position so that (+x, +y, +z) of the volume is the top of the rendering
+            _orbitCamera.SetInitialConditions(new Vector3(-3f, -3f, 2f), new Vector3(0.6f, 0.6f, 0.4f));
 
             _renderParams = new RenderParams()
             {
@@ -362,6 +368,12 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             _bufferLightingParams = new Buffer(_device, Marshal.SizeOf(typeof(LightingParams)), ResourceUsage.Default,
                 BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
 
+            _modelParams = new ModelParams()
+            {
+            };
+            _bufferModelParams = new Buffer(_device, Marshal.SizeOf(typeof(ModelParams)), ResourceUsage.Default,
+                BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
+
             _needsResize = true;
 
             _axes = new Axes(_device);
@@ -369,7 +381,10 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             InitializeShaders();
             InitializeStates();
         }
-        protected abstract void InitializeShaders();
+        protected virtual void InitializeShaders()
+        {
+
+        }
         protected virtual void InitializeStates()
         {
             BlendStateDescription descBlend = new BlendStateDescription();
@@ -508,17 +523,18 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
             _renderParams.CameraPositon = _orbitCamera.Position;
             _renderParams.CameraUp = _orbitCamera.Up;
 
-            _renderParams.MinClipCoords = MinClipCoords;
-            _renderParams.MaxClipCoords = MaxClipCoords;
-
             _renderParams.InvWindowSize = new Vector2(1f / _parent.ClientSize.Width, 1f / _parent.ClientSize.Height);
 
             // Update lighting params
             RenderingViewModel.UpdateLightingParameters(ref _lightingParams);
 
+            // Update model params
+            _modelParams = (ModelParams)_renderModelDescription;
+
             var context = _device.ImmediateContext;
             context.UpdateSubresource(ref _renderParams, _bufferRenderParams);
             context.UpdateSubresource(ref _lightingParams, _bufferLightingParams);
+            context.UpdateSubresource(ref _modelParams, _bufferModelParams);
         }
         public virtual void Draw()
         {
@@ -594,6 +610,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
                 Disposer.RemoveAndDispose(ref _bufferRenderParams);
                 Disposer.RemoveAndDispose(ref _bufferLightingParams);
+                Disposer.RemoveAndDispose(ref _bufferModelParams);
 
                 Disposer.RemoveAndDispose(ref _rasterizerStateCullNone);
                 Disposer.RemoveAndDispose(ref _rasterizerStateCullBack);

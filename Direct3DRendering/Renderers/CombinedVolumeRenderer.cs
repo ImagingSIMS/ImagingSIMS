@@ -62,14 +62,7 @@ namespace ImagingSIMS.Direct3DRendering.Renderers
 
         RenderParams _previousParams = new RenderParams();
         public override void Update(bool targetYAxisOrbiting)
-        {
-            if(_clippedVoxels ==  null || 
-                _previousParams.MinClipCoords != _renderParams.MinClipCoords || 
-                _previousParams.MaxClipCoords != _renderParams.MaxClipCoords)
-            {
-                //_clippedVoxels = new bool[000]
-            }
-            
+        {            
             base.Update(targetYAxisOrbiting);
         }
     }

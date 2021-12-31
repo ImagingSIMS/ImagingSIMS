@@ -2176,16 +2176,14 @@ namespace ImagingSIMS.MainApplication
 
         private async void Render3D(object sender, RoutedEventArgs e)
         {
+            List<Volume> volumes = new List<Volume>();
+
             int numberVolumes = listBoxRenderingVolumes.SelectedItems.Count;
             if (numberVolumes == 0)
             {
-                DialogBox db = new DialogBox("No volumes selected.", "Select one or more volumes to render.",
-                    "Rendering", DialogIcon.Error);
-                db.ShowDialog();
-                return;
+                volumes.Add(new Volume(new Data3D(512, 512, 10), Color.FromRgb(0, 0, 0)));
             }
 
-            List<Volume> volumes = new List<Volume>();
             float maxIntensity = 0;
 
             foreach (object obj in listBoxRenderingVolumes.SelectedItems)
@@ -2240,7 +2238,7 @@ namespace ImagingSIMS.MainApplication
                 //    renderVolumes.Add(new RenderVolume(volume.Data.ToFloatArray(maxIntensity), volume.DataColor));
                 //}
 
-                renderVolumes.Add(new RenderVolume(volume.Data.ToFloatArray(maxIntensity), volume.DataColor));
+                renderVolumes.Add(new RenderVolume(volume.Data.ToFloatArray(maxIntensity), volume.DataColor, volume.VolumeName));
             }
 
 
@@ -2364,7 +2362,7 @@ namespace ImagingSIMS.MainApplication
                     else d = volume.Data;
 
                     isosurfaces.Add(await RenderIsosurface.CreateSurfaceAsync(
-                        d.ToFloatArray(), volume.IsoValue, volume.DataColor.ToSharpDXColor(), ct++));
+                        d.ToFloatArray(), volume.IsoValue, volume.DataColor.ToSharpDXColor(), volume.VolumeName, ct++));
                 }
             }
             catch(Exception ex)

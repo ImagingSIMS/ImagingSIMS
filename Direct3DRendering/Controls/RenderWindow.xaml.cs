@@ -143,21 +143,25 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                    RenderWindowView.ScalingZ = 20;
                 });
                 for (int i = 0; i < Volumes.Length; i++)
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         RenderWindowView.VolumeColors[i] = Volumes[i].Color;
+                        RenderWindowView.VolumeNames[i] = Volumes[i].Name;
                     });
                 }
             }
             else
             {
                 RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                RenderWindowView.ScalingZ = 20;
                 for (int i = 0; i < Volumes.Length; i++)
                 {
                     RenderWindowView.VolumeColors[i] = Volumes[i].Color;
+                    RenderWindowView.VolumeNames[i] = Volumes[i].Name;
                 }
             }
 
@@ -180,21 +184,25 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                    RenderWindowView.ScalingZ = 20;
                 });
                 for (int i = 0; i < Volumes.Count; i++)
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         RenderWindowView.VolumeColors[i] = Volumes[i].Color;
+                        RenderWindowView.VolumeNames[i] = Volumes[i].Name;
                     });
                 }
             }
             else
             {
                 RenderWindowView = RenderingViewModel.DefaultVolumeParameters;
+                RenderWindowView.ScalingZ = 20;
                 for (int i = 0; i < Volumes.Count; i++)
                 {
                     RenderWindowView.VolumeColors[i] = Volumes[i].Color;
+                    RenderWindowView.VolumeNames[i] = Volumes[i].Name;
                 }
             }
 
@@ -217,21 +225,27 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     RenderWindowView = RenderingViewModel.DefaultIsosurfaceParameters;
+                    RenderWindowView.ScalingZ = 20;
                 });
                 for (int i = 0; i < Isosurfaces.Count; i++)
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         RenderWindowView.VolumeColors[i] = Isosurfaces[i].InitialColor;
+                        RenderWindowView.VolumeNames[i] = Isosurfaces[i].Name;
+                        RenderWindowView.IsoValues[i] = Isosurfaces[i].IsoValue;
                     });
                 }
             }
             else
             {
                 RenderWindowView = RenderingViewModel.DefaultIsosurfaceParameters;
+                RenderWindowView.ScalingZ = 20;
                 for (int i = 0; i < Isosurfaces.Count; i++)
                 {
                     RenderWindowView.VolumeColors[i] = Isosurfaces[i].InitialColor;
+                    RenderWindowView.VolumeNames[i] = Isosurfaces[i].Name;
+                    RenderWindowView.IsoValues[i] = Isosurfaces[i].IsoValue;
                 }
             }
 
@@ -262,6 +276,24 @@ namespace ImagingSIMS.Direct3DRendering.Controls
             _renderer.InitializeRenderer();
             _renderControl.SizeChanged += (sender_, args) =>
                 _renderer.NeedsResize = true;
+        }
+
+        public void OnZScalingChanged()
+        {
+            if (Renderer is VolumeRenderer)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    ((VolumeRenderer)Renderer).CreateVolumeVertices(RenderWindowView.ScalingZ);
+                });                
+            }
+            else if (Renderer is IsosurfaceRenderer)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    ((IsosurfaceRenderer)Renderer).CreateVolumeVertices(RenderWindowView.ScalingZ);
+                });
+            }
         }
 
         public void SetTransferFunction(byte[] Function)

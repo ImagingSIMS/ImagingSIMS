@@ -93,6 +93,17 @@
                                                             <TextBlock Grid.Column="1" Margin="2,4,4,4" Text="{Binding ElementName=sliderHeightMapHeight, Path=Value, StringFormat=0.00}"/>
                                                         </Grid>
                                                     </StackPanel>
+                                                    <StackPanel Orientation="Vertical" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Volume|Isosurface}">
+                                                        <TextBlock Margin="4">Z Scaling:</TextBlock>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Slider x:Name="sliderScalingZ" Margin="8,0,0,0" Minimum="0" Maximum="100" SmallChange="0.5" LargeChange="1" Value="{Binding ScalingZ}" ValueChanged="sliderScalingZ_ValueChanged"/>
+                                                            <TextBlock Grid.Column="1" Margin="2,4,4,4" Text="{Binding ElementName=sliderScalingZ, Path=Value, StringFormat=0.00}"/>
+                                                        </Grid>
+                                                    </StackPanel>
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Column="1" Orientation="Vertical">
@@ -116,13 +127,13 @@
                                                         <ColumnDefinition Width="Auto" SharedSizeGroup="LabelValue"/>
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock Grid.Column="0" Foreground="{StaticResource AxisXBrush}">X:</TextBlock>
-                                                    <TextBlock Grid.Column="1" Text="{Binding BoundingBoxLowerX, StringFormat=0.00}"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding RenderPlaneMinX, StringFormat=0.00}"/>
                                                     <xctk:RangeSlider Grid.Column="2" Style="{StaticResource RangeSliderCutoffPlaneStyle}"
-                                                        Minimum="{Binding BoundingBoxMinX}"
-                                                        LowerValue="{Binding BoundingBoxLowerX}"
-                                                        HigherValue="{Binding BoundingBoxUpperX}"
-                                                        Maximum="{Binding BoundingBoxMaxX}"/>
-                                                    <TextBlock Grid.Column="3" Text="{Binding BoundingBoxUpperX, StringFormat=0.00}"/>
+                                                        Minimum="0"
+                                                        LowerValue="{Binding RenderPlaneMinX}"
+                                                        HigherValue="{Binding RenderPlaneMaxX}"
+                                                        Maximum="{Binding DataWidth}"/>
+                                                    <TextBlock Grid.Column="3" Text="{Binding RenderPlaneMaxX, StringFormat=0.00}"/>
                                                 </Grid>
                                                 <!-- Y Plane -->
                                                 <Grid Margin="8,0">
@@ -133,13 +144,13 @@
                                                         <ColumnDefinition Width="Auto" SharedSizeGroup="LabelValue"/>
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock Grid.Column="0" Foreground="{StaticResource AxisYBrush}">Y:</TextBlock>
-                                                    <TextBlock Grid.Column="1" Text="{Binding BoundingBoxLowerY, StringFormat=0.00}"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding RenderPlaneMinY, StringFormat=0.00}"/>
                                                     <xctk:RangeSlider Grid.Column="2" Style="{StaticResource RangeSliderCutoffPlaneStyle}"
-                                                        Minimum="{Binding BoundingBoxMinY}"
-                                                        LowerValue="{Binding BoundingBoxLowerY}"
-                                                        HigherValue="{Binding BoundingBoxUpperY}"
-                                                        Maximum="{Binding BoundingBoxMaxY}"/>
-                                                    <TextBlock Grid.Column="3" Text="{Binding BoundingBoxUpperY, StringFormat=0.00}"/>
+                                                        Minimum="0"
+                                                        LowerValue="{Binding RenderPlaneMinY}"
+                                                        HigherValue="{Binding RenderPlaneMaxY}"
+                                                        Maximum="{Binding DataHeight}"/>
+                                                    <TextBlock Grid.Column="3" Text="{Binding RenderPlaneMaxY, StringFormat=0.00}"/>
                                                 </Grid>
                                                 <!-- X Plane -->
                                                 <Grid Margin="8,0">
@@ -150,13 +161,13 @@
                                                         <ColumnDefinition Width="Auto" SharedSizeGroup="LabelValue"/>
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock Grid.Column="0" Foreground="{StaticResource AxisZBrush}">Z:</TextBlock>
-                                                    <TextBlock Grid.Column="1" Text="{Binding BoundingBoxLowerZ, StringFormat=0.00}"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding RenderPlaneMinZ, StringFormat=0.00}"/>
                                                     <xctk:RangeSlider Grid.Column="2" Style="{StaticResource RangeSliderCutoffPlaneStyle}"
-                                                        Minimum="{Binding BoundingBoxMinZ}"
-                                                        LowerValue="{Binding BoundingBoxLowerZ}"
-                                                        HigherValue="{Binding BoundingBoxUpperZ}"
-                                                        Maximum="{Binding BoundingBoxMaxZ}"/>
-                                                    <TextBlock Grid.Column="3" Text="{Binding BoundingBoxUpperZ, StringFormat=0.00}"/>
+                                                        Minimum="0"
+                                                        LowerValue="{Binding RenderPlaneMinZ}"
+                                                        HigherValue="{Binding RenderPlaneMaxZ}"
+                                                        Maximum="{Binding DataDepth}"/>
+                                                    <TextBlock Grid.Column="3" Text="{Binding RenderPlaneMaxZ, StringFormat=0.00}"/>
                                                 </Grid>
 
                                             </StackPanel>
@@ -364,36 +375,60 @@
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
-                                        <StackPanel Grid.Row="0" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=0}">
-                                            <Label Foreground="{Binding VolumeColors[0]}">1:</Label>
+                                        <StackPanel Grid.Row="0" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=0}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[0]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[0]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[0], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel Grid.Row="1" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=1}">
-                                            <Label Foreground="{Binding VolumeColors[1]}">2:</Label>
+                                        <StackPanel Grid.Row="1" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=1}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[1]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[1]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[1], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel Grid.Row="2" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=2}">
-                                            <Label Foreground="{Binding VolumeColors[2]}">3:</Label>
+                                        <StackPanel Grid.Row="2" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=2}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[2]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[2]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[2], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel Grid.Row="3" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=3}">
-                                            <Label Foreground="{Binding VolumeColors[3]}">4:</Label>
+                                        <StackPanel Grid.Row="3" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=3}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[3]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[3]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[3], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel  Grid.Row="4" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=4}">
-                                            <Label Foreground="{Binding VolumeColors[4]}">5:</Label>
+                                        <StackPanel  Grid.Row="4" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=4}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[4]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[5]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[4], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel Grid.Row="5" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=5}">
-                                            <Label Foreground="{Binding VolumeColors[5]}">6:</Label>
+                                        <StackPanel Grid.Row="5" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=5}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[5]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[5]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[5], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel Grid.Row="6" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=6}">
-                                            <Label Foreground="{Binding VolumeColors[6]}">7:</Label>
+                                        <StackPanel Grid.Row="6" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=6}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[6]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[6]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[6], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel Grid.Row="7" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=7}">
-                                            <Label Foreground="{Binding VolumeColors[7]}">8:</Label>
+                                        <StackPanel Grid.Row="7" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=7}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[7]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[7]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[7], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}" />
                                         </StackPanel>
                                     </Grid>

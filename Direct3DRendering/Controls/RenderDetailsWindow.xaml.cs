@@ -91,5 +91,10 @@ namespace ImagingSIMS.Direct3DRendering.Controls
         {
             if (Device != null) shaderDisplay.LoadShaders(Device);
         }
+
+        private void sliderScalingZ_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            RenderWindow.OnZScalingChanged();
+        }
     }
 }
