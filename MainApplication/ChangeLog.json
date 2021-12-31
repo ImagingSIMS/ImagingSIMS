@@ -183,5 +183,21 @@
       "Support version format change in J105 V2 files.",
       "Switch y tile ordering in J105 V2 tiled spectra."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 8,
+      "Build": 1,
+      "Revision": 1
+    },
+    "Updates": [
+      "Improve performance of volume rendering.",
+      "Add Z Scaling for volume and isosurface rendering to dyanmically adjust height of volume data. No need to create volumes with empty or repeated layers in order to see more volume depth.",
+      "Implement clipping planes in x, y, and z dimensions for isosurface and volume rendering.",
+      "Display volume name (and isourface value if isosurface rendering is being performed) in the render details window.",
+      "Camera defaults to viewing the top of the volume being rendered.",
+      "Fix issue where incorrect (stale) isosurface value is applied."
+    ]
   }
 ]
