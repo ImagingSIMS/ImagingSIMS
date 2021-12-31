@@ -16,6 +16,7 @@ namespace ImagingSIMS.Direct3DRendering.DrawingObjects
     {
         float[, ,] _data;
         Color _color;
+        string _name;
 
         public int Width
         {
@@ -43,16 +44,22 @@ namespace ImagingSIMS.Direct3DRendering.DrawingObjects
         {
             get { return _color; }
         }
+        public string Name
+        {
+            get { return _name; }
+        }
 
-        public RenderVolume(float[, ,] VolumeData, System.Windows.Media.Color VolumeColor)
+        public RenderVolume(float[, ,] VolumeData, System.Windows.Media.Color VolumeColor, string name)
         {
             _data = VolumeData;
             _color = VolumeColor.ToSharpDXColor();
+            _name = name;
         }
-        public RenderVolume(float[, ,] VolumeData, Color VolumeColor)
+        public RenderVolume(float[, ,] VolumeData, Color VolumeColor, string name)
         {
             _data = VolumeData;
             _color = VolumeColor;
+            _name = name;
         }
 
         public Texture3D CreateTexture(Device Device)

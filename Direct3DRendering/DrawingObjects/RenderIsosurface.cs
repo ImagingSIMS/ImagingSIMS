@@ -18,6 +18,7 @@ namespace ImagingSIMS.Direct3DRendering.DrawingObjects
         public int Height { get; private set; }
         public int Depth { get; private set; }
         public float IsoValue { get; private set; }
+        public string Name { get; private set;}
 
         private void calculateSurface(float[,,] volumeData, float isoValue, int surfaceId)
         {
@@ -119,14 +120,15 @@ namespace ImagingSIMS.Direct3DRendering.DrawingObjects
             };
         }
 
-        public static RenderIsosurface CreateSurface(float[,,] volumeData, float isoValue, Color initialColor, int surfaceId)
+        public static RenderIsosurface CreateSurface(float[,,] volumeData, float isoValue, Color initialColor, string name, int surfaceId)
         {
             RenderIsosurface isosurface = new RenderIsosurface()
             {
                 Width = volumeData.GetLength(0) + 2,
                 Height = volumeData.GetLength(1) + 2,
                 Depth = volumeData.GetLength(2) + 2,
-                InitialColor = initialColor
+                InitialColor = initialColor,
+                Name = name
             };
 
             float[,,] paddedData = new float[isosurface.Width, isosurface.Height, isosurface.Depth];
@@ -146,9 +148,9 @@ namespace ImagingSIMS.Direct3DRendering.DrawingObjects
             return isosurface;
         }
 
-        public static async Task<RenderIsosurface> CreateSurfaceAsync(float[,,] volumeData, float isoValue, Color initialColor, int surfaceId)
+        public static async Task<RenderIsosurface> CreateSurfaceAsync(float[,,] volumeData, float isoValue, Color initialColor, string name, int surfaceId)
         {
-            return await Task.Run(() => CreateSurface(volumeData, isoValue, initialColor, surfaceId));
+            return await Task.Run(() => CreateSurface(volumeData, isoValue, initialColor, name, surfaceId));
         }
     }
 

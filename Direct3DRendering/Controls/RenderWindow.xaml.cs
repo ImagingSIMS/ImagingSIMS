@@ -150,6 +150,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         RenderWindowView.VolumeColors[i] = Volumes[i].Color;
+                        RenderWindowView.VolumeNames[i] = Volumes[i].Name;
                     });
                 }
             }
@@ -160,6 +161,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 for (int i = 0; i < Volumes.Length; i++)
                 {
                     RenderWindowView.VolumeColors[i] = Volumes[i].Color;
+                    RenderWindowView.VolumeNames[i] = Volumes[i].Name;
                 }
             }
 
@@ -189,6 +191,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         RenderWindowView.VolumeColors[i] = Volumes[i].Color;
+                        RenderWindowView.VolumeNames[i] = Volumes[i].Name;
                     });
                 }
             }
@@ -199,6 +202,7 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 for (int i = 0; i < Volumes.Count; i++)
                 {
                     RenderWindowView.VolumeColors[i] = Volumes[i].Color;
+                    RenderWindowView.VolumeNames[i] = Volumes[i].Name;
                 }
             }
 
@@ -228,6 +232,8 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         RenderWindowView.VolumeColors[i] = Isosurfaces[i].InitialColor;
+                        RenderWindowView.VolumeNames[i] = Isosurfaces[i].Name;
+                        RenderWindowView.IsoValues[i] = Isosurfaces[i].IsoValue;
                     });
                 }
             }
@@ -238,6 +244,8 @@ namespace ImagingSIMS.Direct3DRendering.Controls
                 for (int i = 0; i < Isosurfaces.Count; i++)
                 {
                     RenderWindowView.VolumeColors[i] = Isosurfaces[i].InitialColor;
+                    RenderWindowView.VolumeNames[i] = Isosurfaces[i].Name;
+                    RenderWindowView.IsoValues[i] = Isosurfaces[i].IsoValue;
                 }
             }
 

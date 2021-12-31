@@ -375,36 +375,60 @@
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
-                                        <StackPanel Grid.Row="0" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=0}">
-                                            <Label Foreground="{Binding VolumeColors[0]}">1:</Label>
+                                        <StackPanel Grid.Row="0" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=0}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[0]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[0]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[0], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel Grid.Row="1" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=1}">
-                                            <Label Foreground="{Binding VolumeColors[1]}">2:</Label>
+                                        <StackPanel Grid.Row="1" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=1}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[1]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[1]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[1], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel Grid.Row="2" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=2}">
-                                            <Label Foreground="{Binding VolumeColors[2]}">3:</Label>
+                                        <StackPanel Grid.Row="2" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=2}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[2]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[2]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[2], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel Grid.Row="3" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=3}">
-                                            <Label Foreground="{Binding VolumeColors[3]}">4:</Label>
+                                        <StackPanel Grid.Row="3" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=3}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[3]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[3]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[3], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel  Grid.Row="4" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=4}">
-                                            <Label Foreground="{Binding VolumeColors[4]}">5:</Label>
+                                        <StackPanel  Grid.Row="4" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=4}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[4]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[5]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[4], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel Grid.Row="5" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=5}">
-                                            <Label Foreground="{Binding VolumeColors[5]}">6:</Label>
+                                        <StackPanel Grid.Row="5" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=5}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[5]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[5]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[5], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel Grid.Row="6" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=6}">
-                                            <Label Foreground="{Binding VolumeColors[6]}">7:</Label>
+                                        <StackPanel Grid.Row="6" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=6}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[6]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[6]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[6], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}"/>
                                         </StackPanel>
-                                        <StackPanel Grid.Row="7" Orientation="Horizontal" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=7}">
-                                            <Label Foreground="{Binding VolumeColors[7]}">8:</Label>
+                                        <StackPanel Grid.Row="7" Orientation="Vertical" Visibility="{Binding ElementName=userControl, Path=RenderWindow.Renderer, Converter={StaticResource renderObjectToEnabledConverter}, ConverterParameter=7}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Foreground="White" Content="{Binding VolumeNames[7]}"/>
+                                                <Label Foreground="White" Content="{Binding IsoValues[7]}" Visibility="{Binding Path=RenderType, Converter={StaticResource renderTypeToVisbilityConverter}, ConverterParameter=Isosurface}"/>
+                                            </StackPanel>
                                             <cc:CollapsedColorSelector SelectedColor="{Binding VolumeColors[7], Mode=TwoWay, Converter={StaticResource sharpDXColorToMediaColorConverter}}" />
                                         </StackPanel>
                                     </Grid>

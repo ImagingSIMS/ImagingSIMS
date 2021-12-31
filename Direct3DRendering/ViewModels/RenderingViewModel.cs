@@ -97,6 +97,35 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
             }
         }
 
+        // Render Data
+        string[] _volumeNames;
+        float[] _isoValues;
+
+        public string[] VolumeNames
+        {
+            get { return _volumeNames; }
+            set
+            {
+                if (value != _volumeNames)
+                {
+                    _volumeNames = value;
+                    NotifyPropertyChanged("VolumeNames");
+                }
+            }
+        }
+        public float[] IsoValues
+        {
+            get { return _isoValues; }
+            set
+            {
+                if (value != _isoValues)
+                {
+                    _isoValues = value;
+                    NotifyPropertyChanged("IsoValues");
+                }
+            }
+        }
+
         // Rendering
         bool _showAxes;
         bool _showBoundingBox;
@@ -638,6 +667,9 @@ namespace ImagingSIMS.Direct3DRendering.ViewModels
         public RenderingViewModel()
         {
             EnableDepthBuffering = true;
+
+            VolumeNames = new string[8];
+            IsoValues = new float[8];
 
             ShowCoordinateBox = false;
             CoordinateBoxTransparency = 1.0f;

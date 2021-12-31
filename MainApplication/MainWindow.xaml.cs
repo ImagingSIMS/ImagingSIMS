@@ -2243,7 +2243,7 @@ namespace ImagingSIMS.MainApplication
                 //    renderVolumes.Add(new RenderVolume(volume.Data.ToFloatArray(maxIntensity), volume.DataColor));
                 //}
 
-                renderVolumes.Add(new RenderVolume(volume.Data.ToFloatArray(maxIntensity), volume.DataColor));
+                renderVolumes.Add(new RenderVolume(volume.Data.ToFloatArray(maxIntensity), volume.DataColor, volume.VolumeName));
             }
 
 
@@ -2367,7 +2367,7 @@ namespace ImagingSIMS.MainApplication
                     else d = volume.Data;
 
                     isosurfaces.Add(await RenderIsosurface.CreateSurfaceAsync(
-                        d.ToFloatArray(), volume.IsoValue, volume.DataColor.ToSharpDXColor(), ct++));
+                        d.ToFloatArray(), volume.IsoValue, volume.DataColor.ToSharpDXColor(), volume.VolumeName, ct++));
                 }
             }
             catch(Exception ex)
