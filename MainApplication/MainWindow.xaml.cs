@@ -897,7 +897,7 @@ namespace ImagingSIMS.MainApplication
                 }
                 catch (Exception ex)
                 {
-                    e.Result = ex;
+                    e.Result = ex; 
                 }
             }
             else if (args.Type == SpectrumType.BioToF)

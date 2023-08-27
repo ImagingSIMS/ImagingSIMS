@@ -199,5 +199,17 @@
       "Camera defaults to viewing the top of the volume being rendered.",
       "Fix issue where incorrect (stale) isosurface value is applied."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 9,
+      "Build": 1,
+      "Revision": 1
+    },
+    "Updates": [
+      "Update target framework to .NET 4.8.",
+      "Fixed an issue where newer format Ionoptika V2 spectra files moved certain image detail parameters to a different file."
+    ]
   }
 ]

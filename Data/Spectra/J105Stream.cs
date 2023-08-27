@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -198,6 +199,19 @@ namespace ImagingSIMS.Data.Spectra
 
             foreach (string s in lines)
             {
+                // This parses the V2 version from newer files
+                if (s.Contains("ExperimentDetailsVersion"))
+                {
+                    if (s.Contains("."))
+                    {
+                        J105Parameters.Version = Version.Parse(s);
+                    }
+                    else
+                    {
+                        var v = ValueFromLine(s);
+                        J105Parameters.Version = new Version(v, 0, 0, 0);
+                    }
+                }
                 if (s.Contains("DepthLo"))
                 {
                     J105Parameters.DepthLo = ValueFromLine(s);
@@ -271,20 +285,11 @@ namespace ImagingSIMS.Data.Spectra
 
             foreach (string s in lines)
             {
+                // This parses the V2 version info from older files
                 if (s.Contains("Versin"))
                 {
                     char[] delim = new char[1] { '=' };
                     J105Parameters.Version = Version.Parse(s.Split(delim)[1]);
-                    break;
-                }
-                else if (s.Contains("XYSubSample"))
-                {
-                    J105Parameters.XYSubSample = ValueFromLine(s);
-                    break;
-                }
-                else if (s.Contains("IntensityNormalization"))
-                {
-                    J105Parameters.IntensityNormalization = ValueFromLine(s);
                     break;
                 }
             }
