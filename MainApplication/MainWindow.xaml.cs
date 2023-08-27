@@ -43,6 +43,7 @@ using Accord.Statistics.Analysis;
 using Accord.Statistics.Kernels;
 using System.Globalization;
 using System.Windows.Interop;
+using System.IO.Compression;
 
 namespace ImagingSIMS.MainApplication
 {
@@ -897,7 +898,7 @@ namespace ImagingSIMS.MainApplication
                 }
                 catch (Exception ex)
                 {
-                    e.Result = ex;
+                    e.Result = ex; 
                 }
             }
             else if (args.Type == SpectrumType.BioToF)
