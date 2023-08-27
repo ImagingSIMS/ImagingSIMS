@@ -43,7 +43,6 @@ using Accord.Statistics.Analysis;
 using Accord.Statistics.Kernels;
 using System.Globalization;
 using System.Windows.Interop;
-using System.IO.Compression;
 
 namespace ImagingSIMS.MainApplication
 {
