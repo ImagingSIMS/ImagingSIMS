@@ -2585,18 +2585,11 @@ namespace ImagingSIMS.MainApplication
             {
                 string currentRange = Workspace.SpectraCustomRange;
 
-                // Text clears does not clear ranges
-                try
+                List<MassRange> ranges = new List<MassRange>()
                 {
-                    List<MassRange> ranges = MassRange.ParseString(currentRange);
-                    ranges.Add(new MassRange(e.MassStart, e.MassEnd));
-                    ranges.Sort();
-                    currentRange = MassRange.CreateString(ranges);
-                }
-                finally
-                {
-                    Workspace.SpectraCustomRange = currentRange;
-                }
+                    new MassRange(e.MassStart, e.MassEnd)
+                };
+                Workspace.SpectraCustomRange += ";" + MassRange.CreateString(ranges);
             }
         }
 
@@ -2632,7 +2625,7 @@ namespace ImagingSIMS.MainApplication
             {
                 try
                 {
-                    massRanges = MassRange.ParseString(Workspace.SpectraCustomRange).ToArray();
+                    massRanges = MassRange.ParseString(Workspace.SpectraCustomRange, Workspace.SpectraBinWidth).ToArray();
                 }
                 catch (ArgumentException ARex)
                 {
@@ -2758,7 +2751,7 @@ namespace ImagingSIMS.MainApplication
             {
                 try
                 {
-                    massRanges = MassRange.ParseString(Workspace.SpectraCustomRange).ToArray();
+                    massRanges = MassRange.ParseString(Workspace.SpectraCustomRange, Workspace.SpectraBinWidth).ToArray();
                 }
                 catch (ArgumentException ARex)
                 {

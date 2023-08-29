@@ -37,7 +37,7 @@ namespace ImagingSIMS.Data.Spectra
             else return 1;
         }
 
-        public static List<MassRange> ParseString(string customRange)
+        public static List<MassRange> ParseString(string customRange, double binWidth)
         {
             List<MassRange> ranges = new List<MassRange>();
 
@@ -63,32 +63,49 @@ namespace ImagingSIMS.Data.Spectra
 
             foreach (string s in rangeString)
             {
+                var range = new MassRange();
                 if (!s.Contains("-"))
                 {
-                    throw new ArgumentException($"Specified range ({s}) does not contain a valid separtor character (-)");
+                    if (binWidth <= 0)
+                    {
+                        throw new ArgumentException("Centroid mass was specified with a bin width less than or equal to zero. Please enter a positive bin width.");
+                    }
+                    try
+                    {
+                        var centroid = double.Parse(s);
+                        range.StartMass = centroid - binWidth;
+                        range.EndMass = centroid + binWidth;
+                    }
+                    catch(Exception ex)
+                    {
+                        throw new ArgumentException($"Could not parse the specified centroid ({s}).", ex);
+
+                    }
                 }
 
-                string[] rangeValues = s.Split('-');
+                else
+                {
+                    string[] rangeValues = s.Split('-');
 
-                if (rangeValues.Length != 2)
-                    throw new ArgumentException("Invalid number of masses in the specified range.");
+                    if (rangeValues.Length != 2)
+                        throw new ArgumentException("Invalid number of masses in the specified range.");
 
-                MassRange range = new MassRange();
-                try
-                {
-                    range.StartMass = double.Parse(rangeValues[0]);
-                }
-                catch (Exception ex)
-                {
-                    throw new ArgumentException($"Could not parse the specified start mass ({rangeValues[0]}).", ex);
-                }
-                try
-                {
-                    range.EndMass = double.Parse(rangeValues[1]);
-                }
-                catch (Exception ex)
-                {
-                    throw new ArgumentException($"Could not parse the specified end mass ({rangeValues[1]}).", ex);
+                    try
+                    {
+                        range.StartMass = double.Parse(rangeValues[0]);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ArgumentException($"Could not parse the specified start mass ({rangeValues[0]}).", ex);
+                    }
+                    try
+                    {
+                        range.EndMass = double.Parse(rangeValues[1]);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ArgumentException($"Could not parse the specified end mass ({rangeValues[1]}).", ex);
+                    }
                 }
 
                 ranges.Add(range);

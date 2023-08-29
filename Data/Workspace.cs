@@ -41,6 +41,7 @@ namespace ImagingSIMS.Data
         double _spectraMassStart;
         double _spectraMassEnd;
         string _spectraCustomRange;
+        double _spectraBinWidth;
         double _volumePixelSize;
         double _volumePixelDepth;
         double _volumeZSpacing;
@@ -225,6 +226,18 @@ namespace ImagingSIMS.Data
                 {
                     _spectraCustomRange = value;
                     NotifyPropertyChanged("SpectraCustomRange");
+                }
+            }
+        }
+        public double SpectraBinWidth
+        {
+            get { return _spectraBinWidth; }
+            set
+            {
+                if (_spectraBinWidth != value)
+                {
+                    _spectraBinWidth = value;
+                    NotifyPropertyChanged("SpectraBinWidth");
                 }
             }
         }
