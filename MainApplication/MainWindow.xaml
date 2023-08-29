@@ -592,10 +592,38 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Label>Custom range:</Label>
-                            <TextBox x:Name="specCustomRange" Margin="2" Grid.Column="1" Text="{Binding Workspace.SpectraCustomRange, UpdateSourceTrigger=PropertyChanged}" 
-                                     Width="210" VerticalContentAlignment="Center"
-                                     ToolTip="Enter a custom mass range, with support for multiple ranges. Enter in the format start-end;start-end;start-end with no spaces."/>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Column="0" Grid.Row="0">Custom range:</Label>
+                            <TextBox x:Name="specCustomRange" Margin="2" Grid.Column="1" Grid.Row="0" Text="{Binding Workspace.SpectraCustomRange, UpdateSourceTrigger=PropertyChanged}" 
+                                     Width="210" VerticalContentAlignment="Center">
+                                <TextBox.ToolTip>
+                                    <TextBlock>
+                                        Enter a custom mass range, with support for multiple ranges.
+                                        <LineBreak/>
+                                        Enter in the format start-end;start-end;start-end with no spaces or centroid;centroid.
+                                        <LineBreak/>
+                                        For centroids, start and end mass are determined as centroid +/- bin width set below.
+                                        <LineBreak/>
+                                        Both start-end; and centroid; can be mixed.
+                                    </TextBlock>
+                                </TextBox.ToolTip>
+                            </TextBox>
+                            <Label Grid.Column="0" Grid.Row="1">Bin width:</Label>
+                            <TextBox x:Name="specBinWidth" Margin="2" Grid.Column="1" Grid.Row="1" Text="{Binding Workspace.SpectraBinWidth, UpdateSourceTrigger=PropertyChanged, StringFormat={}0.00}"
+                                     Width="120" VerticalContentAlignment="Center">
+                                <TextBox.ToolTip>
+                                    <TextBlock>
+                                        Bin width to extract +/- m/z units if Custom range only specifies a single mass (separated by ;).
+                                        <LineBreak/>
+                                        If start and end ranges are specified, then this parameter is ignored.
+                                        <LineBreak/>
+                                        Both start-end; and centroid; can be mixed.
+                                    </TextBlock>
+                                </TextBox.ToolTip>
+                            </TextBox>
                         </Grid>
                         <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="0">
                             <RibbonTextBox x:Name="specTableName" Label="Base name: " />
