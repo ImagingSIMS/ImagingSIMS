@@ -211,5 +211,16 @@
       "Update target framework to .NET 4.8.",
       "Fixed an issue where newer format Ionoptika V2 spectra files moved certain image detail parameters to a different file."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 9,
+      "Build": 2,
+      "Revision": 1
+    },
+    "Updates": [
+      "Adds feature to specify custom m/z ranges when extracting image data from a spectrum either as a series of start, stop m/z values or a series of centroids with a fixed +/- bin width."
+    ]
   }
 ]
