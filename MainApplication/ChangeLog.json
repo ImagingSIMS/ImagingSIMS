@@ -222,5 +222,16 @@
     "Updates": [
       "Adds feature to specify custom m/z ranges when extracting image data from a spectrum either as a series of start, stop m/z values or a series of centroids with a fixed +/- bin width."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 9,
+      "Build": 2,
+      "Revision": 2
+    },
+    "Updates": [
+      "Fixes a couple issues with preexisting custom range string entries when selecting a new peak."
+    ]
   }
 ]

@@ -2583,14 +2583,11 @@ namespace ImagingSIMS.MainApplication
             }
             else if (radioSpecCustomRange.IsChecked == true)
             {
-                if (string.IsNullOrEmpty(Workspace.SpectraCustomRange)){
-                    return;
-                }
                 List<MassRange> ranges = new List<MassRange>()
                 {
                     new MassRange(e.MassStart, e.MassEnd)
                 };
-                if (!Workspace.SpectraCustomRange.EndsWith(";"))
+                if (!Workspace.SpectraCustomRange.EndsWith(";") && !string.IsNullOrEmpty(Workspace.SpectraCustomRange))
                 {
                     Workspace.SpectraCustomRange += ";";
                 }
