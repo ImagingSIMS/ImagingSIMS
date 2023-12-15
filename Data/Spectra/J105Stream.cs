@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using ImagingSIMS.Common.Math;
 
 namespace ImagingSIMS.Data.Spectra
@@ -156,9 +157,10 @@ namespace ImagingSIMS.Data.Spectra
                 _zipArchive = ZipFile.Open(_streamPath, ZipArchiveMode.Update);
                 _hasQuickLoadFile = CheckForQuickLoad();
 
+                ReadMasses();
+                ParseImageDimensions();
                 ReadImageDetails();
                 ReadDetails();
-                ReadMasses();
             }
             catch (Exception ex)
             {
@@ -181,6 +183,21 @@ namespace ImagingSIMS.Data.Spectra
         {
             ZipArchiveEntry entry = _zipArchive.GetEntry(StreamFilePaths.QuickLoadFile);
             return entry != null;
+        }
+        private void ParseImageDimensions()
+        {
+            var entries = _zipArchive.Entries.Where(e => e.FullName.Contains("Spectr"));
+            var depths = entries.Select(e => e.FullName.Split('\\').ToList()).Select(p => p[1]).Distinct().Select(d => int.Parse(d.Replace("Z", "")));
+            J105Parameters.DepthLo = depths.Min();
+            J105Parameters.DepthHi = depths.Max();
+            var tilesY = entries.Select(e => e.FullName.Split('\\').ToList()).Select(p => p[2]).Distinct().Select(d => int.Parse(d.Replace("TY", "")));
+            J105Parameters.StageScanDimensionY = tilesY.Max() + 1;
+            var tilesX = entries.Select(e => e.FullName.Split('\\').ToList()).Select(p => p[3]).Distinct().Select(d => int.Parse(d.Replace("TX", "")));
+            J105Parameters.StageScanDimensionX = tilesX.Max() + 1;
+            var rasterY = entries.Select(e => e.FullName.Split('\\').ToList()).Select(p => p[4]).Distinct().Select(d => int.Parse(d.Replace("RY", "")));
+            J105Parameters.RasterScanDimensionY = rasterY.Max() + 1;
+            var rasterX = entries.Select(e => e.FullName.Split('\\').ToList()).Select(p => p[5]).Distinct().Select(d => int.Parse(d.Replace("RX", "")));
+            J105Parameters.RasterScanDimensionX = rasterX.Max() + 1;
         }
         private void ReadImageDetails()
         {
@@ -212,36 +229,36 @@ namespace ImagingSIMS.Data.Spectra
                         J105Parameters.Version = new Version(v, 0, 0, 0);
                     }
                 }
-                if (s.Contains("DepthLo"))
-                {
-                    J105Parameters.DepthLo = ValueFromLine(s);
-                    continue;
-                }
-                if (s.Contains("DepthHi"))
-                {
-                    J105Parameters.DepthHi = ValueFromLine(s);
-                    continue;
-                }
-                if (s.Contains("StageScanDimensionX"))
-                {
-                    J105Parameters.StageScanDimensionX = ValueFromLine(s);
-                    continue;
-                }
-                if (s.Contains("StageScanDimensionY"))
-                {
-                    J105Parameters.StageScanDimensionY = ValueFromLine(s);
-                    continue;
-                }
-                if (s.Contains("RasterScanDimensionX"))
-                {
-                    J105Parameters.RasterScanDimensionX = ValueFromLine(s);
-                    continue;
-                }
-                if (s.Contains("RasterScanDimensionY"))
-                {
-                    J105Parameters.RasterScanDimensionY = ValueFromLine(s);
-                    continue;
-                }
+                //if (s.Contains("DepthLo"))
+                //{
+                //    J105Parameters.DepthLo = ValueFromLine(s);
+                //    continue;
+                //}
+                //if (s.Contains("DepthHi"))
+                //{
+                //    J105Parameters.DepthHi = ValueFromLine(s);
+                //    continue;
+                //}
+                //if (s.Contains("StageScanDimensionX"))
+                //{
+                //    J105Parameters.StageScanDimensionX = ValueFromLine(s);
+                //    continue;
+                //}
+                //if (s.Contains("StageScanDimensionY"))
+                //{
+                //    J105Parameters.StageScanDimensionY = ValueFromLine(s);
+                //    continue;
+                //}
+                //if (s.Contains("RasterScanDimensionX"))
+                //{
+                //    J105Parameters.RasterScanDimensionX = ValueFromLine(s);
+                //    continue;
+                //}
+                //if (s.Contains("RasterScanDimensionY"))
+                //{
+                //    J105Parameters.RasterScanDimensionY = ValueFromLine(s);
+                //    continue;
+                //}
                 if (s.Contains("WidthInMicrons"))
                 {
                     J105Parameters.WidthMicrons = ValueFromLine(s);
@@ -252,11 +269,11 @@ namespace ImagingSIMS.Data.Spectra
                     J105Parameters.HeightMicrons = ValueFromLine(s);
                     continue;
                 }
-                if (s.Contains("SpectrumLength"))
-                {
-                    J105Parameters.SpectrumLength = ValueFromLine(s);
-                    continue;
-                }
+                //if (s.Contains("SpectrumLength"))
+                //{
+                //    J105Parameters.SpectrumLength = ValueFromLine(s);
+                //    continue;
+                //}
                 if (s.Contains("WidthInPixels"))
                 {
                     J105Parameters.WidthPixels = ValueFromLine(s);
@@ -301,9 +318,11 @@ namespace ImagingSIMS.Data.Spectra
             ZipArchiveEntry entryMass = _zipArchive.GetEntry(StreamFilePaths.MTMass);
             ZipArchiveEntry entryTime = _zipArchive.GetEntry(StreamFilePaths.MTTime);
 
-            long mc = entryMass.Length / 4L;
-            long tc = entryTime.Length / 4L;
+            int mc = (int)(entryMass.Length / 4L);
+            int tc = (int)(entryTime.Length / 4L);
             if (mc != tc) throw new ArgumentException(string.Format("Mass ({0}) and time ({1}) lengths do not match", mc, tc));
+
+            J105Parameters.SpectrumLength = (int)mc;
 
             long num = mc;
 
@@ -324,26 +343,18 @@ namespace ImagingSIMS.Data.Spectra
         public void UpdateImageDetails(int pixelsX, int pixelsY)
         {
             ZipArchiveEntry entry = _zipArchive.GetEntry(StreamFilePaths.ImageDetails);
-            List<string> lines = new List<string>();
-
-            //J105Parameters.StageScanDimensionX = 1;
-            //J105Parameters.StageScanDimensionY = 1;
-            //J105Parameters.RasterScanDimensionX = pixelsX;
-            //J105Parameters.RasterScanDimensionY = pixelsY;
-            //J105Parameters.WidthPixels = pixelsX;
-            //J105Parameters.HeightPixels = pixelsY;
 
             using (StreamWriter sw = new StreamWriter(entry.Open()))
             {
                 sw.WriteLine("DepthLo=" + J105Parameters.DepthLo);
                 sw.WriteLine("DepthHi=" + J105Parameters.DepthHi);
-                sw.WriteLine("StageScanDimensionX=1");
-                sw.WriteLine("StageScanDimensionY=1");
-                sw.WriteLine("RasterScanDimensionX=" + pixelsX);
-                sw.WriteLine("RasterScanDimensionY=" + pixelsY);
+                //sw.WriteLine("StageScanDimensionX=1");
+                //sw.WriteLine("StageScanDimensionY=1");
+                //sw.WriteLine("RasterScanDimensionX=" + pixelsX);
+                //sw.WriteLine("RasterScanDimensionY=" + pixelsY);
                 sw.WriteLine("WidthInMicrons=" + J105Parameters.WidthMicrons);
                 sw.WriteLine("HeightInMicrons=" + J105Parameters.HeightMicrons);
-                sw.WriteLine("SpectrumLength=" + J105Parameters.SpectrumLength);
+                //sw.WriteLine("SpectrumLength=" + J105Parameters.SpectrumLength);
                 sw.WriteLine("WidthInPixels=" + pixelsX);
                 sw.WriteLine("HeightInPixels=" + pixelsY);
             }
@@ -496,6 +507,7 @@ namespace ImagingSIMS.Data.Spectra
                     returnArray[Convert.ToUInt32(index)] = Convert.ToUInt32(value);
                 }
             }
+            
             return returnArray;
         }
         public uint[] GetValues(int Z, int TY, int TX, int RY, int RX, out byte[] Buffer)
