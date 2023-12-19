@@ -1,0 +1,151 @@
+﻿<UserControl x:Class="ImagingSIMS.Controls.Tabs.ImageOverlay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:c="clr-namespace:ImagingSIMS.Controls"
+             xmlns:cc="clr-namespace:ImagingSIMS.Common.Controls;assembly=Common"
+             xmlns:local="clr-namespace:ImagingSIMS.Controls.Tabs"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Themes\Generic.xaml"/>
+                <ResourceDictionary>
+                    <Style TargetType="{x:Type GroupBox}">
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Margin" Value="4"/>
+                    </Style>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Setter Property="Margin" Value="4"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="White"/>
+                    </Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Margin" Value="4"/>
+                        <Setter Property="Width" Value="75"/>
+                        <Setter Property="Height" Value="23"/>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <GroupBox Grid.Column="0" Header="Image Settings">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Button x:Name="buttonAddImage" Click="buttonAddImage_Click"
+                        Width="150" Height="25" HorizontalAlignment="Right">Add Image</Button>
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl  ItemsSource="{Binding Images}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource ThemeBlueBrush}" 
+                                        BorderThickness="2" Margin="4" Padding="4" CornerRadius="8">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Grid.Column="0">Image:</Label>
+                                            <ComboBox Grid.Column="1"
+                                                ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ImageOverlay}},
+                                                                    Path=ViewModel.Workspace.Data}"
+                                                SelectedItem="{Binding Image}"
+                                                SelectionChanged="comboBoxImage_SelectionChanged"
+                                                Width="250" Margin="4" Padding="4">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}" Foreground="Black"/>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+                                            <Button Grid.Column="2" Width="25" Height="25" Click="buttonRemoveImage_Click" Margin="4" ToolTip="Delete">
+                                                <Image Source="..\Images\Remove24.png"/>
+                                            </Button>
+                                        </Grid>
+                                        <Grid Grid.Row="1">
+                                            <cc:CollapsedColorSelector Grid.Row="1" Grid.Column="2" Margin="4"
+                                                SelectedColor="{Binding Color, Mode=TwoWay}"                                           
+                                                IsAlphaEnabled="False"
+                                                Width="350"/>
+                                        </Grid>
+                                        <Grid Grid.Row="2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Grid.Column="0">Saturation:</Label>
+                                            <Slider Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" 
+                                                SmallChange="{Binding Image.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Small}"
+                                                LargeChange="{Binding Image.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Large}"
+                                                Minimum="{Binding Image.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Minimum}"
+                                                Maximum="{Binding Image.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Maximum}"
+                                                Value="{Binding Saturation}"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding Saturation, StringFormat=0.000}"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Grid.Column="0">Threshold:</Label>
+                                            <Slider Grid.Column="1" Margin="4" HorizontalAlignment="Stretch" 
+                                                SmallChange="{Binding Image.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Small}"
+                                                LargeChange="{Binding Image.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Large}"
+                                                Minimum="{Binding Image.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Minimum}"
+                                                Maximum="{Binding Image.Maximum, Converter={StaticResource dataMaximumToSliderRangeConverter}, ConverterParameter=Maximum}"
+                                                Value="{Binding Threshold}"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding Threshold, StringFormat=0.000}"/>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+                
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="Overlay">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Button Width="20" Height="20" Click="contentButtonSave_Click" Margin="4" ToolTip="Save">
+                        <Image Source="..\Images\saveHS.png"/>
+                    </Button>
+                    <Button Width="20" Height="20" Click="contentButtonCopy_Click" Margin="4" ToolTip="Copy">
+                        <Image Source="..\Images\copy.ico"/>
+                    </Button>
+                </StackPanel>
+
+                <Image Grid.Row="1" Source="{Binding OverlayImage}"/>                
+            </Grid>
+
+
+        </GroupBox>
+    </Grid>
+</UserControl>
