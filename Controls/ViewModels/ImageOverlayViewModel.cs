@@ -31,8 +31,11 @@ namespace ImagingSIMS.Controls.ViewModels
                 {
                     _image = value;
                     NotifyPropertyChanged();
-                    Saturation = Image.Maximum;
-                    Threshold = 0;
+                    if (Image != null)
+                    {
+                        Saturation = Image.Maximum;
+                        Threshold = 0;
+                    }
                 }
             }
         }
@@ -90,22 +93,9 @@ namespace ImagingSIMS.Controls.ViewModels
     }
     public class ImageOverlayViewModel : INotifyPropertyChanged
     {
-        Workspace _workspace;
         ObservableCollection<OverlaySettingsViewModel> _images;
         ImageSource _overlayImage;
 
-        public Workspace Workspace
-        {
-            get { return _workspace; }
-            set
-            {
-                if ( _workspace != value)
-                {
-                    _workspace = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
         public ObservableCollection<OverlaySettingsViewModel> Images
         {
             get { return _images; }

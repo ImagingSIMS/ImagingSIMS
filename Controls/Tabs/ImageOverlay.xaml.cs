@@ -20,6 +20,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using ImagingSIMS.Common;
+
 namespace ImagingSIMS.Controls.Tabs
 {
     /// <summary>q
@@ -30,6 +32,15 @@ namespace ImagingSIMS.Controls.Tabs
         ImageOverlayViewModel _viewModel;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public static readonly DependencyProperty WorkspaceProperty = DependencyProperty.Register(
+            "Workspace", typeof(Workspace), typeof(ImageOverlay));
+
+        public Workspace Workspace
+        {
+            get { return (Workspace)GetValue(WorkspaceProperty); }
+            set { SetValue(WorkspaceProperty, value); }
+        }
 
         public ImageOverlayViewModel ViewModel
         {
@@ -49,7 +60,8 @@ namespace ImagingSIMS.Controls.Tabs
         public ImageOverlay(Workspace workspace)
         {
             ViewModel = new ImageOverlayViewModel();
-            ViewModel.Workspace = workspace;
+            Workspace = workspace;
+
             DataContext = ViewModel;
 
             InitializeComponent();
@@ -93,9 +105,10 @@ namespace ImagingSIMS.Controls.Tabs
 
             if (sfd.ShowDialog() != true) return;
 
-            if (ViewModel.OverlayImage == null) return;
+            BitmapSource source = ViewModel.OverlayImage as BitmapSource;
+            if(source == null) return;
 
-            ViewModel.OverlayImage.Save(sfd.FileName);
+            source.Save(sfd.FileName);
         }
         private void contentButtonCopy_Click(object sender, RoutedEventArgs e)
         {
