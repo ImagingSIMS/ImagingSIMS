@@ -182,8 +182,8 @@ namespace ImagingSIMS.Data.Spectra
                             Parallel.For(0, _pixelsY,
                                 y =>
                                 {
-                                    // int yIndex = (ty * _pixelsY) + y;
-                                    int yIndex = ((_tilesY - ty - 1) * _pixelsY) + y;
+                                    int yIndex = (ty * _pixelsY) + y;
+                                    // int yIndex = ((_tilesY - ty - 1) * _pixelsY) + y;
 
                                     dt[xIndex, yIndex] = _stream.IntensityFromMassRange(Layer, ty, tx, y, x, (float)MassRange.StartMass, (float)MassRange.EndMass);
                                 }
@@ -255,7 +255,8 @@ namespace ImagingSIMS.Data.Spectra
                             int xIndex = (tx * _pixelsX) + x;
                             Parallel.For(0, _pixelsY, y =>
                             {
-                                int yIndex = ((_tilesY - ty - 1) * _pixelsY) + y;
+                                // int yIndex = ((_tilesY - ty - 1) * _pixelsY) + y;
+                                int yIndex = (ty * _pixelsY) + y;
                                 dt[xIndex, yIndex] = _stream.IntensityFromMassRange(z, ty, tx, y, x, (float)MassRange.StartMass, (float)MassRange.EndMass);
                             });
                             ct++;
@@ -300,8 +301,8 @@ namespace ImagingSIMS.Data.Spectra
                             Parallel.For(0, _pixelsY,
                                 y =>
                                 {
-                                    int yIndex = ((_tilesY - ty - 1) * _pixelsY) + y;
-
+                                    // int yIndex = ((_tilesY - ty - 1) * _pixelsY) + y;
+                                    int yIndex = (ty * _pixelsY) + y;
                                     dt[xIndex, yIndex] = _stream.IntensityFromMassRange(Layer, ty, tx, y, x, (float)MassRange.StartMass, (float)MassRange.EndMass);
                                 }
                             );
