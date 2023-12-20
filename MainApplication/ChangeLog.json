@@ -233,5 +233,17 @@
     "Updates": [
       "Fixes a couple issues with preexisting custom range string entries when selecting a new peak."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 10,
+      "Build": 1,
+      "Revision": 2
+    },
+    "Updates": [
+      "Adds new tab for creating dynamic overlay images.",
+      "Changes support for V2 files to newest format where tile dimensions are no longer contained in the image details file."
+    ]
   }
 ]
