@@ -182,9 +182,7 @@ namespace ImagingSIMS.Data.Spectra
                             Parallel.For(0, _pixelsY,
                                 y =>
                                 {
-                                    // int yIndex = (ty * _pixelsY) + y;
-                                    int yIndex = ((_tilesY - ty - 1) * _pixelsY) + y;
-
+                                    int yIndex = (ty * _pixelsY) + y;
                                     dt[xIndex, yIndex] = _stream.IntensityFromMassRange(Layer, ty, tx, y, x, (float)MassRange.StartMass, (float)MassRange.EndMass);
                                 }
                             );
@@ -255,15 +253,11 @@ namespace ImagingSIMS.Data.Spectra
                             int xIndex = (tx * _pixelsX) + x;
                             Parallel.For(0, _pixelsY, y =>
                             {
-                                // int yIndex = (ty * _pixelsY) + y;
-                                // int yIndex = 0;
-                                // if (ty == 0) yIndex = (1 * _pixelsY) + y;
-                                // else yIndex = (0 * _pixelsY) + y;
-                                int yIndex = ((_tilesY - ty - 1) * _pixelsY) + y;
+                                int yIndex = (ty * _pixelsY) + y;
                                 dt[xIndex, yIndex] = _stream.IntensityFromMassRange(z, ty, tx, y, x, (float)MassRange.StartMass, (float)MassRange.EndMass);
                             });
                             ct++;
-                            if (bw != null) bw.ReportProgress(Percentage.GetPercent(ct, totalSteps));
+                            bw?.ReportProgress(Percentage.GetPercent(ct, totalSteps));
                             if (bw != null && bw.CancellationPending) return;
                         });
                         if (bw != null && bw.CancellationPending) return returnTables;
@@ -301,22 +295,15 @@ namespace ImagingSIMS.Data.Spectra
                     Parallel.For(0, _tilesY,
                         ty =>
                         {
-                            //for (int ty = 0; ty < _tilesY; ty++)
-                            //{
-                            //for (int y = 0; y < _pixelsY; y++)
                             Parallel.For(0, _pixelsY,
                                 y =>
                                 {
-                                    //int yIndex = (ty * _pixelsY) + y;
-                                    int yIndex = ((_tilesY - ty - 1) * _pixelsY) + y;
-
+                                    int yIndex = (ty * _pixelsY) + y;
                                     dt[xIndex, yIndex] = _stream.IntensityFromMassRange(Layer, ty, tx, y, x, (float)MassRange.StartMass, (float)MassRange.EndMass);
                                 }
                             );
-                            //}
                             ct++;
-                            if (bw != null) bw.ReportProgress(Percentage.GetPercent(ct, totalSteps));
-                            //if (bw.CancellationPending) return returnTables;
+                            bw?.ReportProgress(Percentage.GetPercent(ct, totalSteps));
                         });
                     if (bw != null && bw.CancellationPending) return null;
                 }
@@ -686,14 +673,6 @@ namespace ImagingSIMS.Data.Spectra
 
             cropped._intensities = cropped._stream.LoadFromQuickLoad();
             Trace.WriteLine("Masses and intensities loaded.");
-
-            //cropped._pixelsX = cropped._stream.J105Parameters.RasterScanDimensionX;
-            //cropped._pixelsY = cropped._stream.J105Parameters.RasterScanDimensionY;
-            //cropped._tilesX = cropped._stream.J105Parameters.StageScanDimensionX;
-            //cropped._tilesY = cropped._stream.J105Parameters.StageScanDimensionY;
-
-            //cropped._sizeX = cropped._stream.J105Parameters.RasterScanDimensionX * _stream.J105Parameters.StageScanDimensionX;
-            //cropped._sizeY = cropped._stream.J105Parameters.RasterScanDimensionY * _stream.J105Parameters.StageScanDimensionY;
 
 
             cropped._startMass = cropped._masses[0];
