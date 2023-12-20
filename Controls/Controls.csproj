@@ -143,6 +143,9 @@
     <Compile Include="Tabs\FusionPointTab.xaml.cs">
       <DependentUpon>FusionPointTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tabs\ImageOverlay.xaml.cs">
+      <DependentUpon>ImageOverlay.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tabs\RatioTab.xaml.cs">
       <DependentUpon>RatioTab.xaml</DependentUpon>
     </Compile>
@@ -295,6 +298,7 @@
     <Compile Include="ViewModels\DataMathViewModel.cs" />
     <Compile Include="ViewModels\FusionImageViewModel.cs" />
     <Compile Include="ViewModels\FusionPointTabViewModel.cs" />
+    <Compile Include="ViewModels\ImageOverlayViewModel.cs" />
     <Compile Include="ViewModels\ImageStitchViewModel.cs" />
     <Compile Include="ViewModels\PeakPreviewViewModel.cs" />
     <Compile Include="ViewModels\RatioTabViewModel.cs" />
@@ -424,6 +428,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Tabs\FusionPointTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tabs\ImageOverlay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -15,6 +15,7 @@ using ImagingSIMS.Common;
 using ImagingSIMS.Common.Math;
 using ImagingSIMS.Data.Colors;
 using ImagingSIMS.Data.Converters;
+using static IronPython.Runtime.Profiler;
 
 namespace ImagingSIMS.Data.Imaging
 {
@@ -1622,6 +1623,39 @@ namespace ImagingSIMS.Data.Imaging
                     };
                 }
             }
+
+            return ImageGenerator.Instance.Create(overlay);
+        }
+
+        public static BitmapSource CreateOverlay(Data2D[] data, Color[] colors, float[] saturations, float[] thresholds)
+        {
+            var height = data[0].Height;
+            var width = data[0].Width;
+
+            Data3D overlay = new Data3D(width, height, 4);
+
+            for (int i = 0; i < data.Length; i++)            
+            {
+                var color = new float[] { colors[i].B, colors[i].G, colors[i].R };
+
+                for (int x = 0; x < width; x++)
+                {
+                    for (int y = 0; y < height; y++)
+                    {
+                        for (int c = 0; c < 3; c++)
+                        {
+                            var pixel = data[i][x, y];
+                            pixel = pixel > thresholds[i] ? pixel : 0;
+                            pixel = pixel < saturations[i] ? pixel : saturations[i];
+                            pixel /= saturations[i];
+                            overlay[x, y, c] += pixel * color[c];
+                        }
+                        overlay[x, y, 3] = 255.0f;
+                    }
+                }
+            }
+
+            overlay.Apply((x) => x > 255 ? 255 : x);
 
             return ImageGenerator.Instance.Create(overlay);
         }

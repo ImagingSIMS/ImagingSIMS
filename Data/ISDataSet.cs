@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media;
 
 using ImagingSIMS.Data.Spectra;
@@ -1986,6 +1987,33 @@ namespace ImagingSIMS.Data
             }
             return d;
         }
+
+        public Data2D Copy()
+        {
+            var d = new Data2D(Width, Height);
+            d.DataName = DataName;
+
+            for (int x = 0; x< Width; x++)
+            {
+                for(int y = 0; y < Height; y++)
+                {
+                    d[x, y] = this[x, y];
+                }
+            }
+
+            return d;
+        }
+
+        public void Apply(Func<float, float> func)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    this[x, y] = func(this[x, y]);
+                }
+            }
+        }
         #endregion
 
         #region ISavable
@@ -2829,6 +2857,20 @@ namespace ImagingSIMS.Data
             }
 
             return new Data3D(resized);
+        }
+
+        public void Apply(Func<float, float> func)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < Height; y++)
+                {
+                    for(int z=0; z < Depth; z++)
+                    {
+                        this[x, y, z] = func(this[x, y, z]);
+                    }
+                }
+            }
         }
     }
 }

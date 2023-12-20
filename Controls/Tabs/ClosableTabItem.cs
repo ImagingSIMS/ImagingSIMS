@@ -361,7 +361,7 @@ namespace ImagingSIMS.Controls.Tabs
         Correction, ZCorrection, SpectrumCrop,
         HeightMap, DataDisplay, Cluster,
         DataRegistration, DepthProfile, EditWorkspace,
-        Ratio, ImageStitch, DataMath
+        Ratio, ImageStitch, DataMath, ImageOverlay
     }
 
 

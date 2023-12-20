@@ -496,21 +496,9 @@
                 </RibbonGroup>
                 <RibbonGroup Header="Overlay">
                     <RibbonButton x:Name="ribbonOverlayNewTab" Label="New Tab"
-                                       LargeImageSource="Images\Favorites.ico" Click="NewOverlay"
+                                      LargeImageSource="Images\Overlay.ico" Click="NewOverlay"
                                       ToolTipTitle="Opens new overlay tab." ToolTipImageSource="Images\Favorites.ico"
-                                      ToolTipDescription="Opens a new tab for importing Bitmap images for a custom overlay."/>
-                    <RibbonButton x:Name="ribbonOverlayAddImage" Label="Add"
-                                       LargeImageSource="Images\NewImage.ico" Click="OverlayAddImage"
-                                        ToolTipTitle="Add an image to the current overlay." ToolTipImageSource="Images\NewImage.ico"
-                                        ToolTipDescription="Add a new Bitmap to the current overlay tab."
-                                        IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
-                                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Display}"/>   
-                    <RibbonButton x:Name="ribbonOverlayDoOverlay" Label="Do Overlay"
-                                  LargeImageSource="Images\Overlay.ico" Click="DoOverlay"
-                                  ToolTipTitle="Performs an image overlay." ToolTipImageSource="Images\Overlay.ico"
-                                  ToolTipDescription="Overlays a series of images in the selected tab."
-                                  IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
-                                        Converter={StaticResource TabBoolConverter}, ConverterParameter=Display|DataDisplay}"/>
+                                      ToolTipDescription="Opens a new tab for selecting images for a custom overlay."/>
                 </RibbonGroup>
                 <RibbonGroup Header="Correction"
                              IsEnabled="{Binding ElementName=tabMain, Path=SelectedItem, 
