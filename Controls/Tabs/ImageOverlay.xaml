@@ -67,7 +67,7 @@
                                             <Label Grid.Column="0">Image:</Label>
                                             <ComboBox Grid.Column="1"
                                                 ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ImageOverlay}},
-                                                                    Path=ViewModel.Workspace.Data}"
+                                                                    Path=Workspace.Data}"
                                                 SelectedItem="{Binding Image}"
                                                 SelectionChanged="comboBoxImage_SelectionChanged"
                                                 Width="250" Margin="4" Padding="4">
