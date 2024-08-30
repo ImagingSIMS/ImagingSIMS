@@ -31,18 +31,12 @@ using ImagingSIMS.Controls.BaseControls;
 using ImagingSIMS.Controls.BaseControls.SpectrumView;
 using ImagingSIMS.Direct3DRendering.DrawingObjects;
 using ImagingSIMS.Direct3DRendering.Controls;
-using ImagingSIMS.Data.Colors;
-using ImagingSIMS.Data.Converters;
 
 using Accord.Math;
 using Accord.Math.Decompositions;
 using System.Threading.Tasks;
-
-using Matrix = Accord.Math.Matrix;
-using Accord.Statistics.Analysis;
-using Accord.Statistics.Kernels;
-using System.Globalization;
-using System.Windows.Interop;
+using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 
 namespace ImagingSIMS.MainApplication
 {
@@ -2502,6 +2496,56 @@ namespace ImagingSIMS.MainApplication
             }
         }
 
+
+        private void specCustomRange_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            var clipText = Clipboard.GetText();
+
+            if (clipText.Contains("\t") && clipText.Contains("\r"))
+            {
+                var lines = clipText.Split('\n');
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    lines[i] = lines[i].Replace("\r", "");
+                }
+
+                var headers = lines[0].Split('\t');
+                if (headers.Length == 3 && headers[0] == "Start" && headers[1] == "End" && headers[2] == "Name")
+                {
+                    var builder = new List<string>();
+                    for (int i = 1; i < lines.Length; i++)
+                    {
+                        if (lines[i].Contains("\t"))
+                        {
+                            var parts = lines[i].Split('\t');
+                            builder.Add($"{parts[0]}-{parts[1]}/{parts[2]}");
+                        }
+                    }
+                    Workspace.SpectraCustomRange = string.Join(";", builder);
+                    e.Handled = true;
+                    e.CancelCommand();
+
+                }
+                if (headers.Length == 2 && headers[0] == "Mass" && headers[1] == "Name")
+                {
+                    var builder = new List<string>();
+                    for (int i = 1; i < lines.Length - 1; i++)
+                    {
+                        if (lines[i].Contains("\t"))
+                        {
+                            var parts = lines[i].Split('\t');
+                            builder.Add($"{parts[0]}/{parts[1]}");
+                        }
+                    }
+                    Workspace.SpectraCustomRange = string.Join(";", builder);
+                    e.Handled = true;
+                    e.CancelCommand();
+                }
+
+            }
+            
+        }
+
         private void specCreateTables_Click(object sender, RoutedEventArgs e)
         {
             SpectrumTab st = ((ClosableTabItem)tabMain.SelectedItem).Content as SpectrumTab;
@@ -2780,14 +2824,14 @@ namespace ImagingSIMS.MainApplication
                 double startMass = range.StartMass;
                 double endMass = range.EndMass;
 
+
                 // Use Dispatcher since this function is being run by a background thread
                 Dispatcher.Invoke(() =>
                     pw.UpdateMessage(string.Format("Generating tables for range {0} of {1}: {2} - {3}. Please wait...",
                         (i + 1).ToString(), numberRanges, startMass, endMass))
                 );
 
-                tables.AddRange(spectrum.FromMassRange(new MassRange(range.StartMass, range.EndMass),
-                    baseName, omitNumbering, sender as BackgroundWorker));
+                tables.AddRange(spectrum.FromMassRange(range, baseName, omitNumbering, sender as BackgroundWorker));
             }
 
             e.Result = tables;
@@ -3650,39 +3694,59 @@ namespace ImagingSIMS.MainApplication
 
         private void CMDataSave(object sender, RoutedEventArgs e)
         {
-            List<Data2D> toSave = new List<Data2D>();
-            foreach (object obj in listViewData.SelectedItems)
-            {
-                Data2D d = obj as Data2D;
-                if (obj != null)
-                {
-                    toSave.Add(d);
-                }
-            }
-
+            var toSave = GetSelectedTables();
             if (toSave.Count == 0) return;
-
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Text Files (.txt)|*.txt";
-
-            Nullable<bool> result = sfd.ShowDialog();
-            if (result != true) return;
 
             if (toSave.Count == 1)
             {
-                toSave[0].Save(sfd.FileName, FileType.CSV);
-            }
-            else if (toSave.Count > 1)
-            {
-                for (int i = 0; i < toSave.Count; i++)
-                {
-                    string savePath = sfd.FileName.Insert(sfd.FileName.Length - 4, string.Format("_{0}", i.ToString()));
-                    toSave[i].Save(savePath, FileType.CSV);
-                }
+                var fileDialog = new SaveFileDialog();
+                fileDialog.Filter = "CSV Files (.csv)|*.csv";
+                fileDialog.FileName = toSave[0].DataName;
+                if (fileDialog.ShowDialog() != true) return;
+
+                toSave[0].Save(fileDialog.FileName, FileType.CSV);
+
+                DialogBox db = new DialogBox("File saved successfully!", fileDialog.FileName, "Save", DialogIcon.Ok);
+                db.ShowDialog();
             }
 
-            DialogBox db = new DialogBox("File(s) saved successfully!", sfd.FileName, "Save", DialogIcon.Ok);
-            db.ShowDialog();
+            else 
+            {
+                if (toSave.Distinct().Count() != toSave.Count())
+                {
+                    var dbError = new DialogBox(
+                        "Cannot save the selected data tables.",
+                        "One or more tables have the same name. Make sure all selected table names are unique and try again.",
+                        "Error", DialogIcon.Error);
+                    dbError.ShowDialog();
+                    return;
+                }
+
+                var invalidChars = Path.GetInvalidFileNameChars();
+                var hasInvalidChars = toSave.Where(d => invalidChars.Any(d.DataName.Contains));
+                if (hasInvalidChars.Count() > 0)
+                {
+                    var badNames = string.Join("/n", hasInvalidChars.Select(d => d.DataName).ToList());
+                    var dbError = new DialogBox(
+                        "Cannot save the selected data tables.",
+                        $"The following data names contain invalid characters: {badNames}",
+                        "Error", DialogIcon.Error);
+                    dbError.ShowDialog();
+                    return;
+                }
+
+                var folderDialog = new FolderBrowserDialog();
+                var result = folderDialog.ShowDialog();
+                if (result != System.Windows.Forms.DialogResult.OK) return;
+
+                foreach (var table in toSave)
+                {
+                    table.Save(Path.Combine(folderDialog.SelectedPath, $"{table.DataName}.csv"), FileType.CSV);
+                }
+
+                DialogBox db = new DialogBox("File(s) saved successfully!", folderDialog.SelectedPath, "Save", DialogIcon.Ok);
+                db.ShowDialog();
+            }            
         }
         private void CMDataRename(object sender, RoutedEventArgs e)
         {
@@ -5566,6 +5630,8 @@ namespace ImagingSIMS.MainApplication
 
         private async void test9_Click(object sender, RoutedEventArgs e)
         {
+            string text = System.Windows.Clipboard.GetText();
+            int i = 0;
             //var dt = new DataDisplayTab(ColorScaleTypes.ThermalCold);
             //var cti = ClosableTabItem.Create(dt, TabType.DataDisplay);
             //AddTabItemAndNavigate(cti);
@@ -5579,8 +5645,8 @@ namespace ImagingSIMS.MainApplication
 
             //await dt.AddDataSourceAsync(selected);
 
-            HwndSource hwnd = new HwndSource(0, 0x12cf0000, 0, 50, 50, 250, 250, "Test Window", IntPtr.Zero);
-            hwnd.RootVisual = new System.Windows.Shapes.Rectangle() { Fill = Brushes.GreenYellow, Width = 100, Height = 100 };
+            // HwndSource hwnd = new HwndSource(0, 0x12cf0000, 0, 50, 50, 250, 250, "Test Window", IntPtr.Zero);
+            // hwnd.RootVisual = new System.Windows.Shapes.Rectangle() { Fill = Brushes.GreenYellow, Width = 100, Height = 100 };
         }
         private async void test10_Click(object sender, RoutedEventArgs e)
         {

@@ -586,7 +586,7 @@
                             </Grid.RowDefinitions>
                             <Label Grid.Column="0" Grid.Row="0">Custom range:</Label>
                             <TextBox x:Name="specCustomRange" Margin="2" Grid.Column="1" Grid.Row="0" Text="{Binding Workspace.SpectraCustomRange, UpdateSourceTrigger=PropertyChanged}" 
-                                     Width="210" VerticalContentAlignment="Center">
+                                     Width="210" VerticalContentAlignment="Center" DataObject.Pasting="specCustomRange_Pasting">
                                 <TextBox.ToolTip>
                                     <TextBlock>
                                         Enter a custom mass range, with support for multiple ranges.
@@ -596,6 +596,10 @@
                                         For centroids, start and end mass are determined as centroid +/- bin width set below.
                                         <LineBreak/>
                                         Both start-end; and centroid; can be mixed.
+                                        <LineBreak/>
+                                        In each range, add a / to specify a species name. For example:
+                                        <LineBreak/>
+                                        start-end/speciesA;centroid/speciesB;start-end/speciesC
                                     </TextBlock>
                                 </TextBox.ToolTip>
                             </TextBox>

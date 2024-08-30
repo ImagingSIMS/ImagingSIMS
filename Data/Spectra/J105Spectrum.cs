@@ -263,10 +263,35 @@ namespace ImagingSIMS.Data.Spectra
                         if (bw != null && bw.CancellationPending) return returnTables;
                     }
                 }
-                if (!OmitNumbering)
-                    dt.DataName = string.Format("{0} {1}-{2} ({3})", TableBaseName, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"), ++i);
+
+                // Only add numbering if depth is more than 1 AND OmitNumbering is not true
+                 if (!OmitNumbering && _sizeZ > 1)
+                {
+                    // Use mass range to distinguish if there isn't a name
+                    if (string.IsNullOrEmpty(MassRange.Name))
+                    {
+                        dt.DataName = $"{TableBaseName} {MassRange.StartMass:0.00}-{MassRange.EndMass:0.00} ({++i})";
+                    }
+                    // Use the mass range name to distinguish
+                    else
+                    {
+                        dt.DataName = $"{TableBaseName} {MassRange.Name} ({++i})";
+                    }
+                }
                 else
-                    dt.DataName = string.Format("{0} {1}-{2}", TableBaseName, MassRange.StartMass.ToString("0.00"), MassRange.EndMass.ToString("0.00"));
+                {
+                    // Use mass range to distinguish if there isn't a name
+                    if (string.IsNullOrEmpty(MassRange.Name))
+                    {
+                        dt.DataName = $"{TableBaseName} {MassRange.StartMass:0.00}-{MassRange.EndMass:0.00}";
+                    }
+                    // Use the mass range name to distinguish
+                    else
+                    {
+                        dt.DataName = $"{TableBaseName} {MassRange.Name}";
+                    }
+                }
+                
                 returnTables.Add(dt);
             }
 
