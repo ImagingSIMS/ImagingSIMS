@@ -245,5 +245,20 @@
       "Adds new tab for creating dynamic overlay images.",
       "Changes support for V2 files to newest format where tile dimensions are no longer contained in the image details file."
     ]
+  },
+  {
+    "Version": {
+      "Major": 3,
+      "Minor": 11,
+      "Build": 1,
+      "Revision": 1
+    },
+    "Updates": [
+      "When saving multiple data tables from the side bar, users will now be prompted to select a folder. File names will be named based on the data table name.",
+      "When saving a single data table from the side bar, the data table name will be the default file name when selecting the save path.",
+      "When extracting data tables from a spectrum, integer IDs will not be appended to the data table name if the Z size of the spectrum is 1.",
+      "The Custom Range field now supports an optional name for the mass range(s), which will be included in the data table name. For the correct syntax, hover over the Custom Range field to show the tooltip.",
+      "Users can paste from an Excel spreadsheet into the Custom Range field and the mass and species information will be correctly formatted for extraction from the spectrum. Either a two column (Mass, Name) or three column (Start, End, and Name) are supported."
+    ]
   }
 ]
