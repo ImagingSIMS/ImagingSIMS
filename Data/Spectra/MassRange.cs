@@ -8,6 +8,7 @@ namespace ImagingSIMS.Data.Spectra
     {
         public double StartMass;
         public double EndMass;
+        public string Name;
 
         public MassRange()
         {
@@ -18,9 +19,16 @@ namespace ImagingSIMS.Data.Spectra
             StartMass = startMass;
             EndMass = endMass;
         }
+        public MassRange(double startMass, double endMass, string name)
+        {
+            StartMass = startMass;
+            EndMass = endMass;
+            Name = name;
+        }
         public override string ToString()
         {
-            return StartMass.ToString("0.000") + "-" + EndMass.ToString("0.000");
+            if (string.IsNullOrEmpty(Name)) return StartMass.ToString("0.000") + "-" + EndMass.ToString("0.000");
+            return $"{Name}: {StartMass.ToString("0.000")} - {EndMass.ToString("0.000")}";
         }
 
         public int CompareTo(object obj)
@@ -61,10 +69,19 @@ namespace ImagingSIMS.Data.Spectra
                 throw new ArgumentException("No string found.");
             }
 
-            foreach (string s in rangeString)
+            foreach (string s in rangeString)                
             {
                 var range = new MassRange();
-                if (!s.Contains("-"))
+                var rangeParse = s;
+
+                if (rangeParse.Contains("/"))
+                {
+                    var nameParts = rangeParse.Split('/');
+                    range.Name = nameParts[1];
+                    rangeParse = nameParts[0];
+                }
+
+                if (!rangeParse.Contains("-"))
                 {
                     if (binWidth <= 0)
                     {
@@ -72,20 +89,20 @@ namespace ImagingSIMS.Data.Spectra
                     }
                     try
                     {
-                        var centroid = double.Parse(s);
+                        var centroid = double.Parse(rangeParse);
                         range.StartMass = centroid - binWidth;
                         range.EndMass = centroid + binWidth;
                     }
                     catch(Exception ex)
                     {
-                        throw new ArgumentException($"Could not parse the specified centroid ({s}).", ex);
+                        throw new ArgumentException($"Could not parse the specified centroid ({rangeParse}).", ex);
 
                     }
                 }
 
                 else
                 {
-                    string[] rangeValues = s.Split('-');
+                    string[] rangeValues = rangeParse.Split('-');
 
                     if (rangeValues.Length != 2)
                         throw new ArgumentException("Invalid number of masses in the specified range.");
